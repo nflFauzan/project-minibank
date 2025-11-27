@@ -1,18 +1,58 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head><meta charset="utf-8"/><title>Sign Up</title></head>
-<body>
-<h2>Sign Up</h2>
+<html xmlns:th="http://www.thymeleaf.org" lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Sign Up - Aplikasi Mini Bank</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .auth-bg {
+      background-image: url('/images/login-bg.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+  </style>
+</head>
+<body class="min-h-screen auth-bg flex items-center justify-center">
+  <div class="absolute inset-0 bg-white/70 backdrop-blur-sm"></div>
 
-<div th:if="${error}" th:text="${error}" style="color:red"></div>
+  <div class="relative z-10 w-full max-w-md p-6">
+    <div class="bg-white rounded-2xl shadow-xl p-8">
+      <h2 class="text-2xl font-bold text-sky-800 mb-1">Sign Up</h2>
+      <p class="text-sm text-slate-500 mb-6">Buat akun baru untuk mulai menggunakan aplikasi.</p>
 
-<form th:action="@{/signup}" method="post">
-    <input type="text" name="username" placeholder="Username" required/><br/>
-    <input type="text" name="fullName" placeholder="Full name" required/><br/>
-    <input type="password" name="password" placeholder="Password" required/><br/>
-    <button type="submit">Register</button>
-</form>
+      <div th:if="${error}" class="mb-4 text-sm text-red-700" th:text="${error}"></div>
 
-<p>Sudah punya akun? <a href="/login">Login</a></p>
+      <form th:action="@{/signup}" method="post" class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-slate-700">Username</label>
+          <input name="username" type="text" required
+                 class="mt-1 block w-full rounded-lg border border-slate-200 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-sky-400" />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-slate-700">Full name</label>
+          <input name="fullName" type="text" required
+                 class="mt-1 block w-full rounded-lg border border-slate-200 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-sky-400" />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-slate-700">Password</label>
+          <input name="password" type="password" required
+                 class="mt-1 block w-full rounded-lg border border-slate-200 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-sky-400" />
+        </div>
+
+        <button type="submit"
+                class="w-full inline-flex justify-center rounded-lg bg-sky-700 text-white py-2 font-medium hover:bg-sky-800">
+          Register
+        </button>
+      </form>
+
+      <div class="mt-6 text-center text-sm text-slate-600">
+        Sudah punya akun? <a href="/login" class="text-sky-700 font-medium">Login</a>
+      </div>
+    </div>
+  </div>
 </body>
 </html>
