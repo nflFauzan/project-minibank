@@ -1,9 +1,7 @@
 package id.ac.tazkia.minibank.entity;
 
 import jakarta.persistence.*;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.*;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
@@ -14,13 +12,24 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 public class User {
-    @Id 
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(unique = true, nullable = false)
     private String username;
+
+    @Column(nullable = false)
     private String password;
+
     private String fullName;
-    private boolean enabled = true;
+    private String email;
+    private String nim;
+    private String prodi;
+    private String dosenPembimbing;
+
+    private boolean approved = false;   // approval by admin
+    private boolean enabled = false;
+
     private Instant createdAt = Instant.now();
 
     @ManyToMany(fetch = FetchType.EAGER)

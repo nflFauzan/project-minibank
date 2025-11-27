@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin - Approval</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link th:href="@{/css/custom.css}" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<nav class="navbar navbar-expand-lg navbar-white bg-white shadow-sm">
+  <div class="container">
+    <a class="navbar-brand fw-bold" href="/">MiniBank Practicum - Admin</a>
+    <div>
+      <a href="/logout" class="btn btn-outline-secondary btn-sm">Logout</a>
+    </div>
+  </div>
+</nav>
+
+<main class="container py-4">
+  <div class="row">
+    <div class="col-lg-10 mx-auto">
+      <div class="card shadow-sm mb-4">
+        <div class="card-body">
+          <h5 class="card-title mb-1">Ada meminta konfirmasi pembuatan akun nih, yuk segera dikonfirmasi!</h5>
+          <p class="text-muted small mb-0">List mahasiswa yang menunggu persetujuan.</p>
+        </div>
+      </div>
+
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <div th:if="${users == null || #lists.isEmpty(users)}" class="alert alert-info">
+            Tidak ada request pendaftaran saat ini.
+          </div>
+
+          <div th:if="${users != null && !#lists.isEmpty(users)}">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Nama</th>
+                  <th>Username</th>
+                  <th>Prodi</th>
+                  <th>NIM</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr th:each="u,iterStat : ${users}">
+                  <td th:text="${iterStat.index + 1}"></td>
+                  <td th:text="${u.fullName}"></td>
+                  <td th:text="${u.username}"></td>
+                  <td th:text="${u.prodi}"></td>
+                  <td th:text="${u.nim}"></td>
+                  <td>
+                    <form th:action="@{/admin/users/approve/{id}(id=${u.id})}" method="post" style="display:inline">
+                      <button type="submit" class="btn btn-success btn-sm">Approve</button>
+                    </form>
+
+                    <form th:action="@{/admin/users/reject/{id}(id=${u.id})}" method="post" style="display:inline" 
+                          onsubmit="return confirm('Yakin ingin menolak & menghapus registrasi ini?');">
+                      <button type="submit" class="btn btn-danger btn-sm">Reject</button>
+                    </form>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/custom.js}"></script>
+</body>
+</html>
