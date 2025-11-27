@@ -1,7 +1,9 @@
 package id.ac.tazkia.minibank.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
@@ -12,7 +14,8 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 public class User {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id 
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String username;
     private String password;
