@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <title>Admin Approval</title>
+    <link th:href="@{/css/custom.css}" rel="stylesheet" />
+    <style>
+      body { margin:0; font-family: Arial, sans-serif; background: url('/images/login-bg.jpg') center/cover no-repeat; background-size:cover; }
+      .overlay { min-height: 100vh; background: rgba(255,255,255,0.35); backdrop-filter: blur(8px); display:flex; align-items:center; justify-content:center; padding:40px; }
+      .card { width: 900px; background: rgba(255,255,255,0.6); border-radius:14px; padding:26px 34px; box-shadow:0 10px 30px rgba(0,0,0,0.08); }
+      .back { font-size:20px; text-decoration:none; color:#222; display:inline-block; margin-bottom:6px; }
+      h1 { text-align:center; margin:6px 0 8px; color:#113C8D; font-size:36px; }
+      p.info { text-align:center; color:#445; margin-bottom:22px; }
+      .grid { display:grid; grid-template-columns:1fr 1fr; gap:14px 28px; }
+      .field { height:50px; display:flex; align-items:center; padding:0 18px; border-radius:28px; background:#fff; border:1.6px solid rgba(0,0,0,0.12); }
+      .field input { border:none; width:100%; font-size:15px; background:transparent; outline:none; }
+      .actions { display:flex; gap:18px; justify-content:center; margin-top:26px; }
+      .btn { width:200px; padding:12px 18px; border-radius:28px; font-weight:800; font-size:18px; cursor:pointer; border:none; }
+      .btn-approve { background: linear-gradient(to bottom,#B8D9FF,#9CC5FF); color:#07204a; box-shadow: 0 6px 18px rgba(0,80,180,0.12); }
+      .btn-reject { background: linear-gradient(to bottom,#ffe6e6,#ffd6d6); color:#802020; box-shadow: 0 6px 18px rgba(180,0,0,0.06); }
+      .small-note { text-align:center; color:#666; margin-top:8px; font-size:13px; }
+    </style>
+</head>
+<body>
+  <div class="overlay">
+    <div class="card">
+      <a href="/admin/dashboard" class="back">&#8592; Kembali</a>
+      <h1>Hello!</h1>
+      <p class="info">Ada meminta konfirmasi pembuatan akun nih, yuk segera dikonfirmasi!</p>
+
+      <div class="grid">
+        <div class="field">
+          <input type="text" th:value="${user.fullName}" readonly />
+        </div>
+        <div class="field">
+          <input type="text" th:value="${user.dosenPembimbing}" readonly />
+        </div>
+
+        <div class="field">
+          <input type="text" th:value="${user.email}" readonly />
+        </div>
+        <div class="field">
+          <input type="text" th:value="${user.username}" readonly />
+        </div>
+
+        <div class="field">
+          <input type="text" th:value="${user.prodi}" readonly />
+        </div>
+        <div class="field">
+          <input type="text" th:value="${maskedPassword}" readonly />
+        </div>
+
+        <div class="field">
+          <input type="text" th:value="${user.nim}" readonly />
+        </div>
+        <div class="field">
+          <input type="text" th:value="${maskedConfirm}" readonly />
+        </div>
+      </div>
+
+      <div class="actions">
+        <form th:action="@{/admin/approve/{id}(id=${user.id})}" method="post" onsubmit="return confirm('Setujui pembuatan akun ini?');">
+          <button type="submit" class="btn btn-approve">APPROVE</button>
+        </form>
+
+        <form th:action="@{/admin/reject/{id}(id=${user.id})}" method="post" onsubmit="return confirm('Tolak dan hapus pendaftaran ini?');">
+          <button type="submit" class="btn btn-reject">REJECT</button>
+        </form>
+      </div>
+
+      <div class="small-note">Catatan: Password ditampilkan sebagai bintang untuk privasi. Data asli tersimpan di database.</div>
+    </div>
+  </div>
+</body>
+</html>

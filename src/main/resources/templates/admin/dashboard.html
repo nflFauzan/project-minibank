@@ -1,25 +1,57 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head><meta charset="UTF-8"><title>Admin</title></head>
+<head>
+    <meta charset="utf-8"/>
+    <title>Admin - Pending Registrations</title>
+    <link th:href="@{/css/custom.css}" rel="stylesheet" />
+    <style>
+      /* Minimal styling so page looks OK even tanpa custom.css */
+      body { font-family: Arial, sans-serif; margin: 0; padding: 24px; background: #f3f8ff; }
+      .container { max-width: 1100px; margin: 0 auto; }
+      h2 { color: #113C8D; text-align:center; margin-bottom: 8px;}
+      p.sub { text-align:center; color: #556; margin-bottom: 20px; }
+      .list { background: rgba(255,255,255,0.9); border-radius: 12px; padding: 18px; box-shadow: 0 6px 20px rgba(0,0,0,0.05); }
+      table { width:100%; border-collapse: collapse; }
+      th, td { padding: 12px 10px; text-align:left; border-bottom: 1px solid #eee; }
+      a.detail { color:#0F3FA8; text-decoration:none; font-weight:700; }
+      .empty { text-align:center; padding: 40px 10px; color:#556; }
+    </style>
+</head>
 <body>
-<h2>Pending Registrations</h2>
-<table>
-  <tr><th>ID</th><th>Username</th><th>Name</th><th>Prodi</th><th>NIM</th><th>Action</th></tr>
-  <tr th:each="u : ${pending}">
-    <td th:text="${u.id}"></td>
-    <td th:text="${u.username}"></td>
-    <td th:text="${u.fullName}"></td>
-    <td th:text="${u.prodi}"></td>
-    <td th:text="${u.nim}"></td>
-    <td>
-      <form th:action="@{/admin/approve/{id}(id=${u.id})}" method="post" style="display:inline">
-        <button type="submit">Approve</button>
-      </form>
-      <form th:action="@{/admin/reject/{id}(id=${u.id})}" method="post" style="display:inline">
-        <button type="submit">Reject</button>
-      </form>
-    </td>
-  </tr>
-</table>
+  <div class="container">
+    <h2>Pending Registrations</h2>
+    <p class="sub">Ada meminta konfirmasi pembuatan akun nih, yuk segera dikonfirmasi!</p>
+
+    <div class="list">
+      <div th:if="${users == null or #lists.isEmpty(users)}" class="empty">
+        Tidak ada request pendaftaran saat ini.
+      </div>
+
+      <div th:if="${users != null and !#lists.isEmpty(users)}">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Full Name</th>
+              <th>Username</th>
+              <th>Prodi / NIM</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="u,iterStat : ${users}">
+              <td th:text="${iterStat.index + 1}"></td>
+              <td th:text="${u.fullName}"></td>
+              <td th:text="${u.username}"></td>
+              <td><span th:text="${u.prodi}"></span><br/><small th:text="${u.nim}"></small></td>
+              <td>
+                <a th:href="@{/admin/approval/{id}(id=${u.id})}" class="detail">Lihat / Konfirmasi</a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 </body>
 </html>
