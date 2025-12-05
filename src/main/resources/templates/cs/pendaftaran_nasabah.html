@@ -1,0 +1,80 @@
+<!-- IDENTITAS -->
+<div class="form-group">
+    <label for="kodePosIdentitas">Kode Pos (Identitas)</label>
+    <input type="text" id="kodePosIdentitas" name="kodePosIdentitas" maxlength="10" class="form-control" />
+  </div>
+  
+  <div class="form-group">
+    <label for="provinsi">Provinsi</label>
+    <input type="text" id="provinsi" name="provinsiIdentitas" readonly class="form-control" />
+  </div>
+  
+  <div class="form-group">
+    <label for="kota">Kab/Kota</label>
+    <input type="text" id="kota" name="kotaIdentitas" readonly class="form-control" />
+  </div>
+  
+  <div class="form-group">
+    <label for="kecamatan">Kecamatan</label>
+    <input type="text" id="kecamatan" name="kecamatanIdentitas" readonly class="form-control" />
+  </div>
+  
+  <div class="form-group">
+    <label for="kelurahan">Kelurahan</label>
+    <input type="text" id="kelurahan" name="kelurahanIdentitas" readonly class="form-control" />
+  </div>
+  
+  <!-- RT / RW tetap input manual -->
+  <div class="form-group">
+    <label for="rtIdentitas">RT</label>
+    <input type="text" id="rtIdentitas" name="rtIdentitas" class="form-control" />
+  </div>
+  <div class="form-group">
+    <label for="rwIdentitas">RW</label>
+    <input type="text" id="rwIdentitas" name="rwIdentitas" class="form-control" />
+  </div>
+  
+  <!-- DOMISILI -->
+  <div class="form-check">
+    <input type="checkbox" id="domisiliSama" name="domisiliSama" />
+    <label for="domisiliSama">Alamat domisili sama dengan identitas</label>
+  </div>
+  
+  <div class="form-group">
+    <label for="kodePosDomisili">Kode Pos (Domisili)</label>
+    <input type="text" id="kodePosDomisili" name="kodePosDomisili" maxlength="10" class="form-control" />
+  </div>
+  
+  <div class="form-group">
+    <label for="domisiliprovinsi">Provinsi (Domisili)</label>
+    <input type="text" id="domisiliprovinsi" name="provinsiDomisili" readonly class="form-control" />
+  </div>
+  
+  <div class="form-group">
+    <label for="domisilokota">Kab/Kota (Domisili)</label>
+    <input type="text" id="domisilokota" name="kotaDomisili" readonly class="form-control" />
+  </div>
+  
+  <div class="form-group">
+    <label for="domisilikecamatan">Kecamatan (Domisili)</label>
+    <input type="text" id="domisilikecamatan" name="kecamatanDomisili" readonly class="form-control" />
+  </div>
+  
+  <div class="form-group">
+    <label for="domisilikelurahan">Kelurahan (Domisili)</label>
+    <input type="text" id="domisilikelurahan" name="kelurahanDomisili" readonly class="form-control" />
+  </div>
+  
+  <!-- RT / RW domisili manual -->
+  <div class="form-group">
+    <label for="rtDomisili">RT (Domisili)</label>
+    <input type="text" id="rtDomisili" name="rtDomisili" class="form-control" />
+  </div>
+  <div class="form-group">
+    <label for="rwDomisili">RW (Domisili)</label>
+    <input type="text" id="rwDomisili" name="rwDomisili" class="form-control" />
+  </div>
+  
+  <!-- include JS at bottom of page -->
+  <script th:src="@{/js/postal-autofill.js}"></script>
+  
