@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard CS - Minibank</title>
+  <link rel="stylesheet" th:href="@{/css/dashboard.css}" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="sidebar-top">
+        <button class="btn-home">🏠</button>
+      </div>
+      <nav class="menu">
+        <a th:href="@{/cs/dashboard}" class="menu-item active">Dashboard</a>
+        <a th:href="@{/cs/pendaftaran}" class="menu-item">Pendaftaran Nasabah</a>
+        <a th:href="@{/cs/pembukaan-rekening}" class="menu-item">Pembukaan Rekening</a>
+        <a th:href="@{/cs/daftar-nasabah}" class="menu-item">Daftar Nasabah</a>
+        <a th:href="@{/cs/pengelolaan-produk}" class="menu-item">Pengelolaan Produk Bank</a>
+        <a th:href="@{/cs/manajemen-tiket}" class="menu-item">Manajemen Tiket</a>
+        <a th:href="@{/cs/dukungan-internal}" class="menu-item">Dukungan Internal</a>
+      </nav>
+      <div class="sidebar-bottom">
+        <a th:href="@{/settings}" class="menu-item">Settings</a>
+      </div>
+    </aside>
+
+    <main class="content">
+      <header class="topbar">
+        <div class="brand">
+          <img th:src="@{/images/dashboard-tazkia-minibank.png}" alt="tazkia" class="brand-img" />
+        </div>
+        <div class="meta">
+          <div th:text="${currentDate}">Senin, 13-08-2025 | 13:18</div>
+          <div th:text="${roleAndName}">| Costumer Service | ID00010003</div>
+        </div>
+      </header>
+
+      <section class="page">
+        <div class="greeting">
+          <div class="greeting-left">
+            <h2>Assalamu'alaikum, <span th:text="${csName}">Tazkia</span></h2>
+            <p>Siap mengelola transaksi hari ini dengan penuh amanah!</p>
+          </div>
+          <div class="greeting-right">
+            <img th:src="@{/images/dashboard-char.png}" alt="characters" class="greeting-img" />
+          </div>
+        </div>
+
+        <div class="summary-grid">
+          <div class="card small">
+            <div class="card-title">Total Nasabah</div>
+            <div class="card-value" th:text="${summary.totalNasabah}">0</div>
+          </div>
+          <div class="card small">
+            <div class="card-title">Total Rekening Aktif</div>
+            <div class="card-value" th:text="${summary.totalRekening}">0</div>
+          </div>
+          <div class="card small">
+            <div class="card-title">Total Produk</div>
+            <div class="card-value" th:text="${summary.totalProduk}">0</div>
+          </div>
+          <div class="card small">
+            <div class="card-title">Nasabah Baru (5)</div>
+            <div class="card-value list">
+              <ul>
+                <li th:each="n : ${summary.nasabahTerbaru}" th:text="${n.nama}">-</li>
+                <li th:if="${summary.nasabahTerbaru == null || #lists.isEmpty(summary.nasabahTerbaru)}">Tidak ada data</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="products-section">
+          <h3>Produk-Produk Tazkia Minibank</h3>
+          <div class="products-grid">
+            <div th:each="p : ${products}" class="product-card">
+              <div class="product-icon">📦</div>
+              <div class="product-name" th:text="${p.nama}">Nama Produk</div>
+              <div class="product-desc" th:text="${p.deskripsi}">Deskripsi singkat produk</div>
+            </div>
+
+            <div th:if="${products == null || #lists.isEmpty(products)}">
+              <div class="product-placeholder" th:each="i : ${#numbers.sequence(1,8)}"></div>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+    </main>
+  </div>
+
+  <script th:src="@{/js/dashboard.js}"></script>
+</body>
+</html>
