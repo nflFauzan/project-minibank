@@ -6,7 +6,9 @@ import id.ac.tazkia.minibank.repository.PostalCodeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+
 
 @Service
 public class PostalCodeService {
@@ -18,6 +20,30 @@ public class PostalCodeService {
         if (kodePos == null) return Optional.empty();
         String trimmed = kodePos.trim();
         return postalCodeRepository.findFirstByKodePos(trimmed)
-                .map(p -> new PostalCodeDto(p.getKodePos(), p.getProvinsi(), p.getKota(), p.getKecamatan(), p.getKelurahan()));
+                .map(p -> new PostalCodeDto(
+                        p.getKodePos(),
+                        p.getProvinsi(),
+                        p.getKota(),
+                        p.getKecamatan(),
+                        p.getKelurahan()
+                ));
+    }
+
+    // ---------- untuk cascading dropdown ----------
+    public List<String> getAllProvinces() {
+        return postalCodeRepository.findDistinctProvinsi();
+    }
+
+    public List<String> getCitiesByProvince(String provinsi) {
+        return postalCodeRepository.findDistinctKotaByProvinsi(provinsi);
+    }
+
+    public List<String> getDistricts(String provinsi, String kota) {
+        return postalCodeRepository.findDistinctKecamatan(provinsi, kota);
+    }
+
+    public List<String> getVillages(String provinsi, String kota, String kecamatan) {
+        return postalCodeRepository.findDistinctKelurahan(provinsi, kota, kecamatan);
     }
 }
+

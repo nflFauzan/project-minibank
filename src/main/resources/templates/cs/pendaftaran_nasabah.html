@@ -1,80 +1,187 @@
-<!-- IDENTITAS -->
-<div class="form-group">
-    <label for="kodePosIdentitas">Kode Pos (Identitas)</label>
-    <input type="text" id="kodePosIdentitas" name="kodePosIdentitas" maxlength="10" class="form-control" />
-  </div>
-  
-  <div class="form-group">
-    <label for="provinsi">Provinsi</label>
-    <input type="text" id="provinsi" name="provinsiIdentitas" readonly class="form-control" />
-  </div>
-  
-  <div class="form-group">
-    <label for="kota">Kab/Kota</label>
-    <input type="text" id="kota" name="kotaIdentitas" readonly class="form-control" />
-  </div>
-  
-  <div class="form-group">
-    <label for="kecamatan">Kecamatan</label>
-    <input type="text" id="kecamatan" name="kecamatanIdentitas" readonly class="form-control" />
-  </div>
-  
-  <div class="form-group">
-    <label for="kelurahan">Kelurahan</label>
-    <input type="text" id="kelurahan" name="kelurahanIdentitas" readonly class="form-control" />
-  </div>
-  
-  <!-- RT / RW tetap input manual -->
-  <div class="form-group">
-    <label for="rtIdentitas">RT</label>
-    <input type="text" id="rtIdentitas" name="rtIdentitas" class="form-control" />
-  </div>
-  <div class="form-group">
-    <label for="rwIdentitas">RW</label>
-    <input type="text" id="rwIdentitas" name="rwIdentitas" class="form-control" />
-  </div>
-  
-  <!-- DOMISILI -->
-  <div class="form-check">
-    <input type="checkbox" id="domisiliSama" name="domisiliSama" />
-    <label for="domisiliSama">Alamat domisili sama dengan identitas</label>
-  </div>
-  
-  <div class="form-group">
-    <label for="kodePosDomisili">Kode Pos (Domisili)</label>
-    <input type="text" id="kodePosDomisili" name="kodePosDomisili" maxlength="10" class="form-control" />
-  </div>
-  
-  <div class="form-group">
-    <label for="domisiliprovinsi">Provinsi (Domisili)</label>
-    <input type="text" id="domisiliprovinsi" name="provinsiDomisili" readonly class="form-control" />
-  </div>
-  
-  <div class="form-group">
-    <label for="domisilokota">Kab/Kota (Domisili)</label>
-    <input type="text" id="domisilokota" name="kotaDomisili" readonly class="form-control" />
-  </div>
-  
-  <div class="form-group">
-    <label for="domisilikecamatan">Kecamatan (Domisili)</label>
-    <input type="text" id="domisilikecamatan" name="kecamatanDomisili" readonly class="form-control" />
-  </div>
-  
-  <div class="form-group">
-    <label for="domisilikelurahan">Kelurahan (Domisili)</label>
-    <input type="text" id="domisilikelurahan" name="kelurahanDomisili" readonly class="form-control" />
-  </div>
-  
-  <!-- RT / RW domisili manual -->
-  <div class="form-group">
-    <label for="rtDomisili">RT (Domisili)</label>
-    <input type="text" id="rtDomisili" name="rtDomisili" class="form-control" />
-  </div>
-  <div class="form-group">
-    <label for="rwDomisili">RW (Domisili)</label>
-    <input type="text" id="rwDomisili" name="rwDomisili" class="form-control" />
-  </div>
-  
-  <!-- include JS at bottom of page -->
-  <script th:src="@{/js/postal-autofill.js}"></script>
-    
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Pendaftaran Nasabah</title>
+</head>
+<body>
+
+<h2>Pendaftaran Nasabah Personal</h2>
+
+<div th:if="${successMessage}" style="color: green; font-weight: bold;"
+     th:text="${successMessage}"></div>
+
+<form th:action="@{/cs/pendaftaran}" th:object="${nasabah}" method="post">
+
+    <!-- BLOK ERROR HARUS DI DALAM FORM + th:object -->
+    <div th:if="${#fields.hasErrors('*')}" style="color: red;">
+        <p th:each="err : ${#fields.errors('*')}"
+           th:text="${err}"></p>
+    </div>
+
+    <!-- ========== A. DATA NASABAH (CIF) ========== -->
+    <fieldset>
+        <legend>Data Nasabah</legend>
+
+        <label>NIK</label>
+        <input type="text" th:field="*{nik}" />
+        <br/>
+
+        <label>Nama Lengkap</label>
+        <input type="text" th:field="*{namaLengkap}" />
+        <br/>
+
+        <label>Tempat Lahir</label>
+        <input type="text" th:field="*{tempatLahir}" />
+        <br/>
+
+        <label>Tanggal Lahir</label>
+        <input type="date" th:field="*{tanggalLahir}" />
+        <br/>
+
+        <label>Nama Ibu Kandung</label>
+        <input type="text" th:field="*{namaIbuKandung}" />
+        <br/>
+
+        <label>Jenis Kelamin</label>
+        <select th:field="*{jenisKelamin}">
+            <option value="">-- Pilih --</option>
+            <option value="L">Laki-laki</option>
+            <option value="P">Perempuan</option>
+        </select>
+        <br/>
+
+        <label>Penduduk</label>
+        <select th:field="*{penduduk}">
+            <option value="">-- Pilih --</option>
+            <option value="WNI">WNI</option>
+            <option value="WNA">WNA</option>
+        </select>
+        <br/>
+
+        <label>Status Pernikahan</label>
+        <input type="text" th:field="*{statusPernikahan}" />
+        <br/>
+
+        <label>Agama</label>
+        <input type="text" th:field="*{agama}" />
+        <br/>
+
+        <label>Negara</label>
+        <input type="text" th:field="*{negara}" />
+        <br/>
+    </fieldset>
+
+    <!-- ========== B. KONTAK ========== -->
+    <fieldset>
+        <legend>Kontak</legend>
+
+        <label>No HP</label>
+        <input type="text" th:field="*{noHp}" />
+        <br/>
+
+        <label>Email</label>
+        <input type="email" th:field="*{email}" />
+        <br/>
+    </fieldset>
+
+    <!-- ========== C. PEKERJAAN ========== -->
+    <fieldset>
+        <legend>Data Pekerjaan</legend>
+
+        <label>Pekerjaan</label>
+        <input type="text" th:field="*{pekerjaan}" />
+        <br/>
+
+        <label>Nama Perusahaan</label>
+        <input type="text" th:field="*{namaPerusahaan}" />
+        <br/>
+
+        <label>Jabatan</label>
+        <input type="text" th:field="*{jabatan}" />
+        <br/>
+
+        <label>Penghasilan Per Bulan</label>
+        <input type="text" th:field="*{penghasilanPerBulan}" />
+        <br/>
+    </fieldset>
+
+    <!-- ========== D. ALAMAT IDENTITAS ========== -->
+    <fieldset>
+        <legend>Alamat Identitas</legend>
+
+        <label for="kodePosIdentitas">Kode Pos (Identitas)</label>
+        <input type="text" id="kodePosIdentitas" th:field="*{kodePosIdentitas}" />
+        <br/>
+
+        <label for="provinsiIdentitas">Provinsi</label>
+        <select id="provinsiIdentitas" th:field="*{provinsiIdentitas}"></select>
+        <br/>
+
+        <label for="kotaIdentitas">Kab/Kota</label>
+        <select id="kotaIdentitas" th:field="*{kotaIdentitas}"></select>
+        <br/>
+
+        <label for="kecamatanIdentitas">Kecamatan</label>
+        <select id="kecamatanIdentitas" th:field="*{kecamatanIdentitas}"></select>
+        <br/>
+
+        <label for="kelurahanIdentitas">Kelurahan</label>
+        <select id="kelurahanIdentitas" th:field="*{kelurahanIdentitas}"></select>
+        <br/>
+
+        <label>RT</label>
+        <input type="text" id="rtIdentitas" th:field="*{rtIdentitas}" />
+        <br/>
+
+        <label>RW</label>
+        <input type="text" id="rwIdentitas" th:field="*{rwIdentitas}" />
+        <br/>
+    </fieldset>
+
+    <!-- ========== E. ALAMAT DOMISILI ========== -->
+    <fieldset>
+        <legend>Alamat Domisili</legend>
+
+        <label for="kodePosDomisili">Kode Pos (Domisili)</label>
+        <input type="text" id="kodePosDomisili" th:field="*{kodePosDomisili}" />
+        <br/>
+
+        <label for="provinsiDomisili">Provinsi (Domisili)</label>
+        <select id="provinsiDomisili" th:field="*{provinsiDomisili}"></select>
+        <br/>
+
+        <label for="kotaDomisili">Kab/Kota (Domisili)</label>
+        <select id="kotaDomisili" th:field="*{kotaDomisili}"></select>
+        <br/>
+
+        <label for="kecamatanDomisili">Kecamatan (Domisili)</label>
+        <select id="kecamatanDomisili" th:field="*{kecamatanDomisili}"></select>
+        <br/>
+
+        <label for="kelurahanDomisili">Kelurahan (Domisili)</label>
+        <select id="kelurahanDomisili" th:field="*{kelurahanDomisili}"></select>
+        <br/>
+
+        <label>
+            <input type="checkbox" id="domisiliSama" />
+            Alamat domisili sama dengan identitas
+        </label>
+        <br/>
+
+        <label>RT (Domisili)</label>
+        <input type="text" id="rtDomisili" th:field="*{rtDomisili}" />
+        <br/>
+
+        <label>RW (Domisili)</label>
+        <input type="text" id="rwDomisili" th:field="*{rwDomisili}" />
+        <br/>
+    </fieldset>
+
+    <button type="submit">Simpan Nasabah</button>
+
+</form>
+
+<script th:src="@{/js/location-cascade.js}"></script>
+</body>
+</html>
