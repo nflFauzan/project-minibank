@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Pembukaan Rekening Baru</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: linear-gradient(135deg, #e9f5ff, #f7fbff);
+        }
+
+        .page-wrapper {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar kiri (mirip figma, versi sederhana) */
+        .sidebar {
+            width: 220px;
+            background-color: #1b3758;
+            color: #fff;
+            padding: 16px 12px;
+        }
+
+        .sidebar-header {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 24px;
+        }
+
+        .menu-item {
+            padding: 10px 12px;
+            margin-bottom: 6px;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .menu-item.active {
+            background-color: #1f609c;
+        }
+
+        .menu-item a {
+            color: inherit;
+            text-decoration: none;
+            display: block;
+        }
+
+        /* Konten kanan */
+        .content {
+            flex: 1;
+            padding: 24px 40px;
+        }
+
+        .card {
+            background: #ffffff;
+            border-radius: 10px;
+            padding: 24px 32px;
+            box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
+            max-width: 1000px;
+            margin: 0 auto 40px auto;
+        }
+
+        h1 {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+
+        .subtitle {
+            font-size: 13px;
+            color: #6b7280;
+            margin-bottom: 20px;
+        }
+
+        .section-title-bar {
+            background-color: #1f609c;
+            color: #fff;
+            font-size: 13px;
+            font-weight: 600;
+            padding: 6px 16px;
+            border-radius: 3px;
+            display: inline-block;
+            margin-bottom: 12px;
+        }
+
+        .form-grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px 24px;
+        }
+
+        .form-grid-1 {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 14px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            margin-bottom: 4px;
+            color: #4b5563;
+        }
+
+        .form-control,
+        .form-select {
+            width: 100%;
+            padding: 8px 10px;
+            border-radius: 6px;
+            border: 1px solid #d1d5db;
+            font-size: 13px;
+            box-sizing: border-box;
+        }
+
+        .checkbox-group,
+        .radio-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px 20px;
+            font-size: 13px;
+        }
+
+        .checkbox-item,
+        .radio-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .section-divider {
+            height: 1px;
+            background: #e5e7eb;
+            margin: 18px 0;
+        }
+
+        .actions {
+            text-align: center;
+            margin-top: 24px;
+        }
+
+        .btn-primary {
+            background-color: #1f609c;
+            color: #fff;
+            border: none;
+            border-radius: 20px;
+            padding: 8px 26px;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .alert-success {
+            background: #ecfdf3;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+            font-size: 12px;
+            padding: 8px 12px;
+            border-radius: 6px;
+            margin-bottom: 12px;
+        }
+
+        .alert-error {
+            background: #fef2f2;
+            color: #b91c1c;
+            border: 1px solid #fecaca;
+            font-size: 12px;
+            padding: 8px 12px;
+            border-radius: 6px;
+            margin-bottom: 12px;
+        }
+    </style>
+</head>
+<body>
+<div class="page-wrapper">
+
+    <!-- Sidebar kiri dummy -->
+    <aside class="sidebar">
+        <div class="sidebar-header">Mini Bank</div>
+
+        <div class="menu-item">
+            <a th:href="@{/cs/dashboard}">Dashboard</a>
+        </div>
+
+        <div class="menu-item">
+            <a th:href="@{/cs/pendaftaran}">Pendaftaran Nasabah</a>
+        </div>
+
+        <div class="menu-item active">
+            <span>Pembukaan Rekening Baru</span>
+        </div>
+
+        <div class="menu-item">
+            <span>Pencarian Data Nasabah</span>
+        </div>
+    </aside>
+
+    <!-- Konten kanan -->
+    <main class="content">
+
+        <div class="card">
+
+            <h1>Pembukaan Rekening Baru</h1>
+            <p class="subtitle">
+                Lengkapi data berikut untuk proses pembukaan rekening nasabah.
+            </p>
+
+            <!-- pesan sukses / error -->
+            <div th:if="${successMessage}" class="alert-success" th:text="${successMessage}"></div>
+            <div th:if="${errorMessage}" class="alert-error" th:text="${errorMessage}"></div>
+
+            <form th:action="@{/cs/pembukaan-rekening}"
+                  th:object="${form}"
+                  method="post">
+
+                <!-- ================= Informasi Data Nasabah ================= -->
+                <div class="section-title-bar">Informasi Data Nasabah</div>
+
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label>CIF Nasabah</label>
+                        <input type="text" th:field="*{cif}" class="form-control"
+                               placeholder="Nomor CIF nasabah"/>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Nama Lengkap Nasabah</label>
+                        <input type="text" th:field="*{namaLengkapNasabah}"
+                               class="form-control"
+                               placeholder="Nama lengkap nasabah"/>
+                    </div>
+
+                    <div class="form-group">
+                        <label>NIK</label>
+                        <input type="text" th:field="*{nik}" class="form-control"
+                               placeholder="Nomor KTP nasabah"/>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Alamat Domisili</label>
+                        <input type="text" th:field="*{alamatDomisili}" class="form-control"
+                               placeholder="Alamat sesuai domisili"/>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Nomor Telepon</label>
+                        <input type="text" th:field="*{nomorTelepon}" class="form-control"
+                               placeholder="No HP / Telepon"/>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" th:field="*{email}" class="form-control"
+                               placeholder="Alamat email"/>
+                    </div>
+                </div>
+
+                <div class="section-divider"></div>
+
+                <!-- ================= Informasi Rekening Baru ================= -->
+                <div class="section-title-bar">Informasi Rekening Baru</div>
+
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label>Jenis Rekening</label>
+                        <input type="text" th:field="*{jenisRekening}" class="form-control"
+                               placeholder="Contoh: Tabungan, Giro, dll"/>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Pilih Produk yang Anda Minati</label>
+                        <select th:field="*{produkId}" class="form-select">
+                            <option value="">-- Pilih Produk --</option>
+                            <option th:each="p : ${produkList}"
+                                    th:value="${p.id}"
+                                    th:text="${p.namaProduk} + ' (' + ${p.jenisAkad} + ')'">
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Nominal Setoran Awal</label>
+                        <input type="text" th:field="*{nominalSetoranAwal}" class="form-control"
+                               placeholder="Contoh: 1.000.000"/>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Sumber Dana Awal</label>
+                        <input type="text" th:field="*{sumberDanaAwal}" class="form-control"
+                               placeholder="Gaji, usaha, lainnya"/>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Tujuan Pembukaan Rekening</label>
+                        <input type="text" th:field="*{tujuanPembukaan}" class="form-control"
+                               placeholder="Tabungan, investasi, transaksi usaha, dll"/>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Jenis Kartu ATM</label>
+                        <input type="text" th:field="*{jenisKartuAtm}" class="form-control"
+                               placeholder="Classic / Gold / Platinum, dll"/>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-top: 14px;">
+                    <label>Fasilitas E-channel yang Diinginkan</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-item">
+                            <input type="checkbox" th:field="*{fasilitasEchannel}" value="ATM"/> ATM
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" th:field="*{fasilitasEchannel}" value="NET_BANKING"/> Net Banking
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" th:field="*{fasilitasEchannel}" value="MOBILE_BANKING"/> Mobile Banking
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Media Komunikasi yang Lebih Disukai</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-item">
+                            <input type="checkbox" th:field="*{mediaKomunikasi}" value="SMS_EMAIL"/> SMS / Email
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" th:field="*{mediaKomunikasi}" value="WHATSAPP"/> WhatsApp
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" th:field="*{mediaKomunikasi}" value="TELEPON"/> Telepon
+                        </label>
+                    </div>
+                </div>
+
+                <div class="section-divider"></div>
+
+                <!-- ================= Informasi Tambahan ================= -->
+                <div class="section-title-bar">Informasi Tambahan</div>
+
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label>Cabang Pembukaan Rekening</label>
+                        <input type="text" th:field="*{cabangPembukaan}" class="form-control"
+                               placeholder="Nama cabang"/>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Petugas CS</label>
+                        <input type="text" th:field="*{petugasCs}" class="form-control"
+                               placeholder="Nama petugas CS"/>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Tanggal Pembukaan</label>
+                        <input type="date" th:field="*{tanggalPembukaan}" class="form-control"/>
+                    </div>
+                </div>
+
+                <div class="form-grid-1" style="margin-top: 16px;">
+                    <div class="form-group">
+                        <label>Persetujuan Nasabah</label>
+                        <div class="checkbox-group">
+                            <label class="checkbox-item">
+                                <input type="checkbox" th:field="*{sudahVerifikasiData}"/>
+                                Saya telah memverifikasi data nasabah dengan benar
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Pernyataan & Syarat</label>
+                        <div class="checkbox-group">
+                            <label class="checkbox-item">
+                                <input type="checkbox" th:field="*{setujuKebijakanDataPribadi}"/>
+                                Setuju ketentuan data pribadi
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" th:field="*{setujuPernyataanNasabah}"/>
+                                Setuju pernyataan nasabah
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" th:field="*{setujuSyaratUmum}"/>
+                                Setuju Syarat Umum Pembukaan Rekening
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="actions">
+                    <button type="submit" class="btn-primary">Buka Rekening</button>
+                </div>
+
+            </form>
+        </div>
+
+    </main>
+</div>
+</body>
+</html>
+    
