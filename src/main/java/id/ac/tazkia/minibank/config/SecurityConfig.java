@@ -22,10 +22,14 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/", "/login", "/signup", "/css/**", "/js/**", "/images/**").permitAll()
-                .requestMatchers("/admin/**").hasRole("ADMIN")
-                .anyRequest().authenticated()
-            )
+    .requestMatchers("/", "/login", "/signup", "/css/**", "/js/**", "/images/**").permitAll()
+    .requestMatchers("/admin/**").hasRole("ADMIN")
+    .requestMatchers("/supervisor/**").hasRole("SUPERVISOR")
+    .requestMatchers("/cs/**").hasRole("CS")
+    .requestMatchers("/teller/**").hasRole("TELLER")
+    .anyRequest().authenticated()
+)
+
             .formLogin(form -> form
                 .loginPage("/login")
                 .usernameParameter("username")

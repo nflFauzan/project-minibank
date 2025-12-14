@@ -15,7 +15,6 @@
             min-height: 100vh;
         }
 
-        /* Sidebar kiri (mirip figma, versi sederhana) */
         .sidebar {
             width: 220px;
             background-color: #1b3758;
@@ -47,7 +46,6 @@
             display: block;
         }
 
-        /* Konten kanan */
         .content {
             flex: 1;
             padding: 24px 40px;
@@ -149,6 +147,27 @@
             cursor: pointer;
         }
 
+        .btn-cek {
+            padding: 8px 14px;
+            border-radius: 6px;
+            border: none;
+            background-color: #1f609c;
+            color: #fff;
+            font-size: 12px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .input-horizontal {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .input-horizontal .form-control {
+            flex: 1;
+        }
+
         .alert-success {
             background: #ecfdf3;
             color: #166534;
@@ -168,12 +187,18 @@
             border-radius: 6px;
             margin-bottom: 12px;
         }
+
+        .small-info {
+            font-size: 11px;
+            color: #6b7280;
+            margin-top: 4px;
+        }
+
     </style>
 </head>
 <body>
 <div class="page-wrapper">
 
-    <!-- Sidebar kiri dummy -->
     <aside class="sidebar">
         <div class="sidebar-header">Mini Bank</div>
 
@@ -194,7 +219,6 @@
         </div>
     </aside>
 
-    <!-- Konten kanan -->
     <main class="content">
 
         <div class="card">
@@ -204,59 +228,72 @@
                 Lengkapi data berikut untuk proses pembukaan rekening nasabah.
             </p>
 
-            <!-- pesan sukses / error -->
             <div th:if="${successMessage}" class="alert-success" th:text="${successMessage}"></div>
             <div th:if="${errorMessage}" class="alert-error" th:text="${errorMessage}"></div>
+            <div id="cifMessage" class="alert-error" style="display:none;"></div>
 
             <form th:action="@{/cs/pembukaan-rekening}"
                   th:object="${form}"
                   method="post">
 
-                <!-- ================= Informasi Data Nasabah ================= -->
+                <!-- Informasi Data Nasabah -->
                 <div class="section-title-bar">Informasi Data Nasabah</div>
 
                 <div class="form-grid-2">
                     <div class="form-group">
                         <label>CIF Nasabah</label>
-                        <input type="text" th:field="*{cif}" class="form-control"
-                               placeholder="Nomor CIF nasabah"/>
+                        <div class="input-horizontal">
+                            <input type="text" th:field="*{cif}" class="form-control"
+                                   id="inputCif"
+                                   placeholder="Nomor CIF nasabah"/>
+                            <button type="button" class="btn-cek" id="btnCekCif">Cek</button>
+                        </div>
+                        <div class="small-info">Masukkan CIF lalu klik Cek untuk mengambil data nasabah.</div>
                     </div>
 
                     <div class="form-group">
                         <label>Nama Lengkap Nasabah</label>
                         <input type="text" th:field="*{namaLengkapNasabah}"
+                               id="inputNamaNasabah"
                                class="form-control"
                                placeholder="Nama lengkap nasabah"/>
                     </div>
 
                     <div class="form-group">
                         <label>NIK</label>
-                        <input type="text" th:field="*{nik}" class="form-control"
+                        <input type="text" th:field="*{nik}" id="inputNik"
+                               class="form-control"
                                placeholder="Nomor KTP nasabah"/>
                     </div>
 
                     <div class="form-group">
                         <label>Alamat Domisili</label>
-                        <input type="text" th:field="*{alamatDomisili}" class="form-control"
+                        <input type="text" th:field="*{alamatDomisili}"
+                               id="inputAlamatDomisili"
+                               class="form-control"
                                placeholder="Alamat sesuai domisili"/>
                     </div>
 
                     <div class="form-group">
                         <label>Nomor Telepon</label>
-                        <input type="text" th:field="*{nomorTelepon}" class="form-control"
+                        <input type="text" th:field="*{nomorTelepon}"
+                               id="inputNoHp"
+                               class="form-control"
                                placeholder="No HP / Telepon"/>
                     </div>
 
                     <div class="form-group">
                         <label>Email</label>
-                        <input type="email" th:field="*{email}" class="form-control"
+                        <input type="email" th:field="*{email}"
+                               id="inputEmail"
+                               class="form-control"
                                placeholder="Alamat email"/>
                     </div>
                 </div>
 
                 <div class="section-divider"></div>
 
-                <!-- ================= Informasi Rekening Baru ================= -->
+                <!-- Informasi Rekening Baru -->
                 <div class="section-title-bar">Informasi Rekening Baru</div>
 
                 <div class="form-grid-2">
@@ -268,13 +305,13 @@
 
                     <div class="form-group">
                         <label>Pilih Produk yang Anda Minati</label>
-                        <select th:field="*{produkId}" class="form-select">
+                        <select class="form-select" th:field="*{produkKode}">
                             <option value="">-- Pilih Produk --</option>
                             <option th:each="p : ${produkList}"
-                                    th:value="${p.id}"
-                                    th:text="${p.namaProduk} + ' (' + ${p.jenisAkad} + ')'">
+                                    th:value="${p.kode}"
+                                    th:text="${p.nama}">
                             </option>
-                        </select>
+                          </select>                          
                     </div>
 
                     <div class="form-group">
@@ -334,7 +371,7 @@
 
                 <div class="section-divider"></div>
 
-                <!-- ================= Informasi Tambahan ================= -->
+                <!-- Informasi Tambahan -->
                 <div class="section-title-bar">Informasi Tambahan</div>
 
                 <div class="form-grid-2">
@@ -344,11 +381,18 @@
                                placeholder="Nama cabang"/>
                     </div>
 
-                    <div class="form-group">
-                        <label>Petugas CS</label>
-                        <input type="text" th:field="*{petugasCs}" class="form-control"
-                               placeholder="Nama petugas CS"/>
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label class="form-label">Petugas CS</label>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text"
+                                   class="form-control"
+                                   th:value="${namaCs}"
+                                   readonly />
+                        </div>
                     </div>
+                    
 
                     <div class="form-group">
                         <label>Tanggal Pembukaan</label>
@@ -368,7 +412,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label>Pernyataan & Syarat</label>
+                        <label>Pernyataan &amp; Syarat</label>
                         <div class="checkbox-group">
                             <label class="checkbox-item">
                                 <input type="checkbox" th:field="*{setujuKebijakanDataPribadi}"/>
@@ -395,6 +439,61 @@
 
     </main>
 </div>
+
+<script>
+    const btnCekCif = document.getElementById('btnCekCif');
+    const inputCif = document.getElementById('inputCif');
+    const msgBox = document.getElementById('cifMessage');
+
+    const inputNama = document.getElementById('inputNamaNasabah');
+    const inputNik = document.getElementById('inputNik');
+    const inputAlamat = document.getElementById('inputAlamatDomisili');
+    const inputNoHp = document.getElementById('inputNoHp');
+    const inputEmail = document.getElementById('inputEmail');
+
+    function showCifMessage(text, isError) {
+        msgBox.textContent = text;
+        msgBox.style.display = text ? 'block' : 'none';
+        msgBox.className = isError ? 'alert-error' : 'alert-success';
+    }
+
+    btnCekCif.addEventListener('click', () => {
+        const cif = inputCif.value.trim();
+        if (!cif) {
+            showCifMessage('Silakan isi CIF terlebih dahulu.', true);
+            return;
+        }
+
+        showCifMessage('Mengambil data nasabah...', false);
+
+        fetch('/api/nasabah/by-cif?cif=' + encodeURIComponent(cif))
+            .then(res => res.json())
+            .then(data => {
+                if (!data.found) {
+                    showCifMessage(data.message || 'Nasabah tidak ditemukan.', true);
+                    // kosongkan field terkait
+                    inputNama.value = '';
+                    inputNik.value = '';
+                    inputAlamat.value = '';
+                    inputNoHp.value = '';
+                    inputEmail.value = '';
+                    return;
+                }
+
+                showCifMessage('Data nasabah berhasil diambil.', false);
+
+                inputNama.value = data.namaLengkap || '';
+                inputNik.value = data.nik || '';
+                inputAlamat.value = data.alamatDomisili || '';
+                inputNoHp.value = data.noHp || '';
+                inputEmail.value = data.email || '';
+            })
+            .catch(err => {
+                console.error(err);
+                showCifMessage('Terjadi kesalahan saat mengambil data nasabah.', true);
+            });
+    });
+</script>
 </body>
 </html>
     

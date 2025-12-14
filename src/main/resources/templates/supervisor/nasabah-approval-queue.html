@@ -1,0 +1,77 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <title>Approval Queue - Nasabah</title>
+  <link rel="stylesheet" th:href="@{/css/minibank-ui.css}">
+</head>
+<body>
+
+<div class="app">
+  <aside class="sidebar">
+    <div class="sidebar-title">Minibank</div>
+    <nav class="sidebar-nav">
+      <a class="sidebar-link active" th:href="@{/supervisor/nasabah/pending}">Approval Queue</a>
+    </nav>
+  </aside>
+
+  <main class="content">
+    <div class="topbar">
+      <div class="topbar-title">Approval Queue</div>
+      <div class="badge" th:text="${pendingCount} + ' Pending'">0 Pending</div>
+    </div>
+
+    <div class="container">
+      <div th:if="${success}" class="alert success" th:text="${success}"></div>
+      <div th:if="${error}" class="alert error" th:text="${error}"></div>
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="h2">Approval Queue</div>
+            <div class="muted">Daftar nasabah yang menunggu approval supervisor.</div>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table class="table">
+            <thead>
+            <tr>
+              <th>REQUEST TYPE</th>
+              <th>ENTITY TYPE</th>
+              <th>REQUESTED BY</th>
+              <th>REQUESTED DATE</th>
+              <th>NOTES</th>
+              <th class="right">ACTIONS</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:if="${#lists.isEmpty(pendingList)}">
+              <td colspan="6" class="muted">Tidak ada request pending.</td>
+            </tr>
+
+            <tr th:each="n : ${pendingList}">
+              <td>CUSTOMER_CREATION</td>
+              <td>NASABAH</td>
+              <td th:text="${n.createdBy != null ? n.createdBy : '-'}">-</td>
+              <td th:text="${n.createdAt}">-</td>
+              <td th:text="${n.approvalNotes != null ? n.approvalNotes : 'Pendaftaran nasabah'}">Pendaftaran nasabah</td>
+              <td class="right">
+                <a class="link"
+                   th:href="@{'/supervisor/nasabah/pending/' + ${n.id}}">
+                  View Details
+                </a>
+              </td>
+            </tr>
+
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+
+</body>
+</html>

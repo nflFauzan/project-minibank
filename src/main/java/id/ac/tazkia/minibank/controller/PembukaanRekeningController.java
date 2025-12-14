@@ -1,65 +1,56 @@
 package id.ac.tazkia.minibank.controller;
 
-import id.ac.tazkia.minibank.dto.PembukaanRekeningForm;
-import id.ac.tazkia.minibank.repository.ProdukTabunganRepository;
+import id.ac.tazkia.minibank.dto.RekeningForm;
+import id.ac.tazkia.minibank.entity.User;
+import id.ac.tazkia.minibank.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
+import java.util.List;
 
 @Controller
+@RequestMapping("/cs")
+@RequiredArgsConstructor
 public class PembukaanRekeningController {
 
-    private final ProdukTabunganRepository produkTabunganRepository;
+    private final UserRepository userRepository;
 
-    public PembukaanRekeningController(ProdukTabunganRepository produkTabunganRepository) {
-        this.produkTabunganRepository = produkTabunganRepository;
+    // Sample produk dulu (biar dropdown nggak kosong)
+    public record ProdukOption(String kode, String nama) {}
+
+    private List<ProdukOption> sampleProduk() {
+        return List.of(
+                new ProdukOption("WADIAH", "Tabungan Wadiah"),
+                new ProdukOption("MUDHARABAH", "Tabungan Mudharabah"),
+                new ProdukOption("HAJI", "Tabungan Haji"),
+                new ProdukOption("PENDIDIKAN", "Tabungan Pendidikan"),
+                new ProdukOption("GIRO_WADIAH", "Giro Wadiah")
+        );
     }
 
-    // TAMPILKAN FORM
-    @GetMapping("/cs/pembukaan-rekening")
-    public String formPembukaanRekening(Model model) {
+    @GetMapping("/pembukaan-rekening")
+    public String page(@AuthenticationPrincipal UserDetails userDetails, Model model) {
 
-        // kalau belum ada "form" di model (misal setelah redirect), buat baru
-        if (!model.containsAttribute("form")) {
-            model.addAttribute("form", new PembukaanRekeningForm());
+        RekeningForm form = new RekeningForm();
+        form.setTanggalPembukaan(LocalDate.now());
+
+        // Ambil full_name dari tabel users berdasarkan username login
+        if (userDetails != null) {
+            User u = userRepository.findByUsername(userDetails.getUsername()).orElse(null);
+            if (u != null) {
+                form.setPetugasCs(u.getFullName());
+            }
         }
 
-        // dropdown produk
-        model.addAttribute("produkList",
-                produkTabunganRepository.findByAktifTrueOrderByNamaProdukAsc());
+        // ini penting: selalu kirim attribute yang dipakai template
+        model.addAttribute("form", form);
+        model.addAttribute("produkList", sampleProduk());
 
-        return "cs/pembukaan_rekening";
-    }
-
-    // PROSES SUBMIT FORM
-    @PostMapping("/cs/pembukaan-rekening")
-    public String prosesPembukaanRekening(
-            @ModelAttribute("form") PembukaanRekeningForm form,
-            RedirectAttributes redirectAttributes) {
-
-        // Di sini nanti kamu simpan ke entity "Rekening" / "PengajuanPembukaanRekening".
-        // Untuk sementara, kita cuma kirim message dan redirect.
-
-        // contoh "validasi minimal": wajib pilih produk
-        if (form.getProdukId() == null) {
-            redirectAttributes.addFlashAttribute("errorMessage",
-                    "Silakan pilih produk tabungan terlebih dahulu.");
-            redirectAttributes.addFlashAttribute("form", form);
-            return "redirect:/cs/pembukaan-rekening";
-        }
-
-        // TODO: simpan ke database di tahap berikutnya
-
-        redirectAttributes.addFlashAttribute("successMessage",
-                "Pengajuan pembukaan rekening berhasil direkam (dummy).");
-
-        // kalau mau balik ke dashboard:
-        // return "redirect:/cs/dashboard";
-
-        // untuk sementara kembali ke form pembukaan rekening
-        return "redirect:/cs/pembukaan-rekening";
+        return "cs/pembukaan-rekening"; // pastikan file html-nya ada
     }
 }

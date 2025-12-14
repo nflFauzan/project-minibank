@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Nasabah Pending Approval</title>
+  <link rel="stylesheet" th:href="@{/css/supervisor.css}">
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">Mini Bank</div>
+    <nav class="nav">
+      <a th:href="@{/supervisor/dashboard}">Dashboard</a>
+      <a class="active" th:href="@{/supervisor/nasabah/pending}">Pending Nasabah</a>
+    </nav>
+  </aside>
+
+  <main class="main">
+    <div class="card">
+      <h2>Nasabah Pending Approval</h2>
+      <p class="muted">Daftar nasabah yang menunggu persetujuan supervisor.</p>
+
+      <div class="empty" th:if="${#lists.isEmpty(list)}">
+        Tidak ada nasabah pending.
+      </div>
+
+      <table class="table" th:if="${!#lists.isEmpty(list)}">
+        <thead>
+        <tr>
+          <th>CIF</th>
+          <th>Nama</th>
+          <th>NIK</th>
+          <th>Dibuat</th>
+          <th>Aksi</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="n : ${list}">
+          <td th:text="${n.cif}">cif</td>
+          <td th:text="${n.namaSesuaiIdentitas}">nama</td>
+          <td th:text="${n.nik}">nik</td>
+          <td th:text="${n.createdAt}">created</td>
+          <td>
+            <form th:action="@{'/supervisor/nasabah/' + ${n.id} + '/approve'}" method="post">
+              <button class="btn" type="submit">Approve</button>
+            </form>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+
+    </div>
+  </main>
+</div>
+</body>
+</html>

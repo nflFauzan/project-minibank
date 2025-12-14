@@ -120,6 +120,14 @@
 
         <div class="title">Welcome Back!</div>
 
+        <div th:if="${param.error}" style="color:#b00020; font-size:13px; margin-bottom:12px;">
+            Login gagal. Cek username/password, atau akun belum disetujui (approved).
+        </div>
+
+        <div th:if="${param.logout}" style="color:green; font-size:13px; margin-bottom:12px;">
+            Kamu sudah logout.
+        </div>
+
         <form th:action="@{/login}" method="post">
 
             <input type="text" name="username" class="input-field" placeholder="Username" required>

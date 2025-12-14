@@ -1,16 +1,17 @@
 package id.ac.tazkia.minibank.security;
 
-import org.springframework.security.authentication.DisabledException;
 import id.ac.tazkia.minibank.entity.User;
 import id.ac.tazkia.minibank.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -19,21 +20,38 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     private final UserRepository userRepo;
 
     @Override
+    @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User u = userRepo.findByUsername(username)
+        String uname = (username == null) ? "" : username.trim();
+
+        User u = userRepo.findByUsername(uname)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
         if (!u.isApproved()) {
-            // prevent login until approved
             throw new DisabledException("User not approved");
         }
-        Set<GrantedAuthority> authorities = u.getRoles().stream()
-                .map(r -> new SimpleGrantedAuthority(r.getName()))
-                .collect(Collectors.toSet());
-        // Always give ROLE_USER if not admin roles assigned
+
+        Set<GrantedAuthority> authorities = new HashSet<>();
+        if (u.getRoles() != null) {
+            u.getRoles().forEach(r -> {
+                if (r != null && r.getName() != null) {
+                    String roleName = r.getName().trim();
+                    // amankan: Spring Security "hasRole('ADMIN')" butuh "ROLE_ADMIN"
+                    if (!roleName.startsWith("ROLE_")) roleName = "ROLE_" + roleName;
+                    authorities.add(new SimpleGrantedAuthority(roleName));
+                }
+            });
+        }
+
         if (authorities.isEmpty()) {
             authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
         }
-        return new org.springframework.security.core.userdetails.User(u.getUsername(), u.getPassword(), u.isEnabled(),
-                true, true, true, authorities);
+
+        return org.springframework.security.core.userdetails.User.builder()
+                .username(u.getUsername())
+                .password(u.getPassword())
+                .disabled(!u.isEnabled())
+                .authorities(authorities)
+                .build();
     }
 }

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Supervisor Dashboard</title>
+  <link rel="stylesheet" th:href="@{/css/supervisor.css}">
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">Mini Bank</div>
+    <nav class="nav">
+      <a class="active" th:href="@{/supervisor/dashboard}">Dashboard</a>
+      <a th:href="@{/supervisor/nasabah/pending}">Pending Nasabah</a>
+    </nav>
+  </aside>
+
+  <main class="main">
+    <div class="card">
+      <h2>Supervisor Dashboard</h2>
+      <p class="muted">Ringkasan approval.</p>
+
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-label">Nasabah Pending</div>
+          <div class="stat-value" th:text="${pendingCount}">0</div>
+          <a class="btn" th:href="@{/supervisor/nasabah/pending}">Lihat Pending</a>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+</body>
+</html>

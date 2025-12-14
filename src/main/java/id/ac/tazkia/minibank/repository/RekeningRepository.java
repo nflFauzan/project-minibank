@@ -4,5 +4,7 @@ import id.ac.tazkia.minibank.entity.Rekening;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface RekeningRepository extends JpaRepository<Rekening, Long> {
-    long countByStatusActive(boolean active);
+
+    // dipakai di DashboardService
+    long countByStatusActive(boolean statusActive);
 }
