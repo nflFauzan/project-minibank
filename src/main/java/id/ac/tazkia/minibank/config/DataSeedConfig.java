@@ -18,8 +18,11 @@ public class DataSeedConfig {
     CommandLineRunner seed(RoleRepository roleRepo, UserRepository userRepo, PasswordEncoder encoder) {
         return args -> {
             try {
-                if (roleRepo.findByName("ROLE_ADMIN").isEmpty()) roleRepo.save(new Role(null, "ROLE_ADMIN"));
-                if (roleRepo.findByName("ROLE_USER").isEmpty()) roleRepo.save(new Role(null, "ROLE_USER"));
+if (roleRepo.findByName("ROLE_ADMIN").isEmpty()) roleRepo.save(new Role(null, "ROLE_ADMIN"));
+if (roleRepo.findByName("ROLE_CS").isEmpty()) roleRepo.save(new Role(null, "ROLE_CS"));
+if (roleRepo.findByName("ROLE_TELLER").isEmpty()) roleRepo.save(new Role(null, "ROLE_TELLER"));
+if (roleRepo.findByName("ROLE_SUPERVISOR").isEmpty()) roleRepo.save(new Role(null, "ROLE_SUPERVISOR"));
+
                 // create an admin account if missing
                 if (userRepo.findByUsername("admin").isEmpty()) {
                     Role adminRole = roleRepo.findByName("ROLE_ADMIN").orElseThrow();

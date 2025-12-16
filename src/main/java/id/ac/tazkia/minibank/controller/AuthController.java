@@ -1,11 +1,20 @@
 package id.ac.tazkia.minibank.controller;
 
-import id.ac.tazkia.minibank.entity.User;
+import id.ac.tazkia.minibank.dto.SignupForm;
 import id.ac.tazkia.minibank.service.RegistrationService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor
@@ -14,33 +23,44 @@ public class AuthController {
     private final RegistrationService registrationService;
 
     @GetMapping("/")
-    public String index() { return "index"; }
+    public String index() {
+        return "index";
+    }
 
-     @GetMapping("/signup")
-    public String showSignupForm(Model model) {
-        model.addAttribute("user", new User());
+    @GetMapping("/login")
+    public String login(Authentication auth) {
+        if (auth != null && auth.isAuthenticated() && !(auth instanceof AnonymousAuthenticationToken)) {
+
+            Set<String> roles = auth.getAuthorities().stream()
+                    .map(GrantedAuthority::getAuthority)
+                    .collect(Collectors.toSet());
+
+            if (roles.contains("ROLE_ADMIN")) return "redirect:/admin/dashboard";
+            if (roles.contains("ROLE_SUPERVISOR")) return "redirect:/supervisor/dashboard";
+            if (roles.contains("ROLE_CS")) return "redirect:/cs/dashboard";
+            if (roles.contains("ROLE_TELLER")) return "redirect:/teller/dashboard";
+
+            return "redirect:/";
+        }
+        return "login";
+    }
+
+    @GetMapping("/signup")
+    public String signupForm(Model model) {
+        if (!model.containsAttribute("form")) {
+            model.addAttribute("form", new SignupForm());
+        }
         return "signup";
     }
 
-     @PostMapping("/signup")
-    public String processSignup(@ModelAttribute("user") User user) {
-        System.out.println(">>> SIGNUP FIRED <<<");
-        System.out.println(user);
+    @PostMapping("/signup")
+    public String signupSubmit(@Valid @ModelAttribute("form") SignupForm form,
+                               BindingResult br,
+                               RedirectAttributes ra) {
+        if (br.hasErrors()) return "signup";
 
-        registrationService.registerStudent(user);
-
+        registrationService.register(form);
+        ra.addFlashAttribute("registered", true);
         return "redirect:/login?registered";
-    }
-
-
-    @GetMapping("/login")
-    public String loginPage(@RequestParam(required = false) String error,
-                            @RequestParam(required = false) String logout,
-                            @RequestParam(required = false) String accessDenied,
-                            Model model) {
-        if (error != null) model.addAttribute("error", "Invalid credentials");
-        if (logout != null) model.addAttribute("message", "Logged out");
-        if (accessDenied != null) model.addAttribute("error", "Access denied for module selected");
-        return "login";
     }
 }

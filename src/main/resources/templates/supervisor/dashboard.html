@@ -13,6 +13,10 @@
       <a class="active" th:href="@{/supervisor/dashboard}">Dashboard</a>
       <a th:href="@{/supervisor/nasabah/pending}">Pending Nasabah</a>
     </nav>
+    <form th:action="@{/logout}" method="post" style="margin-top: 24px;">
+      <button type="submit" class="btn-logout">Logout</button>
+    </form>
+    
   </aside>
 
   <main class="main">
