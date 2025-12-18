@@ -5,10 +5,15 @@
     <title>Admin - Pending Registrations</title>
     <link th:href="@{/css/custom.css}" rel="stylesheet" />
     <style>
-      /* Minimal styling so page looks OK even tanpa custom.css */
       body { font-family: Arial, sans-serif; margin: 0; padding: 24px; background: #f3f8ff; }
       .container { max-width: 1100px; margin: 0 auto; }
-      h2 { color: #113C8D; text-align:center; margin-bottom: 8px;}
+      .topbar { display:flex; justify-content:space-between; align-items:center; margin-bottom: 10px; }
+      h2 { color: #113C8D; text-align:center; margin: 0; flex:1;}
+      .logout-form { margin:0; }
+      .btn-logout {
+        border: none; border-radius: 10px; padding: 10px 14px;
+        cursor: pointer; font-weight: 700;
+      }
       p.sub { text-align:center; color: #556; margin-bottom: 20px; }
       .list { background: rgba(255,255,255,0.9); border-radius: 12px; padding: 18px; box-shadow: 0 6px 20px rgba(0,0,0,0.05); }
       table { width:100%; border-collapse: collapse; }
@@ -19,7 +24,17 @@
 </head>
 <body>
   <div class="container">
-    <h2>Pending Registrations</h2>
+
+    <div class="topbar">
+      <div style="width:120px;"></div>
+      <h2>Pending Registrations</h2>
+
+      <!-- Logout harus POST biar pasti kena Spring Security -->
+      <form class="logout-form" th:action="@{/logout}" method="post">
+        <button class="btn-logout" type="submit">Logout</button>
+      </form>
+    </div>
+
     <p class="sub">Ada meminta konfirmasi pembuatan akun nih, yuk segera dikonfirmasi!</p>
 
     <div class="list">
@@ -48,6 +63,10 @@
                 <a th:href="@{/admin/approval/{id}(id=${u.id})}" class="detail">Lihat / Konfirmasi</a>
               </td>
             </tr>
+            <form action="/logout" method="post">
+              <button type="submit">Logout</button>
+            </form>
+            
           </tbody>
         </table>
       </div>

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <title>CS - Customer</title>
+  <style>
+    body{ margin:0; padding:24px; font-family: Arial, sans-serif; background:#f3f8ff; }
+    .topbar{ display:flex; justify-content:space-between; align-items:center; max-width:1200px; margin:0 auto 18px auto; }
+    .title{ font-size:22px; font-weight:800; color:#113C8D; }
+    .btn{ display:inline-block; padding:10px 14px; border-radius:10px; text-decoration:none; font-weight:700; border:1px solid rgba(0,0,0,.12); background:#fff; color:#113C8D; }
+    .btn-primary{ background: linear-gradient(to bottom, #B8D9FF, #9CC5FF); border:none; color:#0b2d6b; }
+    .wrap{ max-width:1200px; margin:0 auto; }
+    .card{ background:#fff; border-radius:14px; padding:16px; box-shadow:0 6px 20px rgba(0,0,0,0.06); margin-bottom:16px; }
+    table{ width:100%; border-collapse:collapse; }
+    th,td{ padding:10px; border-bottom:1px solid #eee; text-align:left; }
+    .badge{ padding:4px 10px; border-radius:999px; font-size:12px; font-weight:800; display:inline-block; }
+    .b-active{ background:#dff7e6; }
+    .b-inactive{ background:#fff2cc; }
+    .b-rejected{ background:#ffe0e0; }
+    .msg{ margin:0 0 12px 0; font-weight:700; }
+    .ok{ color:#0b7a2e; }
+    .err{ color:#b00020; }
+    .grid{ display:grid; grid-template-columns: 1fr 1fr; gap:12px; }
+    input,select{ width:100%; height:44px; border-radius:10px; border:1px solid rgba(0,0,0,.18); padding:0 12px; box-sizing:border-box; }
+  </style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="title">Customer</div>
+  <div>
+    <a class="btn" th:href="@{/cs/customers(new=true)}">Create New Customer</a>
+    <a class="btn" th:href="@{/logout}">Logout</a>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <div class="card">
+    <p class="msg ok" th:if="${successMessage}" th:text="${successMessage}"></p>
+    <p class="msg err" th:if="${errorMessage}" th:text="${errorMessage}"></p>
+
+    <form method="get" th:action="@{/cs/customers}" style="display:flex; gap:10px; align-items:center;">
+      <label style="font-weight:800; color:#113C8D;">Filter:</label>
+      <select name="status" style="max-width:220px;">
+        <option value="ALL" th:selected="${selectedStatus=='ALL'}">ALL</option>
+        <option value="ACTIVE" th:selected="${selectedStatus=='ACTIVE'}">ACTIVE</option>
+        <!-- PENDING kita tampilkan sebagai INACTIVE -->
+        <option value="PENDING" th:selected="${selectedStatus=='PENDING'}">INACTIVE</option>
+        <option value="REJECTED" th:selected="${selectedStatus=='REJECTED'}">REJECTED</option>
+      </select>
+      <button class="btn btn-primary" type="submit">Apply</button>
+    </form>
+  </div>
+
+  <div class="card" th:if="${showForm}">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+      <div style="font-size:18px; font-weight:900; color:#113C8D;">Create Customer</div>
+      <a class="btn" th:href="@{/cs/customers}">Close</a>
+    </div>
+
+    <form th:action="@{/cs/customers}" th:object="${form}" method="post">
+      <div class="grid">
+        <input th:field="*{nik}" placeholder="NIK (16 digit)" required />
+        <input th:field="*{namaLengkap}" placeholder="Nama sesuai identitas" required />
+
+        <input th:field="*{noHp}" placeholder="No HP" />
+        <input th:field="*{email}" placeholder="Email" />
+
+        <input th:field="*{tempatLahir}" placeholder="Tempat lahir" />
+        <input th:field="*{tanggalLahir}" type="date" placeholder="Tanggal lahir" />
+
+        <input th:field="*{namaIbuKandung}" placeholder="Nama ibu kandung" />
+        <select th:field="*{jenisKelamin}">
+          <option value="" selected>Jenis kelamin</option>
+          <option value="L">L</option>
+          <option value="P">P</option>
+        </select>
+
+        <input th:field="*{provinsiIdentitas}" placeholder="Provinsi (Identitas)" />
+        <input th:field="*{kotaIdentitas}" placeholder="Kota (Identitas)" />
+
+        <input th:field="*{kecamatanIdentitas}" placeholder="Kecamatan (Identitas)" />
+        <input th:field="*{kelurahanIdentitas}" placeholder="Kelurahan (Identitas)" />
+
+        <input th:field="*{rtIdentitas}" placeholder="RT (Identitas)" />
+        <input th:field="*{rwIdentitas}" placeholder="RW (Identitas)" />
+
+        <input th:field="*{kodePosIdentitas}" placeholder="Kode pos (Identitas)" />
+      </div>
+
+      <div style="margin-top:14px;">
+        <button class="btn btn-primary" type="submit">Submit (status INACTIVE)</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="card">
+    <div style="font-size:18px; font-weight:900; color:#113C8D; margin-bottom:10px;">Customer List</div>
+
+    <div th:if="${list == null or #lists.isEmpty(list)}" style="padding:20px; color:#556;">
+      Belum ada customer.
+    </div>
+
+    <div th:if="${list != null and !#lists.isEmpty(list)}">
+      <table>
+        <thead>
+          <tr>
+            <th>CIF</th>
+            <th>Nama</th>
+            <th>NIK</th>
+            <th>Status</th>
+            <th>Created</th>
+            <th>Created By</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="n : ${list}">
+            <td th:text="${n.cif}">cif</td>
+            <td th:text="${n.namaLengkap}">nama</td>
+            <td th:text="${n.nik}">nik</td>
+            <td>
+              <span th:if="${n.status.name() == 'ACTIVE'}" class="badge b-active">ACTIVE</span>
+              <span th:if="${n.status.name() == 'PENDING'}" class="badge b-inactive">INACTIVE</span>
+              <span th:if="${n.status.name() == 'REJECTED'}" class="badge b-rejected">REJECTED</span>
+            </td>
+            <td th:text="${n.createdAt}">createdAt</td>
+            <td th:text="${n.createdBy}">createdBy</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

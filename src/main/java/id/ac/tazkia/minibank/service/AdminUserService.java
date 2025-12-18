@@ -17,10 +17,7 @@ public class AdminUserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
 
-    // ====== METHOD YANG DIPANGGIL CONTROLLER (BIAR COMPILE NORMAL) ======
-
     public List<User> listPending() {
-        // pending = approved false
         return userRepository.findByApprovedFalse();
     }
 
@@ -31,27 +28,6 @@ public class AdminUserService {
 
     @Transactional
     public void approve(Long userId) {
-        approveUserAndGrantDefaultRoles(userId);
-    }
-
-    @Transactional
-    public void reject(Long userId) {
-        User u = findById(userId);
-
-        // pilihan aman: nonaktifkan akun (jangan delete dulu biar ada jejak)
-        u.setApproved(false);
-        u.setEnabled(false);
-
-        userRepository.save(u);
-    }
-
-    // ====== LOGIC UTAMA APPROVAL (Sesuai requirement kamu: 3 role) ======
-
-    /**
-     * Approve user + aktifkan akun + kasih ROLE_CS ROLE_TELLER ROLE_SUPERVISOR
-     */
-    @Transactional
-    public void approveUserAndGrantDefaultRoles(Long userId) {
         User u = findById(userId);
 
         u.setApproved(true);
@@ -64,11 +40,22 @@ public class AdminUserService {
         Role roleSupervisor = roleRepository.findByName("ROLE_SUPERVISOR")
                 .orElseThrow(() -> new IllegalStateException("Role ROLE_SUPERVISOR not found"));
 
-        // gabung role (bukan replace) biar kalau ada role lain (misal ADMIN) tidak kehapus
         u.getRoles().add(roleCs);
         u.getRoles().add(roleTeller);
         u.getRoles().add(roleSupervisor);
 
         userRepository.save(u);
     }
+
+    @Transactional
+public void reject(Long userId) {
+    // paling aman: hapus relasi many-to-many dulu biar join table bersih
+    User u = findById(userId);
+    u.getRoles().clear();
+    userRepository.save(u);
+
+    // baru delete usernya
+    userRepository.deleteById(userId);
+}
+
 }

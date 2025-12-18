@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Nasabah History</title>
+  <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+  <h2>Riwayat Approval Nasabah</h2>
+
+  <a href="/supervisor/nasabah/pending">← Kembali ke Pending</a>
+
+  <table border="1" cellpadding="8" style="margin-top:12px;">
+    <thead>
+      <tr>
+        <th>CIF</th>
+        <th>Nama</th>
+        <th>NIK</th>
+        <th>Status</th>
+        <th>Approved By</th>
+        <th>Approved At</th>
+        <th>Reject Reason</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr th:each="n : ${list}">
+        <td th:text="${n.cif}">cif</td>
+        <td th:text="${n.namaSesuaiIdentitas}">nama</td>
+        <td th:text="${n.nik}">nik</td>
+        <td th:text="${n.status}">status</td>
+        <td th:text="${n.approvedBy}">approvedBy</td>
+        <td th:text="${n.approvedAt}">approvedAt</td>
+        <td th:text="${n.rejectionReason}">reason</td>
+      </tr>
+    </tbody>
+  </table>
+</body>
+</html>

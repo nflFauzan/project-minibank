@@ -26,9 +26,9 @@
       </nav>
       <div class="sidebar-bottom">
         <a th:href="@{/settings}" class="menu-item">Settings</a>
-        <form th:action="@{/logout}" method="post" style="margin-top: 24px;">
-          <button type="submit" class="btn-logout">Logout</button>
-        </form>
+        <form action="/logout" method="post">
+          <button type="submit">Logout</button>
+        </form>        
         
       </div>
     </aside>

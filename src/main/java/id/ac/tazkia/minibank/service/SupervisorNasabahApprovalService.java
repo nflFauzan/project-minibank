@@ -17,11 +17,11 @@ public class SupervisorNasabahApprovalService {
     private final NasabahRepository nasabahRepository;
 
     public List<Nasabah> listPending() {
-        return nasabahRepository.findByStatusOrderByCreatedAtDesc(NasabahStatus.PENDING);
+        return nasabahRepository.findByStatusOrderByCreatedAtDesc(NasabahStatus.INACTIVE);
     }
 
     public long pendingCount() {
-        return nasabahRepository.countByStatus(NasabahStatus.PENDING);
+        return nasabahRepository.countByStatus(NasabahStatus.INACTIVE);
     }
 
     public Nasabah getByIdOrThrow(Long id) {

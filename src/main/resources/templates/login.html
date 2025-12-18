@@ -127,7 +127,9 @@
         <div th:if="${param.logout}" style="color:green; font-size:13px; margin-bottom:12px;">
             Kamu sudah logout.
         </div>
-
+        <div th:if="${param.registered}" style="color:green; font-size:13px; margin-bottom:12px;">
+            Registrasi berhasil. Menunggu approval admin.
+        </div>
         <form th:action="@{/login}" method="post">
 
             <input type="text" name="username" class="input-field" placeholder="Username" required>

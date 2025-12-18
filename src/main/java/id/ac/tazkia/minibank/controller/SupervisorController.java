@@ -19,7 +19,7 @@ public class SupervisorController {
 
     @GetMapping("/dashboard")
     public String supervisorDashboard(Model model) {
-        long pendingCount = nasabahRepository.countByStatus(NasabahStatus.PENDING);
+        long pendingCount = nasabahRepository.countByStatus(NasabahStatus.INACTIVE);
         model.addAttribute("pendingCount", pendingCount);
         return "supervisor/dashboard";
     }

@@ -1,42 +1,70 @@
 package id.ac.tazkia.minibank.service;
 
 import id.ac.tazkia.minibank.entity.Nasabah;
+import id.ac.tazkia.minibank.entity.NasabahStatus;
 import id.ac.tazkia.minibank.repository.NasabahRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class NasabahService {
 
-    @Autowired
-    private NasabahRepository nasabahRepository;
+    private final NasabahRepository nasabahRepository;
 
-    public Nasabah createNasabahBaru(Nasabah nasabah) {
-        // validasi dasar NIK 16 digit (kalau mau lebih rumit, nanti)
-        if (nasabah.getNik() != null && nasabah.getNik().length() != 16) {
-            throw new IllegalArgumentException("NIK harus 16 digit");
-        }
-
-        String cifBaru = generateNextCif();
-        nasabah.setCif(cifBaru);
-
-        return nasabahRepository.save(nasabah);
+    public List<Nasabah> listAllCustomers() {
+        return nasabahRepository.findAllByOrderByCreatedAtDesc();
     }
 
-    private String generateNextCif() {
-        // Format: C1xxxxxx (x = digit, mulai dari 000001)
-        String lastCif = nasabahRepository.findMaxCif();
-        int nextNumber = 1;
+    public List<Nasabah> listByStatus(NasabahStatus status) {
+        return nasabahRepository.findByStatusOrderByCreatedAtDesc(status);
+    }
 
-        if (lastCif != null && lastCif.startsWith("C1") && lastCif.length() >= 3) {
-            String numericPart = lastCif.substring(2); // ambil setelah "C1"
+    @Transactional
+    public Nasabah createCustomer(Nasabah input, String createdByName) {
+        // generate CIF
+        String maxCif = nasabahRepository.findMaxCif();
+        int next = 1;
+        if (maxCif != null && !maxCif.isBlank()) {
             try {
-                nextNumber = Integer.parseInt(numericPart) + 1;
+                next = Integer.parseInt(maxCif) + 1;
             } catch (NumberFormatException ignored) {
-                // kalau parsing gagal, biarkan nextNumber tetap 1
+                next = 1;
             }
         }
+        String newCif = String.format("%08d", next);
 
-        return String.format("C1%06d", nextNumber);
+        Nasabah n = new Nasabah();
+        n.setCif(newCif);
+
+        // wajib
+        n.setNik(input.getNik());
+        n.setNamaLengkap(input.getNamaLengkap());
+
+        // optional (isi sesuai form kamu)
+        n.setEmail(input.getEmail());
+        n.setNoHp(input.getNoHp());
+        n.setTempatLahir(input.getTempatLahir());
+        n.setTanggalLahir(input.getTanggalLahir());
+        n.setNamaIbuKandung(input.getNamaIbuKandung());
+        n.setJenisKelamin(input.getJenisKelamin());
+        n.setAgama(input.getAgama());
+
+        n.setKodePosIdentitas(input.getKodePosIdentitas());
+        n.setProvinsiIdentitas(input.getProvinsiIdentitas());
+        n.setKotaIdentitas(input.getKotaIdentitas());
+        n.setKecamatanIdentitas(input.getKecamatanIdentitas());
+        n.setKelurahanIdentitas(input.getKelurahanIdentitas());
+        n.setRtIdentitas(input.getRtIdentitas());
+        n.setRwIdentitas(input.getRwIdentitas());
+
+        // status sebelum approve supervisor = INACTIVE (kita pakai PENDING)
+        n.setStatus(NasabahStatus.INACTIVE);
+        n.setCreatedBy(createdByName);
+
+        return nasabahRepository.save(n);
     }
 }

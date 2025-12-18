@@ -14,38 +14,30 @@ public class AdminUserController {
 
     private final AdminUserService adminService;
 
-    // Dashboard: daftar pending users
     @GetMapping("/dashboard")
     public String dashboard(Model model) {
-        model.addAttribute("pending", adminService.listPending());
+        model.addAttribute("users", adminService.listPending()); // FIX: "users"
         return "admin/dashboard";
     }
 
-    // Halaman approval detail
     @GetMapping("/approval/{id}")
     public String approvalDetail(@PathVariable Long id, Model model) {
         User u = adminService.findById(id);
-
-        // Password tidak pernah ditampilkan asli
         model.addAttribute("user", u);
         model.addAttribute("maskedPassword", "********");
         model.addAttribute("maskedConfirm", "********");
-
         return "admin/approval";
     }
 
-    // Approve user
     @PostMapping("/approve/{id}")
     public String approve(@PathVariable Long id) {
         adminService.approve(id);
         return "redirect:/admin/dashboard?approved";
     }
 
-    // Reject user
     @PostMapping("/reject/{id}")
     public String reject(@PathVariable Long id) {
         adminService.reject(id);
         return "redirect:/admin/dashboard?rejected";
     }
 }
-    
