@@ -14,40 +14,59 @@ import java.util.Set;
 @Component
 public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
+    // dipakai ActiveModuleFilter
     public static final String SESSION_ACTIVE_MODULE = "ACTIVE_MODULE";
 
     @Override
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
+    public void onAuthenticationSuccess(HttpServletRequest request,
+                                        HttpServletResponse response,
                                         Authentication authentication) throws IOException, ServletException {
+
+        String module = request.getParameter("module");
+        module = (module == null) ? "" : module.trim().toUpperCase();
 
         Set<String> roles = AuthorityUtils.authorityListToSet(authentication.getAuthorities());
 
-        String module = request.getParameter("module");
-        if (module == null) module = "";
-        module = module.trim().toUpperCase();
-
-        String requiredRole;
         String targetUrl;
 
         switch (module) {
-            case "ADMIN" -> { requiredRole = "ROLE_ADMIN"; targetUrl = "/admin/dashboard"; }
-            case "SUPERVISOR" -> { requiredRole = "ROLE_SUPERVISOR"; targetUrl = "/supervisor/dashboard"; }
-            case "CS" -> { requiredRole = "ROLE_CS"; targetUrl = "/cs/dashboard"; }
-            case "TELLER" -> { requiredRole = "ROLE_TELLER"; targetUrl = "/teller/dashboard"; }
+            case "ADMIN" -> {
+                if (!roles.contains("ROLE_ADMIN")) {
+                    getRedirectStrategy().sendRedirect(request, response, "/login?error=role");
+                    return;
+                }
+                targetUrl = "/admin/dashboard";
+            }
+            case "SUPERVISOR" -> {
+                if (!roles.contains("ROLE_SUPERVISOR")) {
+                    getRedirectStrategy().sendRedirect(request, response, "/login?error=role");
+                    return;
+                }
+                targetUrl = "/supervisor/dashboard";
+            }
+            case "CS" -> {
+                if (!roles.contains("ROLE_CS")) {
+                    getRedirectStrategy().sendRedirect(request, response, "/login?error=role");
+                    return;
+                }
+                // WAJIB: balik ke flow yang kamu minta
+                targetUrl = "/cs/dashboard";
+            }
+            case "TELLER" -> {
+                if (!roles.contains("ROLE_TELLER")) {
+                    getRedirectStrategy().sendRedirect(request, response, "/login?error=role");
+                    return;
+                }
+                targetUrl = "/teller/dashboard";
+            }
             default -> {
-                // kalau user pilih kosong/aneh, lempar balik
                 getRedirectStrategy().sendRedirect(request, response, "/login?error=module");
                 return;
             }
         }
 
-        // kalau tidak punya role yg dipilih -> tolak
-        if (!roles.contains(requiredRole)) {
-            getRedirectStrategy().sendRedirect(request, response, "/login?error=role");
-            return;
-        }
-
         request.getSession(true).setAttribute(SESSION_ACTIVE_MODULE, module);
+        clearAuthenticationAttributes(request);
         getRedirectStrategy().sendRedirect(request, response, targetUrl);
     }
 }

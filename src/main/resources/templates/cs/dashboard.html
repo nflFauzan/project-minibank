@@ -1,104 +1,87 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dashboard CS - Minibank</title>
-  <link rel="stylesheet" th:href="@{/css/dashboard.css}" />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <meta charset="utf-8"/>
+  <title>CS - Dashboard</title>
+  <link rel="stylesheet" th:href="@{/css/cs-shell.css}">
 </head>
+
 <body>
-  <div class="layout">
-    <aside class="sidebar">
-      <div class="sidebar-top">
-        <button class="btn-home">🏠</button>
+<div class="cs-shell">
+
+  <div th:replace="~{cs/fragments :: sidebar('dashboard')}"></div>
+
+  <div class="cs-content">
+    <div th:replace="~{cs/fragments :: topbar}"></div>
+
+    <main class="cs-page">
+
+      <!-- Greeting card -->
+      <div style="
+        background: rgba(255,255,255,.55);
+        border: 1px solid rgba(0,0,0,.06);
+        border-radius: 18px;
+        box-shadow: 0 10px 25px rgba(0,0,0,.06);
+        padding: 18px 18px;
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        gap:16px;
+      ">
+        <div>
+          <div style="font-size:22px; font-weight:800; color:#e1782d;">
+            <span>Assalamu'alaikum, </span><span th:text="${currentFullName} ?: 'Tazkia'">Tazkia</span>
+          </div>
+          <div style="margin-top:6px; color:#334155; font-weight:600; font-size:13px;">
+            Siap mengelola transaksi hari ini dengan penuh amanah!
+          </div>
+        </div>
+
+        <!-- ilustrasi kanan (optional) -->
+        <img th:src="@{/images/cs-hero.png}" alt="hero"
+             style="height:90px; width:auto; display:block;"
+             onerror="this.style.display='none'">
       </div>
-      <nav class="menu">
-        <a th:href="@{/cs/dashboard}" class="menu-item active">Dashboard</a>
-        <a th:href="@{/cs/pendaftaran}" class="menu-item">Pendaftaran Nasabah</a>
-        <a th:href="@{/cs/pembukaan-rekening}" class="menu-item">Pembukaan Rekening</a>
-        <a th:href="@{/cs/daftar-nasabah}" class="menu-item">Daftar Nasabah</a>
-        <a th:href="@{/cs/pengelolaan-produk}" class="menu-item">Pengelolaan Produk Bank</a>
-        <a th:href="@{/cs/manajemen-tiket}" class="menu-item">Manajemen Tiket</a>
-        <a th:href="@{/cs/dukungan-internal}" class="menu-item">Dukungan Internal</a>
-      </nav>
-      <div class="sidebar-bottom">
-        <a th:href="@{/settings}" class="menu-item">Settings</a>
-        <form action="/logout" method="post">
-          <button type="submit">Logout</button>
-        </form>        
-        
+
+      <!-- Summary cards -->
+      <div style="display:grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap:14px; margin-top:16px;">
+        <div style="background:#fff; border-radius:16px; border:1px solid rgba(0,0,0,.06); box-shadow:0 10px 25px rgba(0,0,0,.05); padding:14px;">
+          <div style="font-size:12px; color:#64748b; font-weight:700;">Total Nasabah</div>
+          <div style="font-size:22px; font-weight:900;" th:text="${totalNasabah} ?: 0">0</div>
+        </div>
+
+        <div style="background:#fff; border-radius:16px; border:1px solid rgba(0,0,0,.06); box-shadow:0 10px 25px rgba(0,0,0,.05); padding:14px;">
+          <div style="font-size:12px; color:#64748b; font-weight:700;">Total Rekening Aktif</div>
+          <div style="font-size:22px; font-weight:900;" th:text="${totalRekeningAktif} ?: 0">0</div>
+        </div>
+
+        <div style="background:#fff; border-radius:16px; border:1px solid rgba(0,0,0,.06); box-shadow:0 10px 25px rgba(0,0,0,.05); padding:14px;">
+          <div style="font-size:12px; color:#64748b; font-weight:700;">Total Produk</div>
+          <div style="font-size:22px; font-weight:900;" th:text="${totalProduk} ?: 0">0</div>
+        </div>
+
+        <div style="background:#fff; border-radius:16px; border:1px solid rgba(0,0,0,.06); box-shadow:0 10px 25px rgba(0,0,0,.05); padding:14px;">
+          <div style="font-size:12px; color:#64748b; font-weight:700;">Nasabah Baru</div>
+          <ul style="margin:8px 0 0 18px; padding:0;">
+            <li th:each="n : ${nasabahTerbaru}" th:text="${n.namaLengkap}">-</li>
+          </ul>
+        </div>
       </div>
-    </aside>
 
-    <main class="content">
-      <header class="topbar">
-        <div class="brand">
-          <img th:src="@{/images/dashboard-tazkia-minibank.png}" alt="tazkia" class="brand-img" />
-        </div>
-        <div class="meta">
-          <div th:text="${currentDate}">Senin, 13-08-2025 | 13:18</div>
-          <div th:text="${roleAndName}">| Costumer Service | ID00010003</div>
-        </div>
-      </header>
+      <!-- Produk -->
+      <div style="margin-top:18px; font-size:18px; font-weight:900; color:#1e3a8a;">
+        Produk-Produk Tazkia Minibank
+      </div>
 
-      <section class="page">
-        <div class="greeting">
-          <div class="greeting-left">
-            <h2>Assalamu'alaikum, <span th:text="${csName}">Tazkia</span></h2>
-            <p>Siap mengelola transaksi hari ini dengan penuh amanah!</p>
-          </div>
-          <div class="greeting-right">
-            <img th:src="@{/images/dashboard-char.png}" alt="characters" class="greeting-img" />
-          </div>
-        </div>
-
-        <div class="summary-grid">
-          <div class="card small">
-            <div class="card-title">Total Nasabah</div>
-            <div class="card-value" th:text="${summary.totalNasabah}">0</div>
-          </div>
-          <div class="card small">
-            <div class="card-title">Total Rekening Aktif</div>
-            <div class="card-value" th:text="${summary.totalRekening}">0</div>
-          </div>
-          <div class="card small">
-            <div class="card-title">Total Produk</div>
-            <div class="card-value" th:text="${summary.totalProduk}">0</div>
-          </div>
-          <div class="card small">
-            <div class="card-title">Nasabah Baru (5)</div>
-            <div class="card-value list">
-              <ul>
-                <li th:each="n : ${summary.nasabahTerbaru}" th:text="${n.nama}">-</li>
-                <li th:if="${summary.nasabahTerbaru == null || #lists.isEmpty(summary.nasabahTerbaru)}">Tidak ada data</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        <div class="products-section">
-          <h3>Produk-Produk Tazkia Minibank</h3>
-          <div class="products-grid">
-            <div th:each="p : ${products}" class="product-card">
-              <div class="product-icon">📦</div>
-              <div class="product-name" th:text="${p.nama}">Nama Produk</div>
-              <div class="product-desc" th:text="${p.deskripsi}">Deskripsi singkat produk</div>
-            </div>
-
-            <div th:if="${products == null || #lists.isEmpty(products)}">
-              <div class="product-placeholder" th:each="i : ${#numbers.sequence(1,3)}"></div>
-            </div>
-          </div>
-        </div>
-
-      </section>
+      <div style="display:grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap:18px; margin-top:12px;">
+        <div style="height:130px; background:rgba(255,255,255,.55); border:1px solid rgba(0,0,0,.06); border-radius:18px; box-shadow:0 10px 25px rgba(0,0,0,.05);"></div>
+        <div style="height:130px; background:rgba(255,255,255,.55); border:1px solid rgba(0,0,0,.06); border-radius:18px; box-shadow:0 10px 25px rgba(0,0,0,.05);"></div>
+        <div style="height:130px; background:rgba(255,255,255,.55); border:1px solid rgba(0,0,0,.06); border-radius:18px; box-shadow:0 10px 25px rgba(0,0,0,.05);"></div>
+        <div style="height:130px; background:rgba(255,255,255,.55); border:1px solid rgba(0,0,0,.06); border-radius:18px; box-shadow:0 10px 25px rgba(0,0,0,.05);"></div>
+      </div>
 
     </main>
   </div>
-
-  <script th:src="@{/js/dashboard.js}"></script>
+</div>
 </body>
 </html>

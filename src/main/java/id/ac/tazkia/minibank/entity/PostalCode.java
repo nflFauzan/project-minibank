@@ -10,26 +10,22 @@ public class PostalCode {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "kode_pos", nullable = false)
+    @Column(name = "kode_pos", nullable = false, length = 10)
     private String kodePos;
 
-    @Column(name = "provinsi")
+    @Column(nullable = false, length = 200)
     private String provinsi;
 
-    @Column(name = "kota")
+    @Column(name = "kota", nullable = false, length = 200)
     private String kota;
 
-    @Column(name = "kecamatan")
+    @Column(nullable = false, length = 200)
     private String kecamatan;
 
-    @Column(name = "kelurahan")
+    @Column(nullable = false, length = 200)
     private String kelurahan;
 
-    public PostalCode() {}
-
-    // getters & setters
     public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
 
     public String getKodePos() { return kodePos; }
     public void setKodePos(String kodePos) { this.kodePos = kodePos; }

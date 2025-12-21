@@ -1,831 +1,495 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
-    <meta charset="UTF-8" />
-    <title>Pendaftaran Nasabah</title>
-
-    <!-- Bootstrap 5 -->
-    <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-        rel="stylesheet"
-        crossorigin="anonymous"
-    />
-
-    <style>
-        :root {
-            --sidebar-bg: #183b6b;
-            --sidebar-bg-dark: #12284a;
-            --accent: #0e86d4;
-            --accent-soft: #e5f3ff;
-            --page-bg: #f2f6fb;
-            --text-main: #111827;
-            --text-muted: #6b7280;
-            --input-radius: 999px;
-        }
-
-        body {
-            margin: 0;
-            background: var(--page-bg);
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-        }
-
-        .app-shell {
-            min-height: 100vh;
-            display: flex;
-        }
-
-        /* SIDEBAR */
-
-        .sidebar {
-            width: 250px;
-            background: linear-gradient(180deg, var(--sidebar-bg) 0%, #061226 100%);
-            color: #e5e7eb;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .sidebar-header {
-            padding: 1rem 1.25rem;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-        }
-
-        .sidebar-logo-circle {
-            width: 32px;
-            height: 32px;
-            border-radius: 999px;
-            border: 2px solid #facc15;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.85rem;
-            font-weight: 700;
-            color: #facc15;
-        }
-
-        .sidebar-title {
-            font-size: 0.85rem;
-            font-weight: 600;
-            line-height: 1.2;
-        }
-
-        .sidebar-subtitle {
-            font-size: 0.7rem;
-            opacity: 0.7;
-        }
-
-        .sidebar-menu {
-            padding: 0.75rem 0;
-            flex: 1;
-        }
-
-        .sidebar-group-title {
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            letter-spacing: .08em;
-            opacity: 0.6;
-            padding: 0.5rem 1.5rem;
-        }
-
-        .sidebar-link {
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
-            padding: 0.55rem 1.5rem;
-            font-size: 0.85rem;
-            color: #e5e7eb;
-            text-decoration: none;
-            opacity: 0.8;
-        }
-
-        .sidebar-link:hover {
-            background: rgba(15, 118, 255, 0.2);
-            opacity: 1;
-        }
-
-        .sidebar-link.active {
-            background: #f5f5f5;
-            color: var(--sidebar-bg);
-            opacity: 1;
-            font-weight: 600;
-            border-radius: 0 24px 24px 0;
-        }
-
-        .sidebar-link-icon {
-            width: 18px;
-            height: 18px;
-            border-radius: 4px;
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.7rem;
-        }
-
-        .sidebar-footer {
-            padding: 0.75rem 1.25rem 1.25rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.08);
-            font-size: 0.8rem;
-            opacity: 0.8;
-        }
-
-        /* MAIN AREA */
-
-        .main-area {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            background: var(--page-bg);
-        }
-
-        .top-banner {
-            position: relative;
-            background: linear-gradient(90deg, #005792 0%, #00a9d6 50%, #f9fafb 100%);
-            color: white;
-            padding: 0.75rem 1.75rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .top-banner-left {
-            font-size: 0.75rem;
-        }
-
-        .top-banner-left span {
-            display: block;
-        }
-
-        .top-banner-right {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .top-banner-logo {
-            width: 130px;
-            height: 40px;
-            background: #ffffff;
-            border-radius: 999px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.8rem;
-            color: #0f172a;
-            font-weight: 700;
-        }
-
-        .top-banner-image {
-            width: 120px;
-            height: 60px;
-            border-radius: 8px;
-            overflow: hidden;
-            background: url('https://images.pexels.com/photos/460680/pexels-photo-460680.jpeg?auto=compress&cs=tinysrgb&w=800') center/cover no-repeat;
-        }
-
-        .content-wrapper {
-            padding: 1.5rem 2rem 2rem;
-        }
-
-        .page-heading {
-            margin-bottom: 1rem;
-        }
-
-        .page-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: var(--text-main);
-        }
-
-        .page-subtitle {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-        }
-
-        .card-main {
-            border-radius: 18px;
-            border: 0;
-            box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
-            background: #ffffff;
-        }
-
-        /* section header seperti strip biru di figma */
-        .section-header-bar {
-            background: #123b6f;
-            color: #ffffff;
-            font-size: 0.8rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            padding: 0.4rem 1rem;
-            border-radius: 999px;
-            display: inline-flex;
-            align-items: center;
-        }
-
-        .section-divider {
-            border: none;
-            height: 1px;
-            margin-top: 0.6rem;
-            margin-bottom: 1.3rem;
-            background: linear-gradient(90deg, #123b6f 0%, #00a9d6 40%, transparent 100%);
-        }
-
-        .form-label {
-            font-size: 0.78rem;
-            font-weight: 500;
-            color: #374151;
-            margin-bottom: 0.2rem;
-        }
-
-        .badge-required {
-            color: #ef4444;
-            margin-left: 0.1rem;
-            font-size: 0.7rem;
-        }
-
-        .form-control,
-        .form-select {
-            border-radius: var(--input-radius);
-            border-color: #d1d5db;
-            font-size: 0.88rem;
-            padding-inline: 1rem;
-            height: 38px;
-        }
-
-        .form-control:focus,
-        .form-select:focus {
-            border-color: #123b6f;
-            box-shadow: 0 0 0 0.12rem rgba(18, 59, 111, 0.18);
-        }
-
-        .form-row-line {
-            margin-bottom: 0.75rem;
-        }
-
-        .form-row-line .col-label {
-            flex: 0 0 26%;
-            max-width: 26%;
-            display: flex;
-            align-items: center;
-        }
-
-        .form-row-line .col-input {
-            flex: 0 0 74%;
-            max-width: 74%;
-        }
-
-        .radio-pill-group .form-check {
-            display: inline-flex;
-            align-items: center;
-            margin-right: 1.5rem;
-        }
-
-        .radio-pill-group .form-check-input {
-            margin-top: 0;
-            margin-right: 0.35rem;
-        }
-
-        .alert {
-            border-radius: 999px;
-            padding-inline: 1.2rem;
-            font-size: 0.8rem;
-        }
-
-        .btn-primary-rounded {
-            border-radius: 999px;
-            padding-inline: 2.5rem;
-            font-weight: 600;
-            background: linear-gradient(90deg, #123b6f 0%, #006bb3 100%);
-            border: none;
-            font-size: 0.9rem;
-        }
-
-        .btn-primary-rounded:hover {
-            background: linear-gradient(90deg, #0f2950 0%, #00518a 100%);
-        }
-
-        @media (max-width: 992px) {
-            .sidebar {
-                display: none;
-            }
-
-            .content-wrapper {
-                padding: 1rem;
-            }
-
-            .form-row-line {
-                flex-direction: column;
-            }
-
-            .form-row-line .col-label,
-            .form-row-line .col-input {
-                max-width: 100%;
-                flex: 0 0 100%;
-            }
-        }
-    </style>
+    <meta charset="utf-8" />
+    <title>CS - Pendaftaran Nasabah</title>
+    <link rel="stylesheet" th:href="@{/css/cs-shell.css}">
+    <link rel="stylesheet" th:href="@{/css/pendaftaran_nasabah.css}">
 </head>
+
 <body>
-<div class="app-shell">
+    <div class="cs-shell">
 
-    <!-- SIDEBAR -->
-    <aside class="sidebar">
-        <div class="sidebar-header">
-            <div>
-                <div class="sidebar-title">MiniBank</div>
-                <div class="sidebar-subtitle">Cabang Bogor</div>
-            </div>
-        </div>
+        <div th:replace="~{cs/fragments :: sidebar('customers')}"></div>
 
-        <div class="sidebar-menu">
-            <div class="sidebar-group-title">Menu</div>
+        <div class="cs-content">
+            <div th:replace="~{cs/fragments :: topbar}"></div>
 
-            <a href="/cs/dashboard" class="sidebar-link">
-                <div class="sidebar-link-icon">🏠</div>
-                <span>Dashboard</span>
-            </a>
+            <main class="cs-page">
 
-            <a href="/cs/pendaftaran" class="sidebar-link active">
-                <div class="sidebar-link-icon">📝</div>
-                <span>Pendaftaran Nasabah</span>
-            </a>
-
-            <a href="#" class="sidebar-link">
-                <div class="sidebar-link-icon">➕</div>
-                <span>Pembukaan Rekening Nasabah Baru</span>
-            </a>
-
-            <a href="#" class="sidebar-link">
-                <div class="sidebar-link-icon">🔍</div>
-                <span>Pencarian Data Nasabah</span>
-            </a>
-
-            <a href="#" class="sidebar-link">
-                <div class="sidebar-link-icon">♻</div>
-                <span>Perubahan Data Nasabah</span>
-            </a>
-
-            <a href="#" class="sidebar-link">
-                <div class="sidebar-link-icon">📦</div>
-                <span>Pengelolaan Produk Bank</span>
-            </a>
-
-            <a href="#" class="sidebar-link">
-                <div class="sidebar-link-icon">🎫</div>
-                <span>Manajemen Tiket</span>
-            </a>
-
-            <a href="#" class="sidebar-link">
-                <div class="sidebar-link-icon">💬</div>
-                <span>Dukungan Internal</span>
-            </a>
-        </div>
-
-        <div class="sidebar-footer">
-            <div>⚙ Settings</div>
-        </div>
-    </aside>
-
-    <!-- MAIN AREA -->
-    <div class="main-area">
-
-        <!-- Top header bar: tanggal + logo -->
-        <div class="top-banner">
-            <div class="top-banner-left">
-                <span th:text="${#dates.format(#dates.createNow(), 'EEEE, dd-MM-yyyy')}">Senin, 13-08-2025</span>
-                <span>Customer Service | ID00010003</span>
-            </div>
-            <div class="top-banner-right">
-                <div class="top-banner-logo">
-                    Tazkia MiniBank
+                <div style="display:flex; align-items:center; justify-content:space-between; gap:12px;">
+                    <div style="font-size:20px; font-weight:900; color:#1e3a8a;">Pendaftaran Nasabah</div>
+                    <a th:href="@{/cs/customers}"
+                        style="text-decoration:none; padding:10px 12px; border-radius:10px; border:1px solid rgba(0,0,0,.12); background:#fff; font-weight:800;">
+                        Kembali ke Customers
+                    </a>
                 </div>
-            </div>
-        </div>
 
-        <div class="content-wrapper">
-            <div class="page-heading mb-3">
-                <h1 class="page-title mb-1">Pendaftaran Nasabah Personal</h1>
-                <p class="page-subtitle">
-                    Lengkapi data di bawah ini untuk membuat CIF dan pembukaan rekening.
-                </p>
-            </div>
+                <div
+                    style="margin-top:14px; background:#fff; border:1px solid rgba(0,0,0,.06); border-radius:16px; box-shadow:0 10px 25px rgba(0,0,0,.05); padding:16px;">
 
-            <div class="card card-main">
-                <div class="card-body px-4 px-lg-5 py-4">
+                    <!-- MAIN AREA -->
+                    <div class="main-area">
 
-                    <form th:action="@{/cs/pendaftaran}" th:object="${nasabah}" method="post">
 
-                        <!-- success -->
-                        <div th:if="${successMessage}"
-                             class="alert alert-success mb-3"
-                             th:text="${successMessage}">
+                        <div class="content-wrapper">
+                            <div class="page-heading mb-3">
+                                <h1 class="page-title mb-1">Pendaftaran Nasabah Personal</h1>
+                                <p class="page-subtitle">
+                                    Lengkapi data di bawah ini untuk membuat CIF dan pembukaan rekening.
+                                </p>
+                            </div>
+
+                            <div class="card card-main">
+                                <div class="card-body px-4 px-lg-5 py-4">
+
+                                    <form th:action="@{/cs/customers}" th:object="${nasabah}" method="post">
+
+                                        <!-- success -->
+                                        <div th:if="${successMessage}" class="alert alert-success mb-3"
+                                            th:text="${successMessage}">
+                                        </div>
+
+                                        <!-- error summary -->
+                                        <div th:if="${#fields.hasErrors('*')}" class="alert alert-danger mb-3">
+                                            <ul class="mb-0">
+                                                <li th:each="err : ${#fields.errors('*')}" th:text="${err}"></li>
+                                            </ul>
+                                        </div>
+
+                                        <!-- ================== INFORMASI DATA NASABAH ================== -->
+                                        <section class="mb-4">
+                                            <div class="section-header-bar">Informasi Data Nasabah</div>
+                                            <hr class="section-divider" />
+                                            <div class="grid-2">
+                                            <div class="form-row-line row gx-3 align-items-center">
+                                                <div class="col-label col-md-3">
+                                                    <label class="form-label mb-0">Nomor Identitas (NIK)<span
+                                                            class="badge-required">*</span></label>
+                                                </div>
+                                                <div class="col-input col-md-9">
+                                                    <input type="text" class="form-control" th:field="*{nik}"
+                                                        placeholder="Nomor NIK yang tercantum di KTP Anda" />
+                                                </div>
+                                            </div>
+
+                                            <div class="form-row-line row gx-3 align-items-center">
+                                                <div class="col-label col-md-3">
+                                                    <label class="form-label mb-0">Nama Sesuai Identitas<span
+                                                            class="badge-required">*</span></label>
+                                                </div>
+                                                <div class="col-input col-md-9">
+                                                    <input type="text" class="form-control" th:field="*{namaLengkap}"
+                                                        placeholder="Nama anda seperti tercantum di KTP" />
+                                                </div>
+                                            </div>
+
+                                            <div class="form-row-line row gx-3 align-items-center">
+                                                <div class="col-label col-md-3">
+                                                    <label class="form-label mb-0">Tempat Lahir<span
+                                                            class="badge-required">*</span></label>
+                                                </div>
+                                                <div class="col-input col-md-9">
+                                                    <input type="text" class="form-control" th:field="*{tempatLahir}"
+                                                        placeholder="Nama kota tempat kelahiran anda" />
+                                                </div>
+                                            </div>
+
+                                            <div class="form-row-line row gx-3 align-items-center">
+                                                <div class="col-label col-md-3">
+                                                    <label class="form-label mb-0">Tanggal Lahir<span
+                                                            class="badge-required">*</span></label>
+                                                </div>
+                                                <div class="col-input col-md-9">
+                                                    <input type="date" class="form-control"
+                                                        th:field="*{tanggalLahir}" />
+                                                </div>
+                                            </div>
+
+                                            <div class="form-row-line row gx-3 align-items-center">
+                                                <div class="col-label col-md-3">
+                                                    <label class="form-label mb-0">Nama Gadis Ibu Kandung<span
+                                                            class="badge-required">*</span></label>
+                                                </div>
+                                                <div class="col-input col-md-9">
+                                                    <input type="text" class="form-control"
+                                                        th:field="*{namaIbuKandung}" />
+                                                </div>
+                                            </div>
+
+                                            <div class="form-row-line row gx-3 align-items-center">
+                                                <div class="col-label col-md-3">
+                                                    <label class="form-label mb-0">Jenis Kelamin<span
+                                                            class="badge-required">*</span></label>
+                                                </div>
+                                                <div class="col-input col-md-9">
+                                                    <div class="radio-pill-group">
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input" type="radio"
+                                                                th:field="*{jenisKelamin}" value="L" id="jkLaki" />
+                                                            <label class="form-check-label"
+                                                                for="jkLaki">Laki-laki</label>
+                                                        </div>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input" type="radio"
+                                                                th:field="*{jenisKelamin}" value="P" id="jkPerempuan" />
+                                                            <label class="form-check-label"
+                                                                for="jkPerempuan">Perempuan</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-row-line row gx-3 align-items-center">
+                                                <div class="col-label col-md-3">
+                                                    <label class="form-label mb-0">Penduduk<span
+                                                            class="badge-required">*</span></label>
+                                                </div>
+                                                <div class="col-input col-md-9">
+                                                    <div class="radio-pill-group">
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input" type="radio"
+                                                                th:field="*{penduduk}" value="WNI" id="pendudukWni" />
+                                                            <label class="form-check-label"
+                                                                for="pendudukWni">WNI</label>
+                                                        </div>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input" type="radio"
+                                                                th:field="*{penduduk}" value="WNA" id="pendudukWna" />
+                                                            <label class="form-check-label"
+                                                                for="pendudukWna">WNA</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-row-line row gx-3 align-items-center">
+                                                <div class="col-label col-md-3">
+                                                    <label class="form-label mb-0">Status Pernikahan</label>
+                                                </div>
+                                                <div class="col-input col-md-9">
+                                                    <input type="text" class="form-control"
+                                                        th:field="*{statusPernikahan}" />
+                                                </div>
+                                            </div>
+
+                                            <div class="form-row-line row gx-3 align-items-center">
+                                                <div class="col-label col-md-3">
+                                                    <label class="form-label mb-0">Agama</label>
+                                                </div>
+                                                <div class="col-input col-md-9">
+                                                    <input type="text" class="form-control" th:field="*{agama}" />
+                                                </div>
+                                            </div>
+
+                                            <div class="form-row-line row gx-3 align-items-center">
+                                                <div class="col-label col-md-3">
+                                                    <label class="form-label mb-0">Negara</label>
+                                                </div>
+                                                <div class="col-input col-md-9">
+                                                    <input type="text" class="form-control" th:field="*{negara}" />
+                                                </div>
+                                            </div>
+                                        </section>
+
+                                        <!-- ================== KONTAK ================== -->
+                                        <section class="mb-4">
+                                            <div class="section-header-bar">Kontak</div>
+                                            <hr class="section-divider" />
+
+                                            <div class="form-row-line row gx-3 align-items-center">
+                                                <div class="col-label col-md-3">
+                                                    <label class="form-label mb-0">No HP</label>
+                                                </div>
+                                                <div class="col-input col-md-9">
+                                                    <input type="text" class="form-control" th:field="*{noHp}" />
+                                                </div>
+                                            </div>
+
+                                            <div class="form-row-line row gx-3 align-items-center">
+                                                <div class="col-label col-md-3">
+                                                    <label class="form-label mb-0">Email</label>
+                                                </div>
+                                                <div class="col-input col-md-9">
+                                                    <input type="email" class="form-control" th:field="*{email}" />
+                                                </div>
+                                            </div>
+                                        </section>
+
+                                        <!-- ================== DATA PEKERJAAN ================== -->
+                                        <section class="mb-4">
+                                            <div class="section-header-bar">Informasi Pekerjaan</div>
+                                            <hr class="section-divider" />
+
+                                            <div class="form-row-line row gx-3 align-items-center">
+                                                <div class="col-label col-md-3">
+                                                    <label class="form-label mb-0">Pekerjaan</label>
+                                                </div>
+                                                <div class="col-input col-md-9">
+                                                    <input type="text" class="form-control" th:field="*{pekerjaan}" />
+                                                </div>
+                                            </div>
+
+                                            <div class="form-row-line row gx-3 align-items-center">
+                                                <div class="col-label col-md-3">
+                                                    <label class="form-label mb-0">Nama Perusahaan</label>
+                                                </div>
+                                                <div class="col-input col-md-9">
+                                                    <input type="text" class="form-control"
+                                                        th:field="*{namaPerusahaan}" />
+                                                </div>
+                                            </div>
+
+                                            <div class="form-row-line row gx-3 align-items-center">
+                                                <div class="col-label col-md-3">
+                                                    <label class="form-label mb-0">Jabatan</label>
+                                                </div>
+                                                <div class="col-input col-md-9">
+                                                    <input type="text" class="form-control" th:field="*{jabatan}" />
+                                                </div>
+                                            </div>
+
+                                            <div class="form-row-line row gx-3 align-items-center">
+                                                <div class="col-label col-md-3">
+                                                    <label class="form-label mb-0">Penghasilan Per Bulan</label>
+                                                </div>
+                                                <div class="col-input col-md-9">
+                                                    <input type="text" class="form-control"
+                                                        th:field="*{penghasilanPerBulan}" />
+                                                </div>
+                                            </div>
+                                        </section>
+
+                                        <!-- ================== ALAMAT IDENTITAS ================== -->
+                                        <section class="mb-4">
+                                            <div class="section-header-bar">Informasi Alamat Identitas</div>
+                                            <hr class="section-divider" />
+
+                                            <!-- alamat text optional -->
+                                            <div class="form-row-line row gx-3 align-items-center">
+                                                <div class="col-label col-md-3">
+                                                    <label class="form-label mb-0">Alamat Identitas</label>
+                                                </div>
+                                                <div class="col-input col-md-9">
+                                                    <input type="text" class="form-control"
+                                                    th:field="*{alamatIdentitas}"
+                                                    maxlength="35"
+                                                    placeholder="Maksimal input 35 karakter" />
+                                                </div>
+                                            </div>
+
+                                            <div class="form-row-line row gx-3 align-items-center">
+                                                <div class="col-label col-md-3">
+                                                    <label class="form-label mb-0">Provinsi<span
+                                                            class="badge-required">*</span></label>
+                                                </div>
+                                                <div class="col-input col-md-9">
+                                                    <select class="form-select" id="provinsiIdentitas"
+                                                        th:field="*{provinsiIdentitas}">
+                                                        <option value="">-- Pilih Provinsi --</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-row-line row gx-3 align-items-center">
+                                                <div class="col-label col-md-3">
+                                                    <label class="form-label mb-0">Kabupaten/Kota<span
+                                                            class="badge-required">*</span></label>
+                                                </div>
+                                                <div class="col-input col-md-9">
+                                                    <select class="form-select" id="kotaIdentitas"
+                                                        th:field="*{kotaIdentitas}">
+                                                        <option value="">-- Pilih Kota --</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-row-line row gx-3 align-items-center">
+                                                <div class="col-label col-md-3">
+                                                    <label class="form-label mb-0">Kecamatan<span
+                                                            class="badge-required">*</span></label>
+                                                </div>
+                                                <div class="col-input col-md-9">
+                                                    <select class="form-select" id="kecamatanIdentitas"
+                                                        th:field="*{kecamatanIdentitas}">
+                                                        <option value="">-- Pilih Kecamatan --</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-row-line row gx-3 align-items-center">
+                                                <div class="col-label col-md-3">
+                                                    <label class="form-label mb-0">Kelurahan<span
+                                                            class="badge-required">*</span></label>
+                                                </div>
+                                                <div class="col-input col-md-9">
+                                                    <select class="form-select" id="kelurahanIdentitas"
+                                                        th:field="*{kelurahanIdentitas}">
+                                                        <option value="">-- Pilih Kelurahan --</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-row-line row gx-3 align-items-center">
+                                                <div class="col-label col-md-3">
+                                                    <label class="form-label mb-0">RT/RW</label>
+                                                </div>
+                                                <div class="col-input col-md-9">
+                                                    <div class="row gx-2">
+                                                        <div class="col-6">
+                                                            <input type="text" class="form-control" id="rtIdentitas"
+                                                                th:field="*{rtIdentitas}" placeholder="RT" />
+                                                        </div>
+                                                        <div class="col-6">
+                                                            <input type="text" class="form-control" id="rwIdentitas"
+                                                                th:field="*{rwIdentitas}" placeholder="RW" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-row-line row gx-3 align-items-center">
+                                                <div class="col-label col-md-3">
+                                                    <label class="form-label mb-0">Kode Pos<span
+                                                            class="badge-required">*</span></label>
+                                                </div>
+                                                <div class="col-input col-md-9">
+                                                    <input type="text" class="form-control" id="kodePosIdentitas"
+                                                        th:field="*{kodePosIdentitas}" />
+                                                </div>
+                                            </div>
+                                        </section>
+
+                                        <!-- ================== ALAMAT DOMISILI ================== -->
+                                        <section class="mb-2">
+                                            <div class="section-header-bar">Informasi Alamat Domisili</div>
+                                            <hr class="section-divider" />
+
+                                            <div class="form-row-line row gx-3 align-items-center mb-2">
+                                                <div class="col-label col-md-3">
+                                                    <label class="form-label mb-0">Alamat Sesuai Domisili</label>
+                                                </div>
+                                                <div class="col-input col-md-9">
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="checkbox" id="domisiliSesuaiIdentitas" name="domisiliSesuaiIdentitas">
+                                                        <label for="domisiliSesuaiIdentitas">Sesuai Identitas</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-row-line row gx-3 align-items-center">
+                                                <div class="col-label col-md-3">
+                                                    <label class="form-label mb-0">Alamat Domisili</label>
+                                                </div>
+                                                <div class="col-input col-md-9">
+                                                    <input type="text" class="form-control"
+                                                    th:field="*{alamatDomisili}"
+                                                    maxlength="35"
+                                                    placeholder="Maksimal input 35 karakter" />
+                                                </div>
+                                            </div>
+
+                                            <div class="form-row-line row gx-3 align-items-center">
+                                                <div class="col-label col-md-3">
+                                                    <label class="form-label mb-0">Provinsi</label>
+                                                </div>
+                                                <div class="col-input col-md-9">
+                                                    <select class="form-select" id="provinsiDomisili"
+                                                        th:field="*{provinsiDomisili}">
+                                                        <option value="">-- Pilih Provinsi --</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-row-line row gx-3 align-items-center">
+                                                <div class="col-label col-md-3">
+                                                    <label class="form-label mb-0">Kabupaten/Kota</label>
+                                                </div>
+                                                <div class="col-input col-md-9">
+                                                    <select class="form-select" id="kotaDomisili"
+                                                        th:field="*{kotaDomisili}">
+                                                        <option value="">-- Pilih Kota --</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-row-line row gx-3 align-items-center">
+                                                <div class="col-label col-md-3">
+                                                    <label class="form-label mb-0">Kecamatan</label>
+                                                </div>
+                                                <div class="col-input col-md-9">
+                                                    <select class="form-select" id="kecamatanDomisili"
+                                                        th:field="*{kecamatanDomisili}">
+                                                        <option value="">-- Pilih Kecamatan --</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-row-line row gx-3 align-items-center">
+                                                <div class="col-label col-md-3">
+                                                    <label class="form-label mb-0">Kelurahan</label>
+                                                </div>
+                                                <div class="col-input col-md-9">
+                                                    <select class="form-select" id="kelurahanDomisili"
+                                                        th:field="*{kelurahanDomisili}">
+                                                        <option value="">-- Pilih Kelurahan --</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-row-line row gx-3 align-items-center">
+                                                <div class="col-label col-md-3">
+                                                    <label class="form-label mb-0">RT/RW</label>
+                                                </div>
+                                                <div class="col-input col-md-9">
+                                                    <div class="row gx-2">
+                                                        <div class="col-6">
+                                                            <input type="text" class="form-control" id="rtDomisili"
+                                                                th:field="*{rtDomisili}" placeholder="RT" />
+                                                        </div>
+                                                        <div class="col-6">
+                                                            <input type="text" class="form-control" id="rwDomisili"
+                                                                th:field="*{rwDomisili}" placeholder="RW" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-row-line row gx-3 align-items-center">
+                                                <div class="col-label col-md-3">
+                                                    <label class="form-label mb-0">Kode Pos</label>
+                                                </div>
+                                                <div class="col-input col-md-9">
+                                                    <input type="text" class="form-control" id="kodePosDomisili"
+                                                        th:field="*{kodePosDomisili}" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        </section>
+
+                                        <!-- ACTION BUTTON -->
+                                        <div class="d-flex justify-content-end mt-3">
+                                            <button type="submit" class="btn btn-primary-rounded">
+                                                Simpan Nasabah
+                                            </button>
+                                        </div>
+                                    </div>
+                                    </form>
+                                </div>
+                            
                         </div>
-
-                        <!-- error summary -->
-                        <div th:if="${#fields.hasErrors('*')}"
-                             class="alert alert-danger mb-3">
-                            <ul class="mb-0">
-                                <li th:each="err : ${#fields.errors('*')}"
-                                    th:text="${err}"></li>
-                            </ul>
-                        </div>
-
-                        <!-- ================== INFORMASI DATA NASABAH ================== -->
-                        <section class="mb-4">
-                            <div class="section-header-bar">Informasi Data Nasabah</div>
-                            <hr class="section-divider"/>
-
-                            <div class="form-row-line row gx-3 align-items-center">
-                                <div class="col-label col-md-3">
-                                    <label class="form-label mb-0">Nomor Identitas (NIK)<span class="badge-required">*</span></label>
-                                </div>
-                                <div class="col-input col-md-9">
-                                    <input type="text" class="form-control" th:field="*{nik}"
-                                           placeholder="Nomor NIK yang tercantum di KTP Anda"/>
-                                </div>
-                            </div>
-
-                            <div class="form-row-line row gx-3 align-items-center">
-                                <div class="col-label col-md-3">
-                                    <label class="form-label mb-0">Nama Sesuai Identitas<span class="badge-required">*</span></label>
-                                </div>
-                                <div class="col-input col-md-9">
-                                    <input type="text" class="form-control" th:field="*{namaLengkap}"
-                                           placeholder="Nama anda seperti tercantum di KTP"/>
-                                </div>
-                            </div>
-
-                            <div class="form-row-line row gx-3 align-items-center">
-                                <div class="col-label col-md-3">
-                                    <label class="form-label mb-0">Tempat Lahir<span class="badge-required">*</span></label>
-                                </div>
-                                <div class="col-input col-md-9">
-                                    <input type="text" class="form-control" th:field="*{tempatLahir}"
-                                           placeholder="Nama kota tempat kelahiran anda"/>
-                                </div>
-                            </div>
-
-                            <div class="form-row-line row gx-3 align-items-center">
-                                <div class="col-label col-md-3">
-                                    <label class="form-label mb-0">Tanggal Lahir<span class="badge-required">*</span></label>
-                                </div>
-                                <div class="col-input col-md-9">
-                                    <input type="date" class="form-control" th:field="*{tanggalLahir}"/>
-                                </div>
-                            </div>
-
-                            <div class="form-row-line row gx-3 align-items-center">
-                                <div class="col-label col-md-3">
-                                    <label class="form-label mb-0">Nama Gadis Ibu Kandung<span class="badge-required">*</span></label>
-                                </div>
-                                <div class="col-input col-md-9">
-                                    <input type="text" class="form-control" th:field="*{namaIbuKandung}"/>
-                                </div>
-                            </div>
-
-                            <div class="form-row-line row gx-3 align-items-center">
-                                <div class="col-label col-md-3">
-                                    <label class="form-label mb-0">Jenis Kelamin<span class="badge-required">*</span></label>
-                                </div>
-                                <div class="col-input col-md-9">
-                                    <div class="radio-pill-group">
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio"
-                                                   th:field="*{jenisKelamin}" value="L" id="jkLaki"/>
-                                            <label class="form-check-label" for="jkLaki">Laki-laki</label>
-                                        </div>
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio"
-                                                   th:field="*{jenisKelamin}" value="P" id="jkPerempuan"/>
-                                            <label class="form-check-label" for="jkPerempuan">Perempuan</label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-row-line row gx-3 align-items-center">
-                                <div class="col-label col-md-3">
-                                    <label class="form-label mb-0">Penduduk<span class="badge-required">*</span></label>
-                                </div>
-                                <div class="col-input col-md-9">
-                                    <div class="radio-pill-group">
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio"
-                                                   th:field="*{penduduk}" value="WNI" id="pendudukWni"/>
-                                            <label class="form-check-label" for="pendudukWni">WNI</label>
-                                        </div>
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio"
-                                                   th:field="*{penduduk}" value="WNA" id="pendudukWna"/>
-                                            <label class="form-check-label" for="pendudukWna">WNA</label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-row-line row gx-3 align-items-center">
-                                <div class="col-label col-md-3">
-                                    <label class="form-label mb-0">Status Pernikahan</label>
-                                </div>
-                                <div class="col-input col-md-9">
-                                    <input type="text" class="form-control" th:field="*{statusPernikahan}"/>
-                                </div>
-                            </div>
-
-                            <div class="form-row-line row gx-3 align-items-center">
-                                <div class="col-label col-md-3">
-                                    <label class="form-label mb-0">Agama</label>
-                                </div>
-                                <div class="col-input col-md-9">
-                                    <input type="text" class="form-control" th:field="*{agama}"/>
-                                </div>
-                            </div>
-
-                            <div class="form-row-line row gx-3 align-items-center">
-                                <div class="col-label col-md-3">
-                                    <label class="form-label mb-0">Negara</label>
-                                </div>
-                                <div class="col-input col-md-9">
-                                    <input type="text" class="form-control" th:field="*{negara}"/>
-                                </div>
-                            </div>
-                        </section>
-
-                        <!-- ================== KONTAK ================== -->
-                        <section class="mb-4">
-                            <div class="section-header-bar">Kontak</div>
-                            <hr class="section-divider"/>
-
-                            <div class="form-row-line row gx-3 align-items-center">
-                                <div class="col-label col-md-3">
-                                    <label class="form-label mb-0">No HP</label>
-                                </div>
-                                <div class="col-input col-md-9">
-                                    <input type="text" class="form-control" th:field="*{noHp}"/>
-                                </div>
-                            </div>
-
-                            <div class="form-row-line row gx-3 align-items-center">
-                                <div class="col-label col-md-3">
-                                    <label class="form-label mb-0">Email</label>
-                                </div>
-                                <div class="col-input col-md-9">
-                                    <input type="email" class="form-control" th:field="*{email}"/>
-                                </div>
-                            </div>
-                        </section>
-
-                        <!-- ================== DATA PEKERJAAN ================== -->
-                        <section class="mb-4">
-                            <div class="section-header-bar">Informasi Pekerjaan</div>
-                            <hr class="section-divider"/>
-
-                            <div class="form-row-line row gx-3 align-items-center">
-                                <div class="col-label col-md-3">
-                                    <label class="form-label mb-0">Pekerjaan</label>
-                                </div>
-                                <div class="col-input col-md-9">
-                                    <input type="text" class="form-control" th:field="*{pekerjaan}"/>
-                                </div>
-                            </div>
-
-                            <div class="form-row-line row gx-3 align-items-center">
-                                <div class="col-label col-md-3">
-                                    <label class="form-label mb-0">Nama Perusahaan</label>
-                                </div>
-                                <div class="col-input col-md-9">
-                                    <input type="text" class="form-control" th:field="*{namaPerusahaan}"/>
-                                </div>
-                            </div>
-
-                            <div class="form-row-line row gx-3 align-items-center">
-                                <div class="col-label col-md-3">
-                                    <label class="form-label mb-0">Jabatan</label>
-                                </div>
-                                <div class="col-input col-md-9">
-                                    <input type="text" class="form-control" th:field="*{jabatan}"/>
-                                </div>
-                            </div>
-
-                            <div class="form-row-line row gx-3 align-items-center">
-                                <div class="col-label col-md-3">
-                                    <label class="form-label mb-0">Penghasilan Per Bulan</label>
-                                </div>
-                                <div class="col-input col-md-9">
-                                    <input type="text" class="form-control" th:field="*{penghasilanPerBulan}"/>
-                                </div>
-                            </div>
-                        </section>
-
-                        <!-- ================== ALAMAT IDENTITAS ================== -->
-                        <section class="mb-4">
-                            <div class="section-header-bar">Informasi Alamat Identitas</div>
-                            <hr class="section-divider"/>
-
-                            <!-- alamat text optional -->
-                            <div class="form-row-line row gx-3 align-items-center">
-                                <div class="col-label col-md-3">
-                                    <label class="form-label mb-0">Alamat Identitas</label>
-                                </div>
-                                <div class="col-input col-md-9">
-                                    <input type="text" class="form-control" placeholder="Maksimal input 35 karakter"/>
-                                </div>
-                            </div>
-
-                            <div class="form-row-line row gx-3 align-items-center">
-                                <div class="col-label col-md-3">
-                                    <label class="form-label mb-0">Provinsi<span class="badge-required">*</span></label>
-                                </div>
-                                <div class="col-input col-md-9">
-                                    <select class="form-select" id="provinsiIdentitas" th:field="*{provinsiIdentitas}">
-                                        <option value="">-- Pilih Provinsi --</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="form-row-line row gx-3 align-items-center">
-                                <div class="col-label col-md-3">
-                                    <label class="form-label mb-0">Kabupaten/Kota<span class="badge-required">*</span></label>
-                                </div>
-                                <div class="col-input col-md-9">
-                                    <select class="form-select" id="kotaIdentitas" th:field="*{kotaIdentitas}">
-                                        <option value="">-- Pilih Kota --</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="form-row-line row gx-3 align-items-center">
-                                <div class="col-label col-md-3">
-                                    <label class="form-label mb-0">Kecamatan<span class="badge-required">*</span></label>
-                                </div>
-                                <div class="col-input col-md-9">
-                                    <select class="form-select" id="kecamatanIdentitas" th:field="*{kecamatanIdentitas}">
-                                        <option value="">-- Pilih Kecamatan --</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="form-row-line row gx-3 align-items-center">
-                                <div class="col-label col-md-3">
-                                    <label class="form-label mb-0">Kelurahan<span class="badge-required">*</span></label>
-                                </div>
-                                <div class="col-input col-md-9">
-                                    <select class="form-select" id="kelurahanIdentitas" th:field="*{kelurahanIdentitas}">
-                                        <option value="">-- Pilih Kelurahan --</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="form-row-line row gx-3 align-items-center">
-                                <div class="col-label col-md-3">
-                                    <label class="form-label mb-0">RT/RW</label>
-                                </div>
-                                <div class="col-input col-md-9">
-                                    <div class="row gx-2">
-                                        <div class="col-6">
-                                            <input type="text" class="form-control"
-                                                   id="rtIdentitas" th:field="*{rtIdentitas}" placeholder="RT"/>
-                                        </div>
-                                        <div class="col-6">
-                                            <input type="text" class="form-control"
-                                                   id="rwIdentitas" th:field="*{rwIdentitas}" placeholder="RW"/>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-row-line row gx-3 align-items-center">
-                                <div class="col-label col-md-3">
-                                    <label class="form-label mb-0">Kode Pos<span class="badge-required">*</span></label>
-                                </div>
-                                <div class="col-input col-md-9">
-                                    <input type="text" class="form-control"
-                                           id="kodePosIdentitas" th:field="*{kodePosIdentitas}"/>
-                                </div>
-                            </div>
-                        </section>
-
-                        <!-- ================== ALAMAT DOMISILI ================== -->
-                        <section class="mb-2">
-                            <div class="section-header-bar">Informasi Alamat Domisili</div>
-                            <hr class="section-divider"/>
-
-                            <div class="form-row-line row gx-3 align-items-center mb-2">
-                                <div class="col-label col-md-3">
-                                    <label class="form-label mb-0">Alamat Sesuai Domisili</label>
-                                </div>
-                                <div class="col-input col-md-9">
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="checkbox" id="domisiliSama"/>
-                                        <label class="form-check-label" for="domisiliSama">
-                                            Sesuai Identitas
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-row-line row gx-3 align-items-center">
-                                <div class="col-label col-md-3">
-                                    <label class="form-label mb-0">Alamat Domisili</label>
-                                </div>
-                                <div class="col-input col-md-9">
-                                    <input type="text" class="form-control" placeholder="Maksimal input 35 karakter"/>
-                                </div>
-                            </div>
-
-                            <div class="form-row-line row gx-3 align-items-center">
-                                <div class="col-label col-md-3">
-                                    <label class="form-label mb-0">Provinsi</label>
-                                </div>
-                                <div class="col-input col-md-9">
-                                    <select class="form-select" id="provinsiDomisili" th:field="*{provinsiDomisili}">
-                                        <option value="">-- Pilih Provinsi --</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="form-row-line row gx-3 align-items-center">
-                                <div class="col-label col-md-3">
-                                    <label class="form-label mb-0">Kabupaten/Kota</label>
-                                </div>
-                                <div class="col-input col-md-9">
-                                    <select class="form-select" id="kotaDomisili" th:field="*{kotaDomisili}">
-                                        <option value="">-- Pilih Kota --</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="form-row-line row gx-3 align-items-center">
-                                <div class="col-label col-md-3">
-                                    <label class="form-label mb-0">Kecamatan</label>
-                                </div>
-                                <div class="col-input col-md-9">
-                                    <select class="form-select" id="kecamatanDomisili" th:field="*{kecamatanDomisili}">
-                                        <option value="">-- Pilih Kecamatan --</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="form-row-line row gx-3 align-items-center">
-                                <div class="col-label col-md-3">
-                                    <label class="form-label mb-0">Kelurahan</label>
-                                </div>
-                                <div class="col-input col-md-9">
-                                    <select class="form-select" id="kelurahanDomisili" th:field="*{kelurahanDomisili}">
-                                        <option value="">-- Pilih Kelurahan --</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="form-row-line row gx-3 align-items-center">
-                                <div class="col-label col-md-3">
-                                    <label class="form-label mb-0">RT/RW</label>
-                                </div>
-                                <div class="col-input col-md-9">
-                                    <div class="row gx-2">
-                                        <div class="col-6">
-                                            <input type="text" class="form-control"
-                                                   id="rtDomisili" th:field="*{rtDomisili}" placeholder="RT"/>
-                                        </div>
-                                        <div class="col-6">
-                                            <input type="text" class="form-control"
-                                                   id="rwDomisili" th:field="*{rwDomisili}" placeholder="RW"/>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-row-line row gx-3 align-items-center">
-                                <div class="col-label col-md-3">
-                                    <label class="form-label mb-0">Kode Pos</label>
-                                </div>
-                                <div class="col-input col-md-9">
-                                    <input type="text" class="form-control"
-                                           id="kodePosDomisili" th:field="*{kodePosDomisili}"/>
-                                </div>
-                            </div>
-                        </section>
-
-                        <!-- ACTION BUTTON -->
-                        <div class="d-flex justify-content-end mt-3">
-                            <button type="submit" class="btn btn-primary-rounded">
-                                Simpan Nasabah
-                            </button>
-                        </div>
-
-                    </form>
+                    </div>
                 </div>
-            </div>
-        </div>
-    </div>
-</div>
 
-<script
-        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        crossorigin="anonymous"></script>
-<script th:src="@{/js/location-cascade.js}"></script>
+                <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+                    crossorigin="anonymous"></script>
+
+                    <script th:src="@{/js/location-cascade.js}"></script>
+                    <script th:src="@{/js/postal-autofill.js}"></script>
+                    <script th:src="@{/js/dashboard.js}"></script>
+                    
+
 </body>
+
 </html>

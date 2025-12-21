@@ -59,6 +59,8 @@ public class Nasabah {
     private String email;
 
     // ====== ALAMAT IDENTITAS ======
+    @Column(name = "alamat_identitas", length = 35)
+    private String alamatIdentitas;
     private String kodePosIdentitas;
     private String provinsiIdentitas;
     private String kotaIdentitas;
@@ -68,6 +70,8 @@ public class Nasabah {
     private String rwIdentitas;
 
     // ====== ALAMAT DOMISILI ======
+    @Column(name = "alamat_domisili", length = 35)
+    private String alamatDomisili;
     private String kodePosDomisili;
     private String provinsiDomisili;
     private String kotaDomisili;
@@ -155,6 +159,9 @@ public class Nasabah {
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
 
+    public String getAlamatIdentitas() { return alamatIdentitas; }
+    public void setAlamatIdentitas(String alamatIdentitas) { this.alamatIdentitas = alamatIdentitas; }
+
     public String getKodePosIdentitas() { return kodePosIdentitas; }
     public void setKodePosIdentitas(String kodePosIdentitas) { this.kodePosIdentitas = kodePosIdentitas; }
 
@@ -175,6 +182,9 @@ public class Nasabah {
 
     public String getRwIdentitas() { return rwIdentitas; }
     public void setRwIdentitas(String rwIdentitas) { this.rwIdentitas = rwIdentitas; }
+
+    public String getAlamatDomisili() { return alamatDomisili; }
+    public void setAlamatDomisili(String alamatDomisili) { this.alamatDomisili = alamatDomisili; }
 
     public String getKodePosDomisili() { return kodePosDomisili; }
     public void setKodePosDomisili(String kodePosDomisili) { this.kodePosDomisili = kodePosDomisili; }

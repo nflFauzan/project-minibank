@@ -12,8 +12,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.List;
-
 @Controller
 @RequestMapping("/cs")
 @RequiredArgsConstructor
@@ -22,61 +20,43 @@ public class CsCustomerController {
     private final NasabahService nasabahService;
     private final UserRepository userRepository;
 
-    // supaya /cs/dashboard jadi "Customer page"
-    @GetMapping("/dashboard")
-    public String dashboardRedirect() {
-        return "redirect:/cs/customers";
-    }
-
+    // LIST customers (default = ALL)
     @GetMapping("/customers")
-    public String customers(@RequestParam(name = "status", required = false) String status,
-                            @RequestParam(name = "new", required = false, defaultValue = "false") boolean showForm,
+    public String customers(@RequestParam(name = "status", required = false, defaultValue = "ALL") String status,
                             Model model) {
 
-        List<Nasabah> list;
-        NasabahStatus selected = null;
-
-        if (status != null && !status.isBlank() && !"ALL".equalsIgnoreCase(status)) {
-            selected = NasabahStatus.valueOf(status.toUpperCase());
-            list = nasabahService.listByStatus(selected);
+        if ("ALL".equalsIgnoreCase(status)) {
+            model.addAttribute("list", nasabahService.listAllCustomers());
         } else {
-            list = nasabahService.listAllCustomers();
+            // INACTIVE / ACTIVE / REJECTED
+            NasabahStatus st = NasabahStatus.valueOf(status.toUpperCase());
+            model.addAttribute("list", nasabahService.listByStatus(st));
         }
 
-        model.addAttribute("list", list);
-        model.addAttribute("selectedStatus", selected == null ? "ALL" : selected.name());
-        model.addAttribute("showForm", showForm);
-
-        // form backing
-        if (!model.containsAttribute("form")) {
-            model.addAttribute("form", new Nasabah());
-        }
-
-        return "cs/customer";
+        model.addAttribute("status", status.toUpperCase());
+        return "cs/customers";
     }
 
+    // FORM create nasabah
+    @GetMapping("/customers/new")
+    public String createForm(Model model) {
+        if (!model.containsAttribute("nasabah")) {
+            model.addAttribute("nasabah", new Nasabah());
+        }
+        return "cs/pendaftaran_nasabah";
+    }
+
+    // SUBMIT create nasabah
     @PostMapping("/customers")
-    public String createCustomer(@ModelAttribute("form") Nasabah form,
-                                 Authentication auth,
-                                 RedirectAttributes ra) {
+public String create(@ModelAttribute("nasabah") Nasabah form,
+                     Authentication auth,
+                     RedirectAttributes ra) {
 
-        String username = auth.getName();
-        String createdByName = userRepository.findByUsername(username)
-                .map(User::getFullName)
-                .orElse(username);
+    String createdByName = (auth != null ? auth.getName() : "SYSTEM");
+    nasabahService.createNasabah(form, createdByName);
 
-        // minimal guard
-        if (form.getNik() == null || form.getNik().isBlank() ||
-            form.getNamaLengkap() == null || form.getNamaLengkap().isBlank()) {
-            ra.addFlashAttribute("errorMessage", "NIK dan Nama wajib diisi.");
-            ra.addFlashAttribute("form", form);
-            return "redirect:/cs/customers?new=true";
-        }
+    ra.addFlashAttribute("successMessage", "Nasabah berhasil dibuat (INACTIVE).");
+    return "redirect:/cs/customers";
+}
 
-        Nasabah saved = nasabahService.createCustomer(form, createdByName);
-        ra.addFlashAttribute("successMessage",
-                "Customer dibuat dengan CIF " + saved.getCif() + " (status INACTIVE menunggu approve).");
-
-        return "redirect:/cs/customers";
-    }
 }

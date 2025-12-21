@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<!-- SIDEBAR -->
+<aside class="cs-sidebar" th:fragment="sidebar(active)">
+  <div class="cs-sidebar__top">
+    <!-- icon home kecil (opsional) -->
+    <div class="cs-mini-icon">
+      <span>🏠</span>
+    </div>
+  </div>
+
+  <nav class="cs-nav">
+    <a th:href="@{/cs/dashboard}"
+       th:classappend="${active}=='dashboard' ? ' active' : ''">Dashboard</a>
+
+    <a th:href="@{/cs/customers}"
+       th:classappend="${active}=='customers' ? ' active' : ''">Customers</a>
+
+    <a th:href="@{/cs/pembukaan_rekening}"
+       th:classappend="${active}=='rekening' ? ' active' : ''">Pembukaan Rekening</a>
+
+    <a th:href="@{/cs/produk}"
+       th:classappend="${active}=='produk' ? ' active' : ''">Pengelolaan Produk Bank</a>
+
+    <a th:href="@{/cs/tiket}"
+       th:classappend="${active}=='tiket' ? ' active' : ''">Manajemen Tiket</a>
+
+    <a th:href="@{/cs/internal}"
+       th:classappend="${active}=='internal' ? ' active' : ''">Dukungan Internal</a>
+  </nav>
+
+  <div class="cs-sidebar__bottom">
+    <a class="cs-settings" th:href="@{/cs/settings}">Settings</a>
+    <a class="cs-logout" th:href="@{/logout}">Logout</a>
+  </div>
+</aside>
+
+<!-- TOP HEADER / BANNER -->
+<header class="cs-topbar" th:fragment="topbar">
+    <div class="cs-topbar__imgwrap">
+      <img th:src="@{/images/dashboard-tazkia-minibank.png}"
+           alt="Dashboard Header"
+           class="cs-topbar__img">
+    </div>
+  
+    <div class="cs-meta">
+      <div class="cs-meta__left"
+           th:text="${nowText} ?: ${#temporals.format(T(java.time.LocalDateTime).now(),'EEEE, dd-MM-yyyy | HH:mm')}">
+        Minggu, 21-12-2025 | 12:19
+      </div>
+  
+      <div class="cs-meta__right">
+        <span th:text="${roleLabel} ?: 'Customer Service'">Customer Service</span>
+        <span class="cs-meta__sep">|</span>
+        <span th:text="${employeeId} ?: 'ID00010003'">ID00010003</span>
+      </div>
+    </div>
+  </header>
+  
+
+</body>
+</html>
