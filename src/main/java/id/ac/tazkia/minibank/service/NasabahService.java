@@ -6,7 +6,7 @@ import id.ac.tazkia.minibank.repository.NasabahRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
 
 @Service
@@ -15,91 +15,61 @@ public class NasabahService {
 
     private final NasabahRepository nasabahRepository;
 
-    public List<Nasabah> listAllCustomers() {
-        return nasabahRepository.findAllByOrderByCreatedAtDesc();
-    }
 
-    public List<Nasabah> listByStatus(NasabahStatus status) {
-        return nasabahRepository.findByStatusOrderByCreatedAtDesc(status);
-    }
+@Transactional(readOnly = true)
+public List<Nasabah> listAllCustomers() {
+    return nasabahRepository.findAll();
+}
 
-    @Transactional
-    public Nasabah createNasabah(Nasabah input, String createdByName) {
+@Transactional(readOnly = true)
+public Nasabah getById(Long id) {
+    return nasabahRepository.findById(id)
+            .orElseThrow(() -> new EntityNotFoundException("Nasabah tidak ditemukan"));
+}
 
-        // ===== CIF: FIXED LENGTH 8 (C + 7 digit) =====
-        // contoh: C0000001 s/d C9999999
-        String maxCif = nasabahRepository.findMaxCif(); // bisa null
-        int next = 1;
+@Transactional
+public Nasabah updateNasabah(Long id, Nasabah form) {
+    Nasabah n = getById(id);
 
-        if (maxCif != null && !maxCif.isBlank()) {
-            // maxCif contoh: C10000002
-            String digits = maxCif.replaceAll("\\D+", ""); // ambil angka saja
-            if (!digits.isBlank()) {
-                try {
-                    next = Integer.parseInt(digits) + 1;
-                } catch (NumberFormatException ignored) {
-                    next = 1;
-                }
-            }
-        }
+    // Salin semua field (full editable)
+    n.setNik(form.getNik());
+    n.setNamaSesuaiIdentitas(form.getNamaSesuaiIdentitas());
+    n.setNamaIbuKandung(form.getNamaIbuKandung());
+    n.setJenisKelamin(form.getJenisKelamin());
+    n.setTempatLahir(form.getTempatLahir());
+    n.setTanggalLahir(form.getTanggalLahir());
+    n.setAgama(form.getAgama());
+    n.setPenduduk(form.getPenduduk());
+    n.setStatusPernikahan(form.getStatusPernikahan());
+    n.setNegara(form.getNegara());
+    n.setEmail(form.getEmail());
+    n.setNoHp(form.getNoHp());
+    n.setPekerjaan(form.getPekerjaan());
+    n.setNamaPerusahaan(form.getNamaPerusahaan());
+    n.setJabatan(form.getJabatan());
+    n.setPenghasilanPerBulan(form.getPenghasilanPerBulan());
 
-        // pastikan 7 digit saja
-        // kalau sudah lebih dari 9999999, stop biar tidak nabrak panjang kolom
-        if (next > 9_999_999) {
-            throw new IllegalStateException("CIF sudah melebihi batas 7 digit (maks C9999999).");
-        }
+    // Alamat Identitas
+    n.setAlamatIdentitas(form.getAlamatIdentitas());
+    n.setProvinsiIdentitas(form.getProvinsiIdentitas());
+    n.setKotaIdentitas(form.getKotaIdentitas());
+    n.setKecamatanIdentitas(form.getKecamatanIdentitas());
+    n.setKelurahanIdentitas(form.getKelurahanIdentitas());
+    n.setRtIdentitas(form.getRtIdentitas());
+    n.setRwIdentitas(form.getRwIdentitas());
+    n.setKodePosIdentitas(form.getKodePosIdentitas());
 
-        String newCif = "C" + String.format("%07d", next); // selalu 8 karakter
+    // Alamat Domisili
+    n.setAlamatDomisili(form.getAlamatDomisili());
+    n.setProvinsiDomisili(form.getProvinsiDomisili());
+    n.setKotaDomisili(form.getKotaDomisili());
+    n.setKecamatanDomisili(form.getKecamatanDomisili());
+    n.setKelurahanDomisili(form.getKelurahanDomisili());
+    n.setRtDomisili(form.getRtDomisili());
+    n.setRwDomisili(form.getRwDomisili());
+    n.setKodePosDomisili(form.getKodePosDomisili());
 
-        Nasabah n = new Nasabah();
-        n.setCif(newCif);
-
-        // ===== DATA NASABAH =====
-        n.setNik(input.getNik());
-        n.setNamaLengkap(input.getNamaLengkap());
-        n.setTempatLahir(input.getTempatLahir());
-        n.setTanggalLahir(input.getTanggalLahir());
-        n.setNamaIbuKandung(input.getNamaIbuKandung());
-        n.setJenisKelamin(input.getJenisKelamin());
-        n.setPenduduk(input.getPenduduk());
-        n.setStatusPernikahan(input.getStatusPernikahan());
-        n.setAgama(input.getAgama());
-        n.setNegara(input.getNegara());
-
-        // kontak
-        n.setNoHp(input.getNoHp());
-        n.setEmail(input.getEmail());
-
-        // pekerjaan
-        n.setPekerjaan(input.getPekerjaan());
-        n.setNamaPerusahaan(input.getNamaPerusahaan());
-        n.setJabatan(input.getJabatan());
-        n.setPenghasilanPerBulan(input.getPenghasilanPerBulan());
-
-        // ===== ALAMAT IDENTITAS =====
-        n.setAlamatIdentitas(input.getAlamatIdentitas());
-        n.setProvinsiIdentitas(input.getProvinsiIdentitas());
-        n.setKotaIdentitas(input.getKotaIdentitas());
-        n.setKecamatanIdentitas(input.getKecamatanIdentitas());
-        n.setKelurahanIdentitas(input.getKelurahanIdentitas());
-        n.setRtIdentitas(input.getRtIdentitas());
-        n.setRwIdentitas(input.getRwIdentitas());
-        n.setKodePosIdentitas(input.getKodePosIdentitas());
-
-        // ===== ALAMAT DOMISILI =====
-        n.setAlamatDomisili(input.getAlamatDomisili());
-        n.setProvinsiDomisili(input.getProvinsiDomisili());
-        n.setKotaDomisili(input.getKotaDomisili());
-        n.setKecamatanDomisili(input.getKecamatanDomisili());
-        n.setKelurahanDomisili(input.getKelurahanDomisili());
-        n.setRtDomisili(input.getRtDomisili());
-        n.setRwDomisili(input.getRwDomisili());
-        n.setKodePosDomisili(input.getKodePosDomisili());
-
-        // status sebelum approval
-        n.setStatus(NasabahStatus.INACTIVE);
-        n.setCreatedBy(createdByName);
-
-        return nasabahRepository.save(n);
-    }
+    // Status tetap biarkan (jangan ubah manual di CS)
+    return nasabahRepository.save(n);
+}
 }

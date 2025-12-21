@@ -22,14 +22,14 @@ public class DashboardSummaryDto {
     public void setNasabahTerbaru(List<NasabahSummary> nasabahTerbaru) { this.nasabahTerbaru = nasabahTerbaru; }
 
     public static class NasabahSummary {
-        private Long id;
-        private String nama;
+    private Long id;
+    private String namaLengkap;
 
-        public NasabahSummary() {}
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-        public Long getId() { return id; }
-        public void setId(Long id) { this.id = id; }
-        public String getNama() { return nama; }
-        public void setNama(String nama) { this.nama = nama; }
-    }
+    public String getNamaLengkap() { return namaLengkap; }
+    public void setNamaLengkap(String namaLengkap) { this.namaLengkap = namaLengkap; }
+}
+
 }

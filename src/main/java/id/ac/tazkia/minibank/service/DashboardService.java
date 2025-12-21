@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
+    import id.ac.tazkia.minibank.entity.NasabahStatus;
 
 @Service
 public class DashboardService {
@@ -23,24 +24,27 @@ public class DashboardService {
     @Autowired
     private ProductRepository productRepository;
 
-    public DashboardSummaryDto getSummary() {
-        DashboardSummaryDto dto = new DashboardSummaryDto();
-        dto.setTotalNasabah(nasabahRepository.count());
-        dto.setTotalRekening(rekeningRepository.countByStatusActive(true));
-        dto.setTotalProduk(productRepository.count());
 
-        var recent = nasabahRepository.findTop5ByOrderByCreatedAtDesc()
-                .stream()
-                .map(n -> {
-                    DashboardSummaryDto.NasabahSummary s = new DashboardSummaryDto.NasabahSummary();
-                    s.setId(n.getId());
-                    s.setNama(n.getNamaSesuaiIdentitas());
-                    return s;
-                })
-                .collect(Collectors.toList());
-        dto.setNasabahTerbaru(recent);
-        return dto;
-    }
+public DashboardSummaryDto getSummary() {
+    DashboardSummaryDto dto = new DashboardSummaryDto();
+
+    dto.setTotalNasabah(nasabahRepository.countByStatus(NasabahStatus.ACTIVE));
+    dto.setTotalRekening(rekeningRepository.countByStatusActive(true));
+    dto.setTotalProduk(productRepository.count());
+
+    var recent = nasabahRepository.findTop5ByStatusOrderByCreatedAtDesc(NasabahStatus.ACTIVE)
+        .stream()
+        .map(n -> {
+            DashboardSummaryDto.NasabahSummary s = new DashboardSummaryDto.NasabahSummary();
+            s.setId(n.getId());
+            s.setNamaLengkap(n.getNamaSesuaiIdentitas()); // atau getNamaLengkap() kalau itu yang ada
+            return s;
+        })
+        .toList();
+
+    dto.setNasabahTerbaru(recent);
+    return dto;
+}
 
     public List<Product> getActiveProducts() {
         return productRepository.findByStatusActiveTrue();

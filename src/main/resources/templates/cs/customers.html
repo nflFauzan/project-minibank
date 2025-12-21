@@ -64,6 +64,7 @@
             <th style="padding:10px 8px;">Status</th>
             <th style="padding:10px 8px;">Created</th>
             <th style="padding:10px 8px;">Created By</th>
+            <th style="padding:10px 8px;">Action</th>
           </tr>
           </thead>
           <tbody>
@@ -79,6 +80,12 @@
             </td>
             <td style="padding:10px 8px;" th:text="${n.createdAt}">-</td>
             <td style="padding:10px 8px;" th:text="${n.createdBy}">-</td>
+            <td>
+              <a th:href="@{|/cs/customers/${n.id}|}">View</a>
+              &nbsp;
+              <a th:href="@{|/cs/customers/${n.id}/edit|}">Edit</a>
+            </td>
+            
           </tr>
           </tbody>
         </table>

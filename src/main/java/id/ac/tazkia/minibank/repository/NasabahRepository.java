@@ -21,6 +21,7 @@ public interface NasabahRepository extends JpaRepository<Nasabah, Long> {
     List<Nasabah> findByStatusInOrderByApprovedAtDesc(List<NasabahStatus> statuses);
 
     long countByStatus(NasabahStatus status);
+    List<Nasabah> findTop5ByStatusOrderByCreatedAtDesc(NasabahStatus status);
 
     @Query("select max(n.cif) from Nasabah n")
     String findMaxCif();
