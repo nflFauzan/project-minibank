@@ -23,8 +23,16 @@ public class CsDashboardController {
         DashboardSummaryDto summary = dashboardService.getSummary();
         List<Product> products = dashboardService.getActiveProducts();
 
+        // yang sudah ada
         model.addAttribute("summary", summary);
         model.addAttribute("products", products);
+
+        // FIX: ini yang dashboard.html kamu butuhin
+        model.addAttribute("totalNasabah", summary.getTotalNasabah());
+        model.addAttribute("totalRekening", summary.getTotalRekening());
+        model.addAttribute("totalProduk", summary.getTotalProduk());
+        model.addAttribute("nasabahTerbaru", summary.getNasabahTerbaru());
+
         model.addAttribute("currentDate", LocalDateTime.now().format(DateTimeFormatter.ofPattern("EEEE, dd-MM-yyyy | HH:mm")) );
         model.addAttribute("csName", "Tazkia");
         model.addAttribute("roleAndName", "| Costumer Service | ID00010003");

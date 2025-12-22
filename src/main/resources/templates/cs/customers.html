@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="utf-8"/>
+  <meta charset="utf-8" />
   <title>CS - Customers</title>
   <link rel="stylesheet" th:href="@{/css/cs-shell.css}">
 </head>
@@ -17,78 +17,65 @@
     <main class="cs-page">
 
       <div style="display:flex; align-items:center; justify-content:space-between; gap:12px;">
-        <div style="font-size:20px; font-weight:900; color:#1e3a8a;">Customer</div>
+        <div style="font-size:20px; font-weight:900; color:#1e3a8a;">Customers</div>
 
-        <div style="display:flex; gap:10px;">
-          <!-- penting: arahkan ke form lama -->
-          <a th:href="@{/cs/customers/new}"
-             style="text-decoration:none; padding:10px 12px; border-radius:10px; border:1px solid rgba(0,0,0,.12); background:#fff; font-weight:800;">
-            Create New Customer
-          </a>
-        </div>
+        <a th:href="@{/cs/customers/new}"
+           style="text-decoration:none; padding:10px 12px; border-radius:10px; border:1px solid rgba(0,0,0,.12); background:#fff; font-weight:800;">
+          + Pendaftaran Nasabah
+        </a>
       </div>
 
-      <!-- Filter -->
-      <form method="get" th:action="@{/cs/customers}"
-            style="margin-top:14px; background:#fff; border:1px solid rgba(0,0,0,.06); border-radius:16px; box-shadow:0 10px 25px rgba(0,0,0,.05); padding:14px;">
-        <div style="display:flex; align-items:center; gap:10px;">
-          <div style="font-weight:900; color:#1e3a8a;">Filter:</div>
-          <select name="status" style="height:36px; border-radius:10px; border:1px solid rgba(0,0,0,.18); padding:0 10px;">
-            <option value="ALL" th:selected="${status}=='ALL'">ALL</option>
-            <option value="ACTIVE" th:selected="${status}=='ACTIVE'">ACTIVE</option>
-            <option value="REJECTED" th:selected="${status}=='REJECTED'">REJECTED</option>
-            <option value="INACTIVE" th:selected="${status}=='INACTIVE'">INACTIVE</option>
-          </select>
+      <div style="margin-top:14px; background:#fff; border:1px solid rgba(0,0,0,.06); border-radius:16px; box-shadow:0 10px 25px rgba(0,0,0,.05); padding:14px; overflow:auto;">
 
-          <button type="submit"
-                  style="height:36px; border-radius:10px; border:0; padding:0 14px; font-weight:900; background:#a9ccff; cursor:pointer;">
-            Apply
-          </button>
-        </div>
-      </form>
-
-      <!-- List -->
-      <div style="margin-top:14px; background:#fff; border:1px solid rgba(0,0,0,.06); border-radius:16px; box-shadow:0 10px 25px rgba(0,0,0,.05); padding:14px;">
-        <div style="font-weight:900; color:#1e3a8a; margin-bottom:10px;">Customer List</div>
-
-        <div th:if="${#lists.isEmpty(list)}" style="padding:18px; color:#64748b;">
-          Tidak ada data.
-        </div>
-
-        <table th:if="${!#lists.isEmpty(list)}" style="width:100%; border-collapse:collapse;">
+        <table style="width:100%; border-collapse:collapse; min-width:980px; font-size:13px;">
           <thead>
-          <tr style="text-align:left; border-bottom:1px solid rgba(0,0,0,.08);">
+          <tr style="text-align:left; color:#64748b; font-weight:900; border-bottom:1px solid rgba(0,0,0,.08);">
             <th style="padding:10px 8px;">CIF</th>
-            <th style="padding:10px 8px;">Nama</th>
             <th style="padding:10px 8px;">NIK</th>
+            <th style="padding:10px 8px;">Nama</th>
             <th style="padding:10px 8px;">Status</th>
-            <th style="padding:10px 8px;">Created</th>
-            <th style="padding:10px 8px;">Created By</th>
-            <th style="padding:10px 8px;">Action</th>
+            <th style="padding:10px 8px;">Created At</th>
+
+            <!-- INI KOLOM BARU -->
+            <th style="padding:10px 8px; width:140px;">Action</th>
           </tr>
           </thead>
+
           <tbody>
-          <tr th:each="n : ${list}" style="border-bottom:1px solid rgba(0,0,0,.06);">
-            <td style="padding:10px 8px;" th:text="${n.cif}">-</td>
-            <td style="padding:10px 8px;" th:text="${n.namaLengkap}">-</td>
-            <td style="padding:10px 8px;" th:text="${n.nik}">-</td>
-            <td style="padding:10px 8px;">
-              <span th:text="${n.status}"
-                    style="padding:4px 10px; border-radius:999px; background:#e8f7ee; font-weight:900; font-size:12px;">
-                ACTIVE
-              </span>
-            </td>
-            <td style="padding:10px 8px;" th:text="${n.createdAt}">-</td>
-            <td style="padding:10px 8px;" th:text="${n.createdBy}">-</td>
-            <td>
-              <a th:href="@{|/cs/customers/${n.id}|}">View</a>
-              &nbsp;
-              <a th:href="@{|/cs/customers/${n.id}/edit|}">Edit</a>
-            </td>
-            
+          <tr th:if="${customers == null || #lists.isEmpty(customers)}">
+            <td colspan="6" style="padding:14px 8px; color:#94a3b8;">Belum ada data nasabah.</td>
           </tr>
+
+          <tr th:each="n : ${customers}" style="border-bottom:1px solid rgba(0,0,0,.06);">
+            <td style="padding:10px 8px; font-weight:800;" th:text="${n.cif}">-</td>
+            <td style="padding:10px 8px;" th:text="${n.nik}">-</td>
+
+            <!-- Aman kalau field namanya beda (namaLengkap / namaSesuaiIdentitas) -->
+            <td style="padding:10px 8px; font-weight:800;"
+                th:text="${n.namaLengkap != null ? n.namaLengkap : n.namaSesuaiIdentitas}">
+              -
+            </td>
+
+            <td style="padding:10px 8px;" th:text="${n.status}">-</td>
+            <td style="padding:10px 8px;" th:text="${n.createdAt}">-</td>
+
+            <!-- ACTION -->
+            <td style="padding:10px 8px;">
+              <a th:href="@{|/cs/customers/${n.id}|}"
+                 style="text-decoration:none; font-weight:900; color:#1d4ed8;">
+                View
+              </a>
+              <span style="color:#cbd5e1;"> | </span>
+              <a th:href="@{|/cs/customers/${n.id}/edit|}"
+                 style="text-decoration:none; font-weight:900; color:#1d4ed8;">
+                Edit
+              </a>
+            </td>
+          </tr>
+
           </tbody>
         </table>
+
       </div>
 
     </main>

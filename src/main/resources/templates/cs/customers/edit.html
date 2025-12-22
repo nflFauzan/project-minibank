@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8"/>
+  <title>CS - Edit Nasabah</title>
+  <link rel="stylesheet" th:href="@{/css/cs-shell.css}">
+</head>
+<body>
+<div class="cs-shell">
+  <div th:replace="~{cs/fragments :: sidebar('customers')}"></div>
+
+  <div class="cs-content">
+    <div th:replace="~{cs/fragments :: topbar}"></div>
+
+    <main class="cs-page">
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:12px;">
+        <div style="font-size:20px; font-weight:900; color:#1e3a8a;">Edit Nasabah</div>
+        <a th:href="@{/cs/customers}"
+           style="text-decoration:none; padding:10px 12px; border-radius:10px; border:1px solid rgba(0,0,0,.12); background:#fff; font-weight:800;">
+          Kembali
+        </a>
+      </div>
+
+      <div style="margin-top:14px; background:#fff; border:1px solid rgba(0,0,0,.06); border-radius:16px; box-shadow:0 10px 25px rgba(0,0,0,.05); padding:16px;">
+
+        <div th:if="${success}" style="padding:10px 12px; border-radius:10px; background:#dcfce7; border:1px solid #86efac; margin-bottom:12px;"
+             th:text="${success}"></div>
+        <div th:if="${error}" style="padding:10px 12px; border-radius:10px; background:#fee2e2; border:1px solid #fca5a5; margin-bottom:12px;"
+             th:text="${error}"></div>
+
+        <form th:action="@{|/cs/customers/${nasabah.id}|}" th:object="${nasabah}" method="post">
+
+          <div style="display:grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap:12px;">
+            <div>
+              <label style="font-weight:800; color:#334155;">CIF</label>
+              <input type="text" th:value="*{cif}" disabled
+                     style="width:100%; padding:10px; border-radius:10px; border:1px solid rgba(0,0,0,.12);"/>
+            </div>
+
+            <div>
+              <label style="font-weight:800; color:#334155;">Status</label>
+              <input type="text" th:value="*{status}" disabled
+                     style="width:100%; padding:10px; border-radius:10px; border:1px solid rgba(0,0,0,.12);"/>
+            </div>
+
+            <div>
+              <label style="font-weight:800; color:#334155;">NIK</label>
+              <input type="text" th:field="*{nik}"
+                     style="width:100%; padding:10px; border-radius:10px; border:1px solid rgba(0,0,0,.12);"/>
+            </div>
+
+            <div>
+              <label style="font-weight:800; color:#334155;">Nama Lengkap</label>
+              <input type="text" th:field="*{namaLengkap}"
+                     style="width:100%; padding:10px; border-radius:10px; border:1px solid rgba(0,0,0,.12);"/>
+            </div>
+
+            <div>
+              <label style="font-weight:800; color:#334155;">Tempat Lahir</label>
+              <input type="text" th:field="*{tempatLahir}"
+                     style="width:100%; padding:10px; border-radius:10px; border:1px solid rgba(0,0,0,.12);"/>
+            </div>
+
+            <div>
+              <label style="font-weight:800; color:#334155;">Tanggal Lahir</label>
+              <input type="date" th:field="*{tanggalLahir}"
+                     style="width:100%; padding:10px; border-radius:10px; border:1px solid rgba(0,0,0,.12);"/>
+            </div>
+
+            <div>
+              <label style="font-weight:800; color:#334155;">Nama Ibu Kandung</label>
+              <input type="text" th:field="*{namaIbuKandung}"
+                     style="width:100%; padding:10px; border-radius:10px; border:1px solid rgba(0,0,0,.12);"/>
+            </div>
+
+            <div>
+              <label style="font-weight:800; color:#334155;">Jenis Kelamin</label>
+              <input type="text" th:field="*{jenisKelamin}"
+                     style="width:100%; padding:10px; border-radius:10px; border:1px solid rgba(0,0,0,.12);"/>
+            </div>
+
+            <div>
+              <label style="font-weight:800; color:#334155;">Penduduk</label>
+              <input type="text" th:field="*{penduduk}"
+                     style="width:100%; padding:10px; border-radius:10px; border:1px solid rgba(0,0,0,.12);"/>
+            </div>
+
+            <div>
+              <label style="font-weight:800; color:#334155;">Status Pernikahan</label>
+              <input type="text" th:field="*{statusPernikahan}"
+                     style="width:100%; padding:10px; border-radius:10px; border:1px solid rgba(0,0,0,.12);"/>
+            </div>
+
+            <div>
+              <label style="font-weight:800; color:#334155;">Agama</label>
+              <input type="text" th:field="*{agama}"
+                     style="width:100%; padding:10px; border-radius:10px; border:1px solid rgba(0,0,0,.12);"/>
+            </div>
+
+            <div>
+              <label style="font-weight:800; color:#334155;">Negara</label>
+              <input type="text" th:field="*{negara}"
+                     style="width:100%; padding:10px; border-radius:10px; border:1px solid rgba(0,0,0,.12);"/>
+            </div>
+
+            <div>
+              <label style="font-weight:800; color:#334155;">No HP</label>
+              <input type="text" th:field="*{noHp}"
+                     style="width:100%; padding:10px; border-radius:10px; border:1px solid rgba(0,0,0,.12);"/>
+            </div>
+
+            <div>
+              <label style="font-weight:800; color:#334155;">Email</label>
+              <input type="email" th:field="*{email}"
+                     style="width:100%; padding:10px; border-radius:10px; border:1px solid rgba(0,0,0,.12);"/>
+            </div>
+          </div>
+
+          <div style="margin-top:18px; font-weight:900; color:#1e3a8a;">Alamat Identitas</div>
+          <div style="display:grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap:12px; margin-top:10px;">
+            <div>
+              <label style="font-weight:800; color:#334155;">Alamat (max 35)</label>
+              <input type="text" maxlength="35" th:field="*{alamatIdentitas}"
+                     style="width:100%; padding:10px; border-radius:10px; border:1px solid rgba(0,0,0,.12);"/>
+            </div>
+            <div>
+              <label style="font-weight:800; color:#334155;">Kode Pos</label>
+              <input type="text" th:field="*{kodePosIdentitas}"
+                     style="width:100%; padding:10px; border-radius:10px; border:1px solid rgba(0,0,0,.12);"/>
+            </div>
+            <div><label style="font-weight:800; color:#334155;">Provinsi</label><input type="text" th:field="*{provinsiIdentitas}" style="width:100%; padding:10px; border-radius:10px; border:1px solid rgba(0,0,0,.12);"/></div>
+            <div><label style="font-weight:800; color:#334155;">Kota</label><input type="text" th:field="*{kotaIdentitas}" style="width:100%; padding:10px; border-radius:10px; border:1px solid rgba(0,0,0,.12);"/></div>
+            <div><label style="font-weight:800; color:#334155;">Kecamatan</label><input type="text" th:field="*{kecamatanIdentitas}" style="width:100%; padding:10px; border-radius:10px; border:1px solid rgba(0,0,0,.12);"/></div>
+            <div><label style="font-weight:800; color:#334155;">Kelurahan</label><input type="text" th:field="*{kelurahanIdentitas}" style="width:100%; padding:10px; border-radius:10px; border:1px solid rgba(0,0,0,.12);"/></div>
+            <div><label style="font-weight:800; color:#334155;">RT</label><input type="text" th:field="*{rtIdentitas}" style="width:100%; padding:10px; border-radius:10px; border:1px solid rgba(0,0,0,.12);"/></div>
+            <div><label style="font-weight:800; color:#334155;">RW</label><input type="text" th:field="*{rwIdentitas}" style="width:100%; padding:10px; border-radius:10px; border:1px solid rgba(0,0,0,.12);"/></div>
+          </div>
+
+          <div style="margin-top:18px; font-weight:900; color:#1e3a8a;">Alamat Domisili</div>
+          <div style="display:grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap:12px; margin-top:10px;">
+            <div>
+              <label style="font-weight:800; color:#334155;">Alamat (max 35)</label>
+              <input type="text" maxlength="35" th:field="*{alamatDomisili}"
+                     style="width:100%; padding:10px; border-radius:10px; border:1px solid rgba(0,0,0,.12);"/>
+            </div>
+            <div>
+              <label style="font-weight:800; color:#334155;">Kode Pos</label>
+              <input type="text" th:field="*{kodePosDomisili}"
+                     style="width:100%; padding:10px; border-radius:10px; border:1px solid rgba(0,0,0,.12);"/>
+            </div>
+            <div><label style="font-weight:800; color:#334155;">Provinsi</label><input type="text" th:field="*{provinsiDomisili}" style="width:100%; padding:10px; border-radius:10px; border:1px solid rgba(0,0,0,.12);"/></div>
+            <div><label style="font-weight:800; color:#334155;">Kota</label><input type="text" th:field="*{kotaDomisili}" style="width:100%; padding:10px; border-radius:10px; border:1px solid rgba(0,0,0,.12);"/></div>
+            <div><label style="font-weight:800; color:#334155;">Kecamatan</label><input type="text" th:field="*{kecamatanDomisili}" style="width:100%; padding:10px; border-radius:10px; border:1px solid rgba(0,0,0,.12);"/></div>
+            <div><label style="font-weight:800; color:#334155;">Kelurahan</label><input type="text" th:field="*{kelurahanDomisili}" style="width:100%; padding:10px; border-radius:10px; border:1px solid rgba(0,0,0,.12);"/></div>
+            <div><label style="font-weight:800; color:#334155;">RT</label><input type="text" th:field="*{rtDomisili}" style="width:100%; padding:10px; border-radius:10px; border:1px solid rgba(0,0,0,.12);"/></div>
+            <div><label style="font-weight:800; color:#334155;">RW</label><input type="text" th:field="*{rwDomisili}" style="width:100%; padding:10px; border-radius:10px; border:1px solid rgba(0,0,0,.12);"/></div>
+          </div>
+
+          <div style="margin-top:18px; font-weight:900; color:#1e3a8a;">Pekerjaan</div>
+          <div style="display:grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap:12px; margin-top:10px;">
+            <div><label style="font-weight:800; color:#334155;">Pekerjaan</label><input type="text" th:field="*{pekerjaan}" style="width:100%; padding:10px; border-radius:10px; border:1px solid rgba(0,0,0,.12);"/></div>
+            <div><label style="font-weight:800; color:#334155;">Nama Perusahaan</label><input type="text" th:field="*{namaPerusahaan}" style="width:100%; padding:10px; border-radius:10px; border:1px solid rgba(0,0,0,.12);"/></div>
+            <div><label style="font-weight:800; color:#334155;">Jabatan</label><input type="text" th:field="*{jabatan}" style="width:100%; padding:10px; border-radius:10px; border:1px solid rgba(0,0,0,.12);"/></div>
+            <div><label style="font-weight:800; color:#334155;">Penghasilan / Bulan</label><input type="text" th:field="*{penghasilanPerBulan}" style="width:100%; padding:10px; border-radius:10px; border:1px solid rgba(0,0,0,.12);"/></div>
+          </div>
+
+          <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:16px;">
+            <button type="submit"
+                    style="padding:10px 14px; border-radius:10px; border:1px solid rgba(0,0,0,.12); background:#1d4ed8; color:#fff; font-weight:900; cursor:pointer;">
+              Simpan Perubahan
+            </button>
+          </div>
+
+        </form>
+      </div>
+
+    </main>
+  </div>
+</div>
+</body>
+</html>

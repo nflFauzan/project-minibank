@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8"/>
+  <title>CS - View Nasabah</title>
+  <link rel="stylesheet" th:href="@{/css/cs-shell.css}">
+</head>
+<body>
+<div class="cs-shell">
+  <div th:replace="~{cs/fragments :: sidebar('customers')}"></div>
+
+  <div class="cs-content">
+    <div th:replace="~{cs/fragments :: topbar}"></div>
+
+    <main class="cs-page">
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:12px;">
+        <div style="font-size:20px; font-weight:900; color:#1e3a8a;">Detail Nasabah</div>
+        <div style="display:flex; gap:10px;">
+          <a th:href="@{/cs/customers}"
+             style="text-decoration:none; padding:10px 12px; border-radius:10px; border:1px solid rgba(0,0,0,.12); background:#fff; font-weight:800;">
+            Kembali
+          </a>
+          <a th:href="@{|/cs/customers/${nasabah.id}/edit|}
+             "
+             style="text-decoration:none; padding:10px 12px; border-radius:10px; border:1px solid rgba(0,0,0,.12); background:#fff; font-weight:800;">
+            Edit
+          </a>
+        </div>
+      </div>
+
+      <div style="margin-top:14px; background:#fff; border:1px solid rgba(0,0,0,.06); border-radius:16px; box-shadow:0 10px 25px rgba(0,0,0,.05); padding:16px;">
+
+        <table style="width:100%; border-collapse:collapse; font-size:13px;">
+          <tbody>
+          <tr><td style="padding:8px; width:220px; color:#64748b; font-weight:800;">ID</td><td style="padding:8px;" th:text="${nasabah.id}"></td></tr>
+          <tr><td style="padding:8px; color:#64748b; font-weight:800;">CIF</td><td style="padding:8px;" th:text="${nasabah.cif}"></td></tr>
+          <tr><td style="padding:8px; color:#64748b; font-weight:800;">Status</td><td style="padding:8px;" th:text="${nasabah.status}"></td></tr>
+          <tr><td style="padding:8px; color:#64748b; font-weight:800;">Created At</td><td style="padding:8px;" th:text="${nasabah.createdAt}"></td></tr>
+          <tr><td style="padding:8px; color:#64748b; font-weight:800;">Created By</td><td style="padding:8px;" th:text="${nasabah.createdBy}"></td></tr>
+
+          <tr><td colspan="2" style="padding:10px 8px; font-weight:900; color:#1e3a8a;">Data Identitas</td></tr>
+          <tr><td style="padding:8px; color:#64748b; font-weight:800;">NIK</td><td style="padding:8px;" th:text="${nasabah.nik}"></td></tr>
+          <tr><td style="padding:8px; color:#64748b; font-weight:800;">Nama Lengkap</td><td style="padding:8px;" th:text="${nasabah.namaLengkap}"></td></tr>
+          <tr><td style="padding:8px; color:#64748b; font-weight:800;">Tempat Lahir</td><td style="padding:8px;" th:text="${nasabah.tempatLahir}"></td></tr>
+          <tr><td style="padding:8px; color:#64748b; font-weight:800;">Tanggal Lahir</td><td style="padding:8px;" th:text="${nasabah.tanggalLahir}"></td></tr>
+          <tr><td style="padding:8px; color:#64748b; font-weight:800;">Nama Ibu Kandung</td><td style="padding:8px;" th:text="${nasabah.namaIbuKandung}"></td></tr>
+          <tr><td style="padding:8px; color:#64748b; font-weight:800;">Jenis Kelamin</td><td style="padding:8px;" th:text="${nasabah.jenisKelamin}"></td></tr>
+          <tr><td style="padding:8px; color:#64748b; font-weight:800;">Penduduk</td><td style="padding:8px;" th:text="${nasabah.penduduk}"></td></tr>
+          <tr><td style="padding:8px; color:#64748b; font-weight:800;">Status Pernikahan</td><td style="padding:8px;" th:text="${nasabah.statusPernikahan}"></td></tr>
+          <tr><td style="padding:8px; color:#64748b; font-weight:800;">Agama</td><td style="padding:8px;" th:text="${nasabah.agama}"></td></tr>
+          <tr><td style="padding:8px; color:#64748b; font-weight:800;">Negara</td><td style="padding:8px;" th:text="${nasabah.negara}"></td></tr>
+
+          <tr><td colspan="2" style="padding:10px 8px; font-weight:900; color:#1e3a8a;">Kontak</td></tr>
+          <tr><td style="padding:8px; color:#64748b; font-weight:800;">No HP</td><td style="padding:8px;" th:text="${nasabah.noHp}"></td></tr>
+          <tr><td style="padding:8px; color:#64748b; font-weight:800;">Email</td><td style="padding:8px;" th:text="${nasabah.email}"></td></tr>
+
+          <tr><td colspan="2" style="padding:10px 8px; font-weight:900; color:#1e3a8a;">Alamat Identitas</td></tr>
+          <tr><td style="padding:8px; color:#64748b; font-weight:800;">Alamat</td><td style="padding:8px;" th:text="${nasabah.alamatIdentitas}"></td></tr>
+          <tr><td style="padding:8px; color:#64748b; font-weight:800;">Kode Pos</td><td style="padding:8px;" th:text="${nasabah.kodePosIdentitas}"></td></tr>
+          <tr><td style="padding:8px; color:#64748b; font-weight:800;">Provinsi</td><td style="padding:8px;" th:text="${nasabah.provinsiIdentitas}"></td></tr>
+          <tr><td style="padding:8px; color:#64748b; font-weight:800;">Kota</td><td style="padding:8px;" th:text="${nasabah.kotaIdentitas}"></td></tr>
+          <tr><td style="padding:8px; color:#64748b; font-weight:800;">Kecamatan</td><td style="padding:8px;" th:text="${nasabah.kecamatanIdentitas}"></td></tr>
+          <tr><td style="padding:8px; color:#64748b; font-weight:800;">Kelurahan</td><td style="padding:8px;" th:text="${nasabah.kelurahanIdentitas}"></td></tr>
+          <tr><td style="padding:8px; color:#64748b; font-weight:800;">RT</td><td style="padding:8px;" th:text="${nasabah.rtIdentitas}"></td></tr>
+          <tr><td style="padding:8px; color:#64748b; font-weight:800;">RW</td><td style="padding:8px;" th:text="${nasabah.rwIdentitas}"></td></tr>
+
+          <tr><td colspan="2" style="padding:10px 8px; font-weight:900; color:#1e3a8a;">Alamat Domisili</td></tr>
+          <tr><td style="padding:8px; color:#64748b; font-weight:800;">Alamat</td><td style="padding:8px;" th:text="${nasabah.alamatDomisili}"></td></tr>
+          <tr><td style="padding:8px; color:#64748b; font-weight:800;">Kode Pos</td><td style="padding:8px;" th:text="${nasabah.kodePosDomisili}"></td></tr>
+          <tr><td style="padding:8px; color:#64748b; font-weight:800;">Provinsi</td><td style="padding:8px;" th:text="${nasabah.provinsiDomisili}"></td></tr>
+          <tr><td style="padding:8px; color:#64748b; font-weight:800;">Kota</td><td style="padding:8px;" th:text="${nasabah.kotaDomisili}"></td></tr>
+          <tr><td style="padding:8px; color:#64748b; font-weight:800;">Kecamatan</td><td style="padding:8px;" th:text="${nasabah.kecamatanDomisili}"></td></tr>
+          <tr><td style="padding:8px; color:#64748b; font-weight:800;">Kelurahan</td><td style="padding:8px;" th:text="${nasabah.kelurahanDomisili}"></td></tr>
+          <tr><td style="padding:8px; color:#64748b; font-weight:800;">RT</td><td style="padding:8px;" th:text="${nasabah.rtDomisili}"></td></tr>
+          <tr><td style="padding:8px; color:#64748b; font-weight:800;">RW</td><td style="padding:8px;" th:text="${nasabah.rwDomisili}"></td></tr>
+
+          <tr><td colspan="2" style="padding:10px 8px; font-weight:900; color:#1e3a8a;">Pekerjaan</td></tr>
+          <tr><td style="padding:8px; color:#64748b; font-weight:800;">Pekerjaan</td><td style="padding:8px;" th:text="${nasabah.pekerjaan}"></td></tr>
+          <tr><td style="padding:8px; color:#64748b; font-weight:800;">Nama Perusahaan</td><td style="padding:8px;" th:text="${nasabah.namaPerusahaan}"></td></tr>
+          <tr><td style="padding:8px; color:#64748b; font-weight:800;">Jabatan</td><td style="padding:8px;" th:text="${nasabah.jabatan}"></td></tr>
+          <tr><td style="padding:8px; color:#64748b; font-weight:800;">Penghasilan/Bulan</td><td style="padding:8px;" th:text="${nasabah.penghasilanPerBulan}"></td></tr>
+
+          </tbody>
+        </table>
+
+      </div>
+    </main>
+  </div>
+</div>
+</body>
+</html>
