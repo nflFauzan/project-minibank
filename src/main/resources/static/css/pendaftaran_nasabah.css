@@ -1,74 +1,249 @@
-.form-card{
-    background:#fff;
-    border-radius:16px;
-    padding:22px 22px;
-    box-shadow:0 10px 25px rgba(0,0,0,.06);
-    margin-top:14px;
+/* =========
+   Nasabah Form (Create)
+   Scoped: tidak mengganggu halaman lain
+   ========= */
+
+   .nasabah-form-page{
+    --bg: #eef5ff;
+    --surface: #ffffff;
+    --text: #0f172a;
+    --muted: #64748b;
+    --border: rgba(15, 23, 42, .12);
+    --shadow: 0 10px 25px rgba(0,0,0,.06);
+    --primary: #2563eb;
+    --primary-600: #1d4ed8;
+    --ring: rgba(37, 99, 235, .25);
+    --radius: 16px;
+    color: var(--text);
   }
   
-  .form-title{
-    font-size:28px;
-    font-weight:800;
-    margin:0 0 6px 0;
-    color:#0F3FA8;
+  /* Headings */
+  .nasabah-form-page h1,
+  .nasabah-form-page h2,
+  .nasabah-form-page h3{
+    margin: 0;
+    color: var(--text);
   }
   
-  .form-subtitle{
-    margin:0 0 18px 0;
-    color:#334;
-    font-size:13px;
+  .nasabah-form-page h1{
+    font-size: 28px;
+    font-weight: 900;
+    letter-spacing: -0.02em;
   }
   
-  .section-title{
-    font-weight:800;
-    margin:18px 0 10px;
-    color:#123;
+  .nasabah-form-page h2{
+    font-size: 18px;
+    font-weight: 800;
+    color: #0b3aa6;
+    margin-top: 18px;
   }
   
-  .grid-2{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:14px 18px;
+  .nasabah-form-page p{
+    color: var(--muted);
+    margin: 8px 0 0;
+    line-height: 1.5;
   }
   
-  @media (max-width: 900px){
-    .grid-2{ grid-template-columns:1fr; }
+  /* Card container (kalau kamu sudah pakai div pembungkus konten, ini akan bikin jadi card bagus) */
+  .nasabah-form-page .card,
+  .nasabah-form-page .panel,
+  .nasabah-form-page .form-card,
+  .nasabah-form-page form{
+    background: var(--surface);
+    border: 1px solid rgba(0,0,0,.06);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
   }
   
-  .form-card input,
-  .form-card select,
-  .form-card textarea{
-    width:100%;
-    height:44px;
-    border-radius:10px;
-    border:1px solid rgba(0,0,0,.18);
-    padding:0 12px;
-    outline:none;
-    background:#fff;
+  /* Jika form kamu langsung jadi container utama, rapihin padding */
+  .nasabah-form-page form{
+    padding: 18px;
   }
   
-  .form-card textarea{
-    height:90px;
-    padding:10px 12px;
+  /* Section separator */
+  .nasabah-form-page hr{
+    border: none;
+    border-top: 1px solid rgba(15, 23, 42, .10);
+    margin: 16px 0;
   }
   
-  .form-card input:focus,
-  .form-card select:focus,
-  .form-card textarea:focus{
-    border-color:#4B7BFF;
-    box-shadow:0 0 0 3px rgba(75,123,255,.18);
+  /* Generic field styling (works walau markup kamu sederhana) */
+  .nasabah-form-page label{
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 800;
+    color: #334155;
+    margin-bottom: 6px;
   }
   
-  .btn-primary{
-    display:inline-block;
-    border:none;
-    border-radius:10px;
-    padding:12px 16px;
-    background:#0F3FA8;
-    color:#fff;
-    font-weight:800;
-    cursor:pointer;
+  .nasabah-form-page .hint,
+  .nasabah-form-page small{
+    display: block;
+    margin-top: 6px;
+    font-size: 11px;
+    color: var(--muted);
   }
   
-  .btn-primary:hover{ filter:brightness(1.05); }
+  /* Inputs */
+  .nasabah-form-page input[type="text"],
+  .nasabah-form-page input[type="email"],
+  .nasabah-form-page input[type="number"],
+  .nasabah-form-page input[type="date"],
+  .nasabah-form-page input[type="tel"],
+  .nasabah-form-page input[type="password"],
+  .nasabah-form-page select,
+  .nasabah-form-page textarea{
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px 12px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: #fff;
+    color: var(--text);
+    outline: none;
+    transition: border-color .15s ease, box-shadow .15s ease, transform .05s ease;
+    font-size: 13px;
+  }
+  
+  .nasabah-form-page textarea{
+    min-height: 92px;
+    resize: vertical;
+  }
+  
+  .nasabah-form-page input::placeholder,
+  .nasabah-form-page textarea::placeholder{
+    color: rgba(100,116,139,.75);
+  }
+  
+  .nasabah-form-page input:focus,
+  .nasabah-form-page select:focus,
+  .nasabah-form-page textarea:focus{
+    border-color: rgba(37, 99, 235, .65);
+    box-shadow: 0 0 0 4px var(--ring);
+  }
+  
+  .nasabah-form-page input:disabled,
+  .nasabah-form-page select:disabled,
+  .nasabah-form-page textarea:disabled{
+    background: rgba(15, 23, 42, .04);
+    color: rgba(15, 23, 42, .55);
+  }
+  
+  /* Radio / Checkbox basic: biar rapi tapi tidak “breaking” */
+  .nasabah-form-page input[type="radio"],
+  .nasabah-form-page input[type="checkbox"]{
+    accent-color: var(--primary);
+  }
+  
+  .nasabah-form-page .radio-group,
+  .nasabah-form-page .checkbox-group{
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  
+  .nasabah-form-page .radio-item,
+  .nasabah-form-page .checkbox-item{
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: #1f2937;
+  }
+  
+  /* Layout helper (kalau kamu punya container grid/row) */
+  .nasabah-form-page .form-grid{
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px 18px;
+  }
+  
+  .nasabah-form-page .form-row{
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px 18px;
+  }
+  
+  .nasabah-form-page .field{
+    margin-bottom: 12px;
+  }
+  
+  @media (max-width: 920px){
+    .nasabah-form-page .form-grid,
+    .nasabah-form-page .form-row{
+      grid-template-columns: 1fr;
+    }
+  }
+  
+  /* Buttons (umum) */
+  .nasabah-form-page .btn,
+  .nasabah-form-page button,
+  .nasabah-form-page input[type="submit"]{
+    border: 1px solid rgba(0,0,0,.06);
+    border-radius: 12px;
+    padding: 10px 14px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: transform .05s ease, box-shadow .15s ease, background .15s ease, border-color .15s ease;
+  }
+  
+  .nasabah-form-page .btn-primary{
+    background: var(--primary);
+    color: #fff;
+    border-color: rgba(37,99,235,.35);
+  }
+  
+  .nasabah-form-page .btn-primary:hover{
+    background: var(--primary-600);
+    box-shadow: 0 10px 18px rgba(37,99,235,.18);
+  }
+  
+  .nasabah-form-page .btn-secondary{
+    background: #fff;
+    color: var(--primary);
+    border-color: rgba(37,99,235,.25);
+  }
+  
+  .nasabah-form-page .btn-secondary:hover{
+    background: rgba(37,99,235,.06);
+  }
+  
+  .nasabah-form-page .btn:active,
+  .nasabah-form-page button:active,
+  .nasabah-form-page input[type="submit"]:active{
+    transform: translateY(1px);
+  }
+  
+  /* Table-like legacy spacing (kalau form kamu masih pakai table) */
+  .nasabah-form-page table{
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 10px;
+  }
+  
+  .nasabah-form-page td{
+    vertical-align: top;
+    padding-right: 14px;
+  }
+  
+  /* Error / success helpers (kalau pakai flash msg) */
+  .nasabah-form-page .alert{
+    border-radius: 14px;
+    padding: 12px 14px;
+    margin: 12px 0;
+    border: 1px solid rgba(0,0,0,.06);
+  }
+  
+  .nasabah-form-page .alert-success{
+    background: rgba(16,185,129,.10);
+    border-color: rgba(16,185,129,.25);
+    color: #065f46;
+  }
+  
+  .nasabah-form-page .alert-error{
+    background: rgba(239,68,68,.10);
+    border-color: rgba(239,68,68,.25);
+    color: #7f1d1d;
+  }
   
