@@ -72,16 +72,17 @@ public String openSelectCustomer(@RequestParam(required = false) String q, Model
     }
 
     // view account
-    @GetMapping("/{id}")
-    public String view(@PathVariable Long id, Model model, RedirectAttributes ra) {
-        try {
-            model.addAttribute("acc", rekeningService.getAccountById(id));
-            return "cs/account/view";
-        } catch (Exception e) {
-            ra.addFlashAttribute("error", e.getMessage());
-            return "redirect:/cs/account";
-        }
+@GetMapping("/{id}")
+public String view(@PathVariable Long id, Model model, RedirectAttributes ra) {
+    try {
+        model.addAttribute("account", rekeningService.getAccountById(id));
+        return "cs/account/view";
+    } catch (Exception e) {
+        ra.addFlashAttribute("error", e.getMessage());
+        return "redirect:/cs/account";
     }
+}
+
 
     // close account
     @PostMapping("/{id}/close")
