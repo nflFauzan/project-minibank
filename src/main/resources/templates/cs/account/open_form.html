@@ -1,23 +1,59 @@
 <!doctype html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <title>Open New Account</title>
-  <link rel="stylesheet" th:href="@{/css/minibank.css}">
-  <link rel="stylesheet" th:href="@{/css/account.css}">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Account</title>
+
+ <!-- Samakan dengan halaman CS lain -->
+ <link rel="stylesheet" th:href="@{/css/cs-shell.css}">
+ <link rel="stylesheet" th:href="@{/css/custom.css}">
+ <link rel="stylesheet" th:href="@{/css/minibank-ui.css}">
+ <link rel="stylesheet" th:href="@{/css/account.css}">
 </head>
+
 <body>
+<div class="cs-shell">
+ <div th:replace="~{cs/fragments :: sidebar('account')}"></div>
 
-<h2>Open New Account</h2>
+ <div class="cs-content">
+   <div th:replace="~{cs/fragments :: topbar}"></div>
 
-<div th:if="${error}" class="alert error" th:text="${error}"></div>
-<div th:if="${success}" class="alert success" th:text="${success}"></div>
+   <main class="cs-page">
+<div class="page-header">
+  <div>
+    <h2 class="page-title">Open New Account</h2>
+    <p class="page-subtitle">Lengkapi data pembukaan rekening nasabah.</p>
+  </div>
+
+  <div class="page-actions">
+    <a class="btn" th:href="@{/cs/account/open}">Back</a>
+  </div>
+</div>
+
+<div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+<div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
 
 <div class="card">
-  <h3>Customer Information</h3>
-  <div><b th:text="${nasabah.namaSesuaiIdentitas}">Nama</b></div>
-  <div class="muted">CIF: <span th:text="${nasabah.cif}">CIF</span></div>
-  <div class="muted">Email: <span th:text="${nasabah.email}">email</span></div>
-  <div class="muted">Phone: <span th:text="${nasabah.noHp}">hp</span></div>
+  <h3 class="card-title">Customer Information</h3>
+
+  <div class="grid-2">
+    <div>
+      <div class="muted">Customer Name</div>
+      <div class="value" th:text="${nasabah.namaSesuaiIdentitas}">Nama</div>
+
+      <div class="muted" style="margin-top:8px;">CIF</div>
+      <div class="value" th:text="${nasabah.cif}">CIF</div>
+    </div>
+
+    <div>
+      <div class="muted">Email</div>
+      <div class="value" th:text="${nasabah.email}">email</div>
+
+      <div class="muted" style="margin-top:8px;">Phone</div>
+      <div class="value" th:text="${nasabah.noHp}">hp</div>
+    </div>
+  </div>
 </div>
 
 <form method="post"
@@ -26,26 +62,37 @@
       class="card"
       style="margin-top:16px;">
 
-  <label>Product *</label>
-  <select th:field="*{produkId}" required>
-    <option value="">-- Pilih Product --</option>
-    <option th:each="p : ${products}"
-            th:value="${p.id}"
-            th:text="${p.namaProduk + ' (' + p.kodeProduk + ')'}">
-    </option>
-  </select>
-  
-  <label style="margin-top:12px;">Nominal Setoran Awal *</label>
-  <input type="number" step="0.01" min="0" th:field="*{nominalSetoranAwal}" required>
+  <div class="form-grid-3">
+    <div class="form-group">
+      <label>Product *</label>
+      <select th:field="*{produkId}" required>
+        <option value="" disabled selected>-- Pilih Product --</option>
+        <option th:each="p : ${products}"
+                th:value="${p.id}"
+                th:text="${p.namaProduk + ' (' + p.kodeProduk + ')'}">
+        </option>
+      </select>
+    </div>
 
-  <label style="margin-top:12px;">Tujuan Pembukaan Rekening *</label>
-  <input type="text" th:field="*{tujuanPembukaan}" required>
+    <div class="form-group">
+      <label>Nominal Setoran Awal *</label>
+      <input type="number" step="0.01" min="0" th:field="*{nominalSetoranAwal}" required>
+    </div>
 
-  <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:16px;">
+    <div class="form-group">
+      <label>Tujuan Pembukaan Rekening *</label>
+      <input type="text" th:field="*{tujuanPembukaan}" required>
+    </div>
+  </div>
+
+  <div class="form-actions">
     <a class="btn" th:href="@{/cs/account/open}">Cancel</a>
     <button class="btn btn-primary" type="submit">Open Account</button>
   </div>
 </form>
 
+</main>
+</div>
+</div>
 </body>
 </html>

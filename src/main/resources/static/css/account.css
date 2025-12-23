@@ -39,7 +39,7 @@
   .link-danger{
     background:none; border:none; padding:0;
     color:#ef4444; cursor:pointer;
-    font: inherit;
+    font: "Times New Roman", Times, serif;
   }
   
   .btn{
@@ -105,4 +105,55 @@
   }
   .alert.success{ background:#ecfdf5; border-color:#bbf7d0; }
   .alert.error{ background:#fef2f2; border-color:#fecaca; }
+  
+  .page-header{
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    gap:16px;
+    margin-bottom:16px;
+  }
+  .page-title{ margin:0; font-size:22px; }
+  .page-subtitle{ margin:6px 0 0; opacity:.75; }
+  
+  .card{
+    background:#fff;
+    border-radius:14px;
+    padding:16px;
+    box-shadow: 0 6px 24px rgba(0,0,0,.06);
+  }
+  
+  .card-title{ margin:0 0 12px; font-size:16px; }
+  
+  .grid-2{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:16px;
+  }
+  .muted{ font-size:12px; opacity:.7; }
+  .value{ font-weight:600; }
+  
+  .form-grid-3{
+    display:grid;
+    grid-template-columns: 1.3fr 1fr 1fr;
+    gap:14px;
+  }
+  .form-group label{ display:block; font-weight:600; margin-bottom:6px; }
+  .form-group input, .form-group select{
+    width:100%;
+    padding:10px 12px;
+    border:1px solid rgba(0,0,0,.12);
+    border-radius:10px;
+    outline:none;
+  }
+  .form-actions{
+    display:flex;
+    justify-content:flex-end;
+    gap:10px;
+    margin-top:16px;
+  }
+  
+  .alert{ padding:12px 14px; border-radius:10px; margin:12px 0; }
+  .alert-error{ background:#ffecec; border:1px solid #ffb1b1; }
+  .alert-success{ background:#eaffea; border:1px solid #b0ffb0; }
   

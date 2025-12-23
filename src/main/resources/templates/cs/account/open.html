@@ -1,18 +1,26 @@
 <!doctype html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <title>Select Customer</title>
-  <link rel="stylesheet" th:href="@{/css/minibank.css}">
-  <link rel="stylesheet" th:href="@{/css/account.css}">
-</head>
-<body>
-    <!-- SIDEBAR: wajib dari fragments -->
-    <div th:replace="~{cs/fragments :: sidebar('account')}"></div>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Open Account</title>
 
-    <div class="cs-main">
-      <!-- TOPBAR: wajib dari fragments -->
-      <div th:replace="~{cs/fragments :: topbar}"></div>
-  <main>
+<!-- Samakan dengan halaman CS lain -->
+<link rel="stylesheet" th:href="@{/css/cs-shell.css}">
+<link rel="stylesheet" th:href="@{/css/custom.css}">
+<link rel="stylesheet" th:href="@{/css/minibank-ui.css}">
+<link rel="stylesheet" th:href="@{/css/account.css}">
+</head>
+
+<body>
+<div class="cs-shell">
+<div th:replace="~{cs/fragments :: sidebar('account')}"></div>
+
+<div class="cs-content">
+  <div th:replace="~{cs/fragments :: topbar}"></div>
+
+  <main class="cs-page">
+
     <div style="display:flex; justify-content:space-between; align-items:center; gap:12px;">
       <h2 style="margin:0;">Select Customer for Account Opening</h2>
       <a class="btn btn-ghost" th:href="@{/cs/account}">Back to Account List</a>
@@ -45,6 +53,7 @@
       </div>
     </div>
   </main>
+</div>
 </div>
 </body>
 </html>

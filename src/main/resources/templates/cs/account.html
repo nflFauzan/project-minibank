@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Account</title>
-
   <!-- Samakan dengan halaman CS lain -->
   <link rel="stylesheet" th:href="@{/css/cs-shell.css}">
   <link rel="stylesheet" th:href="@{/css/custom.css}">
@@ -12,18 +11,16 @@
   <link rel="stylesheet" th:href="@{/css/account.css}">
 </head>
 
-<body th:with="activeMenu='account'">
-  <div class="cs-shell">
-    <!-- SIDEBAR: wajib dari fragments -->
-      <div th:replace="~{cs/fragments :: sidebar('account')}"></div>
+<body>
+<div class="cs-shell">
+  <div th:replace="~{cs/fragments :: sidebar('account')}"></div>
 
-    <div class="cs-main">
-      <!-- TOPBAR: wajib dari fragments -->
-      <div th:replace="~{cs/fragments :: topbar}"></div>
+  <div class="cs-content">
+    <div th:replace="~{cs/fragments :: topbar}"></div>
 
-      <main class="cs-content">
+    <main class="cs-page">
         <div style="display:flex; align-items:center; justify-content:space-between; gap:12px;">
-            <div style="font-size:20px; font-weight:900; color:#1e3a8a;">Account</div>
+          <div style="font-size:20px; font-weight:900; color:#1e3a8a;">Account</div>
     
             <a th:href="@{/cs/account/open}"
                style="text-decoration:none; padding:10px 12px; border-radius:10px; border:1px solid rgba(0,0,0,.12); background:#fff; font-weight:800;">
