@@ -18,8 +18,8 @@
     <a th:href="@{/cs/customers}"
        th:classappend="${active}=='customers' ? ' active' : ''">Customers</a>
 
-    <a th:href="@{/cs/pembukaan_rekening}"
-       th:classappend="${active}=='rekening' ? ' active' : ''">Pembukaan Rekening</a>
+    <a th:href="@{/cs/account}"
+       th:classappend="${activeMenu=='account'} ? ' active' : ''">Account</a>
 
     <a th:href="@{/cs/produk}"
        th:classappend="${active}=='produk' ? ' active' : ''">Pengelolaan Produk Bank</a>

@@ -1,0 +1,67 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Account Detail</title>
+  <link rel="stylesheet" th:href="@{/css/minibank.css}">
+  <link rel="stylesheet" th:href="@{/css/account.css}">
+</head>
+<body>
+    <!-- SIDEBAR: wajib dari fragments -->
+    <div th:replace="~{cs/fragments :: sidebar('account')}"></div>
+
+    <div class="cs-main">
+      <!-- TOPBAR: wajib dari fragments -->
+      <div th:replace="~{cs/fragments :: topbar}"></div>
+  <main>
+    <div style="display:flex; justify-content:space-between; align-items:center; gap:12px;">
+      <h2 style="margin:0;">Account Detail</h2>
+      <a class="btn btn-ghost" th:href="@{/cs/account}">Back</a>
+    </div>
+
+    <div class="card">
+      <div class="grid2">
+        <div>
+          <div class="muted">Nomor Rekening</div>
+          <div style="font-weight:900; font-size:20px;" th:text="${account.nomorRekening}">543...</div>
+          <div class="muted">Status: <span th:text="${account.statusActive ? 'ACTIVE' : 'CLOSED'}">ACTIVE</span></div>
+        </div>
+        <div>
+          <div class="muted">Produk</div>
+          <div th:text="${account.produk}">Produk</div>
+          <div class="muted">Setoran Awal: <span th:text="${account.nominalSetoranAwal}">0</span></div>
+        </div>
+      </div>
+
+      <hr style="border:none; border-top:1px solid rgba(0,0,0,.08); margin:14px 0;">
+
+      <div class="grid2">
+        <div>
+          <div class="muted">Nama Nasabah</div>
+          <div style="font-weight:800;" th:text="${account.namaNasabah}">Nama</div>
+          <div class="muted">CIF: <span th:text="${account.cifNasabah}">CIF</span></div>
+          <div class="muted">NIK: <span th:text="${account.nik}">NIK</span></div>
+        </div>
+        <div>
+          <div class="muted">Kontak</div>
+          <div class="muted">Email: <span th:text="${account.email}">email</span></div>
+          <div class="muted">Phone: <span th:text="${account.nomorTelepon}">hp</span></div>
+          <div class="muted">Cabang: <span th:text="${account.cabangPembukaan}">543</span></div>
+          <div class="muted">Petugas CS: <span th:text="${account.petugasCs}">cs</span></div>
+        </div>
+      </div>
+
+      <div style="margin-top:12px;">
+        <div class="muted">Tujuan Pembukaan</div>
+        <div th:text="${account.tujuanPembukaan}">-</div>
+      </div>
+
+      <div class="actions-bar" style="margin-top:16px;">
+        <form th:if="${account.statusActive}" th:action="@{/cs/account/{id}/close(id=${account.id})}" method="post">
+          <button class="btn btn-danger" type="submit" onclick="return confirm('Close account ini?')">Close Account</button>
+        </form>
+      </div>
+    </div>
+  </main>
+</div>
+</body>
+</html>

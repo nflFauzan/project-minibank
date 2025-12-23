@@ -1,0 +1,51 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Open New Account</title>
+  <link rel="stylesheet" th:href="@{/css/minibank.css}">
+  <link rel="stylesheet" th:href="@{/css/account.css}">
+</head>
+<body>
+
+<h2>Open New Account</h2>
+
+<div th:if="${error}" class="alert error" th:text="${error}"></div>
+<div th:if="${success}" class="alert success" th:text="${success}"></div>
+
+<div class="card">
+  <h3>Customer Information</h3>
+  <div><b th:text="${nasabah.namaSesuaiIdentitas}">Nama</b></div>
+  <div class="muted">CIF: <span th:text="${nasabah.cif}">CIF</span></div>
+  <div class="muted">Email: <span th:text="${nasabah.email}">email</span></div>
+  <div class="muted">Phone: <span th:text="${nasabah.noHp}">hp</span></div>
+</div>
+
+<form method="post"
+      th:action="@{/cs/account/open/{id}(id=${nasabah.id})}"
+      th:object="${form}"
+      class="card"
+      style="margin-top:16px;">
+
+  <label>Product *</label>
+  <select th:field="*{produkId}" required>
+    <option value="">-- Pilih Product --</option>
+    <option th:each="p : ${products}"
+            th:value="${p.id}"
+            th:text="${p.namaProduk + ' (' + p.kodeProduk + ')'}">
+    </option>
+  </select>
+  
+  <label style="margin-top:12px;">Nominal Setoran Awal *</label>
+  <input type="number" step="0.01" min="0" th:field="*{nominalSetoranAwal}" required>
+
+  <label style="margin-top:12px;">Tujuan Pembukaan Rekening *</label>
+  <input type="text" th:field="*{tujuanPembukaan}" required>
+
+  <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:16px;">
+    <a class="btn" th:href="@{/cs/account/open}">Cancel</a>
+    <button class="btn btn-primary" type="submit">Open Account</button>
+  </div>
+</form>
+
+</body>
+</html>

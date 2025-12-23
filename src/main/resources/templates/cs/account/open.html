@@ -1,0 +1,50 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Select Customer</title>
+  <link rel="stylesheet" th:href="@{/css/minibank.css}">
+  <link rel="stylesheet" th:href="@{/css/account.css}">
+</head>
+<body>
+    <!-- SIDEBAR: wajib dari fragments -->
+    <div th:replace="~{cs/fragments :: sidebar('account')}"></div>
+
+    <div class="cs-main">
+      <!-- TOPBAR: wajib dari fragments -->
+      <div th:replace="~{cs/fragments :: topbar}"></div>
+  <main>
+    <div style="display:flex; justify-content:space-between; align-items:center; gap:12px;">
+      <h2 style="margin:0;">Select Customer for Account Opening</h2>
+      <a class="btn btn-ghost" th:href="@{/cs/account}">Back to Account List</a>
+    </div>
+
+    <div th:if="${error}" class="alert error" th:text="${error}"></div>
+
+    <form method="get" th:action="@{/cs/account/open}" class="toolbar">
+      <input type="text" name="search" placeholder="Search by CIF, name, NIK, email..." th:value="${search}">
+      <button type="submit" class="btn">Search</button>
+      <a class="btn btn-ghost" th:href="@{/cs/account/open}">Clear</a>
+    </form>
+
+    <div class="stack">
+      <div class="card customer" th:each="c : ${customers}">
+        <div style="display:flex; justify-content:space-between; gap:12px; align-items:flex-start;">
+          <div>
+            <div style="font-weight:800;" th:text="${c.namaLengkap}">Nama</div>
+            <div class="muted">Customer Number: <span th:text="${c.cif}">CIF</span></div>
+            <div class="muted">Email: <span th:text="${c.email}">email</span></div>
+            <div class="muted">Phone: <span th:text="${c.noHp}">hp</span></div>
+            <div class="muted">Status: <span th:text="${c.status}">ACTIVE</span></div>
+          </div>
+          <a class="btn btn-primary" th:href="@{/cs/account/open/{id}(id=${c.id})}">Open</a>
+        </div>
+      </div>
+
+      <div th:if="${#lists.isEmpty(customers)}" class="muted" style="padding:12px;">
+        Tidak ada nasabah ACTIVE yang bisa dibuka rekeningnya.
+      </div>
+    </div>
+  </main>
+</div>
+</body>
+</html>

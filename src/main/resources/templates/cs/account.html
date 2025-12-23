@@ -1,0 +1,102 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Account</title>
+
+  <!-- Samakan dengan halaman CS lain -->
+  <link rel="stylesheet" th:href="@{/css/cs-shell.css}">
+  <link rel="stylesheet" th:href="@{/css/custom.css}">
+  <link rel="stylesheet" th:href="@{/css/minibank-ui.css}">
+  <link rel="stylesheet" th:href="@{/css/account.css}">
+</head>
+
+<body th:with="activeMenu='account'">
+  <div class="cs-shell">
+    <!-- SIDEBAR: wajib dari fragments -->
+      <div th:replace="~{cs/fragments :: sidebar('account')}"></div>
+
+    <div class="cs-main">
+      <!-- TOPBAR: wajib dari fragments -->
+      <div th:replace="~{cs/fragments :: topbar}"></div>
+
+      <main class="cs-content">
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:12px;">
+            <div style="font-size:20px; font-weight:900; color:#1e3a8a;">Account</div>
+    
+            <a th:href="@{/cs/account/open}"
+               style="text-decoration:none; padding:10px 12px; border-radius:10px; border:1px solid rgba(0,0,0,.12); background:#fff; font-weight:800;">
+               Create New Account
+            </a>
+          </div>
+
+        <div th:if="${success}" class="alert success" th:text="${success}"></div>
+        <div th:if="${error}" class="alert error" th:text="${error}"></div>
+
+        <form method="get" th:action="@{/cs/account}" class="toolbar" style="margin-top:12px;">
+          <input type="text" name="search"
+                 placeholder="Search by account number or customer name..."
+                 th:value="${search}">
+          <select name="status">
+            <option value="ALL" th:selected="${status == 'ALL'}">ALL</option>
+            <option value="ACTIVE" th:selected="${status == 'ACTIVE'}">ACTIVE</option>
+            <option value="CLOSED" th:selected="${status == 'CLOSED'}">CLOSED</option>
+          </select>
+          <button type="submit" class="btn">Search</button>
+          <a class="btn btn-ghost" th:href="@{/cs/account(status='ACTIVE')}">Clear</a>
+        </form>
+
+        <div class="card" style="margin-top:12px;">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Nomor Rekening</th>
+                <th>Nasabah</th>
+                <th>Produk</th>
+                <th>Setoran Awal</th>
+                <th>Status</th>
+                <th>ACTIONS</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="a : ${accounts}">
+                <td th:text="${a.nomorRekening}">54300000101</td>
+                <td>
+                  <div style="font-weight:700;" th:text="${a.namaNasabah}">Nama</div>
+                  <div class="muted" th:text="${a.cifNasabah}">CIF</div>
+                </td>
+                <td th:text="${a.produk}">Produk</td>
+                <td th:text="${a.nominalSetoranAwal}">0</td>
+                <td>
+                  <span class="badge" th:text="${a.statusActive ? 'ACTIVE' : 'CLOSED'}">ACTIVE</span>
+                </td>
+                <td class="actions">
+                  <a th:href="@{/cs/account/{id}(id=${a.id})}">View</a>
+                  <span class="sep">|</span>
+
+                  <form th:if="${a.statusActive}"
+                        th:action="@{/cs/account/{id}/close(id=${a.id})}"
+                        method="post"
+                        style="display:inline;">
+                    <input type="hidden" th:if="${_csrf != null}"
+                           th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                    <button class="link-danger" type="submit"
+                            onclick="return confirm('Close account ini?')">Close</button>
+                  </form>
+
+                  <span th:if="${!a.statusActive}" class="muted">Closed</span>
+                </td>
+              </tr>
+
+              <tr th:if="${#lists.isEmpty(accounts)}">
+                <td colspan="6" class="muted" style="padding:16px;">Tidak ada rekening.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </main>
+    </div>
+  </div>
+</body>
+</html>
