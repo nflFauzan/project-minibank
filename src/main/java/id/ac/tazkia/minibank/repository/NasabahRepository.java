@@ -47,4 +47,9 @@ public interface NasabahRepository extends JpaRepository<Nasabah, Long> {
        default List<Nasabah> findActiveCustomers() {
         return findByStatus(NasabahStatus.ACTIVE);
     }
+
+    // ===== KOMPATIBILITAS METHOD LAMA (JANGAN DIHAPUS) =====
+default List<Nasabah> findByStatusActiveTrue() {
+    return findByStatus(NasabahStatus.ACTIVE);
+}
 }

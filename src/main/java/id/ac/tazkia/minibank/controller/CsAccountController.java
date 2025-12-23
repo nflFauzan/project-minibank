@@ -1,5 +1,6 @@
 package id.ac.tazkia.minibank.controller;
 
+import id.ac.tazkia.minibank.entity.NasabahStatus;
 import id.ac.tazkia.minibank.entity.Nasabah;
 import id.ac.tazkia.minibank.service.RekeningService;
 import jakarta.persistence.EntityNotFoundException;
@@ -30,12 +31,15 @@ public class CsAccountController {
     }
 
     // /cs/account/open -> list nasabah eligible (ACTIVE)
-    @GetMapping("/open")
-    public String openList(Model model) {
-        List<Nasabah> customers = rekeningService.listEligibleCustomers();
-        model.addAttribute("customers", customers);
-        return "cs/account/open_list";
-    }
+@GetMapping("/open")
+public String openSelectCustomer(@RequestParam(required = false) String q, Model model) {
+    List<Nasabah> customers = rekeningService.listEligibleCustomers(NasabahStatus.ACTIVE, q);
+    model.addAttribute("customers", customers);
+    model.addAttribute("q", q);
+    return "cs/account/open";
+}
+
+
 
     // /cs/account/open/{id} -> form open account untuk nasabah id
     @GetMapping("/open/{id}")

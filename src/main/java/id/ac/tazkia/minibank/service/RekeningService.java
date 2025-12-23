@@ -40,11 +40,14 @@ public class RekeningService {
         return rekeningRepository.findByStatus(status);
     }
 
-    @Transactional(readOnly = true)
-    public List<Nasabah> listEligibleCustomers() {
-        // sesuai requirement kamu: hanya ACTIVE boleh buka rekening
-        return nasabahRepository.findByStatus(NasabahStatus.ACTIVE);
+@Transactional(readOnly = true)
+public List<Nasabah> listEligibleCustomers(NasabahStatus status, String q) {
+    if (q != null && !q.isBlank()) {
+        return nasabahRepository.searchActiveForAccountOpen(status, q);
     }
+   return nasabahRepository.findByStatus(NasabahStatus.ACTIVE);
+
+}
 
     @Transactional(readOnly = true)
     public Nasabah getNasabahActiveById(Long id) {
