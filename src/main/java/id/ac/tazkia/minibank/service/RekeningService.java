@@ -12,6 +12,10 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import id.ac.tazkia.minibank.entity.User;
+import id.ac.tazkia.minibank.repository.UserRepository;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -20,10 +24,11 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class RekeningService {
-
+    
     private final RekeningRepository rekeningRepository;
     private final NasabahRepository nasabahRepository;
     private final ProdukTabunganRepository produkTabunganRepository;
+    private final UserRepository userRepository;
 
     @Data
     public static class OpenAccountForm {
@@ -111,7 +116,7 @@ public List<Nasabah> listEligibleCustomers(NasabahStatus status, String q) {
         r.setTanggalPembukaan(LocalDate.now());
 
         r.setCabangPembukaan("543");
-        r.setPetugasCs("CS");
+        r.setPetugasCs(currentUserFullNameOrUsername());
 
         return rekeningRepository.save(r);
     }
@@ -122,4 +127,15 @@ public List<Nasabah> listEligibleCustomers(NasabahStatus status, String q) {
         r.setStatusActive(false);
         rekeningRepository.save(r);
     }
+
+    private String currentUserFullNameOrUsername() {
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    if (auth == null || !auth.isAuthenticated()) return "UNKNOWN";
+
+    String username = auth.getName(); // ini pasti ada (karena login pakai username)
+    return userRepository.findByUsername(username)
+            .map(u -> (u.getFullName() != null && !u.getFullName().isBlank()) ? u.getFullName() : u.getUsername())
+            .orElse(username);
+}
+
 }
