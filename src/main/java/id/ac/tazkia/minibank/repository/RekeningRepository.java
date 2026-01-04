@@ -1,5 +1,6 @@
 package id.ac.tazkia.minibank.repository;
 
+import java.math.BigDecimal;
 import id.ac.tazkia.minibank.entity.Rekening;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -45,4 +46,7 @@ public interface RekeningRepository extends JpaRepository<Rekening, Long> {
 
     // biar DashboardService kamu gak error lagi
     long countByStatusActive(boolean statusActive);
+    
+    @Query("select coalesce(sum(r.nominalSetoranAwal), 0) from Rekening r where r.statusActive = true")
+    BigDecimal sumNominalSetoranAwalActive();   
 }

@@ -1,0 +1,113 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Teller Layout</title>
+
+  <!-- fallback kecil biar layout gak jadi link biru kalau css miss -->
+  <style>
+    .cs-shell{display:flex;min-height:100vh}
+    .cs-sidebar{width:240px;flex:0 0 240px}
+    .cs-main{flex:1;min-width:0}
+    .cs-topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 18px;border-bottom:1px solid rgba(0,0,0,.06)}
+    .cs-content{padding:18px}
+    .cs-nav a{display:block;padding:10px 12px;border-radius:10px;text-decoration:none}
+    .cs-nav a.active{font-weight:800}
+    .cs-card{background:#fff;border:1px solid rgba(0,0,0,.06);border-radius:16px;box-shadow:0 10px 25px rgba(0,0,0,.05)}
+  </style>
+</head>
+<body>
+
+<!--
+  shell(active, content)
+-->
+<div th:fragment="shell(active, content)" class="cs-shell">
+
+  <!-- SIDEBAR -->
+  <aside class="cs-sidebar-123"
+         style="background:linear-gradient(180deg,#2b6f8e,#1f5f7a);padding:14px;color:#eaf6ff;">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+      <div style="width:34px;height:34px;border-radius:10px;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-weight:900;">
+        💵
+      </div>
+      <div style="font-weight:900;letter-spacing:.3px;">MiniBank Teller</div>
+    </div>
+
+    <nav class="cs-nav" style="display:flex;flex-direction:column;gap:8px;">
+      <a th:href="@{/teller/dashboard}"
+         th:classappend="${active=='dashboard'} ? ' active' : ''"
+         style="color:#eaf6ff;background:rgba(255,255,255,.08);">
+        Dashboard
+      </a>
+
+      <a th:href="@{/teller/transaction}"
+         th:classappend="${active=='transaction'} ? ' active' : ''"
+         style="color:#eaf6ff;background:rgba(255,255,255,.08);">
+        Transaksi
+      </a>
+
+      <a th:href="@{/teller/deposit}"
+         th:classappend="${active=='deposit'} ? ' active' : ''"
+         style="color:#eaf6ff;background:rgba(255,255,255,.08);">
+        Setoran Tunai
+      </a>
+
+      <a th:href="@{/teller/withdrawal}"
+         th:classappend="${active=='withdrawal'} ? ' active' : ''"
+         style="color:#eaf6ff;background:rgba(255,255,255,.08);">
+        Penarikan Tunai
+      </a>
+
+      <a th:href="@{/teller/transfer}"
+         th:classappend="${active=='transfer'} ? ' active' : ''"
+         style="color:#eaf6ff;background:rgba(255,255,255,.08);">
+        Transfer Dana
+      </a>
+    </nav>
+
+    <div style="margin-top:18px;display:flex;gap:10px;">
+      <a th:href="@{/teller/settings}" style="flex:1;text-align:center;padding:10px 12px;border-radius:12px;background:rgba(255,255,255,.14);color:#fff;text-decoration:none;">
+        Settings
+      </a>
+
+      <!-- logout POST (WAJIB) -->
+      <form th:action="@{/logout}" method="post" style="margin:0;flex:1;">
+        <button type="submit"
+                style="width:100%;padding:10px 12px;border:0;border-radius:12px;background:rgba(0,0,0,.18);color:#fff;cursor:pointer;">
+          Logout
+        </button>
+      </form>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <section class="cs-main" style="background:#eef6ff;">
+    <header class="cs-topbar cs-card" style="margin:14px 14px 0 14px;">
+      <div style="display:flex;flex-direction:column;gap:2px;">
+        <div style="font-size:12px;color:#64748b;font-weight:700;"
+             th:text="${currentDate} ?: ''">
+          Senin, 05-01-2026 | 00:14
+        </div>
+        <div style="font-size:12px;color:#0f172a;font-weight:800;"
+             th:text="${roleAndName} ?: 'Teller'">
+          Teller
+        </div>
+      </div>
+
+      <div style="font-size:12px;color:#0f172a;font-weight:800;"
+           th:text="${tellerName} ?: (${username} ?: '')">
+        teller
+      </div>
+    </header>
+
+    <div class="cs-content">
+      <main th:replace="${content}">
+        <!-- konten halaman -->
+      </main>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8"/>
+  <title>Teller - Dashboard</title>
+  <link rel="stylesheet" th:href="@{/css/cs-shell.css}">
+</head>
+
+<body>
+<div class="cs-shell">
+
+  <!-- Sidebar Teller (pakai style CS) -->
+  <div th:replace="~{cs/fragments :: tellerSidebar('dashboard')}"></div>
+
+  <div class="cs-content">
+    <!-- Topbar sama persis -->
+    <div th:replace="~{cs/fragments :: topbar}"></div>
+
+    <main class="cs-page">
+
+      <!-- Greeting card -->
+      <div style="
+        background: rgba(255,255,255,.55);
+        border: 1px solid rgba(0,0,0,.06);
+        border-radius: 18px;
+        box-shadow: 0 10px 25px rgba(0,0,0,.06);
+        padding: 18px 18px;
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        gap:16px;
+      ">
+        <div>
+          <div style="font-size:22px; font-weight:800; color:#e1782d;">
+            <span>Assalamu'alaikum, </span>
+            <span th:text="${currentFullName} ?: 'Teller'">Teller</span>
+          </div>
+          <div style="margin-top:6px; color:#334155; font-weight:600; font-size:13px;">
+            Siap melayani transaksi hari ini dengan cepat dan amanah.
+          </div>
+        </div>
+
+        <img th:src="@{/images/cs-hero.png}" alt="hero"
+             style="height:90px; width:auto; display:block;"
+             onerror="this.style.display='none'">
+      </div>
+
+      <!-- Summary cards (4 kolom) -->
+      <div style="display:grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap:14px; margin-top:16px;">
+
+        <div style="background:#fff; border-radius:16px; border:1px solid rgba(0,0,0,.06); box-shadow:0 10px 25px rgba(0,0,0,.05); padding:14px;">
+          <div style="font-size:12px; color:#64748b; font-weight:700;">Total Nasabah (ACTIVE)</div>
+          <div style="font-size:22px; font-weight:900;" th:text="${totalNasabah} ?: 0">0</div>
+        </div>
+
+        <div style="background:#fff; border-radius:16px; border:1px solid rgba(0,0,0,.06); box-shadow:0 10px 25px rgba(0,0,0,.05); padding:14px;">
+          <div style="font-size:12px; color:#64748b; font-weight:700;">Total Rekening Aktif</div>
+          <div style="font-size:22px; font-weight:900;" th:text="${totalRekeningAktif} ?: 0">0</div>
+        </div>
+
+        <div style="background:#fff; border-radius:16px; border:1px solid rgba(0,0,0,.06); box-shadow:0 10px 25px rgba(0,0,0,.05); padding:14px;">
+          <div style="font-size:12px; color:#64748b; font-weight:700;">Total Deposit (Setoran Awal)</div>
+          <div style="font-size:22px; font-weight:900;" th:text="${totalDeposit} ?: 0">0</div>
+        </div>
+
+        <div style="background:#fff; border-radius:16px; border:1px solid rgba(0,0,0,.06); box-shadow:0 10px 25px rgba(0,0,0,.05); padding:14px;">
+          <div style="font-size:12px; color:#64748b; font-weight:700;">Total Transaksi</div>
+          <div style="font-size:22px; font-weight:900;" th:text="${totalTransaksi} ?: 0">0</div>
+        </div>
+
+      </div>
+
+      <!-- Quick Action -->
+      <div style="margin-top:18px; font-size:18px; font-weight:900; color:#1e3a8a;">
+        Quick Action
+      </div>
+
+      <div style="display:grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap:18px; margin-top:12px;">
+        <a th:href="@{/teller/transaction/deposit}"
+           style="height:70px; display:flex; align-items:center; justify-content:center; text-decoration:none;
+                  background:rgba(255,255,255,.55); border:1px solid rgba(0,0,0,.06); border-radius:18px;
+                  box-shadow:0 10px 25px rgba(0,0,0,.05); font-weight:900; color:#0f172a;">
+          + Setoran Tunai
+        </a>
+
+        <a th:href="@{/teller/transaction/withdrawal}"
+           style="height:70px; display:flex; align-items:center; justify-content:center; text-decoration:none;
+                  background:rgba(255,255,255,.55); border:1px solid rgba(0,0,0,.06); border-radius:18px;
+                  box-shadow:0 10px 25px rgba(0,0,0,.05); font-weight:900; color:#0f172a;">
+          - Penarikan Tunai
+        </a>
+
+        <a th:href="@{/teller/transaction/transfer}"
+           style="height:70px; display:flex; align-items:center; justify-content:center; text-decoration:none;
+                  background:rgba(255,255,255,.55); border:1px solid rgba(0,0,0,.06); border-radius:18px;
+                  box-shadow:0 10px 25px rgba(0,0,0,.05); font-weight:900; color:#0f172a;">
+          ⇄ Transfer Dana
+        </a>
+      </div>
+
+      <!-- Produk -->
+      <div style="margin-top:18px; font-size:18px; font-weight:900; color:#1e3a8a;">
+        Produk-Produk Tazkia Minibank
+      </div>
+
+      <div style="display:grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap:18px; margin-top:12px;">
+        <div th:each="p : ${products}"
+             style="background:rgba(255,255,255,.55); border:1px solid rgba(0,0,0,.06); border-radius:18px;
+                    box-shadow:0 10px 25px rgba(0,0,0,.05); padding:14px;">
+          <div style="font-weight:900;" th:text="${p.namaProduk}">Produk</div>
+          <div style="font-size:12px;color:#64748b;font-weight:700;" th:text="${p.jenisAkad}">AKAD</div>
+          <div style="margin-top:8px; font-size:12px; font-weight:700;"
+               th:text="'Min Setoran: ' + ${p.setoranAwalMinimum}">
+            Min Setoran: 0
+          </div>
+        </div>
+
+        <!-- kalau products kosong, biar tetap rapi -->
+        <div th:if="${products == null || #lists.isEmpty(products)}"
+             style="height:130px; background:rgba(255,255,255,.55); border:1px solid rgba(0,0,0,.06); border-radius:18px; box-shadow:0 10px 25px rgba(0,0,0,.05);"></div>
+      </div>
+
+    </main>
+  </div>
+</div>
+</body>
+</html>

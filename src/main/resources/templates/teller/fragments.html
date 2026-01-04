@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<!-- SIDEBAR -->
+<aside class="cs-sidebar" th:fragment="sidebar(active)">
+  <div class="cs-sidebar__top">
+    <div class="cs-mini-icon"><span></span></div>
+  </div>
+
+  <nav class="cs-nav">
+    <a th:href="@{/teller/dashboard}"
+       th:classappend="${active}=='dashboard' ? ' active' : ''">Dashboard</a>
+
+    <a th:href="@{/teller/transaction}"
+       th:classappend="${active}=='transaction' ? ' active' : ''">Transaksi</a>
+
+    <a th:href="@{/teller/deposit}"
+       th:classappend="${active}=='deposit' ? ' active' : ''">Setoran Tunai</a>
+
+    <a th:href="@{/teller/withdrawal}"
+       th:classappend="${active}=='withdrawal' ? ' active' : ''">Penarikan Tunai</a>
+
+    <a th:href="@{/teller/transfer}"
+       th:classappend="${active}=='transfer' ? ' active' : ''">Transfer Dana</a>
+  </nav>
+
+  <div class="cs-sidebar__bottom">
+    <a class="cs-settings" th:href="@{/teller/settings}">Settings</a>
+    <a class="cs-logout" th:href="@{/logout}">Logout</a>
+  </div>
+</aside>
+
+<!-- TOPBAR -->
+<header class="cs-topbar" th:fragment="topbar">
+  <div class="cs-topbar__imgwrap">
+    <img th:src="@{/images/dashboard-tazkia-minibank.png}"
+         alt="Dashboard Header"
+         class="cs-topbar__img">
+  </div>
+
+  <div class="cs-meta">
+    <div class="cs-meta__left"
+         th:text="${nowText} ?: ${#temporals.format(T(java.time.LocalDateTime).now(),'EEEE, dd-MM-yyyy | HH:mm')}">
+      Senin, 05-01-2026 | 00:14
+    </div>
+
+    <div class="cs-meta__right">
+      <span th:text="${roleLabel} ?: 'Teller'">Teller</span>
+      <span class="cs-meta__sep">|</span>
+      <span th:text="${employeeId} ?: ${#authentication.name}">teller1</span>
+    </div>
+  </div>
+</header>
+
+</body>
+</html>

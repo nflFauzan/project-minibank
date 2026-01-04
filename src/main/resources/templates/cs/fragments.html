@@ -37,6 +37,35 @@
   </div>
 </aside>
 
+<!-- TELLER SIDEBAR (pakai style CS biar konsisten) -->
+<aside class="cs-sidebar" th:fragment="tellerSidebar(active)">
+  <div class="cs-sidebar__top">
+    <div class="cs-mini-icon"><span></span></div>
+  </div>
+
+  <nav class="cs-nav">
+    <a th:href="@{/teller/dashboard}"
+       th:classappend="${active}=='dashboard' ? ' active' : ''">Dashboard</a>
+
+    <a th:href="@{/teller/transaction/list}"
+       th:classappend="${active}=='transaction' ? ' active' : ''">Transaksi</a>
+
+    <a th:href="@{/teller/transaction/deposit}"
+       th:classappend="${active}=='deposit' ? ' active' : ''">Setoran Tunai</a>
+
+    <a th:href="@{/teller/transaction/withdrawal}"
+       th:classappend="${active}=='withdrawal' ? ' active' : ''">Penarikan Tunai</a>
+
+    <a th:href="@{/teller/transaction/transfer}"
+       th:classappend="${active}=='transfer' ? ' active' : ''">Transfer Dana</a>
+  </nav>
+
+  <div class="cs-sidebar__bottom">
+    <a class="cs-settings" th:href="@{/teller/settings}">Settings</a>
+    <a class="cs-logout" th:href="@{/logout}">Logout</a>
+  </div>
+</aside>
+
 <!-- TOP HEADER / BANNER -->
 <header class="cs-topbar" th:fragment="topbar">
     <div class="cs-topbar__imgwrap">

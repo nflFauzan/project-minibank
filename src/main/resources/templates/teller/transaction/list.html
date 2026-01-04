@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8"/>
+  <title>Teller - Transaksi</title>
+  <link rel="stylesheet" th:href="@{/css/cs-shell.css}">
+</head>
+
+<body>
+<div class="cs-shell">
+
+  <div th:replace="~{cs/fragments :: tellerSidebar('transaction')}"></div>
+
+  <div class="cs-content">
+    <div th:replace="~{cs/fragments :: topbar}"></div>
+
+    <main class="cs-page">
+
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:12px;">
+        <div style="font-size:22px; font-weight:900; color:#1e3a8a;">Daftar Transaksi</div>
+
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <a th:href="@{/teller/transaction/deposit}"
+             style="text-decoration:none; padding:10px 12px; border-radius:12px; background:#16a34a; color:#fff; font-weight:900;">
+            + Setoran Tunai
+          </a>
+          <a th:href="@{/teller/transaction/withdrawal}"
+             style="text-decoration:none; padding:10px 12px; border-radius:12px; background:#dc2626; color:#fff; font-weight:900;">
+            - Penarikan Tunai
+          </a>
+          <a th:href="@{/teller/transaction/transfer}"
+             style="text-decoration:none; padding:10px 12px; border-radius:12px; background:#2563eb; color:#fff; font-weight:900;">
+            ⇄ Transfer Dana
+          </a>
+        </div>
+      </div>
+
+      <div style="margin-top:12px; background:#fff; border-radius:16px; border:1px solid rgba(0,0,0,.06);
+                  box-shadow:0 10px 25px rgba(0,0,0,.05); padding:14px;">
+        <div style="color:#64748b; font-weight:700; font-size:12px;">Placeholder</div>
+        <div style="margin-top:6px; font-weight:800;">Halaman list transaksi (nanti isi tabel transaksi terbaru)</div>
+      </div>
+
+    </main>
+  </div>
+</div>
+</body>
+</html>
