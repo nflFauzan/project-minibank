@@ -31,10 +31,10 @@
         gap:16px;
       ">
         <div>
-          <div style="font-size:22px; font-weight:800; color:#e1782d;">
-            <span>Assalamu'alaikum, </span>
-            <span th:text="${currentFullName} ?: 'Teller'">Teller</span>
-          </div>
+            <div style="font-size:22px; font-weight:800; color:#e1782d;">
+                <span>Assalamu'alaikum, </span>
+                <span th:text="${currentFullName} ?: ${employeeId}">Nama</span>
+              </div>              
           <div style="margin-top:6px; color:#334155; font-weight:600; font-size:13px;">
             Siap melayani transaksi hari ini dengan cepat dan amanah.
           </div>
