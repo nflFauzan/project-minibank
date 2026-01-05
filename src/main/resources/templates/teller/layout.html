@@ -64,6 +64,12 @@
          style="color:#eaf6ff;background:rgba(255,255,255,.08);">
         Transfer Dana
       </a>
+
+      <a th:href="@{/teller/passbook/select-account}"
+         th:classappend="${active=='passbook-printing'} ? ' active' : ''"
+         style="color:#eaf6ff;background:rgba(255,255,255,.08);">
+        Passbook
+      </a>
     </nav>
 
     <div style="margin-top:18px;display:flex;gap:10px;">

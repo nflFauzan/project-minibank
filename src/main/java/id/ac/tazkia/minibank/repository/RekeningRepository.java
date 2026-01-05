@@ -1,12 +1,15 @@
 package id.ac.tazkia.minibank.repository;
 
-import java.math.BigDecimal;
 import id.ac.tazkia.minibank.entity.Rekening;
+import jakarta.persistence.LockModeType;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 public interface RekeningRepository extends JpaRepository<Rekening, Long> {
 
@@ -44,9 +47,20 @@ public interface RekeningRepository extends JpaRepository<Rekening, Long> {
         return String.format("%06d", next);
     }
 
-    // biar DashboardService kamu gak error lagi
-    long countByStatusActive(boolean statusActive);
-    
     @Query("select coalesce(sum(r.nominalSetoranAwal), 0) from Rekening r where r.statusActive = true")
-    BigDecimal sumNominalSetoranAwalActive();   
+    BigDecimal sumNominalSetoranAwalActive();
+
+    // ===== LOCKING untuk transaksi (anti race condition) =====
+    Optional<Rekening> findByNomorRekening(String nomorRekening);
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("select r from Rekening r where r.nomorRekening = :no")
+    Optional<Rekening> findByNomorRekeningForUpdate(@Param("no") String no);
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("select r from Rekening r where r.nomorRekening in :nos")
+    List<Rekening> findByNomorRekeningInForUpdate(@Param("nos") List<String> nos);
+
+    // dashboard
+    long countByStatusActive(boolean statusActive);
 }

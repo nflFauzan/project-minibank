@@ -23,6 +23,9 @@
 
     <a th:href="@{/teller/transfer}"
        th:classappend="${active}=='transfer' ? ' active' : ''">Transfer Dana</a>
+
+    <a th:href="@{/teller/passbook/select-account}"
+       th:classappend="${active}=='passbook-printing' ? ' active' : ''">Passbook</a>  
   </nav>
 
   <div class="cs-sidebar__bottom">

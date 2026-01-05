@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8"/>
+  <title>Teller - Passbook</title>
+  <link rel="stylesheet" th:href="@{/css/cs-shell.css}">
+</head>
+
+<body>
+<div class="cs-shell">
+
+  <!-- ✅ pakai sidebar teller versi fragment CS -->
+  <div th:replace="~{cs/fragments :: tellerSidebar('passbook-printing')}"></div>
+
+  <div class="cs-content">
+    <div th:replace="~{cs/fragments :: topbar}"></div>
+
+    <main class="cs-page">
+
+      <div style="
+        background: rgba(255,255,255,.55);
+        border: 1px solid rgba(0,0,0,.06);
+        border-radius: 18px;
+        box-shadow: 0 10px 25px rgba(0,0,0,.06);
+        padding: 18px;
+      ">
+        <div style="font-size:18px;font-weight:900;color:#1e3a8a;">
+          Passbook
+        </div>
+        <div style="margin-top:6px;color:#334155;font-weight:600;font-size:13px;">
+          Coming soon. Fokus transaksi dulu, halaman ini placeholder.
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+</body>
+</html>

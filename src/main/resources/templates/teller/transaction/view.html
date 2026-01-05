@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8"/>
+  <title>Teller - Detail Transaksi</title>
+  <link rel="stylesheet" th:href="@{/css/cs-shell.css}">
+</head>
+
+<body>
+<div class="cs-shell">
+
+  <div th:replace="~{cs/fragments :: tellerSidebar('transaction')}"></div>
+
+  <div class="cs-content">
+    <div th:replace="~{cs/fragments :: topbar}"></div>
+
+    <main class="cs-page">
+
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:12px;">
+        <div style="font-size:22px; font-weight:900; color:#0f172a;">Detail Transaksi</div>
+        <a th:href="@{/teller/transaction/list}"
+           style="text-decoration:none; color:#2563eb; font-weight:900;">← Kembali ke Daftar Transaksi</a>
+      </div>
+
+      <div style="margin-top:12px; background:#fff; border:1px solid rgba(0,0,0,.06); border-radius:16px; padding:16px; box-shadow:0 10px 25px rgba(0,0,0,.05);">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+          <div>
+            <div style="font-weight:900; font-size:18px;" th:text="${tx.nomorTransaksi}">T3000585</div>
+            <div style="margin-top:6px; display:flex; gap:8px;">
+              <span th:text="${tx.tipe}"
+                    th:style="${tx.tipe.name()=='DEPOSIT'} ? 'padding:4px 10px;border-radius:999px;background:#dcfce7;color:#166534;font-weight:900;font-size:11px;' :
+                              (${tx.tipe.name()=='WITHDRAWAL'} ? 'padding:4px 10px;border-radius:999px;background:#fee2e2;color:#991b1b;font-weight:900;font-size:11px;' :
+                              'padding:4px 10px;border-radius:999px;background:#dbeafe;color:#1d4ed8;font-weight:900;font-size:11px;')">DEPOSIT</span>
+              <span style="padding:4px 10px;border-radius:999px;background:#e2e8f0;color:#334155;font-weight:900;font-size:11px;">TELLER</span>
+            </div>
+          </div>
+
+          <div style="text-align:right;">
+            <div th:style="${tx.jumlah.signum() >= 0} ? 'font-weight:900;font-size:18px;color:#16a34a;' : 'font-weight:900;font-size:18px;color:#dc2626;'"
+                 th:text="${(tx.jumlah.signum()>=0 ? 'IDR ' : '-IDR ') + #numbers.formatDecimal(T(java.math.BigDecimal).valueOf(tx.jumlah.abs().doubleValue()),1,'COMMA',2,'POINT')}">
+              IDR 100,000.00
+            </div>
+            <div style="font-size:11px;color:#64748b;"
+                 th:text="${#temporals.format(tx.processedAt,'dd MMMM yyyy, HH:mm:ss')}">02 Januari 2026, 12:21:11</div>
+          </div>
+        </div>
+
+        <div style="margin-top:14px; display:grid; grid-template-columns: 1fr 1fr; gap:18px;">
+          <div>
+            <div style="font-weight:900; color:#0f172a; margin-bottom:8px;">Informasi Transaksi</div>
+            <div style="display:grid; grid-template-columns: 160px 1fr; gap:6px; font-size:13px;">
+              <div style="color:#64748b;">Nomor Transaksi:</div><div style="font-weight:900;" th:text="${tx.nomorTransaksi}"></div>
+              <div style="color:#64748b;">Tanggal Proses:</div><div style="font-weight:900;" th:text="${#temporals.format(tx.processedAt,'dd/MM/yyyy HH:mm:ss')}"></div>
+              <div style="color:#64748b;">Tipe Transaksi:</div><div style="font-weight:900;" th:text="${tx.tipe}"></div>
+              <div style="color:#64748b;">Kanal:</div><div style="font-weight:900;">TELLER</div>
+              <div style="color:#64748b;">Diproses Oleh:</div><div style="font-weight:900;" th:text="${tx.processedBy}"></div>
+            </div>
+
+            <div style="margin-top:14px; font-weight:900; color:#0f172a;">Keterangan</div>
+            <div style="margin-top:6px; color:#0f172a;" th:text="${tx.keterangan}">Setoran Tunai</div>
+          </div>
+
+          <div>
+            <div style="font-weight:900; color:#0f172a; margin-bottom:8px;">Informasi Rekening</div>
+            <div style="display:grid; grid-template-columns: 160px 1fr; gap:6px; font-size:13px;">
+              <div style="color:#64748b;">Nomor Rekening:</div><div style="font-weight:900;" th:text="${tx.rekening.nomorRekening}">A2000034</div>
+              <div style="color:#64748b;">Pemilik:</div><div style="font-weight:900;" th:text="${tx.rekening.namaNasabah}">Nama</div>
+              <div style="color:#64748b;">No. Nasabah:</div><div style="font-weight:900;" th:text="${tx.rekening.cifNasabah}">C1000017</div>
+              <div style="color:#64748b;">Produk:</div><div style="font-weight:900;" th:text="${tx.rekening.produk}">Produk</div>
+            </div>
+
+            <div style="margin-top:14px; font-weight:900; color:#0f172a;">Perubahan Saldo</div>
+            <div style="display:grid; grid-template-columns: 160px 1fr; gap:6px; font-size:13px; margin-top:6px;">
+              <div style="color:#64748b;">Saldo Sebelum:</div>
+              <div style="font-weight:900;"
+                   th:text="${'IDR ' + #numbers.formatDecimal(T(java.math.BigDecimal).valueOf(tx.saldoSebelum.doubleValue()),1,'COMMA',2,'POINT')}">IDR 450,000.00</div>
+
+              <div style="color:#64748b;">Jumlah Transaksi:</div>
+              <div style="font-weight:900;"
+                   th:text="${(tx.jumlah.signum()>=0?'+IDR ':'-IDR ') + #numbers.formatDecimal(T(java.math.BigDecimal).valueOf(tx.jumlah.abs().doubleValue()),1,'COMMA',2,'POINT')}">
+                +IDR 100,000.00
+              </div>
+
+              <div style="color:#64748b;">Saldo Setelah:</div>
+              <div style="font-weight:900;"
+                   th:text="${'IDR ' + #numbers.formatDecimal(T(java.math.BigDecimal).valueOf(tx.saldoSesudah.doubleValue()),1,'COMMA',2,'POINT')}">IDR 550,000.00</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top:16px; padding:12px 14px; border-radius:12px; border:1px solid rgba(37,99,235,.25); background:rgba(37,99,235,.06);">
+          <div style="font-weight:900; color:#1d4ed8; margin-bottom:6px;">Informasi Sistem</div>
+          <div style="font-size:12px; color:#0f172a;">
+            <div><b>ID Transaksi:</b> <span th:text="${tx.id}"></span></div>
+            <div><b>Mata Uang:</b> IDR</div>
+            <div><b>Status:</b> Berhasil diproses</div>
+          </div>
+        </div>
+
+        <div style="margin-top:16px; display:flex; justify-content:center; gap:12px;">
+          <a th:href="@{/teller/transaction/list}"
+             style="padding:10px 16px;border-radius:12px;background:#2563eb;color:#fff;text-decoration:none;font-weight:900;">
+            Kembali ke Daftar Transaksi
+          </a>
+          <a href="#"
+             style="padding:10px 16px;border-radius:12px;border:1px solid rgba(0,0,0,.15);background:#fff;color:#0f172a;text-decoration:none;font-weight:900;">
+            Cetak Bukti
+          </a>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+</body>
+</html>

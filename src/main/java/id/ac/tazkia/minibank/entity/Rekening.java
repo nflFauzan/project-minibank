@@ -62,6 +62,9 @@ public class Rekening {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
+    @Column(name = "saldo", nullable = false, precision = 38, scale = 2)
+    private BigDecimal saldo = BigDecimal.ZERO;
+
     @PrePersist
     public void onPrePersist() {
         if (createdAt == null) createdAt = LocalDateTime.now();
@@ -117,4 +120,7 @@ public class Rekening {
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+
+    public BigDecimal getSaldo() { return saldo; }
+    public void setSaldo(BigDecimal saldo) { this.saldo = saldo; }
 }
