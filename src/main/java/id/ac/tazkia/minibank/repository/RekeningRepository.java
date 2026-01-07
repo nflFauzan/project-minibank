@@ -2,6 +2,8 @@ package id.ac.tazkia.minibank.repository;
 
 import id.ac.tazkia.minibank.entity.Rekening;
 import jakarta.persistence.LockModeType;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
@@ -38,7 +40,6 @@ public interface RekeningRepository extends JpaRepository<Rekening, Long> {
     """)
     List<Rekening> search(@Param("q") String q, @Param("status") String status);
 
-    // buat nomor urut 6 digit dari id max (simple & cukup untuk tugas)
     @Query("select coalesce(max(r.id), 0) + 1 from Rekening r")
     Long nextIdValue();
 
@@ -50,7 +51,6 @@ public interface RekeningRepository extends JpaRepository<Rekening, Long> {
     @Query("select coalesce(sum(r.nominalSetoranAwal), 0) from Rekening r where r.statusActive = true")
     BigDecimal sumNominalSetoranAwalActive();
 
-    // ===== LOCKING untuk transaksi (anti race condition) =====
     Optional<Rekening> findByNomorRekening(String nomorRekening);
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
@@ -61,6 +61,19 @@ public interface RekeningRepository extends JpaRepository<Rekening, Long> {
     @Query("select r from Rekening r where r.nomorRekening in :nos")
     List<Rekening> findByNomorRekeningInForUpdate(@Param("nos") List<String> nos);
 
-    // dashboard
     long countByStatusActive(boolean statusActive);
+
+    // ===== tambahan untuk halaman pilih rekening (aktif saja + search + paging) =====
+    @Query("""
+        select r from Rekening r
+        where r.statusActive = true
+          and (
+               :q is null or :q = ''
+               or lower(r.nomorRekening) like lower(concat('%', :q, '%'))
+               or lower(r.namaNasabah) like lower(concat('%', :q, '%'))
+               or lower(r.produk) like lower(concat('%', :q, '%'))
+          )
+        order by r.id desc
+    """)
+    Page<Rekening> searchActiveForTeller(@Param("q") String q, Pageable pageable);
 }

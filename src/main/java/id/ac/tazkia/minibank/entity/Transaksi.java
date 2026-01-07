@@ -1,7 +1,8 @@
 package id.ac.tazkia.minibank.entity;
 
 import jakarta.persistence.*;
-import org.hibernate.annotations.UuidGenerator;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -9,31 +10,37 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "transaksi")
+@Getter @Setter
 public class Transaksi {
 
     @Id
-    @UuidGenerator
-    @Column(columnDefinition = "uuid")
     private UUID id;
 
-    @Column(name = "group_id", nullable = false, columnDefinition = "uuid")
+    @Column(name = "group_id", nullable = false)
     private UUID groupId;
 
-    @Column(name = "nomor_transaksi", nullable = false, length = 32)
+    @Column(name = "nomor_transaksi", nullable = false, unique = true)
     private String nomorTransaksi;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "tipe", nullable = false, length = 20)
+    @Column(nullable = false)
     private TipeTransaksi tipe;
 
-    @Column(name = "channel", nullable = false, length = 20)
-    private String channel = "TELLER";
+    @Column(nullable = false)
+    private String channel; // TELLER
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "rekening_id", nullable = false)
-    private Rekening rekening;
+    @Column(name = "nomor_rekening", nullable = false)
+    private String nomorRekening;
 
-    @Column(name = "jumlah", nullable = false, precision = 38, scale = 2)
+    @Column(name = "nama_rekening", nullable = false)
+    private String namaRekening;
+
+    @Column(name = "cif_nasabah")
+    private String cifNasabah;
+
+    private String produk;
+
+    @Column(nullable = false, precision = 38, scale = 2)
     private BigDecimal jumlah;
 
     @Column(name = "saldo_sebelum", nullable = false, precision = 38, scale = 2)
@@ -42,57 +49,18 @@ public class Transaksi {
     @Column(name = "saldo_sesudah", nullable = false, precision = 38, scale = 2)
     private BigDecimal saldoSesudah;
 
-    @Column(name = "keterangan", length = 255)
+    @Column(nullable = false, length = 500)
     private String keterangan;
 
-    @Column(name = "processed_by", nullable = false, length = 200)
-    private String processedBy;
+    @Column(name = "no_referensi", length = 100)
+    private String noReferensi;
 
     @Column(name = "processed_at", nullable = false)
     private LocalDateTime processedAt;
 
-    @PrePersist
-    void prePersist() {
-        if (processedAt == null) processedAt = LocalDateTime.now();
-        if (groupId == null) groupId = UUID.randomUUID();
-        if (channel == null) channel = "TELLER";
-        if (jumlah == null) jumlah = BigDecimal.ZERO;
-        if (saldoSebelum == null) saldoSebelum = BigDecimal.ZERO;
-        if (saldoSesudah == null) saldoSesudah = BigDecimal.ZERO;
-    }
+    @Column(name = "processed_by_username", nullable = false)
+    private String processedByUsername;
 
-    // getters setters
-    public UUID getId() { return id; }
-    public UUID getGroupId() { return groupId; }
-    public void setGroupId(UUID groupId) { this.groupId = groupId; }
-
-    public String getNomorTransaksi() { return nomorTransaksi; }
-    public void setNomorTransaksi(String nomorTransaksi) { this.nomorTransaksi = nomorTransaksi; }
-
-    public TipeTransaksi getTipe() { return tipe; }
-    public void setTipe(TipeTransaksi tipe) { this.tipe = tipe; }
-
-    public String getChannel() { return channel; }
-    public void setChannel(String channel) { this.channel = channel; }
-
-    public Rekening getRekening() { return rekening; }
-    public void setRekening(Rekening rekening) { this.rekening = rekening; }
-
-    public BigDecimal getJumlah() { return jumlah; }
-    public void setJumlah(BigDecimal jumlah) { this.jumlah = jumlah; }
-
-    public BigDecimal getSaldoSebelum() { return saldoSebelum; }
-    public void setSaldoSebelum(BigDecimal saldoSebelum) { this.saldoSebelum = saldoSebelum; }
-
-    public BigDecimal getSaldoSesudah() { return saldoSesudah; }
-    public void setSaldoSesudah(BigDecimal saldoSesudah) { this.saldoSesudah = saldoSesudah; }
-
-    public String getKeterangan() { return keterangan; }
-    public void setKeterangan(String keterangan) { this.keterangan = keterangan; }
-
-    public String getProcessedBy() { return processedBy; }
-    public void setProcessedBy(String processedBy) { this.processedBy = processedBy; }
-
-    public LocalDateTime getProcessedAt() { return processedAt; }
-    public void setProcessedAt(LocalDateTime processedAt) { this.processedAt = processedAt; }
+    @Column(name = "processed_by_full_name", nullable = false)
+    private String processedByFullName;
 }
