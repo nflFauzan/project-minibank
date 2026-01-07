@@ -29,6 +29,11 @@ public class Transaksi {
     @Column(nullable = false)
     private String channel; // TELLER
 
+    // ✅ INI YANG DB WAJIB: transaksi.rekening_id (FK)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "rekening_id", nullable = false)
+    private Rekening rekening;
+
     @Column(name = "nomor_rekening", nullable = false)
     private String nomorRekening;
 
@@ -57,6 +62,10 @@ public class Transaksi {
 
     @Column(name = "processed_at", nullable = false)
     private LocalDateTime processedAt;
+
+    // ✅ DB WAJIB: processed_by (varchar 200 not null)
+    @Column(name = "processed_by", nullable = false, length = 200)
+    private String processedBy;
 
     @Column(name = "processed_by_username", nullable = false)
     private String processedByUsername;
