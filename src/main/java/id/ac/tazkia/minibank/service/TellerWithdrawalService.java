@@ -83,24 +83,31 @@ public class TellerWithdrawalService {
         t.setTipe(TipeTransaksi.WITHDRAWAL);
         t.setChannel("TELLER");
 
-        // ini kolom-kolom yang kamu pakai sekarang
-        t.setNomorRekening(r.getNomorRekening());
-        t.setNamaRekening(namaRekening);
-        t.setCifNasabah(r.getCifNasabah());
-        t.setProduk(r.getProduk());
+       // ✅ WAJIB isi rekening_id
+t.setRekening(r);
 
-        t.setJumlah(jumlah);
-        t.setSaldoSebelum(saldoSebelum);
-        t.setSaldoSesudah(saldoSesudah);
+t.setNomorRekening(r.getNomorRekening());
+t.setNamaRekening(namaRekening);
+t.setCifNasabah(r.getCifNasabah());
+t.setProduk(r.getProduk());
 
-        t.setKeterangan(keterangan.trim());
-        t.setNoReferensi((noReferensi == null || noReferensi.isBlank()) ? null : noReferensi.trim());
+t.setJumlah(jumlah);
+t.setSaldoSebelum(saldoSebelum);
+t.setSaldoSesudah(saldoSesudah);
 
-        t.setProcessedAt(LocalDateTime.now());
-        t.setProcessedByUsername(usernameLogin);
-        t.setProcessedByFullName(fullName);
+t.setKeterangan(keterangan.trim());
+t.setNoReferensi((noReferensi == null || noReferensi.isBlank()) ? null : noReferensi.trim());
 
-        transaksiRepository.save(t);
+t.setProcessedAt(LocalDateTime.now());
+
+// ✅ WAJIB isi processed_by (schema kamu not null)
+t.setProcessedBy(usernameLogin);
+
+// ini sudah ada di entity kamu
+t.setProcessedByUsername(usernameLogin);
+t.setProcessedByFullName(fullName);
+
+transaksiRepository.save(t);
 
         return new WithdrawalResult(nomorTransaksi, saldoSesudah);
     }

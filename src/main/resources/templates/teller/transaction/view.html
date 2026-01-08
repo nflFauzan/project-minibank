@@ -36,10 +36,16 @@
           </div>
 
           <div style="text-align:right;">
-            <div th:style="${tx.jumlah.signum() >= 0} ? 'font-weight:900;font-size:18px;color:#16a34a;' : 'font-weight:900;font-size:18px;color:#dc2626;'"
-                 th:text="${(tx.jumlah.signum()>=0 ? 'IDR ' : '-IDR ') + #numbers.formatDecimal(T(java.math.BigDecimal).valueOf(tx.jumlah.abs().doubleValue()),1,'COMMA',2,'POINT')}">
-              IDR 100,000.00
-            </div>
+            <div th:if="${tx.tipe.name() == 'WITHDRAWAL'}"
+     style="font-size:18px;font-weight:1000;color:#dc2626;">
+  -IDR <span th:text="${#numbers.formatDecimal(tx.jumlah,1,'COMMA',2,'POINT')}">0.00</span>
+</div>
+
+<div th:unless="${tx.tipe.name() == 'WITHDRAWAL'}"
+     style="font-size:18px;font-weight:1000;color:#16a34a;">
+  IDR <span th:text="${#numbers.formatDecimal(tx.jumlah,1,'COMMA',2,'POINT')}">0.00</span>
+</div>
+
             <div style="font-size:11px;color:#64748b;"
                  th:text="${#temporals.format(tx.processedAt,'dd MMMM yyyy, HH:mm:ss')}">02 Januari 2026, 12:21:11</div>
           </div>
@@ -75,15 +81,24 @@
               <div style="font-weight:900;"
                    th:text="${'IDR ' + #numbers.formatDecimal(T(java.math.BigDecimal).valueOf(tx.saldoSebelum.doubleValue()),1,'COMMA',2,'POINT')}">IDR 450,000.00</div>
 
-              <div style="color:#64748b;">Jumlah Transaksi:</div>
-              <div style="font-weight:900;"
-                   th:text="${(tx.jumlah.signum()>=0?'+IDR ':'-IDR ') + #numbers.formatDecimal(T(java.math.BigDecimal).valueOf(tx.jumlah.abs().doubleValue()),1,'COMMA',2,'POINT')}">
-                +IDR 100,000.00
-              </div>
-
+                   <div>
+                    Jumlah Transaksi:
+                    <span th:if="${tx.tipe.name() == 'WITHDRAWAL'}"
+                          style="color:#dc2626;font-weight:900;">
+                      -IDR <span th:text="${#numbers.formatDecimal(tx.jumlah,1,'COMMA',2,'POINT')}">0.00</span>
+                    </span>
+                  
+                    <span th:unless="${tx.tipe.name() == 'WITHDRAWAL'}"
+                          style="color:#16a34a;font-weight:900;">
+                      +IDR <span th:text="${#numbers.formatDecimal(tx.jumlah,1,'COMMA',2,'POINT')}">0.00</span>
+                    </span>
+                  </div>
+                  
+                  <span>
               <div style="color:#64748b;">Saldo Setelah:</div>
               <div style="font-weight:900;"
                    th:text="${'IDR ' + #numbers.formatDecimal(T(java.math.BigDecimal).valueOf(tx.saldoSesudah.doubleValue()),1,'COMMA',2,'POINT')}">IDR 550,000.00</div>
+                  </span>
             </div>
           </div>
         </div>
