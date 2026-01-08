@@ -148,8 +148,11 @@
               <a th:href="@{/teller/transaction/{id}(id=${t.id})}"
                  style="color:#2563eb; font-weight:900; text-decoration:none;">Lihat Detail</a>
               <div style="margin-top:6px;">
-                <a href="#"
-                   style="color:#16a34a; font-weight:900; text-decoration:none;">Struk PDF</a>
+                <a th:href="@{/teller/transaction/receipt/{id}(id=${t.id})}"
+                style="color:#16a34a;font-weight:900;text-decoration:none;">
+               Struk PDF
+             </a>
+             
               </div>
             </td>
           </tr>

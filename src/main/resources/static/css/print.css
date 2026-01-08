@@ -1,0 +1,45 @@
+@media print {
+
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        font-size: 12px;
+        color: #000;
+    }
+
+    /* Hilangkan UI */
+    nav, aside, .btn, .no-print {
+        display: none !important;
+    }
+
+    /* Area cetak */
+    .print-area {
+        width: 100%;
+        display: block;
+    }
+
+    .print-header {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .print-header h2 {
+        margin: 0;
+        font-size: 18px;
+    }
+
+    .print-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .print-table td {
+        padding: 6px;
+        border-bottom: 1px solid #ccc;
+    }
+
+    @page {
+        size: A4;
+        margin: 15mm;
+    }
+}
