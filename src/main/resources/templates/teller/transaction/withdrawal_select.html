@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8"/>
+  <title>Teller - Penarikan Tunai</title>
+  <link rel="stylesheet" th:href="@{/css/cs-shell.css}">
+</head>
+<body>
+<div class="cs-shell">
+  <div th:replace="~{cs/fragments :: tellerSidebar('withdrawal')}"></div>
+
+  <div class="cs-content">
+    <div th:replace="~{cs/fragments :: topbar}"></div>
+
+    <main class="cs-page">
+
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+        <div>
+          <div style="font-size:20px;font-weight:900;color:#0b2a6f;">Penarikan Tunai - Pilih Rekening</div>
+          <div style="font-size:12px;color:#64748b;font-weight:700;">Pilih rekening aktif yang ingin melakukan penarikan.</div>
+        </div>
+        <a th:href="@{/teller/transaction/list}" style="font-weight:800;color:#0b2a6f;text-decoration:none;">← Kembali ke Daftar Transaksi</a>
+      </div>
+
+      <div th:if="${error}"
+           style="background:#fee2e2;border:1px solid #fecaca;color:#991b1b;padding:12px;border-radius:12px;font-weight:800;margin-bottom:12px;"
+           th:text="${error}">Error</div>
+
+      <form method="get" th:action="@{/teller/transaction/withdrawal}"
+            style="display:flex;gap:10px;align-items:center;background:#fff;padding:12px;border-radius:14px;border:1px solid rgba(0,0,0,.06);box-shadow:0 10px 25px rgba(0,0,0,.05);">
+        <input name="q" th:value="${q}" placeholder="Cari nomor rekening atau nama/produk..."
+               style="flex:1;padding:10px 12px;border:1px solid rgba(0,0,0,.15);border-radius:10px;outline:none;">
+        <button type="submit"
+                style="padding:10px 14px;border:0;border-radius:10px;background:#2563eb;color:#fff;font-weight:900;cursor:pointer;">Cari</button>
+        <a th:href="@{/teller/transaction/withdrawal}"
+           style="padding:10px 14px;border-radius:10px;background:#f1f5f9;color:#0f172a;text-decoration:none;font-weight:900;">Reset</a>
+      </form>
+
+      <div style="margin-top:14px;display:flex;flex-direction:column;gap:12px;">
+        <div th:if="${page.totalElements == 0}"
+             style="background:#fff;border-radius:16px;border:1px solid rgba(0,0,0,.06);padding:14px;">
+          Belum ada rekening aktif.
+        </div>
+
+        <div th:each="r : ${page.content}"
+             style="background:#fff;border-radius:16px;border:1px solid rgba(0,0,0,.06);box-shadow:0 10px 25px rgba(0,0,0,.05);padding:14px;display:flex;justify-content:space-between;gap:14px;">
+          <div style="min-width:0;">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div style="font-weight:1000;font-size:14px;" th:text="${r.nomorRekening}">54300000101</div>
+              <span style="font-size:11px;font-weight:900;padding:4px 8px;border-radius:999px;background:#dcfce7;color:#166534;">ACTIVE</span>
+            </div>
+
+            <div style="margin-top:6px;font-weight:900;"
+                 th:text="${r.namaNasabah + ' - ' + r.produk}">
+              Nama - Produk
+            </div>
+
+            <div style="margin-top:6px;font-size:12px;color:#334155;font-weight:700;display:grid;grid-template-columns:1fr 1fr;gap:6px 18px;">
+              <div><span style="color:#64748b;">No. Nasabah:</span> <span th:text="${r.cifNasabah}">-</span></div>
+              <div>
+                <span style="color:#64748b;">Saldo:</span>
+                <span th:text="${r.saldo != null ? #numbers.formatDecimal(r.saldo,1,'COMMA',2,'POINT') : '0.00'}">0.00</span>
+              </div>
+
+              <div><span style="color:#64748b;">Nasabah:</span> <span th:text="${r.namaNasabah}">-</span></div>
+              <div><span style="color:#64748b;">Produk:</span> <span th:text="${r.produk}">-</span></div>
+
+              <div><span style="color:#64748b;">Cabang:</span> <span th:text="${r.cabangPembukaan}">-</span></div>
+              <div></div>
+            </div>
+          </div>
+
+          <div style="display:flex;align-items:flex-start;justify-content:flex-end;">
+            <a th:href="@{/teller/transaction/withdrawal/{no}(no=${r.nomorRekening})}"
+               style="padding:10px 14px;border-radius:10px;background:#16a34a;color:#fff;text-decoration:none;font-weight:1000;">
+              Pilih Rekening
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:12px;display:flex;justify-content:space-between;align-items:center;color:#334155;font-weight:800;font-size:12px;">
+        <div th:text="${(page.number + 1) + '/' + page.totalPages + ' • Total ' + page.totalElements}">1/1</div>
+        <div style="display:flex;gap:8px;">
+          <a th:if="${page.hasPrevious()}"
+             th:href="@{/teller/transaction/withdrawal(q=${q},page=${page.number-1})}"
+             style="padding:8px 12px;border-radius:10px;background:#fff;border:1px solid rgba(0,0,0,.1);text-decoration:none;font-weight:900;color:#0f172a;">Prev</a>
+          <a th:if="${page.hasNext()}"
+             th:href="@{/teller/transaction/withdrawal(q=${q},page=${page.number+1})}"
+             style="padding:8px 12px;border-radius:10px;background:#fff;border:1px solid rgba(0,0,0,.1);text-decoration:none;font-weight:900;color:#0f172a;">Next</a>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+</body>
+</html>

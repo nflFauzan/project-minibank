@@ -6,6 +6,7 @@ import id.ac.tazkia.minibank.entity.Transaksi;
 import id.ac.tazkia.minibank.repository.RekeningRepository;
 import id.ac.tazkia.minibank.repository.TransaksiRepository;
 import id.ac.tazkia.minibank.service.TellerDepositService;
+import id.ac.tazkia.minibank.service.TellerWithdrawalService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,7 @@ public class TellerTransactionController {
     private final TransaksiRepository transaksiRepository;
     private final RekeningRepository rekeningRepository;
     private final TellerDepositService tellerDepositService;
+    private final TellerWithdrawalService tellerWithdrawalService;
 
     @GetMapping("/list")
     public String list(@RequestParam(required = false) String q,
@@ -128,11 +130,80 @@ public class TellerTransactionController {
         }
     }
 
-    @GetMapping("/withdrawal")
-    public String withdrawal(Model model) {
+ // =========================
+// WITHDRAWAL: STEP 1 (SELECT)
+// =========================
+@GetMapping("/withdrawal")
+public String withdrawalSelect(@RequestParam(required = false) String q,
+                               @RequestParam(defaultValue = "0") int page,
+                               Model model) {
+    Pageable pageable = PageRequest.of(page, 10);
+    Page<Rekening> result = rekeningRepository.searchActiveForTeller(q, pageable);
+
+    model.addAttribute("active", "withdrawal");
+    model.addAttribute("q", q);
+    model.addAttribute("page", result);
+    return "teller/transaction/withdrawal_select";
+}
+
+// =========================
+// WITHDRAWAL: STEP 2 (FORM)
+// =========================
+@GetMapping("/withdrawal/{no}")
+public String withdrawalForm(@PathVariable("no") String nomorRekening,
+                             Model model,
+                             RedirectAttributes ra) {
+    try {
+        Rekening r = tellerWithdrawalService.getActiveRekening(nomorRekening);
+
         model.addAttribute("active", "withdrawal");
-        return "teller/transaction/withdrawal";
+        model.addAttribute("rekening", r);
+        model.addAttribute("rekeningNama",
+                (r.getNamaNasabah() == null ? "" : r.getNamaNasabah()) + " - " + (r.getProduk() == null ? "" : r.getProduk())
+        );
+        model.addAttribute("form", new WithdrawalForm());
+        return "teller/transaction/withdrawal_form";
+    } catch (Exception e) {
+        ra.addFlashAttribute("error", e.getMessage());
+        return "redirect:/teller/transaction/withdrawal";
     }
+}
+
+// =========================
+// WITHDRAWAL: PROCESS
+// =========================
+@PostMapping("/withdrawal/{no}")
+public String withdrawalProcess(@PathVariable("no") String nomorRekening,
+                                @ModelAttribute("form") WithdrawalForm form,
+                                Authentication auth,
+                                RedirectAttributes ra) {
+    try {
+        String username = (auth == null) ? "-" : auth.getName();
+
+        var result = tellerWithdrawalService.withdraw(
+                nomorRekening,
+                form.getJumlahPenarikan(),
+                form.getKeterangan(),
+                form.getNoReferensi(),
+                username
+        );
+
+        ra.addFlashAttribute("success",
+                "Transaksi berhasil: " + result.nomorTransaksi() + ", Saldo baru: " + result.saldoBaru()
+        );
+        return "redirect:/teller/transaction/list";
+    } catch (Exception e) {
+        ra.addFlashAttribute("error", e.getMessage());
+        return "redirect:/teller/transaction/withdrawal/" + nomorRekening;
+    }
+}
+
+@Data
+public static class WithdrawalForm {
+    private BigDecimal jumlahPenarikan;
+    private String keterangan = "Penarikan Tunai";
+    private String noReferensi;
+}
 
     @GetMapping("/transfer")
     public String transfer(Model model) {
