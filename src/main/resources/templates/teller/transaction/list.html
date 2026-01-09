@@ -127,17 +127,7 @@
     <span th:text="${#numbers.formatDecimal(t.jumlah,1,'COMMA',2,'POINT')}">0.00</span>
   </div>
 
-  <!-- saldo kecil bawahnya (opsional, tetap sama) -->
-  <div style="font-size:11px;color:#64748b;font-weight:800;">
-    Saldo: IDR <span th:text="${#numbers.formatDecimal(t.saldoSesudah,1,'COMMA',2,'POINT')}">0.00</span>
-  </div>
-</td>
-
-              <div style="font-size:11px; color:#64748b;"
-                   th:text="${'Saldo: IDR ' + #numbers.formatDecimal(T(java.math.BigDecimal).valueOf(t.saldoSesudah.doubleValue()),1,'COMMA',2,'POINT')}">
-                Saldo: IDR 300,000.00
-              </div>
-            </td>
+  
 
             <td style="padding:14px;">
               <div th:text="${t.keterangan}">Setoran Tunai</div>

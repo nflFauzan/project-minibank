@@ -4,6 +4,7 @@
   <meta charset="utf-8"/>
   <title>Teller - Detail Transaksi</title>
   <link rel="stylesheet" th:href="@{/css/cs-shell.css}">
+  <link rel="stylesheet" th:href="@{/css/print.css}">
 </head>
 
 <body>
@@ -112,22 +113,41 @@
           </div>
         </div>
 
-        <div style="margin-top:16px; display:flex; justify-content:center; gap:12px;">
-          <a th:href="@{/teller/transaction/list}"
-             style="padding:10px 16px;border-radius:12px;background:#2563eb;color:#fff;text-decoration:none;font-weight:900;">
-            Kembali ke Daftar Transaksi
-          </a>
-         <div>
-          <button onclick="window.print()" class="btn btn-primary no-print">
-            Cetak Bukti
-            <div style="padding:10px 16px;border-radius:12px;border:1px solid rgba(0,0,0,.15);background:#fff;color:#0f172a;text-decoration:none;font-weight:900;">
-        </button>            
-          </div>
+
+            <button id="print-receipt-button" onclick="window.print()" 
+                        class="display:inline-flex; align-items:center; justify-content:center;
+                        border-radius: 12px; padding: 10px 14px;
+                        border: 1px solid transparent; cursor:pointer;
+                        font-weight: 800; font-size: 13px; text-decoration:none;
+                        px-6 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors">
+                    Cetak Bukti
+                </button>
+          
         </div>
       </div>
 
     </main>
   </div>
 </div>
+ <!-- Print styles -->
+    <style>
+        @media print {
+            .container {
+                max-width: none !important;
+            }
+            
+            .bg-white {
+                box-shadow: none !important;
+            }
+            
+            a, button {
+                display: none !important;
+            }
+            
+            .bg-gray-50, .bg-blue-50 {
+                border: 1px solid #e5e7eb !important;
+            }
+        }
+    </style>
 </body>
 </html>
