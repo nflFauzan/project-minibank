@@ -50,6 +50,19 @@ public class TellerTransactionController {
         return "teller/transaction/list";
     }
 
+    @GetMapping("/{id}")
+    public String view(@PathVariable UUID id, Model model) {
+        Transaksi t = transaksiRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Transaksi tidak ditemukan"));
+
+        List<Transaksi> group = transaksiRepository.findByGroupIdOrderByProcessedAtAsc(t.getGroupId());
+        model.addAttribute("active", "transaction");
+        model.addAttribute("tx", t);
+        model.addAttribute("groupTx", group);
+
+        return "teller/transaction/view";
+    }
+
     // ================= DEPOSIT =================
     @GetMapping("/deposit")
     public String depositSelect(@RequestParam(required = false) String q,
