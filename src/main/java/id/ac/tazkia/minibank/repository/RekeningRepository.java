@@ -4,9 +4,7 @@ import id.ac.tazkia.minibank.entity.Rekening;
 import jakarta.persistence.LockModeType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Lock;
-import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.*;
 import org.springframework.data.repository.query.Param;
 
 import java.math.BigDecimal;
@@ -40,6 +38,7 @@ public interface RekeningRepository extends JpaRepository<Rekening, Long> {
     """)
     List<Rekening> search(@Param("q") String q, @Param("status") String status);
 
+    // buat nomor urut 6 digit dari id max (simple & cukup untuk tugas)
     @Query("select coalesce(max(r.id), 0) + 1 from Rekening r")
     Long nextIdValue();
 
@@ -47,10 +46,11 @@ public interface RekeningRepository extends JpaRepository<Rekening, Long> {
         Long next = nextIdValue();
         return String.format("%06d", next);
     }
-
+    
     @Query("select coalesce(sum(r.nominalSetoranAwal), 0) from Rekening r where r.statusActive = true")
-    BigDecimal sumNominalSetoranAwalActive();
+    BigDecimal sumNominalSetoranAwalActive();   
 
+    // lock / single find
     Optional<Rekening> findByNomorRekening(String nomorRekening);
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
@@ -61,9 +61,12 @@ public interface RekeningRepository extends JpaRepository<Rekening, Long> {
     @Query("select r from Rekening r where r.nomorRekening in :nos")
     List<Rekening> findByNomorRekeningInForUpdate(@Param("nos") List<String> nos);
 
+    // biar DashboardService kamu gak error lagi
     long countByStatusActive(boolean statusActive);
 
-    // ===== tambahan untuk halaman pilih rekening (aktif saja + search + paging) =====
+    // ---------------------------
+    // Methods used by TELLER UI
+    // ---------------------------
     @Query("""
         select r from Rekening r
         where r.statusActive = true
@@ -76,4 +79,20 @@ public interface RekeningRepository extends JpaRepository<Rekening, Long> {
         order by r.id desc
     """)
     Page<Rekening> searchActiveForTeller(@Param("q") String q, Pageable pageable);
+
+    @Query("""
+        select r from Rekening r
+        where r.statusActive = true
+          and r.nomorRekening <> :excludeNo
+          and (
+               :q is null or :q = ''
+               or lower(r.nomorRekening) like lower(concat('%', :q, '%'))
+               or lower(r.namaNasabah) like lower(concat('%', :q, '%'))
+               or lower(r.produk) like lower(concat('%', :q, '%'))
+          )
+        order by r.id desc
+    """)
+    Page<Rekening> searchActiveForTellerExclude(@Param("excludeNo") String excludeNo,
+                                                 @Param("q") String q,
+                                                 Pageable pageable);
 }

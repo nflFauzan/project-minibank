@@ -9,7 +9,12 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "transaksi")
+@Table(name = "transaksi",
+    indexes = {
+        @Index(name = "idx_transaksi_group_id", columnList = "group_id"),
+        @Index(name = "idx_transaksi_nomor", columnList = "nomor_transaksi"),
+        @Index(name = "idx_transaksi_rekening", columnList = "nomor_rekening")
+    })
 @Getter @Setter
 public class Transaksi {
 
