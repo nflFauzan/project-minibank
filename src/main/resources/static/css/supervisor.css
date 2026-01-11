@@ -1,4 +1,4 @@
-body { margin:0; font-family: Arial, sans-serif; background:#f3f5f7; }
+body { margin:0; font-family: "Poppins"; background:#f3f5f7; }
 .app { display:flex; min-height:100vh; }
 .sidebar { width:240px; background:#0f2a44; color:#fff; padding:18px; }
 .brand { font-weight:800; font-size:18px; margin-bottom:18px; }

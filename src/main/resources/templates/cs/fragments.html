@@ -7,7 +7,8 @@
   <div class="cs-sidebar__top">
     <!-- icon home kecil (opsional) -->
     <div class="cs-mini-icon">
-      <span></span>
+      <img th:src="@{\images\logo-tazkia.png}"
+      class="cs-mini-icon_img">
     </div>
   </div>
 
@@ -21,8 +22,8 @@
     <a th:href="@{/cs/account}"
        th:classappend="${activeMenu=='account'} ? ' active' : ''">Account</a>
 
-    <a th:href="@{/cs/produk}"
-       th:classappend="${active}=='produk' ? ' active' : ''">Pengelolaan Produk Bank</a>
+    <a th:href="@{/cs/product}"
+       th:classappend="${active}=='product' ? ' active' : ''">Pengelolaan Produk Bank</a>
 
     <a th:href="@{/cs/tiket}"
        th:classappend="${active}=='tiket' ? ' active' : ''">Manajemen Tiket</a>
@@ -40,7 +41,10 @@
 <!-- TELLER SIDEBAR (pakai style CS biar konsisten) -->
 <aside class="cs-sidebar" th:fragment="tellerSidebar(active)">
   <div class="cs-sidebar__top">
-    <div class="cs-mini-icon"><span></span></div>
+    <div class="cs-mini-icon">
+      <img th:src="@{\images\logo-tazkia.png}"
+      class="cs-mini-icon_img">
+    </div>
   </div>
 
   <nav class="cs-nav">

@@ -1,7 +1,7 @@
 package id.ac.tazkia.minibank.controller;
 
 import id.ac.tazkia.minibank.dto.DashboardSummaryDto;
-import id.ac.tazkia.minibank.entity.Product;
+import id.ac.tazkia.minibank.entity.ProdukTabungan;
 import id.ac.tazkia.minibank.service.DashboardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,11 +21,11 @@ public class CsDashboardController {
     @GetMapping("/cs/dashboard")
     public String dashboard(Model model){
         DashboardSummaryDto summary = dashboardService.getSummary();
-        List<Product> products = dashboardService.getActiveProducts();
+       List<ProdukTabungan>  produkTabungan = dashboardService.getActiveProdukTabungan();
 
         // yang sudah ada
         model.addAttribute("summary", summary);
-        model.addAttribute("products", products);
+        model.addAttribute("ProdukTabungan", produkTabungan);
 
         // FIX: ini yang dashboard.html kamu butuhin
         model.addAttribute("totalNasabah", summary.getTotalNasabah());

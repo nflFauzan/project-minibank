@@ -18,7 +18,7 @@
   
   body{
     margin: 0;
-    font-family: Poppins, Arial, sans-serif;
+    font-family: Poppins;
     background: var(--content-bg);
     color: #0f172a;
   }
@@ -32,7 +32,7 @@
   /* SIDEBAR */
   .cs-sidebar{
     width: var(--sidebar-w);
-    background: linear-gradient(180deg, var(--sidebar-bg), var(--sidebar-bg2));
+    background: linear-gradient(180deg,#122C4F, var(--sidebar-bg), var(--sidebar-bg2));
     color: var(--sidebar-text);
     padding: 18px 14px;
     position: sticky;
@@ -41,17 +41,25 @@
     overflow: auto;
   }
   
-  .cs-mini-icon{
+  .cs-mini-icon {
     width: 44px;
     height: 44px;
-    border-radius: 12px;
-    background: rgba(255,255,255,.12);
-    display: flex;
+    border-radius: 4px;
+
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 18px;
-  }
+
+    margin-right: 10px;
+    flex-shrink: 0;
+}
   
+.cs-mini-icon_img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
   .cs-nav a{
     display: block;
     padding: 12px 14px;

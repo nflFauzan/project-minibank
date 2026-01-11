@@ -1,4 +1,4 @@
-*{box-sizing:border-box;margin:0;padding:0;font-family: 'Inter', sans-serif}
+*{box-sizing:border-box;margin:0;padding:0;font-family: 'Poppins'}
 html,body,#app{height:100%}
 
 .layout{display:flex;min-height:100vh;background:#e9f6fb}

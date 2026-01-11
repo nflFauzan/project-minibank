@@ -1,52 +1,64 @@
 package id.ac.tazkia.minibank.service;
 
 import id.ac.tazkia.minibank.dto.DashboardSummaryDto;
-import id.ac.tazkia.minibank.entity.Product;
+import id.ac.tazkia.minibank.entity.NasabahStatus;
+import id.ac.tazkia.minibank.entity.ProdukTabungan;
 import id.ac.tazkia.minibank.repository.NasabahRepository;
 import id.ac.tazkia.minibank.repository.RekeningRepository;
-import id.ac.tazkia.minibank.repository.ProductRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import id.ac.tazkia.minibank.repository.ProdukTabunganRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
-    import id.ac.tazkia.minibank.entity.NasabahStatus;
 
 @Service
 public class DashboardService {
 
-    @Autowired
-    private NasabahRepository nasabahRepository;
+    private final NasabahRepository nasabahRepository;
+    private final RekeningRepository rekeningRepository;
+    private final ProdukTabunganRepository produkTabunganRepository;
 
-    @Autowired
-    private RekeningRepository rekeningRepository;
+    public DashboardService(
+            NasabahRepository nasabahRepository,
+            RekeningRepository rekeningRepository,
+            ProdukTabunganRepository produkTabunganRepository
+    ) {
+        this.nasabahRepository = nasabahRepository;
+        this.rekeningRepository = rekeningRepository;
+        this.produkTabunganRepository = produkTabunganRepository;
+    }
 
-    @Autowired
-    private ProductRepository productRepository;
+    public DashboardSummaryDto getSummary() {
+        DashboardSummaryDto dto = new DashboardSummaryDto();
 
+        dto.setTotalNasabah(
+                nasabahRepository.countByStatus(NasabahStatus.ACTIVE)
+        );
 
-public DashboardSummaryDto getSummary() {
-    DashboardSummaryDto dto = new DashboardSummaryDto();
+        dto.setTotalRekening(
+                rekeningRepository.countByStatusActive(true)
+        );
 
-    dto.setTotalNasabah(nasabahRepository.countByStatus(NasabahStatus.ACTIVE));
-    dto.setTotalRekening(rekeningRepository.countByStatusActive(true));
-    dto.setTotalProduk(productRepository.count());
+        dto.setTotalProduk(
+                produkTabunganRepository.count()
+        );
 
-    var recent = nasabahRepository.findTop5ByStatusOrderByCreatedAtDesc(NasabahStatus.ACTIVE)
-        .stream()
-        .map(n -> {
-            DashboardSummaryDto.NasabahSummary s = new DashboardSummaryDto.NasabahSummary();
-            s.setId(n.getId());
-            s.setNamaLengkap(n.getNamaSesuaiIdentitas()); // atau getNamaLengkap() kalau itu yang ada
-            return s;
-        })
-        .toList();
+        var nasabahTerbaru = nasabahRepository
+                .findTop5ByStatusOrderByCreatedAtDesc(NasabahStatus.ACTIVE)
+                .stream()
+                .map(n -> {
+                    DashboardSummaryDto.NasabahSummary s =
+                            new DashboardSummaryDto.NasabahSummary();
+                    s.setId(n.getId());
+                    s.setNamaLengkap(n.getNamaSesuaiIdentitas());
+                    return s;
+                })
+                .toList();
 
-    dto.setNasabahTerbaru(recent);
-    return dto;
-}
+        dto.setNasabahTerbaru(nasabahTerbaru);
+        return dto;
+    }
 
-    public List<Product> getActiveProducts() {
-        return productRepository.findByStatusActiveTrue();
+    public List<ProdukTabungan> getActiveProdukTabungan() {
+        return produkTabunganRepository.findActiveProducts();
     }
 }

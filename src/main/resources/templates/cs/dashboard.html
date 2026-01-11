@@ -1,14 +1,18 @@
-<!DOCTYPE html>
+<!doctype html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="utf-8"/>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>CS - Dashboard</title>
+  <!-- Samakan dengan halaman CS lain -->
   <link rel="stylesheet" th:href="@{/css/cs-shell.css}">
+  <link rel="stylesheet" th:href="@{/css/custom.css}">
+  <link rel="stylesheet" th:href="@{/css/minibank-ui.css}">
+  <link rel="stylesheet" th:href="@{/css/account.css}">
 </head>
 
 <body>
 <div class="cs-shell">
-
   <div th:replace="~{cs/fragments :: sidebar('dashboard')}"></div>
 
   <div class="cs-content">

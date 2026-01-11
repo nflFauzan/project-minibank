@@ -1,0 +1,65 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Detail Produk</title>
+
+<!-- Samakan dengan halaman CS lain -->
+<link rel="stylesheet" th:href="@{/css/cs-shell.css}">
+<link rel="stylesheet" th:href="@{/css/custom.css}">
+<link rel="stylesheet" th:href="@{/css/minibank-ui.css}">
+<link rel="stylesheet" th:href="@{/css/account.css}">
+</head>
+
+<body>
+<div class="cs-shell">
+<div th:replace="~{cs/fragments :: sidebar('product')}"></div>
+
+<div class="cs-content">
+  <div th:replace="~{cs/fragments :: topbar}"></div>
+
+  <main class="cs-page">
+      <h1 class="mb-3">Detail Produk</h1>
+
+      <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+      <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+      <table class="table table-bordered" style="max-width:820px;">
+        <tr><th>ID</th><td th:text="${p.id}"></td></tr>
+        <tr><th>Kode Produk</th><td th:text="${p.kodeProduk}"></td></tr>
+        <tr><th>Nama Produk</th><td th:text="${p.namaProduk}"></td></tr>
+        <tr><th>Jenis Akad</th><td th:text="${p.jenisAkad}"></td></tr>
+        <tr><th>Deskripsi Singkat</th><td th:text="${p.deskripsiSingkat}"></td></tr>
+        <tr><th>Setoran Awal Minimum (IDR)</th><td th:text="${p.setoranAwalMinimum}"></td></tr>
+        <tr>
+          <th>Status</th>
+          <td>
+            <span th:if="${p.aktif}">Aktif</span>
+            <span th:if="${!p.aktif}">Nonaktif</span>
+          </td>
+        </tr>
+      </table>
+
+      <div style="display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
+        <a th:href="@{/cs/product}" class="btn btn-secondary">Kembali</a>
+        <a th:href="@{/cs/product/{id}/edit(id=${p.id})}" class="btn btn-primary">Edit</a>
+
+        <form th:action="@{/cs/product/{id}/toggle(id=${p.id})}" method="post" style="display:inline;">
+          <input type="hidden"
+          th:if="${_csrf != null}"
+          th:name="${_csrf.parameterName}"
+          th:value="${_csrf.token}"/>
+          
+          <button type="submit"
+                  th:onclick="return confirm([[${p.aktif} ? 'Nonaktifkan produk ini?' : 'Aktifkan produk ini?']]);">
+            <span th:text="${p.aktif} ? 'Nonaktifkan' : 'Aktifkan'"></span>
+          </button>
+        </form>
+      </div>
+    </main>
+
+  </div>
+</div>
+</body>
+</html>

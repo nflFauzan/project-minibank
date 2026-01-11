@@ -1,0 +1,82 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Form Produk</title>
+
+<!-- Samakan dengan halaman CS lain -->
+<link rel="stylesheet" th:href="@{/css/cs-shell.css}">
+<link rel="stylesheet" th:href="@{/css/custom.css}">
+<link rel="stylesheet" th:href="@{/css/minibank-ui.css}">
+<link rel="stylesheet" th:href="@{/css/account.css}">
+</head>
+
+<body>
+<div class="cs-shell">
+<div th:replace="~{cs/fragments :: sidebar('product')}"></div>
+
+<div class="cs-content">
+  <div th:replace="~{cs/fragments :: topbar}"></div>
+
+  <main class="cs-page">
+      <h1 class="mb-3" th:text="${mode == 'EDIT' ? 'Edit Produk' : 'Tambah Produk'}"></h1>
+
+      <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+      <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+      <form method="post" th:action="${actionUrl}" th:object="${form}" style="max-width:720px;">
+        <input type="hidden"
+        th:if="${_csrf != null}"
+        th:name="${_csrf.parameterName}"
+        th:value="${_csrf.token}"/>
+        
+        <div class="mb-3">
+          <label>Kode Produk</label><br/>
+          <input style="width:100%; padding:10px; border-radius:10px; border:1px solid rgba(0,0,0,.12);" type="text" th:field="*{kodeProduk}" placeholder="contoh: TAB_WADIAH" required/>
+          <div style="font-size:12px; opacity:.8;">Harus unik.</div>
+        </div>
+
+        <div class="mb-3">
+          <label>Nama Produk</label><br/>
+          <input style="width:100%; padding:10px; border-radius:10px; border:1px solid rgba(0,0,0,.12);" type="text" th:field="*{namaProduk}" placeholder="contoh: Tabungan Wadiah" required/>
+        </div>
+
+        <div class="mb-3">
+          <label>Jenis Akad</label><br/>
+          <select style="width:100%; padding:10px; border-radius:10px; border:1px solid rgba(0,0,0,.12);" th:field="*{jenisAkad}" required>
+            <option value="" disabled selected>Pilih akad</option>
+            <option th:each="o : ${akadOptions}"
+                    th:value="${o.value}"
+                    th:text="${o.label}">
+            </option>
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label>Deskripsi Singkat</label><br/>
+          <input style="width:100%; padding:10px; border-radius:10px; border:1px solid rgba(0,0,0,.12);" type="text" th:field="*{deskripsiSingkat}" placeholder="deskripsi singkat"/>
+        </div>
+
+        <div class="mb-3">
+          <label>Setoran Awal Minimum (IDR)</label><br/>
+          <input style="width:100%; padding:10px; border-radius:10px; border:1px solid rgba(0,0,0,.12);" type="number" th:field="*{setoranAwalMinimum}"
+                 step="0.01" min="0.01" max="1000000000" required/>
+          <div style="font-size:12px; opacity:.8;">> 0 dan maksimal 1.000.000.000</div>
+        </div>
+
+        <div style="display:flex; gap:12px; align-items:center;">
+          <button type="submit" class="btn btn-primary" th:text="${submitLabel}">Simpan</button>
+          <a th:href="@{/cs/product}" class="btn btn-secondary">Batal</a>
+
+          <a th:if="${mode == 'EDIT'}"
+             th:href="@{/cs/product/{id}(id=${p.id})}"
+             class="btn btn-link">Ke Detail</a>
+        </div>
+      </form>
+    </main>
+
+  </div>
+</div>
+</body>
+</html>
