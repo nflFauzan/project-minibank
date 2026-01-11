@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -16,10 +17,6 @@ public class SupervisorNasabahApprovalService {
 
     private final NasabahRepository nasabahRepository;
 
-    public List<Nasabah> listPending() {
-        return nasabahRepository.findByStatusOrderByCreatedAtDesc(NasabahStatus.INACTIVE);
-    }
-
     public long pendingCount() {
         return nasabahRepository.countByStatus(NasabahStatus.INACTIVE);
     }
@@ -27,6 +24,31 @@ public class SupervisorNasabahApprovalService {
     public Nasabah getByIdOrThrow(Long id) {
         return nasabahRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Nasabah tidak ditemukan: " + id));
+    }
+
+    // ✅ Untuk filter APPROVED/REJECTED/PENDING (pakai method repo yang kamu sudah punya)
+    public List<Nasabah> listByStatuses(List<NasabahStatus> statuses) {
+        if (statuses == null || statuses.isEmpty()) {
+            return List.of();
+        }
+        // Kalau cuma PENDING, pakai createdAt desc (lebih masuk akal)
+        if (statuses.size() == 1 && statuses.getFirst() == NasabahStatus.INACTIVE) {
+            return nasabahRepository.findByStatusOrderByCreatedAtDesc(NasabahStatus.INACTIVE);
+        }
+        // Approved/Rejected pakai approvedAt desc
+        return nasabahRepository.findByStatusInOrderByApprovedAtDesc(statuses);
+    }
+
+    // ✅ ALL: pending dulu, lalu history
+    public List<Nasabah> listAllCombined() {
+        List<Nasabah> pending = nasabahRepository.findByStatusOrderByCreatedAtDesc(NasabahStatus.INACTIVE);
+        List<Nasabah> history = nasabahRepository.findByStatusInOrderByApprovedAtDesc(
+                List.of(NasabahStatus.ACTIVE, NasabahStatus.REJECTED)
+        );
+        List<Nasabah> all = new ArrayList<>(pending.size() + history.size());
+        all.addAll(pending);
+        all.addAll(history);
+        return all;
     }
 
     @Transactional

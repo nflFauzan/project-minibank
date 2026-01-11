@@ -2,34 +2,34 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="utf-8"/>
-  <title>CS - View Nasabah</title>
+  <title>Supervisor - Detail Nasabah</title>
   <link rel="stylesheet" th:href="@{/css/cs-shell.css}">
-  <link rel="stylesheet" th:href="@{/css/custom.css}">
-  <link rel="stylesheet" th:href="@{/css/minibank-ui.css}">
-  <link rel="stylesheet" th:href="@{/css/account.css}">
+<link rel="stylesheet" th:href="@{/css/custom.css}">
+<link rel="stylesheet" th:href="@{/css/minibank-ui.css}">
+<link rel="stylesheet" th:href="@{/css/account.css}">
 </head>
 <body>
 <div class="cs-shell">
-  <div th:replace="~{cs/fragments :: sidebar('customers')}"></div>
+  <div th:replace="~{cs/fragments :: supervisorSidebar('nasabah')}"></div>
 
   <div class="cs-content">
     <div th:replace="~{cs/fragments :: topbar}"></div>
 
     <main class="cs-page">
       <div style="display:flex; align-items:center; justify-content:space-between; gap:12px;">
-        <div style="font-size:20px; font-weight:900; color:#1e3a8a;">Detail Nasabah</div>
+        <div style="font-size:20px; font-weight:900; color:#1e3a8a;">Detail Nasabah (Approval)</div>
         <div style="display:flex; gap:10px;">
-          <a th:href="@{/cs/customers}"
+          <a th:href="@{/supervisor/nasabah}"
              style="text-decoration:none; padding:10px 12px; border-radius:10px; border:1px solid rgba(0,0,0,.12); background:#fff; font-weight:800;">
             Kembali
           </a>
-          <a th:href="@{|/cs/customers/${nasabah.id}/edit|}
-             "
-             style="text-decoration:none; padding:10px 12px; border-radius:10px; border:1px solid rgba(0,0,0,.12); background:#fff; font-weight:800;">
-            Edit
-          </a>
         </div>
       </div>
+
+      <div th:if="${success}" style="margin-top:10px; padding:10px 12px; border-radius:10px; background:#ecfdf5; border:1px solid #bbf7d0; font-weight:800;"
+           th:text="${success}"></div>
+      <div th:if="${error}" style="margin-top:10px; padding:10px 12px; border-radius:10px; background:#fff7ed; border:1px solid #fed7aa; font-weight:800;"
+           th:text="${error}"></div>
 
       <div style="margin-top:14px; background:#fff; border:1px solid rgba(0,0,0,.06); border-radius:16px; box-shadow:0 10px 25px rgba(0,0,0,.05); padding:16px;">
 
@@ -40,6 +40,10 @@
           <tr><td style="padding:8px; color:#64748b; font-weight:800;">Status</td><td style="padding:8px;" th:text="${nasabah.status}"></td></tr>
           <tr><td style="padding:8px; color:#64748b; font-weight:800;">Created At</td><td style="padding:8px;" th:text="${nasabah.createdAt}"></td></tr>
           <tr><td style="padding:8px; color:#64748b; font-weight:800;">Created By</td><td style="padding:8px;" th:text="${nasabah.createdBy}"></td></tr>
+
+          <tr><td style="padding:8px; color:#64748b; font-weight:800;">Approved At</td><td style="padding:8px;" th:text="${nasabah.approvedAt}"></td></tr>
+          <tr><td style="padding:8px; color:#64748b; font-weight:800;">Approved By</td><td style="padding:8px;" th:text="${nasabah.approvedBy}"></td></tr>
+          <tr><td style="padding:8px; color:#64748b; font-weight:800;">Reject Reason</td><td style="padding:8px;" th:text="${nasabah.rejectionReason}"></td></tr>
 
           <tr><td colspan="2" style="padding:10px 8px; font-weight:900; color:#1e3a8a;">Data Identitas</td></tr>
           <tr><td style="padding:8px; color:#64748b; font-weight:800;">NIK</td><td style="padding:8px;" th:text="${nasabah.nik}"></td></tr>
@@ -82,11 +86,110 @@
           <tr><td style="padding:8px; color:#64748b; font-weight:800;">Nama Perusahaan</td><td style="padding:8px;" th:text="${nasabah.namaPerusahaan}"></td></tr>
           <tr><td style="padding:8px; color:#64748b; font-weight:800;">Jabatan</td><td style="padding:8px;" th:text="${nasabah.jabatan}"></td></tr>
           <tr><td style="padding:8px; color:#64748b; font-weight:800;">Penghasilan/Bulan</td><td style="padding:8px;" th:text="${nasabah.penghasilanPerBulan}"></td></tr>
-
           </tbody>
         </table>
 
       </div>
+
+      <!-- ACTIONS -->
+      <div style="margin-top:14px; background:#fff; border:1px solid rgba(0,0,0,.06); border-radius:16px; box-shadow:0 10px 25px rgba(0,0,0,.05); padding:16px;">
+
+        <div style="font-weight:900; color:#1e3a8a; margin-bottom:10px;">Approval Actions</div>
+
+        <!-- Kalau status pending -->
+        <div th:if="${nasabah.status.name() == 'INACTIVE'}" style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+
+          <form method="post" th:action="@{|/supervisor/nasabah/${nasabah.id}/approve|}">
+            <input type="hidden"
+            th:if="${_csrf != null}"
+            th:name="${_csrf.parameterName}"
+            th:value="${_csrf.token}"/>
+            <input type="hidden" name="notes" value=""/>
+            <button type="submit"
+                    onclick="return confirm('Approve nasabah ini?')"
+                    style="padding:10px 12px; border-radius:10px; border:1px solid rgba(0,0,0,.12); background:#ecfdf5; font-weight:900; cursor:pointer;">
+              Approve
+            </button>
+          </form>
+
+          <button type="button"
+                  onclick="openRejectModal()"
+                  style="padding:10px 12px; border-radius:10px; border:1px solid rgba(0,0,0,.12); background:#fff7ed; font-weight:900; cursor:pointer;">
+            Reject
+          </button>
+
+        </div>
+
+        <!-- Kalau sudah approved/rejected -->
+        <div th:if="${nasabah.status.name() != 'INACTIVE'}" style="color:#334155; font-weight:800;">
+          <div th:if="${nasabah.status.name() == 'ACTIVE'}">
+            Nasabah sudah di-approve oleh <span th:text="${nasabah.approvedBy}">-</span>
+            pada <span th:text="${nasabah.approvedAt}">-</span>.
+          </div>
+          <div th:if="${nasabah.status.name() == 'REJECTED'}">
+            Nasabah di-reject oleh <span th:text="${nasabah.approvedBy}">-</span>
+            pada <span th:text="${nasabah.approvedAt}">-</span>.
+            <div style="margin-top:6px;">
+              Alasan: <span th:text="${nasabah.rejectionReason}">-</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- REJECT MODAL -->
+      <div id="rejectModal"
+           style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:9999; align-items:center; justify-content:center; padding:16px;">
+        <div style="width:min(560px, 100%); background:#fff; border-radius:16px; padding:16px; box-shadow:0 20px 60px rgba(0,0,0,.25);">
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:12px;">
+            <div style="font-weight:900; color:#b45309;">Reject Nasabah</div>
+            <button type="button" onclick="closeRejectModal()"
+                    style="border:1px solid rgba(0,0,0,.12); background:#fff; border-radius:10px; padding:6px 10px; font-weight:900; cursor:pointer;">
+              X
+            </button>
+          </div>
+
+          <form method="post" th:action="@{|/supervisor/nasabah/${nasabah.id}/reject|}" style="margin-top:10px;">
+            <input type="hidden"
+          th:if="${_csrf != null}"
+          th:name="${_csrf.parameterName}"
+          th:value="${_csrf.token}"/>
+
+            <label style="display:block; font-weight:900; color:#334155; margin-bottom:6px;">
+              Alasan Reject <span style="color:#dc2626;">*</span>
+            </label>
+            <textarea name="reason" required
+                      style="width:100%; min-height:90px; padding:10px 12px; border-radius:10px; border:1px solid rgba(0,0,0,.12);"></textarea>
+
+            <label style="display:block; font-weight:900; color:#334155; margin:10px 0 6px;">
+              Catatan (opsional)
+            </label>
+            <textarea name="notes"
+                      style="width:100%; min-height:70px; padding:10px 12px; border-radius:10px; border:1px solid rgba(0,0,0,.12);"></textarea>
+
+            <div style="display:flex; gap:10px; justify-content:flex-end; margin-top:12px;">
+              <button type="button" onclick="closeRejectModal()"
+                      style="padding:10px 12px; border-radius:10px; border:1px solid rgba(0,0,0,.12); background:#fff; font-weight:900; cursor:pointer;">
+                Batal
+              </button>
+              <button type="submit"
+                      style="padding:10px 12px; border-radius:10px; border:1px solid rgba(0,0,0,.12); background:#fff7ed; font-weight:900; cursor:pointer;">
+                Submit Reject
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <script>
+        function openRejectModal() {
+          document.getElementById('rejectModal').style.display = 'flex';
+        }
+        function closeRejectModal() {
+          document.getElementById('rejectModal').style.display = 'none';
+        }
+      </script>
+
     </main>
   </div>
 </div>

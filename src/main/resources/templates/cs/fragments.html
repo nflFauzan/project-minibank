@@ -74,6 +74,30 @@
   </div>
 </aside>
 
+<!-- ✅ SUPERVISOR SIDEBAR (PAKAI STYLE CS, SESUAI PERMINTAAN) -->
+<aside class="cs-sidebar" th:fragment="supervisorSidebar(active)">
+  <div class="cs-sidebar__top">
+    <div class="cs-mini-icon">
+      <img th:src="@{\images\logo-tazkia.png}"
+           class="cs-mini-icon_img">
+    </div>
+  </div>
+
+  <nav class="cs-nav">
+    <a th:href="@{/supervisor/dashboard}"
+       th:classappend="${active}=='dashboard' ? ' active' : ''">Dashboard</a>
+
+    <a th:href="@{/supervisor/nasabah}"
+       th:classappend="${active}=='nasabah' ? ' ' : ''">Approval Nasabah</a>
+  </nav>
+
+  <div class="cs-sidebar__bottom">
+    <a class="cs-settings" th:href="@{/supervisor/settings}">Settings</a>
+    <a class="cs-logout" th:href="@{/logout}">Logout</a>
+  </div>
+</aside>
+
+
 <!-- TOP HEADER / BANNER -->
 <header class="cs-topbar" th:fragment="topbar">
     <div class="cs-topbar__imgwrap">

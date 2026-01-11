@@ -1,38 +1,68 @@
-<!DOCTYPE html>
+<!doctype html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8"/>
-  <title>Supervisor Dashboard</title>
-  <link rel="stylesheet" th:href="@{/css/supervisor.css}">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Supervisor - Dashboard</title>
+  <!-- Samakan dengan halaman CS lain -->
+  <link rel="stylesheet" th:href="@{/css/cs-shell.css}">
+  <link rel="stylesheet" th:href="@{/css/custom.css}">
+  <link rel="stylesheet" th:href="@{/css/minibank-ui.css}">
+  <link rel="stylesheet" th:href="@{/css/account.css}">
 </head>
+
 <body>
-<div class="app">
-  <aside class="sidebar">
-    <div class="brand">Mini Bank</div>
-    <nav class="nav">
-      <a class="active" th:href="@{/supervisor/dashboard}">Dashboard</a>
-      <a th:href="@{/supervisor/nasabah/pending}">Pending Nasabah</a>
-    </nav>
-    <form th:action="@{/logout}" method="post" style="margin-top: 24px;">
-      <button type="submit" class="btn-logout">Logout</button>
-    </form>
-    
-  </aside>
+<div class="cs-shell">
+  <div th:replace="~{cs/fragments :: supervisorSidebar('nasabah')}"></div>
 
-  <main class="main">
-    <div class="card">
-      <h2>Supervisor Dashboard</h2>
-      <p class="muted">Ringkasan approval.</p>
+  <div class="cs-content">
+    <div th:replace="~{cs/fragments :: topbar}"></div>
 
-      <div class="stats">
-        <div class="stat">
-          <div class="stat-label">Nasabah Pending</div>
-          <div class="stat-value" th:text="${pendingCount}">0</div>
-          <a class="btn" th:href="@{/supervisor/nasabah/pending}">Lihat Pending</a>
+    <main class="cs-page">
+
+      <!-- Greeting card -->
+      <div style="
+        background: rgba(255,255,255,.55);
+        border: 1px solid rgba(0,0,0,.06);
+        border-radius: 18px;
+        box-shadow: 0 10px 25px rgba(0,0,0,.06);
+        padding: 18px 18px;
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        gap:16px;
+      ">
+        <div>
+          <div style="font-size:22px; font-weight:800; color:#e1782d;">
+            <span>Assalamu'alaikum, </span><span th:text="${currentFullName} ?: 'Tazkia'">Tazkia</span>
+          </div>
+          <div style="margin-top:6px; color:#334155; font-weight:600; font-size:13px;">
+            Siap mengelola transaksi hari ini dengan penuh amanah!
+          </div>
         </div>
+
+        <!-- ilustrasi kanan (optional) -->
+        <img th:src="@{/images/cs-hero.png}" alt="hero"
+             style="height:90px; width:auto; display:block;"
+             onerror="this.style.display='none'">
       </div>
-    </div>
-  </main>
+
+      
+
+      <!-- Produk -->
+      <div style="margin-top:18px; font-size:18px; font-weight:900; color:#1e3a8a;">
+        Produk-Produk Tazkia Minibank
+      </div>
+
+      <div style="display:grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap:18px; margin-top:12px;">
+        <div style="height:130px; background:rgba(255,255,255,.55); border:1px solid rgba(0,0,0,.06); border-radius:18px; box-shadow:0 10px 25px rgba(0,0,0,.05);"></div>
+        <div style="height:130px; background:rgba(255,255,255,.55); border:1px solid rgba(0,0,0,.06); border-radius:18px; box-shadow:0 10px 25px rgba(0,0,0,.05);"></div>
+        <div style="height:130px; background:rgba(255,255,255,.55); border:1px solid rgba(0,0,0,.06); border-radius:18px; box-shadow:0 10px 25px rgba(0,0,0,.05);"></div>
+        <div style="height:130px; background:rgba(255,255,255,.55); border:1px solid rgba(0,0,0,.06); border-radius:18px; box-shadow:0 10px 25px rgba(0,0,0,.05);"></div>
+      </div>
+
+    </main>
+  </div>
 </div>
 </body>
 </html>
