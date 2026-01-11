@@ -5,6 +5,7 @@ import id.ac.tazkia.minibank.entity.ProdukTabungan;
 import id.ac.tazkia.minibank.repository.NasabahRepository;
 import id.ac.tazkia.minibank.repository.ProdukTabunganRepository;
 import id.ac.tazkia.minibank.repository.RekeningRepository;
+import id.ac.tazkia.minibank.repository.TransaksiRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +20,7 @@ public class TellerDashboardService {
     private final NasabahRepository nasabahRepository;
     private final RekeningRepository rekeningRepository;
     private final ProdukTabunganRepository produkTabunganRepository;
+    private final TransaksiRepository transaksiRepository;
 
     @Transactional(readOnly = true)
     public long totalNasabahAktif() {
@@ -38,9 +40,9 @@ public class TellerDashboardService {
 
     @Transactional(readOnly = true)
     public long totalTransaksi() {
-        // belum ada tabel transaksi -> 0 dulu
-        return 0L;
-    }
+    return transaksiRepository.countByChannel("TELLER");
+}
+
 
     @Transactional(readOnly = true)
     public List<ProdukTabungan> produkAktif() {

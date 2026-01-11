@@ -31,4 +31,9 @@ public interface TransaksiRepository extends JpaRepository<Transaksi, UUID> {
                            Pageable pageable);
 
     List<Transaksi> findByGroupIdOrderByProcessedAtAsc(UUID groupId);
+
+   @Query("select count(t) from Transaksi t where t.channel = :channel")
+long countByChannel(@Param("channel") String channel);
+
+
 }
