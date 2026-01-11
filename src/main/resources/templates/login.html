@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <title>Login</title>
 
@@ -26,7 +27,7 @@
         .glass-card {
             width: 430px;
             padding: 50px 45px;
-            background: rgba(255,255,255,0.55);
+            background: rgba(255, 255, 255, 0.55);
             backdrop-filter: blur(22px);
             border-radius: 30px;
             text-align: center;
@@ -54,22 +55,24 @@
         }
 
         /* Input fields */
-        .input-field, select {
+        .input-field,
+        select {
             width: 100%;
             height: 52px;
             border-radius: 32px;
-            border: 2px solid rgba(0,0,0,0.18);
+            border: 2px solid rgba(0, 0, 0, 0.18);
             padding: 0 20px;
             margin-bottom: 18px;
             font-size: 15px;
-            background: rgba(255,255,255,0.92);
+            background: rgba(255, 255, 255, 0.92);
             outline: none;
             box-sizing: border-box;
         }
 
-        .input-field:focus, select:focus {
+        .input-field:focus,
+        select:focus {
             border-color: #4B7BFF;
-            box-shadow: 0 0 6px rgba(75,123,255,0.35);
+            box-shadow: 0 0 6px rgba(75, 123, 255, 0.35);
         }
 
         /* Forgot password */
@@ -78,7 +81,7 @@
             font-size: 12px;
             margin-top: -10px;
             margin-bottom: 22px;
-            color: rgba(0,0,0,0.55);
+            color: rgba(0, 0, 0, 0.55);
             padding-left: 5px;
         }
 
@@ -99,7 +102,7 @@
         .signup-text {
             font-size: 13px;
             margin-top: 18px;
-            color: rgba(0,0,0,0.7);
+            color: rgba(0, 0, 0, 0.7);
         }
 
         .signup-text a {
@@ -107,55 +110,98 @@
             font-weight: bold;
             text-decoration: none;
         }
+
+        .password-wrapper {
+            position: relative;
+        }
+
+        .password-eye {
+            position: absolute;
+            right: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #64748b;
+            padding: 0;
+        }
+
+        .password-eye:active {
+            color: #1f3c88;
+        }
     </style>
 </head>
 
 <body>
 
-<div class="overlay">
+    <div class="overlay">
 
-    <div class="glass-card">
+        <div class="glass-card">
 
-        <a href="/" class="back-btn">←</a>
+            <a href="/" class="back-btn">←</a>
 
-        <div class="title">Welcome Back!</div>
+            <div class="title">Welcome Back!</div>
 
-        <div th:if="${param.error}" style="color:#b00020; font-size:13px; margin-bottom:12px;">
-            Login gagal. Cek username/password, atau akun belum disetujui (approved).
-        </div>
+            <div th:if="${param.error}" style="color:#b00020; font-size:13px; margin-bottom:12px;">
+                Login gagal. Cek username/password, atau akun belum disetujui (approved).
+            </div>
 
-        <div th:if="${param.logout}" style="color:green; font-size:13px; margin-bottom:12px;">
-            Kamu sudah logout.
-        </div>
-        <div th:if="${param.registered}" style="color:green; font-size:13px; margin-bottom:12px;">
-            Registrasi berhasil. Menunggu approval admin.
-        </div>
-        <form th:action="@{/login}" method="post">
+            <div th:if="${param.logout}" style="color:green; font-size:13px; margin-bottom:12px;">
+                Kamu sudah logout.
+            </div>
+            <div th:if="${param.registered}" style="color:green; font-size:13px; margin-bottom:12px;">
+                Registrasi berhasil. Menunggu approval admin.
+            </div>
+            <form th:action="@{/login}" method="post">
 
-            <input type="text" name="username" class="input-field" placeholder="Username" required>
+                <input type="text" name="username" class="input-field" placeholder="Username" required>
 
-            <input type="password" name="password" class="input-field" placeholder="Password" required>
+                <div class="password-wrapper">
+                    <input type="password" name="password" class="input-field" placeholder="Password" required>
+                    <button type="button" class="password-eye" tabindex="-1">
+                        <svg viewBox="0 0 24 24" width="20" height="20">
+                            <path fill="currentColor"
+                                d="M12 5c-7 0-10 7-10 7s3 7 10 7 10-7 10-7-3-7-10-7zm0 11a4 4 0 1 1 0-8 4 4 0 0 1 0 8z" />
+                        </svg>
+                    </button>
+                </div>
 
-            <select name="module" class="input-field" required>
-                <option value="" disabled selected>Modul</option>
-                <option value="CS">CS</option>
-                <option value="TELLER">Teller</option>
-                <option value="SUPERVISOR">Supervisor</option>
-                <option value="ADMIN">Admin</option>
-            </select>
+                <select name="module" class="input-field" required>
+                    <option value="" disabled selected>Modul</option>
+                    <option value="CS">CS</option>
+                    <option value="TELLER">Teller</option>
+                    <option value="SUPERVISOR">Supervisor</option>
+                    <option value="ADMIN">Admin</option>
+                </select>
 
-            <div class="forgot">Forgot Username or Password?</div>
+                <div class="forgot">Forgot Username or Password?</div>
 
-            <button type="submit" class="btn-login">LOGIN</button>
-        </form>
+                <button type="submit" class="btn-login">LOGIN</button>
+            </form>
 
-        <div class="signup-text">
-            Create an Account? <a href="/signup">SIGN UP here</a>
+            <div class="signup-text">
+                Create an Account? <a href="/signup">SIGN UP here</a>
+            </div>
+
         </div>
 
     </div>
+    <script>
+        document.querySelectorAll('.password-eye').forEach(btn => {
+            const input = btn.previousElementSibling;
 
-</div>
+            const show = () => input.type = 'text';
+            const hide = () => input.type = 'password';
 
+            btn.addEventListener('mousedown', show);
+            btn.addEventListener('mouseup', hide);
+            btn.addEventListener('mouseleave', hide);
+
+            btn.addEventListener('touchstart', show, { passive: true });
+            btn.addEventListener('touchend', hide);
+        });
+    </script>   
 </body>
+
 </html>
