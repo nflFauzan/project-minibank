@@ -117,18 +117,29 @@
             </td>
 
            <!-- JUMLAH -->
-<td style="text-align:right;">
-  <div th:if="${t.tipe.name() == 'WITHDRAWAL'}"
-       style="font-weight:900;color:#dc2626;">
-    <span>-IDR </span>
-    <span th:text="${#numbers.formatDecimal(t.jumlah,1,'COMMA',2,'POINT')}">0.00</span>
-  </div>
-
-  <div th:unless="${t.tipe.name() == 'WITHDRAWAL'}"
-       style="font-weight:900;color:#16a34a;">
-    <span>+IDR </span>
-    <span th:text="${#numbers.formatDecimal(t.jumlah,1,'COMMA',2,'POINT')}">0.00</span>
-  </div>
+           <td style="text-align:right;">
+            <!-- MINUS = Withdrawal ATAU Transfer Keluar (Transfer ke...) -->
+            <div th:if="${t.tipe.name() == 'WITHDRAWAL'
+                        or (t.tipe.name() == 'TRANSFER'
+                            and t.keterangan != null
+                            and #strings.startsWith(#strings.toLowerCase(t.keterangan),'transfer ke'))
+                        or (t.saldoSesudah != null and t.saldoSebelum != null and t.saldoSesudah < t.saldoSebelum)}"
+                 style="font-weight:900;color:#dc2626;">
+              <span>-IDR </span>
+              <span th:text="${#numbers.formatDecimal(t.jumlah,1,'COMMA',2,'POINT')}">0.00</span>
+            </div>
+          
+            <!-- PLUS = selain kondisi di atas -->
+            <div th:unless="${t.tipe.name() == 'WITHDRAWAL'
+                            or (t.tipe.name() == 'TRANSFER'
+                                and t.keterangan != null
+                                and #strings.startsWith(#strings.toLowerCase(t.keterangan),'transfer ke'))
+                            or (t.saldoSesudah != null and t.saldoSebelum != null and t.saldoSesudah < t.saldoSebelum)}"
+                 style="font-weight:900;color:#16a34a;">
+              <span>+IDR </span>
+              <span th:text="${#numbers.formatDecimal(t.jumlah,1,'COMMA',2,'POINT')}">0.00</span>
+            </div>
+          </td>
 
   
 

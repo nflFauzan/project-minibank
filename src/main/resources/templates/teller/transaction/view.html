@@ -40,14 +40,24 @@
           </div>
 
           <div style="text-align:right;">
-            <div th:if="${tx.tipe.name() == 'WITHDRAWAL'}"
-     style="font-size:18px;font-weight:1000;color:#dc2626;">
-  -IDR <span th:text="${#numbers.formatDecimal(tx.jumlah,1,'COMMA',2,'POINT')}">0.00</span>
+            <div th:if="${tx.tipe.name() == 'WITHDRAWAL'
+            or (tx.tipe.name() == 'TRANSFER'
+                and tx.keterangan != null
+                and #strings.startsWith(#strings.toLowerCase(tx.keterangan),'transfer ke'))
+            or (tx.saldoSesudah != null and tx.saldoSebelum != null and tx.saldoSesudah < tx.saldoSebelum)}"
+     style="font-weight:900;color:#dc2626;">
+  <span>-IDR </span>
+  <span th:text="${#numbers.formatDecimal(tx.jumlah,1,'COMMA',2,'POINT')}">0.00</span>
 </div>
 
-<div th:unless="${tx.tipe.name() == 'WITHDRAWAL'}"
-     style="font-size:18px;font-weight:1000;color:#16a34a;">
-  IDR <span th:text="${#numbers.formatDecimal(tx.jumlah,1,'COMMA',2,'POINT')}">0.00</span>
+<div th:unless="${tx.tipe.name() == 'WITHDRAWAL'
+                or (tx.tipe.name() == 'TRANSFER'
+                    and tx.keterangan != null
+                    and #strings.startsWith(#strings.toLowerCase(tx.keterangan),'transfer ke'))
+                or (tx.saldoSesudah != null and tx.saldoSebelum != null and tx.saldoSesudah < tx.saldoSebelum)}"
+     style="font-weight:900;color:#16a34a;">
+  <span>+IDR </span>
+  <span th:text="${#numbers.formatDecimal(tx.jumlah,1,'COMMA',2,'POINT')}">0.00</span>
 </div>
 
             <div style="font-size:11px;color:#64748b;"
@@ -87,15 +97,25 @@
 
                    <div>
                     Jumlah Transaksi:
-                    <span th:if="${tx.tipe.name() == 'WITHDRAWAL'}"
-                          style="color:#dc2626;font-weight:900;">
-                      -IDR <span th:text="${#numbers.formatDecimal(tx.jumlah,1,'COMMA',2,'POINT')}">0.00</span>
-                    </span>
-                  
-                    <span th:unless="${tx.tipe.name() == 'WITHDRAWAL'}"
-                          style="color:#16a34a;font-weight:900;">
-                      +IDR <span th:text="${#numbers.formatDecimal(tx.jumlah,1,'COMMA',2,'POINT')}">0.00</span>
-                    </span>
+                    <div th:if="${tx.tipe.name() == 'WITHDRAWAL'
+                    or (tx.tipe.name() == 'TRANSFER'
+                        and tx.keterangan != null
+                        and #strings.startsWith(#strings.toLowerCase(tx.keterangan),'transfer ke'))
+                    or (tx.saldoSesudah != null and tx.saldoSebelum != null and tx.saldoSesudah < tx.saldoSebelum)}"
+             style="font-weight:900;color:#dc2626;">
+          <span>-IDR </span>
+          <span th:text="${#numbers.formatDecimal(tx.jumlah,1,'COMMA',2,'POINT')}">0.00</span>
+        </div>
+        
+        <div th:unless="${tx.tipe.name() == 'WITHDRAWAL'
+                        or (tx.tipe.name() == 'TRANSFER'
+                            and tx.keterangan != null
+                            and #strings.startsWith(#strings.toLowerCase(tx.keterangan),'transfer ke'))
+                        or (tx.saldoSesudah != null and tx.saldoSebelum != null and tx.saldoSesudah < tx.saldoSebelum)}"
+             style="font-weight:900;color:#16a34a;">
+          <span>+IDR </span>
+          <span th:text="${#numbers.formatDecimal(tx.jumlah,1,'COMMA',2,'POINT')}">0.00</span>
+        </div>
                   </div>
                   
                   <span>

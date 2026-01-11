@@ -55,11 +55,16 @@
       </div>
 
       <div style="display:grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap:18px; margin-top:12px;">
-        <div style="height:130px; background:rgba(255,255,255,.55); border:1px solid rgba(0,0,0,.06); border-radius:18px; box-shadow:0 10px 25px rgba(0,0,0,.05);"></div>
-        <div style="height:130px; background:rgba(255,255,255,.55); border:1px solid rgba(0,0,0,.06); border-radius:18px; box-shadow:0 10px 25px rgba(0,0,0,.05);"></div>
-        <div style="height:130px; background:rgba(255,255,255,.55); border:1px solid rgba(0,0,0,.06); border-radius:18px; box-shadow:0 10px 25px rgba(0,0,0,.05);"></div>
-        <div style="height:130px; background:rgba(255,255,255,.55); border:1px solid rgba(0,0,0,.06); border-radius:18px; box-shadow:0 10px 25px rgba(0,0,0,.05);"></div>
-      </div>
+        <div th:each="p : ${products}"
+             style="background:rgba(255,255,255,.55); border:1px solid rgba(0,0,0,.06); border-radius:18px;
+                    box-shadow:0 10px 25px rgba(0,0,0,.05); padding:14px;">
+          <div style="font-weight:900;" th:text="${p.namaProduk}">Produk</div>
+          <div style="font-size:12px;color:#64748b;font-weight:700;" th:text="${p.jenisAkad}">AKAD</div>
+          <div style="margin-top:8px; font-size:12px; font-weight:700;"
+               th:text="'Min Setoran: ' + ${p.setoranAwalMinimum}">
+            Min Setoran: 0
+          </div>
+        </div>
 
     </main>
   </div>
