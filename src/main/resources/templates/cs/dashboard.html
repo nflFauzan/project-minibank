@@ -4,11 +4,69 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>CS - Dashboard</title>
-  <!-- Samakan dengan halaman CS lain -->
+  
   <link rel="stylesheet" th:href="@{/css/cs-shell.css}">
   <link rel="stylesheet" th:href="@{/css/custom.css}">
   <link rel="stylesheet" th:href="@{/css/minibank-ui.css}">
   <link rel="stylesheet" th:href="@{/css/account.css}">
+
+  <style>
+    /* Hero Section */
+    .dashboard-hero {
+      background: linear-gradient(135deg, #2563EB 0%, #1d4ed8 100%);
+      border-radius: 20px;
+      padding: 40px 30px;
+      color: white;
+      box-shadow: 0 10px 20px rgba(37, 99, 235, 0.2);
+      margin-bottom: 30px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-height: 180px;
+    }
+    .hero-title { font-size: 28px; font-weight: 800; margin-bottom: 10px; }
+    .hero-subtitle { font-size: 16px; font-weight: 500; opacity: 0.9; }
+
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+    .stat-card {
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 25px 20px;
+      text-align: center;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+      border: 1px solid rgba(0,0,0,0.03);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 140px;
+    }
+    .stat-label { font-size: 13px; font-weight: 700; color: #64748b; margin-bottom: 10px; }
+    .stat-value { font-size: 32px; font-weight: 900; color: #0f172a; }
+
+    /* Product Section */
+    .section-title { font-size: 20px; font-weight: 800; color: #0f172a; margin-bottom: 20px; }
+    .product-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 25px; }
+    .product-card {
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+      border: 1px solid rgba(0,0,0,0.05);
+      min-height: 200px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+    }
+    .product-title { font-size: 18px; font-weight: 800; color: #1e3a8a; margin-bottom: 15px; }
+    .product-desc { font-size: 14px; color: #475569; line-height: 1.6; }
+  </style>
 </head>
 
 <body>
@@ -20,79 +78,57 @@
 
     <main class="cs-page">
 
-      <!-- Greeting card -->
-      <div style="
-        background: rgba(255,255,255,.55);
-        border: 1px solid rgba(0,0,0,.06);
-        border-radius: 18px;
-        box-shadow: 0 10px 25px rgba(0,0,0,.06);
-        padding: 18px 18px;
-        display:flex;
-        align-items:center;
-        justify-content:space-between;
-        gap:16px;
-      ">
-        <div>
-          <div style="font-size:22px; font-weight:800; color:#e1782d;">
-            <span>Assalamu'alaikum, </span><span th:text="${currentFullName} ?: 'Tazkia'">Tazkia</span>
-          </div>
-          <div style="margin-top:6px; color:#334155; font-weight:600; font-size:13px;">
-            Siap mengelola transaksi hari ini dengan penuh amanah!
-          </div>
+      <div class="dashboard-hero">
+        <div class="hero-title">
+          <span>Assalamualaikum, </span><span th:text="${currentFullName} ?: 'Vania'">Vania</span>!
         </div>
-
-        <!-- ilustrasi kanan (optional) -->
-        <img th:src="@{/images/cs-hero.png}" alt="hero"
-             style="height:90px; width:auto; display:block;"
-             onerror="this.style.display='none'">
-      </div>
-
-      <!-- Summary cards -->
-      <div style="display:grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap:14px; margin-top:16px;">
-        <div style="background:#fff; border-radius:16px; border:1px solid rgba(0,0,0,.06); box-shadow:0 10px 25px rgba(0,0,0,.05); padding:14px;">
-          <div style="font-size:12px; color:#64748b; font-weight:700;">Total Nasabah</div>
-          <div style="font-size:22px; font-weight:900;" th:text="${summary.totalNasabah} ?: 0">0</div>
-        </div>
-
-        <div style="background:#fff; border-radius:16px; border:1px solid rgba(0,0,0,.06); box-shadow:0 10px 25px rgba(0,0,0,.05); padding:14px;">
-          <div style="font-size:12px; color:#64748b; font-weight:700;">Total Rekening Aktif</div>
-          <div style="font-size:22px; font-weight:900;" th:text="${totalRekeningAktif} ?: 0">0</div>
-        </div>
-
-        <div style="background:#fff; border-radius:16px; border:1px solid rgba(0,0,0,.06); box-shadow:0 10px 25px rgba(0,0,0,.05); padding:14px;">
-          <div style="font-size:12px; color:#64748b; font-weight:700;">Total Produk</div>
-          <div style="font-size:22px; font-weight:900;" th:text="${totalProduk} ?: 0">0</div>
-        </div>
-
-        <div style="background:#fff; border-radius:16px; border:1px solid rgba(0,0,0,.06); box-shadow:0 10px 25px rgba(0,0,0,.05); padding:14px;">
-          <div style="font-size:12px; color:#64748b; font-weight:700;">Nasabah Baru</div>
-          <ul style="margin:8px 0 0 18px; padding:0;">
-            <li th:each="n : ${summary.nasabahTerbaru}" th:text="${n.namaLengkap}">-</li>
-          </ul>          
+        <div class="hero-subtitle">
+          Siap Mengelola Transaksi Hari Ini dengan Penuh Amanah!
         </div>
       </div>
 
-      <!-- Produk -->
-      <div style="margin-top:18px; font-size:18px; font-weight:900; color:#1e3a8a;">
-        Produk-Produk Tazkia Minibank
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Total Nasabah</div>
+          <div class="stat-value" th:text="${summary != null ? summary.totalNasabah : 0}">0</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-label">Total Rekening Aktif</div>
+          <div class="stat-value" th:text="${totalRekeningAktif} ?: 0">0</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-label">Total Produk Bank</div>
+          <div class="stat-value" th:text="${totalProduk} ?: 0">0</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-label">Total Nasabah Baru</div>
+          <div class="stat-value" th:text="${summary != null and summary.nasabahTerbaru != null ? summary.nasabahTerbaru.size() : 0}">0</div>
+        </div>
       </div>
 
-      <div style="display:grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap:18px; margin-top:12px;">
-        <div th:each="p : ${products}"
-             style="background:rgba(255,255,255,.55); border:1px solid rgba(0,0,0,.06); border-radius:18px;
-                    box-shadow:0 10px 25px rgba(0,0,0,.05); padding:14px;">
-          <div style="font-weight:900;" th:text="${p.namaProduk}">Produk</div>
-          <div style="font-size:12px;color:#64748b;font-weight:700;" th:text="${p.jenisAkad}">AKAD</div>
-          <div style="margin-top:8px; font-size:12px; font-weight:700;"
-               th:text="'Min Setoran: ' + ${p.setoranAwalMinimum}">
-            Min Setoran: 0
+      <div class="section-title">Produk-produk Tazkia Minibank</div>
+
+      <div class="product-grid">
+        <div class="product-card" th:each="p : ${products}">
+          <div class="product-title" th:text="${p.namaProduk}">Tabungan Easy Wadiah</div>
+          
+          <div class="product-desc">
+            Tabungan dalam mata uang Rupiah berdasarkan prinsip 
+            <span style="font-weight:bold; color:#2563EB;" th:text="${p.jenisAkad}">AKAD</span> 
+            yang penarikan dan setorannya dapat dilakukan setiap saat selama jam operasional kas.
+            <br><br>
+            <small style="color: green; font-weight: bold;" th:text="'Min Setoran: Rp ' + ${p.setoranAwalMinimum}"></small>
           </div>
         </div>
-      
-        <div th:if="${products == null || #lists.isEmpty(products)}"
-             style="height:130px; background:rgba(255,255,255,.55); border:1px solid rgba(0,0,0,.06); border-radius:18px; box-shadow:0 10px 25px rgba(0,0,0,.05);"></div>
+
+        <div class="product-card" th:if="${products == null || #lists.isEmpty(products)}">
+           <div class="product-title">Belum Ada Produk</div>
+           <div class="product-desc">Silakan tambahkan produk master bank terlebih dahulu.</div>
+        </div>
       </div>
-      
 
     </main>
   </div>
