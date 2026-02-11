@@ -1,136 +1,173 @@
-/* ========================================= */
-/* 1. BASIC RESET & LAYOUT                   */
-/* ========================================= */
+/* GLOBAL STYLES */
 * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-family: 'Inter', sans-serif;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Poppins', sans-serif;
 }
 
-html, body {
-    height: 100%;
+html, body, #app {
+  height: 100%;
 }
 
-/* Mengatur Layout Utama */
-/* Di HTML Anda menggunakan .cs-shell, jadi kita targetkan itu atau body */
-body {
-    background: #f8f9fa; /* Background halaman utama */
-    margin: 0;
+.layout {
+  display: flex;
+  min-height: 100vh;
+  background: #fff;
 }
 
-.cs-shell {
-    display: flex;
-    min-height: 100vh;
+/* TOPBAR & BANNER STYLES */
+.cs-topbar {
+  width: 100%;
+  margin-bottom: 24px;
 }
 
-/* ========================================= */
-/* 2. SIDEBAR (SESUAI FRAGMENTS.HTML)        */
-/* ========================================= */
-
-/* Mengganti .sidebar menjadi .cs-sidebar sesuai HTML */
-.cs-sidebar {
-    width: 280px; /* Lebar sidebar */
-    
-    /* WARNA UTAMA: Biru Dongker Pekat (Deep Navy) */
-    background: #0a185c !important; 
-    
-    color: #fff;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    padding: 30px 24px;
-    flex-shrink: 0;
+.cs-header-banner {
+  width: 100%;
+  height: 160px; /* Sesuaikan tinggi banner */
+  border-radius: 20px;
+  overflow: hidden;
+  background-color: #f8fafc;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  margin-bottom: 12px;
 }
 
-/* Logo Area (.cs-sidebar__top) */
-.cs-sidebar__top {
-    display: flex;
-    align-items: center;
-    gap: 12px;
+.cs-header-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Ini kunci agar gambar penuh dan tidak penyet */
+  display: block;
 }
 
-.cs-sidebar__top span {
-    color: #ffffff !important; /* Pastikan teks logo putih */
+.cs-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 5px;
+  font-size: 13px;
+  color: #64748b;
+  font-weight: 500;
 }
 
-/* Navigation Container (.cs-nav) */
-.cs-nav {
-    margin-top: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px; 
+.cs-meta__sep {
+  margin: 0 8px;
+  color: #cbd5e1;
 }
 
-/* Style untuk Link Menu (.cs-nav a) */
-/* Karena di HTML Anda pakai tag <a> langsung, bukan class .menu-item */
-.cs-nav a {
-    display: block;
-    padding: 14px 20px;
-    border-radius: 12px;
-    color: rgba(255, 255, 255, 0.7) !important; /* Transparan jika tidak aktif */
-    text-decoration: none;
-    font-size: 14px;
-    font-weight: 500;
-    transition: all 0.3s ease;
-    /* Reset inline style width/padding dari HTML jika perlu */
-    width: 100% !important; 
-    box-sizing: border-box; 
+/* GREETING CARD */
+.greeting-card {
+  background: linear-gradient(135deg, #1e3a8a, #2563eb);
+  border-radius: 20px;
+  padding: 32px;
+  color: #fff;
+  margin-top: 24px;
+  box-shadow: 0 10px 30px rgba(30, 58, 138, 0.2);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 180px;
 }
 
-/* Efek Hover */
-.cs-nav a:hover {
-    background: rgba(255, 255, 255, 0.1) !important;
-    color: #ffffff !important;
+.greeting-title {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 8px;
 }
 
-/* MENU AKTIF (.active) */
-.cs-nav a.active {
-    /* Gradient Biru Terang + Glow */
-    background: linear-gradient(90deg, #1e40af, #2563eb) !important;
-    color: #ffffff !important;
-    font-weight: 700 !important;
-    box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4); 
-    border: none;
+.greeting-subtitle {
+  font-size: 16px;
+  opacity: 0.9;
+  font-weight: 500;
 }
 
-/* TOMBOL LOGOUT (.cs-logout) */
-.cs-sidebar__bottom {
-    margin-top: 24px;
-    padding-bottom: 20px;
+/* STATS CARDS */
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  margin-top: 32px;
 }
 
-.cs-logout {
-    display: block;
-    width: 100% !important;
-    padding: 12px 0 !important;
-    background: #ffffff !important; /* Background Putih */
-    color: #0a185c !important;      /* Teks Biru Tua */
-    text-align: center;
-    text-decoration: none;
-    font-weight: 700;
-    border-radius: 50px !important; /* Bentuk Pil */
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    transition: transform 0.2s;
+.stat-card {
+  background: #f8fafc;
+  border-radius: 20px;
+  padding: 24px;
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+  border: 1px solid #f1f5f9;
+  transition: transform 0.2s;
 }
 
-.cs-logout:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+.stat-card:hover {
+  transform: translateY(-4px);
 }
 
-/* ========================================= */
-/* 3. MAIN CONTENT                           */
-/* ========================================= */
-
-.cs-content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    overflow-y: auto;
+.stat-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: #64748b;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
-/* Styling tambahan agar sesuai Dashboard.html Anda */
-.cs-page {
-    padding: 30px;
+.stat-value {
+  font-size: 32px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+/* PRODUCT SECTION */
+.products-section {
+  margin-top: 40px;
+}
+
+.section-title {
+  font-size: 20px;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 20px;
+}
+
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+}
+
+.product-card {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.03);
+  min-height: 160px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.product-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1e3a8a;
+  margin-bottom: 12px;
+}
+
+.product-desc {
+  font-size: 14px;
+  color: #475569;
+  line-height: 1.5;
+}
+
+/* Responsive */
+@media (max-width:1000px) {
+  .summary-grid { grid-template-columns: repeat(2, 1fr); }
+  .products-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width:700px) {
+  .layout { flex-direction: column; }
+  .summary-grid { grid-template-columns: 1fr; }
+  .products-grid { grid-template-columns: 1fr; }
 }

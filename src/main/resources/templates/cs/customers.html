@@ -4,11 +4,128 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>CS - Customers</title>
-  <!-- Samakan dengan halaman CS lain -->
+  
   <link rel="stylesheet" th:href="@{/css/cs-shell.css}">
   <link rel="stylesheet" th:href="@{/css/custom.css}">
   <link rel="stylesheet" th:href="@{/css/minibank-ui.css}">
   <link rel="stylesheet" th:href="@{/css/account.css}">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif !important;
+      background-color: #f8fafc;
+      color: #0f172a;
+    }
+
+    .page-title {
+      font-size: 24px;
+      font-weight: 800;
+      color: #0f172a;
+    }
+
+    .btn-add-customer {
+      text-decoration: none;
+      padding: 10px 20px;
+      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+      background: #fff;
+      font-weight: 700;
+      color: #1e3a8a;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .btn-add-customer:hover {
+      background: #f1f5f9;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    /* Table Styling */
+    .table-container {
+      margin-top: 24px;
+      background: #fff;
+      border: 1px solid #f1f5f9;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+      padding: 12px;
+      overflow: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 900px;
+      font-size: 14px;
+    }
+
+    thead tr {
+      text-align: left;
+      color: #64748b;
+      font-weight: 700;
+      border-bottom: 2px solid #f8fafc;
+    }
+
+    th {
+      padding: 16px 12px;
+      text-transform: uppercase;
+      font-size: 11px;
+      letter-spacing: 0.05em;
+    }
+
+    td {
+      padding: 16px 12px;
+      vertical-align: middle;
+      color: #475569;
+    }
+
+    tr:last-child {
+      border-bottom: none;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid #f8fafc;
+      transition: background 0.2s;
+    }
+
+    tbody tr:hover {
+      background-color: #fcfdfe;
+    }
+
+    /* Badge Status */
+    .status-badge {
+      background: #ecfdf5;
+      color: #059669;
+      padding: 4px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      display: inline-block;
+    }
+
+    .action-link {
+      text-decoration: none;
+      font-weight: 700;
+      color: #2563eb;
+      transition: color 0.2s;
+    }
+
+    .action-link:hover {
+      color: #1e3a8a;
+      text-decoration: underline;
+    }
+
+    .divider {
+      color: #e2e8f0;
+      margin: 0 8px;
+    }
+  </style>
 </head>
 
 <body>
@@ -18,68 +135,55 @@
   <div class="cs-content">
     <div th:replace="~{cs/fragments :: topbar}"></div>
 
-    <main class="cs-page">
+    <main class="cs-page" style="padding: 32px;">
 
-      <div style="display:flex; align-items:center; justify-content:space-between; gap:12px;">
-        <div style="font-size:20px; font-weight:900; color:#1e3a8a;">Customers</div>
+      <div style="display:flex; align-items:center; justify-content:space-between;">
+        <div class="page-title">Customers</div>
 
-        <a th:href="@{/cs/customers/new}"
-           style="text-decoration:none; padding:10px 12px; border-radius:10px; border:1px solid rgba(0,0,0,.12); background:#fff; font-weight:800;">
+        <a th:href="@{/cs/customers/new}" class="btn-add-customer">
           + Pendaftaran Nasabah
         </a>
       </div>
 
-      <div style="margin-top:14px; background:#fff; border:1px solid rgba(0,0,0,.06); border-radius:16px; box-shadow:0 10px 25px rgba(0,0,0,.05); padding:14px; overflow:auto;">
-
-        <table style="width:100%; border-collapse:collapse; min-width:980px; font-size:13px;">
+      <div class="table-container">
+        <table>
           <thead>
-          <tr style="text-align:left; color:#64748b; font-weight:900; border-bottom:1px solid rgba(0,0,0,.08);">
-            <th style="padding:10px 8px;">CIF</th>
-            <th style="padding:10px 8px;">NIK</th>
-            <th style="padding:10px 8px;">Nama</th>
-            <th style="padding:10px 8px;">Status</th>
-            <th style="padding:10px 8px;">Created At</th>
-
-            <!-- INI KOLOM BARU -->
-            <th style="padding:10px 8px; width:140px;">Action</th>
-          </tr>
+            <tr>
+              <th>CIF</th>
+              <th>NIK</th>
+              <th>Nama Lengkap</th>
+              <th>Status</th>
+              <th>Created At</th>
+              <th style="width:120px;">Action</th>
+            </tr>
           </thead>
 
           <tbody>
-          <tr th:if="${customers == null || #lists.isEmpty(customers)}">
-            <td colspan="6" style="padding:14px 8px; color:#94a3b8;">Belum ada data nasabah.</td>
-          </tr>
+            <tr th:if="${customers == null || #lists.isEmpty(customers)}">
+              <td colspan="6" style="padding:40px; text-align:center; color:#94a3b8;">
+                <div style="font-size: 16px;">Belum ada data nasabah.</div>
+              </td>
+            </tr>
 
-          <tr th:each="n : ${customers}" style="border-bottom:1px solid rgba(0,0,0,.06);">
-            <td style="padding:10px 8px; font-weight:800;" th:text="${n.cif}">-</td>
-            <td style="padding:10px 8px;" th:text="${n.nik}">-</td>
-
-            <!-- Aman kalau field namanya beda (namaLengkap / namaSesuaiIdentitas) -->
-            <td style="padding:10px 8px; font-weight:800;"
-                th:text="${n.namaLengkap != null ? n.namaLengkap : n.namaSesuaiIdentitas}">
-              -
-            </td>
-
-            <td style="padding:10px 8px;" th:text="${n.status}">-</td>
-            <td style="padding:10px 8px;" th:text="${n.createdAt}">-</td>
-
-            <!-- ACTION -->
-            <td style="padding:10px 8px;">
-              <a th:href="@{|/cs/customers/${n.id}|}"
-                 style="text-decoration:none; font-weight:900; color:#1d4ed8;">
-                View
-              </a>
-              <span style="color:#cbd5e1;"> | </span>
-              <a th:href="@{|/cs/customers/${n.id}/edit|}"
-                 style="text-decoration:none; font-weight:900; color:#1d4ed8;">
-                Edit
-              </a>
-            </td>
-          </tr>
-
+            <tr th:each="n : ${customers}">
+              <td style="font-weight:700; color:#1e3a8a;" th:text="${n.cif}">C0000001</td>
+              <td th:text="${n.nik}">123456789</td>
+              <td style="font-weight:700; color:#0f172a;" 
+                  th:text="${n.namaLengkap != null ? n.namaLengkap : n.namaSesuaiIdentitas}">
+                Nama Nasabah
+              </td>
+              <td>
+                <span class="status-badge" th:text="${n.status}">ACTIVE</span>
+              </td>
+              <td style="font-size: 13px; color: #64748b;" th:text="${n.createdAt}">2026-01-10</td>
+              <td>
+                <a th:href="@{|/cs/customers/${n.id}|}" class="action-link">View</a>
+                <span class="divider">|</span>
+                <a th:href="@{|/cs/customers/${n.id}/edit|}" class="action-link">Edit</a>
+              </td>
+            </tr>
           </tbody>
         </table>
-
       </div>
 
     </main>

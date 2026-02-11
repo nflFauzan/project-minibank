@@ -2,170 +2,47 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
 
-<aside class="cs-sidebar" th:fragment="sidebar(active)" 
-       style="display: flex; flex-direction: column; height: 100vh;">
-  
-  <div class="cs-sidebar__top" style="display: flex; align-items: center; justify-content: center; gap: 12px; padding-top: 25px; padding-bottom: 10px;">
-    <div class="cs-mini-icon">
-      <img th:src="@{/images/logo-tazkia.png}" class="cs-mini-icon_img" alt="Logo" style="width: 35px; height: auto;">
+  <aside class="cs-sidebar" th:fragment="sidebar(active)">
+    <div class="cs-sidebar__top">
+      <div class="cs-mini-icon">
+        <div class="cs-brand-text">
+          <img th:src="@{/images/logo-tazkia.png}" style="height:24px; vertical-align:middle; margin-right:8px;" alt="logo">
+          Tazkia Minibank
+        </div>
+      </div>
     </div>
-    <span style="color: #fff; font-weight: 700; font-size: 18px; white-space: nowrap;">
-        Tazkia Minibank
-    </span>
-  </div>
 
-  <nav class="cs-nav" style="flex-grow: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; width: 100%; gap: 15px;">
-    
-    <a th:href="@{/cs/dashboard}"
-       th:classappend="${active}=='dashboard' ? ' active' : ''"
-       style="width: 85%; padding: 12px 20px; border-radius: 12px; display: block; text-decoration: none;">
-       Dashboard
-    </a>
+    <nav class="cs-nav">
+      <a th:href="@{/cs/dashboard}" th:classappend="${active == 'dashboard'} ? ' active' : ''">Dashboard</a>
+      <a th:href="@{/cs/customers}" th:classappend="${active == 'customers'} ? ' active' : ''">Customers</a>
+      <a th:href="@{/cs/account}" th:classappend="${active == 'account'} ? ' active' : ''">Account</a>
+      <a th:href="@{/cs/product}" th:classappend="${active == 'product'} ? ' active' : ''">Pengelolaan Produk Bank</a>
+    </nav>
 
-    <a th:href="@{/cs/customers}"
-       th:classappend="${active}=='customers' ? ' active' : ''"
-       style="width: 85%; padding: 12px 20px; border-radius: 12px; display: block; text-decoration: none;">
-       Customers
-    </a>
-
-    <a th:href="@{/cs/account}"
-       th:classappend="${activeMenu=='account'} ? ' active' : ''"
-       style="width: 85%; padding: 12px 20px; border-radius: 12px; display: block; text-decoration: none;">
-       Account
-    </a>
-
-    <a th:href="@{/cs/product}"
-       th:classappend="${active}=='product' ? ' active' : ''"
-       style="width: 85%; padding: 12px 20px; border-radius: 12px; display: block; text-decoration: none;">
-       Pengelolaan Produk Bank
-    </a>
-
-  </nav>
-
-  <div class="cs-sidebar__bottom" style="padding: 0 20px 40px 20px;">
-    <a class="cs-logout" th:href="@{/logout}" 
-       style="background: #ffffff; color: #1f3c88; text-align: center; border-radius: 50px; padding: 12px; display: block; font-weight: bold; text-decoration: none; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-       Logout
-    </a>
-  </div>
-
-</aside>
-
-
-<aside class="cs-sidebar" th:fragment="tellerSidebar(active)" 
-       style="display: flex; flex-direction: column; height: 100vh;">
-  
-  <div class="cs-sidebar__top" style="display: flex; align-items: center; justify-content: center; gap: 12px; padding-top: 25px; padding-bottom: 10px;">
-    <div class="cs-mini-icon">
-      <img th:src="@{/images/logo-tazkia.png}" class="cs-mini-icon_img" alt="Logo" style="width: 35px; height: auto;">
+    <div class="cs-sidebar__bottom">
+      <a class="cs-settings" th:href="@{/cs/settings}">Settings</a>
+      <a class="cs-logout" th:href="@{/logout}">Logout</a>
     </div>
-    <span style="color: #fff; font-weight: 700; font-size: 18px; white-space: nowrap;">
-        Tazkia Minibank
-    </span>
-  </div>
-
-  <nav class="cs-nav" style="flex-grow: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; width: 100%; gap: 15px;">
-    <a th:href="@{/teller/dashboard}"
-       th:classappend="${active}=='dashboard' ? ' active' : ''"
-       style="width: 85%; padding: 12px 20px; border-radius: 12px; display: block; text-decoration: none;">
-       Dashboard
-    </a>
-
-    <a th:href="@{/teller/transaction/list}"
-       th:classappend="${active}=='transaction' ? ' active' : ''"
-       style="width: 85%; padding: 12px 20px; border-radius: 12px; display: block; text-decoration: none;">
-       Transaksi
-    </a>
-
-    <a th:href="@{/teller/transaction/deposit}"
-       th:classappend="${active}=='deposit' ? ' active' : ''"
-       style="width: 85%; padding: 12px 20px; border-radius: 12px; display: block; text-decoration: none;">
-       Setoran Tunai
-    </a>
-
-    <a th:href="@{/teller/transaction/withdrawal}"
-       th:classappend="${active}=='withdrawal' ? ' active' : ''"
-       style="width: 85%; padding: 12px 20px; border-radius: 12px; display: block; text-decoration: none;">
-       Penarikan Tunai
-    </a>
-
-    <a th:href="@{/teller/transaction/transfer}"
-       th:classappend="${active}=='transfer' ? ' active' : ''"
-       style="width: 85%; padding: 12px 20px; border-radius: 12px; display: block; text-decoration: none;">
-       Transfer Dana
-    </a>
-    
-    <a th:href="@{/teller/passbook/select-account}"
-       th:classappend="${active}=='passbook-printing' ? ' active' : ''"
-       style="width: 85%; padding: 12px 20px; border-radius: 12px; display: block; text-decoration: none;">
-       Passbook
-    </a>           
-  </nav>
-
-  <div class="cs-sidebar__bottom" style="padding: 0 20px 40px 20px;">
-    <a class="cs-logout" th:href="@{/logout}" 
-       style="background: #ffffff; color: #1f3c88; text-align: center; border-radius: 50px; padding: 12px; display: block; font-weight: bold; text-decoration: none; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-       Logout
-    </a>
-  </div>
-</aside>
-
-
-<aside class="cs-sidebar" th:fragment="supervisorSidebar(active)" 
-       style="display: flex; flex-direction: column; height: 100vh;">
-  
-  <div class="cs-sidebar__top" style="display: flex; align-items: center; justify-content: center; gap: 12px; padding-top: 25px; padding-bottom: 10px;">
-    <div class="cs-mini-icon">
-      <img th:src="@{/images/logo-tazkia.png}" class="cs-mini-icon_img" alt="Logo" style="width: 35px; height: auto;">
-    </div>
-    <span style="color: #fff; font-weight: 700; font-size: 18px; white-space: nowrap;">
-        Tazkia Minibank
-    </span>
-  </div>
-
-  <nav class="cs-nav" style="flex-grow: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; width: 100%; gap: 15px;">
-    <a th:href="@{/supervisor/dashboard}"
-       th:classappend="${active}=='dashboard' ? ' active' : ''"
-       style="width: 85%; padding: 12px 20px; border-radius: 12px; display: block; text-decoration: none;">
-       Dashboard
-    </a>
-
-    <a th:href="@{/supervisor/nasabah}"
-       th:classappend="${active}=='nasabah' ? ' ' : ''"
-       style="width: 85%; padding: 12px 20px; border-radius: 12px; display: block; text-decoration: none;">
-       Approval Nasabah
-    </a>
-  </nav>
-
-  <div class="cs-sidebar__bottom" style="padding: 0 20px 40px 20px;">
-    <a class="cs-logout" th:href="@{/logout}" 
-       style="background: #ffffff; color: #1f3c88; text-align: center; border-radius: 50px; padding: 12px; display: block; font-weight: bold; text-decoration: none; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-       Logout
-    </a>
-  </div>
-</aside>
-
+  </aside>
 
 <header class="cs-topbar" th:fragment="topbar">
-  <div class="cs-topbar__imgwrap">
-    <img th:src="@{/images/dashboard-tazkia-minibank.png}"
-         alt="Dashboard Header"
-         class="cs-topbar__img">
+  <div class="cs-header-banner">
+    <img th:src="@{/images/dashboard-tazkia-minibank.png}" class="cs-header-img" alt="Banner">
   </div>
- 
-  <div class="cs-meta">
-    <div class="cs-meta__left"
-         th:text="${nowText} ?: ${#temporals.format(T(java.time.LocalDateTime).now(),'EEEE, dd-MM-yyyy | HH:mm')}">
-      Minggu, 21-12-2025 | 12:19
+
+    <div class="cs-meta">
+      <div class="cs-meta__left"
+        th:text="${nowText} ?: ${#temporals.format(T(java.time.LocalDateTime).now(),'EEEE, dd-MM-yyyy | HH:mm')}">
+        Minggu, 21-12-2025 | 12:19
+      </div>
+
+      <div class="cs-meta__right">
+        <span th:text="${roleLabel} ?: 'Customer Service'">Customer Service</span>
+        <span class="cs-meta__sep">|</span>
+        <span th:text="${employeeName} ?: (${csName} ?: 'Vania')">Vania</span>
+      </div>
     </div>
- 
-    <div class="cs-meta__right">
-      <span th:text="${roleLabel} ?: 'Customer Service'">Customer Service</span>
-      <span class="cs-meta__sep">|</span>
-      <span th:text="${employeeId} ?: 'ID00010003'">ID00010003</span>
-    </div>
-  </div>
-</header>
- 
+  </header>
+
 </body>
 </html>
