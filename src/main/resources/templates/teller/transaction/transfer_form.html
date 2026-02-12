@@ -1,112 +1,268 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="utf-8"/>
-  <title>Form Transfer Dana</title>
-  <link rel="stylesheet" th:href="@{/css/cs-shell.css}">
-<link rel="stylesheet" th:href="@{/css/custom.css}">
-<link rel="stylesheet" th:href="@{/css/minibank-ui.css}">
-<link rel="stylesheet" th:href="@{/css/account.css}">
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Teller - Form Transfer Dana</title>
+    
+    <link rel="stylesheet" th:href="@{/css/cs-shell.css}">
+    <link rel="stylesheet" th:href="@{/css/custom.css}">
+    <link rel="stylesheet" th:href="@{/css/minibank-ui.css}">
+    <link rel="stylesheet" th:href="@{/css/account.css}">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <style>
+        /* Sinkronisasi Global Font */
+        body {
+            font-family: 'Poppins', sans-serif !important;
+            background-color: #f8fafc;
+            color: #0f172a;
+        }
+
+        .page-title {
+            font-size: 24px;
+            font-weight: 800;
+            color: #1e3a8a;
+        }
+
+        /* Container Card */
+        .form-card {
+            background: #fff;
+            border-radius: 20px;
+            border: 1px solid rgba(0,0,0,.05);
+            box-shadow: 0 10px 30px rgba(0,0,0,.04);
+            padding: 30px;
+            margin-top: 20px;
+        }
+
+        /* Account Info Section Grid */
+        .account-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .info-box {
+            background: #f1f5f9;
+            border-radius: 16px;
+            padding: 20px;
+            border-left: 5px solid #2563eb;
+            transition: transform 0.2s;
+        }
+
+        .info-box:hover {
+            transform: translateY(-2px);
+        }
+
+        .info-title {
+            font-weight: 800;
+            font-size: 13px;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+        }
+
+        .acc-number {
+            font-weight: 900;
+            font-size: 18px;
+            color: #1e3a8a;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .acc-owner {
+            font-size: 14px;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .acc-balance {
+            margin-top: 8px;
+            font-size: 13px;
+            font-weight: 700;
+            color: #16a34a;
+            background: #dcfce7;
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 6px;
+        }
+
+        /* Input Styling */
+        .form-label-custom {
+            font-weight: 700;
+            font-size: 14px;
+            color: #334155;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .form-control-custom {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 12px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .form-control-custom:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+        }
+
+        /* Buttons */
+        .btn-primary-gradient {
+            padding: 14px 28px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #1e3a8a, #2563eb);
+            color: #fff;
+            border: none;
+            font-weight: 800;
+            font-size: 14px;
+            cursor: pointer;
+            box-shadow: 0 8px 15px rgba(30, 58, 138, 0.2);
+            transition: all 0.2s;
+        }
+
+        .btn-primary-gradient:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 20px rgba(30, 58, 138, 0.3);
+        }
+
+        .btn-ghost {
+            padding: 14px 24px;
+            border-radius: 12px;
+            background: #f1f5f9;
+            color: #475569;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .btn-ghost:hover {
+            background: #e2e8f0;
+            color: #0f172a;
+        }
+
+        /* Notice Box */
+        .notice-box {
+            margin-top: 25px;
+            background: #fffbeb;
+            border: 1px solid #fef3c7;
+            border-radius: 12px;
+            padding: 15px;
+            color: #92400e;
+            font-size: 12px;
+        }
+
+        @media (max-width: 768px) {
+            .account-grid { grid-template-columns: 1fr; }
+        }
+    </style>
 </head>
 <body>
 <div class="cs-shell">
-  <div th:replace="~{cs/fragments :: tellerSidebar('transfer')}"></div>
+    <div th:replace="~{cs/fragments :: tellerSidebar('transfer')}"></div>
 
-  <div class="cs-content">
-    <div th:replace="~{cs/fragments :: topbar}"></div>
+    <div class="cs-content">
+        <div th:replace="~{cs/fragments :: topbar}"></div>
 
-    <main class="cs-page">
+        <main class="cs-page" style="padding: 30px;">
 
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
-        <div style="font-size:20px;font-weight:900;color:#0b2a6f;">Form Transfer Dana</div>
-        <a th:href="@{'/teller/transaction/transfer/' + ${sourceRekening.nomorRekening}}"
-           style="font-weight:800;color:#0b2a6f;text-decoration:none;">← Kembali ke Pilih Tujuan</a>
-      </div>
-
-      <div th:if="${error}"
-           style="background:#fee2e2;border:1px solid #fecaca;color:#991b1b;padding:12px;border-radius:12px;font-weight:800;margin-bottom:12px;"
-           th:text="${error}">Error</div>
-
-      <div style="background:#fff;border-radius:16px;border:1px solid rgba(0,0,0,.06);box-shadow:0 10px 25px rgba(0,0,0,.05);padding:16px;">
-
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
-          <div style="background:#f8fafc;border:1px solid rgba(0,0,0,.06);border-radius:14px;padding:14px;">
-            <div style="font-weight:1000;margin-bottom:6px;">Rekening Sumber</div>
-            <div style="font-size:12px;font-weight:900;color:#0f172a;" th:text="${sourceRekening.nomorRekening}">-</div>
-            <div style="margin-top:4px;font-size:12px;color:#334155;font-weight:800;"
-                 th:text="${sourceRekening.namaNasabah} + ' - ' + ${sourceRekening.produk}">-</div>
-            <div style="margin-top:6px;font-size:12px;color:#334155;font-weight:800;">
-              Saldo: <span th:text="${#numbers.formatDecimal(sourceRekening.saldo,1,'COMMA',2,'POINT')}">0.00</span>
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom: 20px;">
+                <h1 class="page-title">Formulir Transfer Dana</h1>
+                <a th:href="@{'/teller/transaction/transfer/' + ${sourceRekening.nomorRekening}}" 
+                   style="font-weight:700; color:#1e3a8a; text-decoration:none; font-size: 14px;">
+                    &larr; Kembali ke Pilih Tujuan
+                </a>
             </div>
-          </div>
 
-          <div style="background:#f8fafc;border:1px solid rgba(0,0,0,.06);border-radius:14px;padding:14px;">
-            <div style="font-weight:1000;margin-bottom:6px;">Rekening Tujuan</div>
-            <div style="font-size:12px;font-weight:900;color:#0f172a;" th:text="${targetRekening.nomorRekening}">-</div>
-            <div style="margin-top:4px;font-size:12px;color:#334155;font-weight:800;"
-                 th:text="${targetRekening.namaNasabah} + ' - ' + ${targetRekening.produk}">-</div>
-            <div style="margin-top:6px;font-size:12px;color:#334155;font-weight:800;">
-              Saldo: <span th:text="${#numbers.formatDecimal(targetRekening.saldo,1,'COMMA',2,'POINT')}">0.00</span>
+            <div th:if="${error}" style="background:#fef2f2; border: none; color:#991b1b; padding:16px; border-radius:12px; font-weight:700; margin-bottom:20px;"
+                 th:text="${error}">Error</div>
+
+            <div class="form-card">
+                <div class="account-grid">
+                    <div class="info-box" style="border-left-color: #dc2626;">
+                        <div class="info-title">Rekening Sumber (Debet)</div>
+                        <span class="acc-number" th:text="${sourceRekening.nomorRekening}">-</span>
+                        <div class="acc-owner" th:text="${sourceRekening.namaNasabah} + ' - ' + ${sourceRekening.produk}">-</div>
+                        <div class="acc-balance">
+                            Saldo: <span th:text="${#numbers.formatDecimal(sourceRekening.saldo,1,'COMMA',2,'POINT')}">0.00</span>
+                        </div>
+                    </div>
+
+                    <div class="info-box" style="border-left-color: #16a34a;">
+                        <div class="info-title">Rekening Tujuan (Kredit)</div>
+                        <span class="acc-number" th:text="${targetRekening.nomorRekening}">-</span>
+                        <div class="acc-owner" th:text="${targetRekening.namaNasabah} + ' - ' + ${targetRekening.produk}">-</div>
+                        <div class="acc-balance">
+                            Saldo: <span th:text="${#numbers.formatDecimal(targetRekening.saldo,1,'COMMA',2,'POINT')}">0.00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <form method="post"
+                      th:action="@{'/teller/transaction/transfer/' + ${sourceRekening.nomorRekening} + '/' + ${targetRekening.nomorRekening}}"
+                      th:object="${form}">
+
+                    <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
+                    <div class="mb-4">
+                        <label class="form-label-custom">Jumlah Transfer (IDR) <span style="color:#dc2626;">*</span></label>
+                        <input type="number" step="0.01" min="0.01"
+                               th:field="*{jumlah}"
+                               placeholder="Masukkan nominal transfer"
+                               class="form-control-custom">
+                        <div style="margin-top:6px; font-size:11px; color:#64748b; font-weight:600;">Jumlah tidak boleh melebihi saldo tersedia pada rekening sumber.</div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label-custom">Keterangan Tambahan</label>
+                        <input type="text" maxlength="200"
+                               th:field="*{keteranganTambahan}"
+                               placeholder="Contoh: Pembayaran SPP / Invoice #123"
+                               class="form-control-custom">
+                        <div style="margin-top:6px; font-size:11px; color:#64748b; font-weight:600;">Opsional, teks ini akan digabungkan ke keterangan sistem.</div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label-custom">Nomor Referensi</label>
+                        <input type="text" maxlength="100"
+                               th:field="*{noReferensi}"
+                               placeholder="Gunakan untuk referensi slip fisik"
+                               class="form-control-custom">
+                    </div>
+
+                    <div style="margin-top:30px; display:flex; justify-content:flex-end; gap:12px; border-top: 1px solid #f1f5f9; padding-top: 25px;">
+                        <a th:href="@{'/teller/transaction/transfer/' + ${sourceRekening.nomorRekening}}" class="btn-ghost">Batal</a>
+                        <button type="submit" class="btn-primary-gradient">
+                            Proses Transfer &rarr;
+                        </button>
+                    </div>
+
+                    <div class="notice-box">
+                        <div style="font-weight:800; margin-bottom:8px; display: flex; align-items: center; gap: 6px;">
+                             <span>&spades;</span> PERHATIAN
+                        </div>
+                        <ul style="margin:0 0 0 20px; padding:0; display:flex; flex-direction:column; gap:4px; font-weight: 600;">
+                            <li>Sistem akan mendebet rekening sumber dan mengkredit rekening tujuan secara bersamaan.</li>
+                            <li>Pastikan nama pemilik rekening sumber dan tujuan sudah sesuai.</li>
+                            <li>Transaksi transfer tidak dapat dibatalkan setelah diproses.</li>
+                        </ul>
+                    </div>
+
+                </form>
             </div>
-          </div>
-        </div>
-
-        <form method="post"
-              th:action="@{'/teller/transaction/transfer/' + ${sourceRekening.nomorRekening} + '/' + ${targetRekening.nomorRekening}}"
-              th:object="${form}">
-
-          <div style="margin-top:10px;">
-            <div style="font-weight:900;margin-bottom:6px;">Jumlah Transfer <span style="color:#dc2626;">*</span></div>
-            <input type="number" step="0.01" min="0.01"
-                   th:field="*{jumlah}"
-                   placeholder="Masukkan jumlah transfer"
-                   style="width:100%;padding:12px 12px;border:1px solid rgba(0,0,0,.15);border-radius:12px;outline:none;">
-            <div style="margin-top:6px;font-size:12px;color:#64748b;font-weight:800;">Tidak boleh 0, dan tidak boleh melebihi saldo sumber.</div>
-          </div>
-
-          <div style="margin-top:14px;">
-            <div style="font-weight:900;margin-bottom:6px;">Keterangan Tambahan</div>
-            <!-- INI YANG FIX: harus keteranganTambahan (bukan keterangan) -->
-            <input type="text" maxlength="200"
-                   th:field="*{keteranganTambahan}"
-                   placeholder="Opsional (akan ditambahkan ke keterangan otomatis)"
-                   style="width:100%;padding:12px 12px;border:1px solid rgba(0,0,0,.15);border-radius:12px;outline:none;">
-            <div style="margin-top:6px;font-size:12px;color:#64748b;font-weight:800;">Contoh: pembayaran invoice / kebutuhan internal.</div>
-          </div>
-
-          <div style="margin-top:14px;">
-            <div style="font-weight:900;margin-bottom:6px;">Nomor Referensi</div>
-            <input type="text" maxlength="100"
-                   th:field="*{noReferensi}"
-                   placeholder="Opsional"
-                   style="width:100%;padding:12px 12px;border:1px solid rgba(0,0,0,.15);border-radius:12px;outline:none;">
-          </div>
-
-          <div style="margin-top:16px;display:flex;justify-content:flex-end;gap:10px;">
-            <a th:href="@{'/teller/transaction/transfer/' + ${sourceRekening.nomorRekening}}"
-               style="padding:10px 14px;border-radius:12px;background:#f1f5f9;color:#0f172a;text-decoration:none;font-weight:1000;">
-              Batal
-            </a>
-            <button type="submit"
-                    style="padding:10px 14px;border:0;border-radius:12px;background:#16a34a;color:#fff;font-weight:1000;cursor:pointer;">
-              Proses Transfer
-            </button>
-          </div>
-
-          <div style="margin-top:14px;background:#fef9c3;border:1px solid #fde68a;border-radius:12px;padding:12px;color:#854d0e;font-weight:800;font-size:12px;">
-            <div style="font-weight:1000;margin-bottom:6px;">Perhatian</div>
-            <ul style="margin:0 0 0 18px;padding:0;display:flex;flex-direction:column;gap:4px;">
-              <li>Transfer membuat 2 baris transaksi (out & in) dalam 1 group_id</li>
-              <li>Pastikan rekening sumber & tujuan sudah benar</li>
-              <li>Saldo sumber tidak boleh minus (no overdraft)</li>
-            </ul>
-          </div>
-
-        </form>
-      </div>
-
-    </main>
-  </div>
+        </main>
+    </div>
 </div>
 </body>
 </html>

@@ -25,10 +25,59 @@
     </div>
   </aside>
 
-<header class="cs-topbar" th:fragment="topbar">
-  <div class="cs-header-banner">
-    <img th:src="@{/images/dashboard-tazkia-minibank.png}" class="cs-header-img" alt="Banner">
-  </div>
+
+  <aside class="cs-sidebar" th:fragment="tellerSidebar(active)">
+    <div class="cs-sidebar__top">
+      <div class="cs-mini-icon">
+        <div class="cs-brand-text">
+          <img th:src="@{/images/logo-tazkia.png}" style="height:24px; vertical-align:middle; margin-right:8px;" alt="logo">
+          Teller Tazkia
+        </div>
+      </div>
+    </div>
+
+    <nav class="cs-nav">
+      <a th:href="@{/teller/dashboard}" th:classappend="${active == 'dashboard'} ? ' active' : ''">Dashboard</a>
+      <a th:href="@{/teller/transaction/list}" th:classappend="${active == 'transaction'} ? ' active' : ''">Transaksi</a>
+      <a th:href="@{/teller/transaction/deposit}" th:classappend="${active == 'deposit'} ? ' active' : ''">Setoran Tunai</a>
+      <a th:href="@{/teller/transaction/withdrawal}" th:classappend="${active == 'withdrawal'} ? ' active' : ''">Penarikan Tunai</a>
+      <a th:href="@{/teller/transaction/transfer}" th:classappend="${active == 'transfer'} ? ' active' : ''">Transfer Dana</a>
+      <a th:href="@{/teller/passbook/select-account}" th:classappend="${active == 'passbook-printing'} ? ' active' : ''">Passbook</a>
+    </nav>
+
+    <div class="cs-sidebar__bottom">
+      <a class="cs-settings" th:href="@{/teller/settings}">Settings</a>
+      <a class="cs-logout" th:href="@{/logout}">Logout</a>
+    </div>
+  </aside>
+
+
+  <aside class="cs-sidebar" th:fragment="supervisorSidebar(active)">
+    <div class="cs-sidebar__top">
+      <div class="cs-mini-icon">
+        <div class="cs-brand-text">
+          <img th:src="@{/images/logo-tazkia.png}" style="height:24px; vertical-align:middle; margin-right:8px;" alt="logo">
+          Supervisor
+        </div>
+      </div>
+    </div>
+
+    <nav class="cs-nav">
+      <a th:href="@{/supervisor/dashboard}" th:classappend="${active == 'dashboard'} ? ' active' : ''">Dashboard</a>
+      <a th:href="@{/supervisor/nasabah}" th:classappend="${active == 'nasabah'} ? ' active' : ''">Approval Nasabah</a>
+    </nav>
+
+    <div class="cs-sidebar__bottom">
+      <a class="cs-settings" th:href="@{/supervisor/settings}">Settings</a>
+      <a class="cs-logout" th:href="@{/logout}">Logout</a>
+    </div>
+  </aside>
+
+
+  <header class="cs-topbar" th:fragment="topbar">
+    <div class="cs-header-banner">
+      <img th:src="@{/images/dashboard-tazkia-minibank.png}" class="cs-header-img" alt="Banner">
+    </div>
 
     <div class="cs-meta">
       <div class="cs-meta__left"
@@ -37,9 +86,9 @@
       </div>
 
       <div class="cs-meta__right">
-        <span th:text="${roleLabel} ?: 'Customer Service'">Customer Service</span>
+        <span th:text="${roleLabel} ?: 'User Role'">User Role</span>
         <span class="cs-meta__sep">|</span>
-        <span th:text="${employeeName} ?: (${csName} ?: 'Vania')">Vania</span>
+        <span th:text="${employeeName} ?: (${csName} ?: 'User')">User</span>
       </div>
     </div>
   </header>

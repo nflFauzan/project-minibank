@@ -1,96 +1,250 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="utf-8"/>
-  <title>Teller - Form Penarikan Tunai</title>
-  <link rel="stylesheet" th:href="@{/css/cs-shell.css}">
-<link rel="stylesheet" th:href="@{/css/custom.css}">
-<link rel="stylesheet" th:href="@{/css/minibank-ui.css}">
-<link rel="stylesheet" th:href="@{/css/account.css}">
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Teller - Form Penarikan Tunai</title>
+    
+    <link rel="stylesheet" th:href="@{/css/cs-shell.css}">
+    <link rel="stylesheet" th:href="@{/css/custom.css}">
+    <link rel="stylesheet" th:href="@{/css/minibank-ui.css}">
+    <link rel="stylesheet" th:href="@{/css/account.css}">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <style>
+        /* Sinkronisasi Global Font */
+        body {
+            font-family: 'Poppins', sans-serif !important;
+            background-color: #f8fafc;
+            color: #0f172a;
+        }
+
+        .page-title {
+            font-size: 24px;
+            font-weight: 800;
+            color: #1e3a8a;
+        }
+
+        /* Container Card Style */
+        .form-card {
+            background: #fff;
+            border-radius: 20px;
+            border: 1px solid rgba(0,0,0,.05);
+            box-shadow: 0 10px 30px rgba(0,0,0,.04);
+            padding: 30px;
+            margin-top: 20px;
+        }
+
+        /* Account Info Section */
+        .info-box {
+            background: #f1f5f9;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 25px;
+            border-left: 5px solid #dc2626; /* Aksen merah untuk Penarikan */
+        }
+
+        .info-title {
+            font-weight: 800;
+            font-size: 14px;
+            color: #b91c1c;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px 25px;
+            font-size: 13px;
+        }
+
+        .info-label {
+            color: #64748b;
+            font-weight: 700;
+        }
+
+        .info-value {
+            color: #0f172a;
+            font-weight: 600;
+        }
+
+        /* Input Styling */
+        .form-label-custom {
+            font-weight: 700;
+            font-size: 14px;
+            color: #334155;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .form-control-custom {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 12px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .form-control-custom:focus {
+            border-color: #dc2626;
+            box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.1);
+        }
+
+        /* Buttons */
+        .btn-danger-gradient {
+            padding: 14px 28px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #b91c1c, #dc2626);
+            color: #fff;
+            border: none;
+            font-weight: 800;
+            font-size: 14px;
+            cursor: pointer;
+            box-shadow: 0 8px 15px rgba(220, 38, 38, 0.2);
+            transition: all 0.2s;
+        }
+
+        .btn-danger-gradient:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 20px rgba(220, 38, 38, 0.3);
+        }
+
+        .btn-ghost {
+            padding: 14px 24px;
+            border-radius: 12px;
+            background: #f1f5f9;
+            color: #475569;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .btn-ghost:hover {
+            background: #e2e8f0;
+            color: #0f172a;
+        }
+
+        .status-badge {
+            font-size: 10px;
+            font-weight: 800;
+            padding: 3px 10px;
+            border-radius: 999px;
+            background: #ecfdf5;
+            color: #059669;
+            margin-left: 8px;
+        }
+
+        .error-alert {
+            background: #fef2f2;
+            border: none;
+            color: #991b1b;
+            padding: 16px;
+            border-radius: 12px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+        }
+    </style>
 </head>
 <body>
 <div class="cs-shell">
-  <div th:replace="~{cs/fragments :: tellerSidebar('withdrawal')}"></div>
+    <div th:replace="~{cs/fragments :: tellerSidebar('withdrawal')}"></div>
 
-  <div class="cs-content">
-    <div th:replace="~{cs/fragments :: topbar}"></div>
+    <div class="cs-content">
+        <div th:replace="~{cs/fragments :: topbar}"></div>
 
-    <main class="cs-page">
+        <main class="cs-page" style="padding: 30px;">
 
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
-        <div style="font-size:20px;font-weight:900;color:#0b2a6f;">Formulir Penarikan Tunai</div>
-        <a th:href="@{/teller/transaction/withdrawal}" style="font-weight:800;color:#0b2a6f;text-decoration:none;">← Kembali ke Pilih Rekening</a>
-      </div>
-
-      <div th:if="${error}" style="background:#fee2e2;border:1px solid #fecaca;color:#991b1b;padding:12px;border-radius:12px;font-weight:800;margin-bottom:12px;"
-           th:text="${error}">Error</div>
-
-      <form th:action="@{/teller/transaction/withdrawal/{no}(no=${rekening.nomorRekening})}"
-            method="post"
-            th:object="${form}"
-            style="background:#fff;border-radius:16px;border:1px solid rgba(0,0,0,.06);box-shadow:0 10px 25px rgba(0,0,0,.05);padding:16px;">
-
-        <div style="background:#f8fafc;border:1px solid rgba(0,0,0,.06);border-radius:14px;padding:14px;">
-          <div style="font-weight:1000;margin-bottom:10px;">Informasi Rekening</div>
-
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px 18px;font-size:12px;font-weight:800;color:#334155;">
-            <div>Nomor Rekening: <span th:text="${rekening.nomorRekening}">-</span>
-              <span style="margin-left:8px;font-size:11px;font-weight:1000;padding:4px 8px;border-radius:999px;background:#dcfce7;color:#166534;">ACTIVE</span>
-            </div>
-            <div>Produk: <span th:text="${rekening.produk}">-</span></div>
-
-            <div>Pemilik: <span th:text="${rekening.namaNasabah}">-</span></div>
-            <div>
-              Saldo Saat Ini:
-              <span th:text="${rekening.saldo != null ? #numbers.formatDecimal(rekening.saldo,1,'COMMA',2,'POINT') : '0.00'}">0.00</span>
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom: 20px;">
+                <h1 class="page-title">Formulir Penarikan Tunai</h1>
+                <a th:href="@{/teller/transaction/withdrawal}" style="font-weight:700; color:#1e3a8a; text-decoration:none; font-size: 14px;">
+                    &larr; Pilih Rekening Lain
+                </a>
             </div>
 
-            <div>No. Nasabah: <span th:text="${rekening.cifNasabah}">-</span></div>
-            <div>Cabang: <span th:text="${rekening.cabangPembukaan}">-</span></div>
+            <div th:if="${error}" class="error-alert" th:text="${error}">Error</div>
 
-            <div>Nama Rekening: <span th:text="${rekeningNama}">-</span></div>
-            <div></div>
-          </div>
-        </div>
+            <div class="form-card">
+                <form th:action="@{/teller/transaction/withdrawal/{no}(no=${rekening.nomorRekening})}"
+                      method="post"
+                      th:object="${form}">
 
-        <div style="margin-top:14px;">
-          <div style="font-weight:900;margin-bottom:6px;">Jumlah Penarikan <span style="color:#dc2626;">*</span></div>
-          <input type="number" step="1" min="1"
-                 th:field="*{jumlahPenarikan}"
-                 placeholder="Masukkan nominal"
-                 style="width:100%;padding:12px 12px;border:1px solid rgba(0,0,0,.15);border-radius:12px;outline:none;">
-          <div style="margin-top:6px;font-size:12px;color:#64748b;font-weight:800;">Tidak boleh 0 dan tidak boleh melebihi saldo.</div>
-        </div>
+                    <div class="info-box">
+                        <div class="info-title">Informasi Rekening Sumber</div>
+                        <div class="info-grid">
+                            <div>
+                                <span class="info-label">Nomor Rekening:</span><br>
+                                <span class="info-value" style="font-size: 16px; color: #1e3a8a;" th:text="${rekening.nomorRekening}">-</span>
+                                <span class="status-badge">ACTIVE</span>
+                            </div>
+                            <div>
+                                <span class="info-label">Produk:</span><br>
+                                <span class="info-value" th:text="${rekening.produk}">-</span>
+                            </div>
+                            <div>
+                                <span class="info-label">Pemilik Rekening:</span><br>
+                                <span class="info-value" th:text="${rekening.namaNasabah}">-</span>
+                            </div>
+                            <div>
+                                <span class="info-label">Saldo Saat Ini:</span><br>
+                                <span class="info-value" style="color: #b91c1c; font-size: 15px;" 
+                                      th:text="'Rp ' + ${rekening.saldo != null ? #numbers.formatDecimal(rekening.saldo, 1, 'COMMA', 2, 'POINT') : '0.00'}">0.00</span>
+                            </div>
+                            <div>
+                                <span class="info-label">No. CIF Nasabah:</span><br>
+                                <span class="info-value" th:text="${rekening.cifNasabah}">-</span>
+                            </div>
+                            <div>
+                                <span class="info-label">Unit Kerja:</span><br>
+                                <span class="info-value" th:text="${rekening.cabangPembukaan}">-</span>
+                            </div>
+                        </div>
+                    </div>
 
-        <div style="margin-top:14px;">
-          <div style="font-weight:900;margin-bottom:6px;">Keterangan <span style="color:#dc2626;">*</span></div>
-          <textarea rows="4" maxlength="500" th:field="*{keterangan}"
-                    style="width:100%;padding:12px 12px;border:1px solid rgba(0,0,0,.15);border-radius:12px;outline:none;"></textarea>
-          <div style="margin-top:6px;font-size:12px;color:#64748b;font-weight:800;">Wajib diisi, maksimal 500 karakter.</div>
-        </div>
+                    <div class="mb-4">
+                        <label class="form-label-custom">Jumlah Penarikan (IDR) <span style="color:#dc2626;">*</span></label>
+                        <input type="number" step="1" min="1"
+                               th:field="*{jumlahPenarikan}"
+                               placeholder="Contoh: 100000"
+                               class="form-control-custom">
+                        <div style="margin-top:6px; font-size:11px; color:#64748b; font-weight:600;">Pastikan nominal tidak melebihi saldo tersedia.</div>
+                    </div>
 
-        <div style="margin-top:14px;">
-          <div style="font-weight:900;margin-bottom:6px;">Nomor Referensi</div>
-          <input th:field="*{noReferensi}" placeholder="Nomor referensi internal (opsional)"
-                 style="width:100%;padding:12px 12px;border:1px solid rgba(0,0,0,.15);border-radius:12px;outline:none;">
-          <div style="margin-top:6px;font-size:12px;color:#64748b;font-weight:800;">Opsional, maksimal 100 karakter.</div>
-        </div>
+                    <div class="mb-4">
+                        <label class="form-label-custom">Keterangan Transaksi <span style="color:#dc2626;">*</span></label>
+                        <textarea rows="3" maxlength="500" th:field="*{keterangan}"
+                                  placeholder="Contoh: Penarikan Tunai Keperluan Pribadi"
+                                  class="form-control-custom"></textarea>
+                        <div style="margin-top:6px; font-size:11px; color:#64748b; font-weight:600;">Wajib diisi, maksimal 500 karakter.</div>
+                    </div>
 
-        <div style="margin-top:16px;display:flex;justify-content:flex-end;gap:10px;">
-          <a th:href="@{/teller/transaction/withdrawal}"
-             style="padding:10px 14px;border-radius:12px;background:#f1f5f9;color:#0f172a;text-decoration:none;font-weight:1000;">
-            Batal
-          </a>
-          <button type="submit"
-                  style="padding:10px 14px;border:0;border-radius:12px;background:#dc2626;color:#fff;font-weight:1000;cursor:pointer;">
-            Proses Penarikan Tunai
-          </button>
-        </div>
+                    <div class="mb-4">
+                        <label class="form-label-custom">Nomor Referensi (Opsional)</label>
+                        <input th:field="*{noReferensi}" placeholder="Contoh: REF998877"
+                               class="form-control-custom">
+                        <div style="margin-top:6px; font-size:11px; color:#64748b; font-weight:600;">Digunakan untuk mencatat nomor slip fisik atau referensi audit internal.</div>
+                    </div>
 
-      </form>
+                    <div style="margin-top:30px; display:flex; justify-content:flex-end; gap:12px; border-top: 1px solid #f1f5f9; padding-top: 25px;">
+                        <a th:href="@{/teller/transaction/withdrawal}" class="btn-ghost">Batal</a>
+                        <button type="submit" class="btn-danger-gradient">
+                            Proses Penarikan &rarr;
+                        </button>
+                    </div>
 
-    </main>
-  </div>
+                </form>
+            </div>
+        </main>
+    </div>
 </div>
 </body>
 </html>
