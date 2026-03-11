@@ -3,77 +3,193 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Form Produk</title>
+  <title>CS - Form Produk</title>
 
-<!-- Samakan dengan halaman CS lain -->
-<link rel="stylesheet" th:href="@{/css/cs-shell.css}">
-<link rel="stylesheet" th:href="@{/css/custom.css}">
-<link rel="stylesheet" th:href="@{/css/minibank-ui.css}">
-<link rel="stylesheet" th:href="@{/css/account.css}">
+  <link rel="stylesheet" th:href="@{/css/cs-shell.css}">
+  <link rel="stylesheet" th:href="@{/css/custom.css}">
+  <link rel="stylesheet" th:href="@{/css/minibank-ui.css}">
+  <link rel="stylesheet" th:href="@{/css/account.css}">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    /* Sinkronisasi Font Poppins Global */
+    body {
+      font-family: 'Poppins', sans-serif !important;
+      background-color: #f8fafc;
+      color: #0f172a;
+    }
+
+    .page-title {
+      font-size: 24px;
+      font-weight: 800;
+      color: #0f172a;
+      margin-bottom: 24px;
+    }
+
+    /* Container Card Form */
+    .form-card {
+      background: #fff;
+      border: 1px solid rgba(0,0,0,.06);
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.04);
+      padding: 32px;
+      max-width: 720px;
+    }
+
+    /* Label Styling */
+    .form-label {
+      font-weight: 600;
+      font-size: 14px;
+      color: #475569;
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    /* Input & Select Styling */
+    .form-control-custom {
+      width: 100%;
+      padding: 12px 16px;
+      border-radius: 12px;
+      border: 1.5px solid #e2e8f0;
+      font-family: 'Poppins', sans-serif;
+      font-size: 14px;
+      transition: all 0.2s ease;
+      outline: none;
+    }
+
+    .form-control-custom:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+    }
+
+    .help-text {
+      font-size: 12px;
+      color: #94a3b8;
+      margin-top: 4px;
+    }
+
+    /* Button Styling Sesuai Dashboard */
+    .btn-primary-rounded {
+      background: linear-gradient(135deg, #1e3a8a, #2563eb);
+      color: #fff;
+      border: none;
+      padding: 12px 28px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      box-shadow: 0 4px 12px rgba(30, 58, 138, 0.2);
+    }
+
+    .btn-primary-rounded:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(30, 58, 138, 0.3);
+    }
+
+    .btn-secondary-custom {
+      text-decoration: none;
+      padding: 12px 24px;
+      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+      background: #fff;
+      font-weight: 700;
+      color: #64748b;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+
+    .btn-secondary-custom:hover {
+      background: #f1f5f9;
+      color: #1e3a8a;
+    }
+
+    .alert {
+      border-radius: 12px;
+      padding: 16px;
+      font-weight: 500;
+      margin-bottom: 20px;
+      border: none;
+    }
+
+    .alert-success { background: #f0fdf4; color: #166534; }
+    .alert-danger { background: #fef2f2; color: #991b1b; }
+  </style>
 </head>
 
 <body>
 <div class="cs-shell">
-<div th:replace="~{cs/fragments :: sidebar('product')}"></div>
+  <div th:replace="~{cs/fragments :: sidebar('product')}"></div>
 
-<div class="cs-content">
-  <div th:replace="~{cs/fragments :: topbar}"></div>
+  <div class="cs-content">
+    <div th:replace="~{cs/fragments :: topbar}"></div>
 
-  <main class="cs-page">
-      <h1 class="mb-3" th:text="${mode == 'EDIT' ? 'Edit Produk' : 'Tambah Produk'}"></h1>
+    <main class="cs-page" style="padding: 32px;">
+      
+      <h1 class="page-title" th:text="${mode == 'EDIT' ? 'Edit Produk Tabungan' : 'Tambah Produk Baru'}"></h1>
 
-      <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
-      <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+      <div th:if="${success}" class="alert alert-success shadow-sm" th:text="${success}"></div>
+      <div th:if="${error}" class="alert alert-danger shadow-sm" th:text="${error}"></div>
 
-      <form method="post" th:action="${actionUrl}" th:object="${form}" style="max-width:720px;">
-        <input type="hidden"
-        th:if="${_csrf != null}"
-        th:name="${_csrf.parameterName}"
-        th:value="${_csrf.token}"/>
-        
-        <div class="mb-3">
-          <label>Kode Produk</label><br/>
-          <input style="width:100%; padding:10px; border-radius:10px; border:1px solid rgba(0,0,0,.12);" type="text" th:field="*{kodeProduk}" placeholder="contoh: TAB_WADIAH" required/>
-          <div style="font-size:12px; opacity:.8;">Harus unik.</div>
-        </div>
+      <div class="form-card">
+        <form method="post" th:action="${actionUrl}" th:object="${form}">
+          
+          <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+          
+          <div class="mb-4">
+            <label class="form-label">Kode Produk <span style="color: #ef4444;">*</span></label>
+            <input class="form-control-custom" type="text" th:field="*{kodeProduk}" 
+                   placeholder="Contoh: TAB_WADIAH" required th:readonly="${mode == 'EDIT'}"/>
+            <div class="help-text">Kode unik sistem (tidak dapat diubah jika sudah tersimpan).</div>
+          </div>
 
-        <div class="mb-3">
-          <label>Nama Produk</label><br/>
-          <input style="width:100%; padding:10px; border-radius:10px; border:1px solid rgba(0,0,0,.12);" type="text" th:field="*{namaProduk}" placeholder="contoh: Tabungan Wadiah" required/>
-        </div>
+          <div class="mb-4">
+            <label class="form-label">Nama Produk <span style="color: #ef4444;">*</span></label>
+            <input class="form-control-custom" type="text" th:field="*{namaProduk}" 
+                   placeholder="Contoh: Tabungan Easy Wadiah" required/>
+          </div>
 
-        <div class="mb-3">
-          <label>Jenis Akad</label><br/>
-          <select style="width:100%; padding:10px; border-radius:10px; border:1px solid rgba(0,0,0,.12);" th:field="*{jenisAkad}" required>
-            <option value="" disabled selected>Pilih akad</option>
-            <option th:each="o : ${akadOptions}"
-                    th:value="${o.value}"
-                    th:text="${o.label}">
-            </option>
-          </select>
-        </div>
+          <div class="mb-4">
+            <label class="form-label">Jenis Akad <span style="color: #ef4444;">*</span></label>
+            <select class="form-control-custom form-select" th:field="*{jenisAkad}" required>
+              <option value="" disabled selected>-- Pilih Jenis Akad --</option>
+              <option th:each="o : ${akadOptions}"
+                      th:value="${o.value}"
+                      th:text="${o.label}">
+              </option>
+            </select>
+          </div>
 
-        <div class="mb-3">
-          <label>Deskripsi Singkat</label><br/>
-          <input style="width:100%; padding:10px; border-radius:10px; border:1px solid rgba(0,0,0,.12);" type="text" th:field="*{deskripsiSingkat}" placeholder="deskripsi singkat"/>
-        </div>
+          <div class="mb-4">
+            <label class="form-label">Deskripsi Singkat</label>
+            <input class="form-control-custom" type="text" th:field="*{deskripsiSingkat}" 
+                   placeholder="Penjelasan singkat mengenai manfaat produk"/>
+          </div>
 
-        <div class="mb-3">
-          <label>Setoran Awal Minimum (IDR)</label><br/>
-          <input style="width:100%; padding:10px; border-radius:10px; border:1px solid rgba(0,0,0,.12);" type="number" th:field="*{setoranAwalMinimum}"
-                 step="0.01" min="0.01" max="1000000000" required/>
-          <div style="font-size:12px; opacity:.8;">> 0 dan maksimal 1.000.000.000</div>
-        </div>
+          <div class="mb-5">
+            <label class="form-label">Setoran Awal Minimum (IDR) <span style="color: #ef4444;">*</span></label>
+            <input class="form-control-custom" type="number" th:field="*{setoranAwalMinimum}"
+                   step="0.01" min="0" max="1000000000" required/>
+            <div class="help-text">Minimal 0 dan maksimal 1.000.000.000</div>
+          </div>
 
-        <div style="display:flex; gap:12px; align-items:center;">
-          <button type="submit" class="btn btn-primary" th:text="${submitLabel}">Simpan</button>
-          <a th:href="@{/cs/product}" class="btn btn-secondary">Batal</a>
+          <div style="display:flex; gap:16px; align-items:center; border-top: 1px solid #f1f5f9; pt-4; margin-top: 20px; padding-top: 24px;">
+            <button type="submit" class="btn-primary-rounded" th:text="${submitLabel}">Simpan Produk</button>
+            <a th:href="@{/cs/product}" class="btn-secondary-custom">Batal</a>
 
-          <a th:if="${mode == 'EDIT'}"
-             th:href="@{/cs/product/{id}(id=${p.id})}"
-             class="btn btn-link">Ke Detail</a>
-        </div>
-      </form>
+            <a th:if="${mode == 'EDIT'}"
+               th:href="@{/cs/product/{id}(id=${p.id})}"
+               class="btn-link" style="margin-left: auto; text-decoration: none; font-weight: 600; color: #2563eb; font-size: 14px;">
+               Ke Halaman Detail &rarr;
+            </a>
+          </div>
+        </form>
+      </div>
     </main>
 
   </div>

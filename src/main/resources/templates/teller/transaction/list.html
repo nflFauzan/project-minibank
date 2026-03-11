@@ -2,11 +2,157 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Teller - Daftar Transaksi</title>
+  
   <link rel="stylesheet" th:href="@{/css/cs-shell.css}">
   <link rel="stylesheet" th:href="@{/css/custom.css}">
   <link rel="stylesheet" th:href="@{/css/minibank-ui.css}">
   <link rel="stylesheet" th:href="@{/css/account.css}">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    /* Sinkronisasi Global Font */
+    body {
+      font-family: 'Poppins', sans-serif !important;
+      background-color: #f8fafc;
+      color: #0f172a;
+    }
+
+    .page-title {
+      font-size: 24px;
+      font-weight: 800;
+      color: #1e3a8a;
+    }
+
+    /* Action Buttons Area */
+    .btn-action {
+      padding: 10px 16px;
+      border-radius: 12px;
+      color: #fff;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 13px;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    }
+
+    .btn-action:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+    }
+
+    /* Filter/Search Section */
+    .filter-card {
+      margin-top: 20px;
+      background: #fff;
+      border: 1px solid rgba(0,0,0,.05);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.03);
+    }
+
+    .form-label-custom {
+      font-size: 12px;
+      font-weight: 700;
+      color: #64748b;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .form-control-custom {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 12px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .form-control-custom:focus {
+      border-color: #2563eb;
+    }
+
+    /* Table Section */
+    .table-container {
+      margin-top: 20px;
+      background: #fff;
+      border: 1px solid rgba(0,0,0,.05);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 15px 35px rgba(0,0,0,.04);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    thead tr {
+      background: #f8fafc;
+      color: #64748b;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+
+    th {
+      padding: 16px 14px;
+      font-weight: 700;
+      text-align: left;
+    }
+
+    td {
+      padding: 16px 14px;
+      vertical-align: middle;
+      border-top: 1px solid #f1f5f9;
+      font-size: 14px;
+    }
+
+    tbody tr:hover {
+      background-color: #fcfdfe;
+    }
+
+    /* Amount Colors */
+    .amt-plus { color: #16a34a; font-weight: 800; }
+    .amt-minus { color: #dc2626; font-weight: 800; }
+
+    /* Badge Style */
+    .badge-pill {
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 11px;
+      display: inline-block;
+    }
+
+    .action-link {
+      text-decoration: none;
+      font-weight: 700;
+      color: #2563eb;
+      font-size: 13px;
+    }
+
+    .action-link:hover { text-decoration: underline; }
+
+    /* Pagination */
+    .pagination-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 20px;
+      background: #fff;
+      border-top: 1px solid #f1f5f9;
+    }
+  </style>
 </head>
 
 <body>
@@ -17,169 +163,137 @@
   <div class="cs-content">
     <div th:replace="~{cs/fragments :: topbar}"></div>
 
-    <main class="cs-page">
+    <main class="cs-page" style="padding: 30px;">
 
-      <div style="display:flex; align-items:center; justify-content:space-between; gap:12px;">
-        <div style="font-size:22px; font-weight:900; color:#1e3a8a;">Daftar Transaksi</div>
+      <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap: wrap; gap: 15px;">
+        <h1 class="page-title">Daftar Transaksi</h1>
 
         <div style="display:flex; gap:10px; align-items:center;">
-          <a th:href="@{/teller/transaction/deposit}"
-             style="padding:10px 14px;border-radius:12px;background:#16a34a;color:#fff;text-decoration:none;font-weight:800;">
+          <a th:href="@{/teller/transaction/deposit}" class="btn-action" style="background:#16a34a;">
             + Setoran Tunai
           </a>
-          <a th:href="@{/teller/transaction/withdrawal}"
-             style="padding:10px 14px;border-radius:12px;background:#dc2626;color:#fff;text-decoration:none;font-weight:800;">
+          <a th:href="@{/teller/transaction/withdrawal}" class="btn-action" style="background:#dc2626;">
             - Penarikan Tunai
           </a>
-          <a th:href="@{/teller/transaction/transfer}"
-             style="padding:10px 14px;border-radius:12px;background:#2563eb;color:#fff;text-decoration:none;font-weight:800;">
+          <a th:href="@{/teller/transaction/transfer}" class="btn-action" style="background:#2563eb;">
             ⇄ Transfer Dana
           </a>
         </div>
       </div>
 
-      <form th:action="@{/teller/transaction/list}" method="get"
-            style="margin-top:14px; background:#fff; border:1px solid rgba(0,0,0,.06); border-radius:16px; padding:14px; box-shadow:0 10px 25px rgba(0,0,0,.05);">
-        <div style="display:grid; grid-template-columns: 1.2fr 1fr auto auto; gap:12px; align-items:end;">
-          <div>
-            <div style="font-size:12px; font-weight:800; color:#334155; margin-bottom:6px;">Cari Transaksi</div>
-            <input name="q" th:value="${q}"
-                   placeholder="Nomor transaksi atau keterangan..."
-                   style="width:100%; padding:10px 12px; border:1px solid rgba(0,0,0,.12); border-radius:12px; outline:none;">
+      <div class="filter-card">
+        <form th:action="@{/teller/transaction/list}" method="get">
+          <div style="display:grid; grid-template-columns: 1.5fr 1fr auto auto; gap:15px; align-items:end;">
+            <div>
+              <div class="form-label-custom">Cari Transaksi</div>
+              <input name="q" th:value="${q}" class="form-control-custom" placeholder="Nomor transaksi atau keterangan...">
+            </div>
+
+            <div>
+              <div class="form-label-custom">Tipe Transaksi</div>
+              <select name="type" class="form-control-custom">
+                <option th:selected="${type == null}" value="">-- Semua Tipe --</option>
+                <option th:selected="${type == T(id.ac.tazkia.minibank.entity.TipeTransaksi).DEPOSIT}" value="DEPOSIT">DEPOSIT</option>
+                <option th:selected="${type == T(id.ac.tazkia.minibank.entity.TipeTransaksi).WITHDRAWAL}" value="WITHDRAWAL">WITHDRAWAL</option>
+                <option th:selected="${type == T(id.ac.tazkia.minibank.entity.TipeTransaksi).TRANSFER}" value="TRANSFER">TRANSFER</option>
+              </select>
+            </div>
+
+            <button type="submit" class="btn-action" style="background:#1e3a8a; border:none; height:43px; padding: 0 25px; cursor:pointer;">
+              Cari
+            </button>
+
+            <a th:href="@{/teller/transaction/list}" class="btn-action" style="background:#fff; color:#64748b; border:1px solid #e2e8f0; height:43px; padding: 0 20px;">
+              Reset
+            </a>
           </div>
+        </form>
+      </div>
 
-          <div>
-            <div style="font-size:12px; font-weight:800; color:#334155; margin-bottom:6px;">Tipe Transaksi</div>
-            <select name="type"
-                    style="width:100%; padding:10px 12px; border:1px solid rgba(0,0,0,.12); border-radius:12px;">
-              <option th:selected="${type == null}" value="">-- Semua Tipe --</option>
-              <option th:selected="${type == T(id.ac.tazkia.minibank.entity.TipeTransaksi).DEPOSIT}"
-                      value="DEPOSIT">DEPOSIT</option>
-              <option th:selected="${type == T(id.ac.tazkia.minibank.entity.TipeTransaksi).WITHDRAWAL}"
-                      value="WITHDRAWAL">WITHDRAWAL</option>
-              <option th:selected="${type == T(id.ac.tazkia.minibank.entity.TipeTransaksi).TRANSFER}"
-                      value="TRANSFER">TRANSFER</option>
-            </select>
-          </div>
-
-          <button type="submit"
-                  style="padding:10px 16px;border-radius:12px;border:0;background:#2563eb;color:#fff;font-weight:900;cursor:pointer;">
-            Cari
-          </button>
-
-          <a th:href="@{/teller/transaction/list}"
-             style="padding:10px 16px;border-radius:12px;border:1px solid rgba(0,0,0,.15);background:#fff;color:#0f172a;font-weight:900;text-decoration:none;text-align:center;">
-            Reset
-          </a>
-        </div>
-      </form>
-
-      <div style="margin-top:12px; background:#fff; border:1px solid rgba(0,0,0,.06); border-radius:16px; overflow:hidden; box-shadow:0 10px 25px rgba(0,0,0,.05);">
-        <table style="width:100%; border-collapse:collapse;">
+      <div class="table-container">
+        <table>
           <thead>
-          <tr style="background:#f8fafc; text-transform:uppercase; font-size:11px; letter-spacing:.4px; color:#64748b;">
-            <th style="padding:12px; text-align:left;">Nomor Transaksi</th>
-            <th style="padding:12px; text-align:left;">Tanggal</th>
-            <th style="padding:12px; text-align:left;">Tipe</th>
-            <th style="padding:12px; text-align:left;">Rekening</th>
-            <th style="padding:12px; text-align:right;">Jumlah</th>
-            <th style="padding:12px; text-align:left;">Keterangan</th>
-            <th style="padding:12px; text-align:left;">Aksi</th>
-          </tr>
+            <tr>
+              <th>Nomor Transaksi</th>
+              <th>Tanggal & Waktu</th>
+              <th>Tipe</th>
+              <th>Rekening</th>
+              <th style="text-align:right;">Jumlah (IDR)</th>
+              <th>Keterangan</th>
+              <th>Aksi</th>
+            </tr>
           </thead>
 
           <tbody>
-          <tr th:if="${page.totalElements == 0}">
-            <td colspan="7" style="padding:16px; color:#64748b;">Belum ada transaksi.</td>
-          </tr>
+            <tr th:if="${page.totalElements == 0}">
+              <td colspan="7" style="padding:40px; text-align:center; color:#94a3b8;">Belum ada transaksi tersimpan.</td>
+            </tr>
 
-          <tr th:each="t : ${page.content}" style="border-top:1px solid rgba(0,0,0,.06);">
-            <td style="padding:14px; font-weight:900;" th:text="${t.nomorTransaksi}">T3000000</td>
+            <tr th:each="t : ${page.content}">
+              <td style="font-weight:800; color:#1e3a8a;" th:text="${t.nomorTransaksi}">T3000000</td>
 
-            <td style="padding:14px; color:#0f172a;">
-              <div th:text="${#temporals.format(t.processedAt,'dd/MM/yyyy')}">04/01/2026</div>
-              <div style="font-size:11px; color:#64748b;" th:text="${#temporals.format(t.processedAt,'HH:mm:ss')}">20:12:22</div>
-            </td>
+              <td>
+                <div style="font-weight:600;" th:text="${#temporals.format(t.processedAt,'dd/MM/yyyy')}">04/01/2026</div>
+                <div style="font-size:11px; color:#94a3b8;" th:text="${#temporals.format(t.processedAt,'HH:mm:ss')}">20:12:22</div>
+              </td>
 
-            <td style="padding:14px;">
-              <span th:text="${t.tipe}"
-                    th:style="${t.tipe.name()=='DEPOSIT'} ? 'padding:4px 10px;border-radius:999px;background:#dcfce7;color:#166534;font-weight:900;font-size:11px;' :
-                              (${t.tipe.name()=='WITHDRAWAL'} ? 'padding:4px 10px;border-radius:999px;background:#fee2e2;color:#991b1b;font-weight:900;font-size:11px;' :
-                              'padding:4px 10px;border-radius:999px;background:#dbeafe;color:#1d4ed8;font-weight:900;font-size:11px;')">DEPOSIT</span>
-              <div style="margin-top:6px;">
-                <span style="padding:3px 8px;border-radius:999px;background:#e2e8f0;color:#334155;font-weight:900;font-size:10px;">TELLER</span>
-              </div>
-            </td>
+              <td>
+                <span th:text="${t.tipe}"
+                      th:class="${t.tipe.name() == 'DEPOSIT' ? 'badge-pill' : (t.tipe.name() == 'WITHDRAWAL' ? 'badge-pill' : 'badge-pill')}"
+                      th:style="${t.tipe.name()=='DEPOSIT'} ? 'background:#dcfce7;color:#166534;' :
+                                (${t.tipe.name()=='WITHDRAWAL'} ? 'background:#fee2e2;color:#991b1b;' :
+                                'background:#dbeafe;color:#1d4ed8;')">DEPOSIT</span>
+                <div style="margin-top:4px;">
+                  <span style="font-size:9px; font-weight:800; color:#94a3b8; border:1px solid #e2e8f0; padding:1px 6px; border-radius:4px;">TELLER</span>
+                </div>
+              </td>
 
-            <td style="padding:14px;">
-              <div style="font-weight:900;" th:text="${t.rekening.nomorRekening}">A2000007</div>
-              <div style="font-size:11px; color:#64748b;" th:text="${t.rekening.produk}">Tabungan Test</div>
-            </td>
+              <td>
+                <div style="font-weight:700; color:#0f172a;" th:text="${t.rekening.nomorRekening}">A2000007</div>
+                <div style="font-size:11px; color:#64748b;" th:text="${t.rekening.produk}">Produk</div>
+              </td>
 
-           <!-- JUMLAH -->
-           <td style="text-align:right;">
-            <!-- MINUS = Withdrawal ATAU Transfer Keluar (Transfer ke...) -->
-            <div th:if="${t.tipe.name() == 'WITHDRAWAL'
-                        or (t.tipe.name() == 'TRANSFER'
-                            and t.keterangan != null
-                            and #strings.startsWith(#strings.toLowerCase(t.keterangan),'transfer ke'))
-                        or (t.saldoSesudah != null and t.saldoSebelum != null and t.saldoSesudah < t.saldoSebelum)}"
-                 style="font-weight:900;color:#dc2626;">
-              <span>-IDR </span>
-              <span th:text="${#numbers.formatDecimal(t.jumlah,1,'COMMA',2,'POINT')}">0.00</span>
-            </div>
-          
-            <!-- PLUS = selain kondisi di atas -->
-            <div th:unless="${t.tipe.name() == 'WITHDRAWAL'
-                            or (t.tipe.name() == 'TRANSFER'
-                                and t.keterangan != null
-                                and #strings.startsWith(#strings.toLowerCase(t.keterangan),'transfer ke'))
-                            or (t.saldoSesudah != null and t.saldoSebelum != null and t.saldoSesudah < t.saldoSebelum)}"
-                 style="font-weight:900;color:#16a34a;">
-              <span>+IDR </span>
-              <span th:text="${#numbers.formatDecimal(t.jumlah,1,'COMMA',2,'POINT')}">0.00</span>
-            </div>
-          </td>
+              <td style="text-align:right;">
+                <div th:class="${t.tipe.name() == 'WITHDRAWAL' 
+                                or (t.tipe.name() == 'TRANSFER' and t.keterangan != null and #strings.startsWith(#strings.toLowerCase(t.keterangan),'transfer ke'))
+                                or (t.saldoSesudah != null and t.saldoSebelum != null and t.saldoSesudah < t.saldoSebelum)} ? 'amt-minus' : 'amt-plus'">
+                  <span th:text="${t.tipe.name() == 'WITHDRAWAL' or (t.tipe.name() == 'TRANSFER' and t.keterangan != null and #strings.startsWith(#strings.toLowerCase(t.keterangan),'transfer ke')) ? '-' : '+'}"></span>
+                  <span th:text="${#numbers.formatDecimal(t.jumlah,1,'COMMA',2,'POINT')}">0.00</span>
+                </div>
+              </td>
 
-  
+              <td>
+                <div style="font-weight:500;" th:text="${t.keterangan}">Keterangan</div>
+                <div style="font-size:11px; color:#94a3b8;" th:text="${'Oleh: ' + t.processedBy}">Oleh: teller1</div>
+              </td>
 
-            <td style="padding:14px;">
-              <div th:text="${t.keterangan}">Setoran Tunai</div>
-              <div style="font-size:11px; color:#64748b;" th:text="${'Oleh: ' + t.processedBy}">Oleh: teller1</div>
-            </td>
-
-            <td style="padding:14px;">
-              <a th:href="@{/teller/transaction/{id}(id=${t.id})}"
-                 style="color:#2563eb; font-weight:900; text-decoration:none;">Lihat Detail</a>
-              <div style="margin-top:6px;">
-                <a th:href="@{/teller/transaction/receipt/{id}(id=${t.id})}"
-                style="color:#16a34a;font-weight:900;text-decoration:none;">
-               Struk PDF
-             </a>
-             
-              </div>
-            </td>
-          </tr>
+              <td>
+                <div style="display:flex; flex-direction:column; gap:4px;">
+                  <a th:href="@{/teller/transaction/{id}(id=${t.id})}" class="action-link">Detail</a>
+                  <a th:href="@{/teller/transaction/receipt/{id}(id=${t.id})}" class="action-link" style="color:#16a34a;">Struk PDF</a>
+                </div>
+              </td>
+            </tr>
           </tbody>
         </table>
 
-        <!-- pagination -->
-        <div style="display:flex; justify-content:space-between; align-items:center; padding:12px 14px; border-top:1px solid rgba(0,0,0,.06); background:#fff;">
-          <div style="font-size:12px; color:#64748b;">
-            <span th:text="${page.number + 1}">1</span>/<span th:text="${page.totalPages}">1</span> •
-            Total <span th:text="${page.totalElements}">0</span>
+        <div class="pagination-bar">
+          <div style="font-size:12px; color:#64748b; font-weight:600;">
+            Halaman <span th:text="${page.number + 1}">1</span> dari <span th:text="${page.totalPages}">1</span> 
+            <span style="margin: 0 8px; color: #e2e8f0;">|</span> 
+            Total <span th:text="${page.totalElements}">0</span> Transaksi
           </div>
 
-          <div style="display:flex; gap:8px;">
+          <div style="display:flex; gap:10px;">
             <a th:if="${page.hasPrevious()}"
                th:href="@{/teller/transaction/list(page=${page.number-1}, q=${q}, type=${type})}"
-               style="padding:8px 12px;border-radius:10px;border:1px solid rgba(0,0,0,.15);text-decoration:none;color:#0f172a;font-weight:900;">
-              Prev
+               class="btn-action" style="background:#fff; color:#0f172a; border:1px solid #e2e8f0; padding: 6px 15px;">
+               &larr; Prev
             </a>
             <a th:if="${page.hasNext()}"
                th:href="@{/teller/transaction/list(page=${page.number+1}, q=${q}, type=${type})}"
-               style="padding:8px 12px;border-radius:10px;border:1px solid rgba(0,0,0,.15);text-decoration:none;color:#0f172a;font-weight:900;">
-              Next
+               class="btn-action" style="background:#fff; color:#0f172a; border:1px solid #e2e8f0; padding: 6px 15px;">
+               Next &rarr;
             </a>
           </div>
         </div>

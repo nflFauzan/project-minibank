@@ -2,12 +2,136 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Teller - Detail Transaksi</title>
+  
   <link rel="stylesheet" th:href="@{/css/cs-shell.css}">
   <link rel="stylesheet" th:href="@{/css/custom.css}">
   <link rel="stylesheet" th:href="@{/css/minibank-ui.css}">
   <link rel="stylesheet" th:href="@{/css/account.css}">
   <link rel="stylesheet" th:href="@{/css/print.css}">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    /* Sinkronisasi Global Font */
+    body {
+      font-family: 'Poppins', sans-serif !important;
+      background-color: #f8fafc;
+      color: #0f172a;
+    }
+
+    .page-title {
+      font-size: 24px;
+      font-weight: 800;
+      color: #1e3a8a;
+    }
+
+    /* Card Container */
+    .detail-card {
+      background: #fff;
+      border-radius: 20px;
+      border: 1px solid rgba(0,0,0,.05);
+      box-shadow: 0 10px 30px rgba(0,0,0,.04);
+      padding: 30px;
+      margin-top: 20px;
+    }
+
+    /* Section Typography */
+    .section-label {
+      font-size: 14px;
+      font-weight: 800;
+      color: #1e3a8a;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-left: 4px solid #2563eb;
+      padding-left: 12px;
+      margin-bottom: 20px;
+      margin-top: 25px;
+    }
+    .section-label:first-child { margin-top: 0; }
+
+    /* Data List Layout */
+    .data-grid {
+      display: grid;
+      grid-template-columns: 180px 1fr;
+      gap: 10px;
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+
+    .data-label {
+      color: #64748b;
+      font-weight: 600;
+    }
+
+    .data-value {
+      color: #0f172a;
+      font-weight: 700;
+    }
+
+    /* Badge Style */
+    .badge-pill {
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-weight: 800;
+      font-size: 11px;
+      display: inline-block;
+    }
+
+    /* Amount Highlight */
+    .amount-display {
+      font-size: 22px;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+    }
+
+    /* System Box */
+    .system-box {
+      margin-top: 30px;
+      padding: 16px;
+      border-radius: 12px;
+      background: #f1f5f9;
+      border: 1px solid #e2e8f0;
+    }
+
+    /* Buttons */
+    .btn-print {
+      background: linear-gradient(135deg, #1e3a8a, #2563eb);
+      color: #fff;
+      border: none;
+      padding: 12px 30px;
+      border-radius: 12px;
+      font-weight: 800;
+      font-size: 14px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(30, 58, 138, 0.2);
+      transition: all 0.2s;
+      margin-top: 20px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-print:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 15px rgba(30, 58, 138, 0.3);
+    }
+
+    @media print {
+      .cs-sidebar, .cs-topbar, .btn-print, .back-link {
+        display: none !important;
+      }
+      .cs-shell, .cs-content, .cs-page, .detail-card {
+        padding: 0 !important;
+        margin: 0 !important;
+        box-shadow: none !important;
+        border: none !important;
+      }
+    }
+  </style>
 </head>
 
 <body>
@@ -18,155 +142,96 @@
   <div class="cs-content">
     <div th:replace="~{cs/fragments :: topbar}"></div>
 
-    <main class="cs-page">
+    <main class="cs-page" style="padding: 30px;">
 
-      <div style="display:flex; justify-content:space-between; align-items:center; gap:12px;">
-        <div style="font-size:22px; font-weight:900; color:#0f172a;">Detail Transaksi</div>
-        <a th:href="@{/teller/transaction/list}"
-           style="text-decoration:none; color:#2563eb; font-weight:900;">← Kembali ke Daftar Transaksi</a>
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <h1 class="page-title">Detail Transaksi</h1>
+        <a th:href="@{/teller/transaction/list}" class="back-link"
+           style="text-decoration:none; color:#2563eb; font-weight:800; font-size: 14px;">
+           &larr; Kembali ke Daftar
+        </a>
       </div>
 
-      <div style="margin-top:12px; background:#fff; border:1px solid rgba(0,0,0,.06); border-radius:16px; padding:16px; box-shadow:0 10px 25px rgba(0,0,0,.05);">
-        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div class="detail-card">
+        
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; border-bottom: 1px solid #f1f5f9; padding-bottom: 20px; margin-bottom: 25px;">
           <div>
-            <div style="font-weight:900; font-size:18px;" th:text="${tx.nomorTransaksi}">T3000585</div>
-            <div style="margin-top:6px; display:flex; gap:8px;">
+            <div style="font-weight:900; font-size:20px; color: #1e3a8a;" th:text="${tx.nomorTransaksi}">T3000585</div>
+            <div style="margin-top:8px; display:flex; gap:10px;">
               <span th:text="${tx.tipe}"
-                    th:style="${tx.tipe.name()=='DEPOSIT'} ? 'padding:4px 10px;border-radius:999px;background:#dcfce7;color:#166534;font-weight:900;font-size:11px;' :
-                              (${tx.tipe.name()=='WITHDRAWAL'} ? 'padding:4px 10px;border-radius:999px;background:#fee2e2;color:#991b1b;font-weight:900;font-size:11px;' :
-                              'padding:4px 10px;border-radius:999px;background:#dbeafe;color:#1d4ed8;font-weight:900;font-size:11px;')">DEPOSIT</span>
-              <span style="padding:4px 10px;border-radius:999px;background:#e2e8f0;color:#334155;font-weight:900;font-size:11px;">TELLER</span>
+                    th:style="${tx.tipe.name()=='DEPOSIT'} ? 'background:#ecfdf5;color:#059669;' :
+                              (${tx.tipe.name()=='WITHDRAWAL'} ? 'background:#fef2f2;color:#dc2626;' :
+                              'background:#eff6ff;color:#2563eb;')"
+                    class="badge-pill">DEPOSIT</span>
+              <span class="badge-pill" style="background:#f1f5f9; color:#475569;">TELLER KANAL</span>
             </div>
           </div>
 
           <div style="text-align:right;">
-            <div th:if="${tx.tipe.name() == 'WITHDRAWAL'
-            or (tx.tipe.name() == 'TRANSFER'
-                and tx.keterangan != null
-                and #strings.startsWith(#strings.toLowerCase(tx.keterangan),'transfer ke'))
-            or (tx.saldoSesudah != null and tx.saldoSebelum != null and tx.saldoSesudah < tx.saldoSebelum)}"
-     style="font-weight:900;color:#dc2626;">
-  <span>-IDR </span>
-  <span th:text="${#numbers.formatDecimal(tx.jumlah,1,'COMMA',2,'POINT')}">0.00</span>
-</div>
-
-<div th:unless="${tx.tipe.name() == 'WITHDRAWAL'
-                or (tx.tipe.name() == 'TRANSFER'
-                    and tx.keterangan != null
-                    and #strings.startsWith(#strings.toLowerCase(tx.keterangan),'transfer ke'))
-                or (tx.saldoSesudah != null and tx.saldoSebelum != null and tx.saldoSesudah < tx.saldoSebelum)}"
-     style="font-weight:900;color:#16a34a;">
-  <span>+IDR </span>
-  <span th:text="${#numbers.formatDecimal(tx.jumlah,1,'COMMA',2,'POINT')}">0.00</span>
-</div>
-
-            <div style="font-size:11px;color:#64748b;"
-                 th:text="${#temporals.format(tx.processedAt,'dd MMMM yyyy, HH:mm:ss')}">02 Januari 2026, 12:21:11</div>
+            <div th:class="${tx.tipe.name() == 'WITHDRAWAL' 
+                            or (tx.tipe.name() == 'TRANSFER' and tx.keterangan != null and #strings.startsWith(#strings.toLowerCase(tx.keterangan),'transfer ke'))
+                            or (tx.saldoSesudah != null and tx.saldoSebelum != null and tx.saldoSesudah < tx.saldoSebelum)} ? 'amount-display color-red' : 'amount-display color-green'"
+                 th:style="${tx.tipe.name() == 'WITHDRAWAL' or (tx.tipe.name() == 'TRANSFER' and tx.keterangan != null and #strings.startsWith(#strings.toLowerCase(tx.keterangan),'transfer ke'))} ? 'color:#dc2626;' : 'color:#16a34a;'">
+              <span th:text="${tx.tipe.name() == 'WITHDRAWAL' or (tx.tipe.name() == 'TRANSFER' and tx.keterangan != null and #strings.startsWith(#strings.toLowerCase(tx.keterangan),'transfer ke')) ? '-' : '+'}"></span>
+              IDR <span th:text="${#numbers.formatDecimal(tx.jumlah,1,'COMMA',2,'POINT')}">0.00</span>
+            </div>
+            <div style="font-size:12px; color:#64748b; font-weight:600; margin-top: 4px;"
+                 th:text="${#temporals.format(tx.processedAt,'dd MMMM yyyy, HH:mm:ss')}">02 Januari 2026</div>
           </div>
         </div>
 
-        <div style="margin-top:14px; display:grid; grid-template-columns: 1fr 1fr; gap:18px;">
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:40px;">
           <div>
-            <div style="font-weight:900; color:#0f172a; margin-bottom:8px;">Informasi Transaksi</div>
-            <div style="display:grid; grid-template-columns: 160px 1fr; gap:6px; font-size:13px;">
-              <div style="color:#64748b;">Nomor Transaksi:</div><div style="font-weight:900;" th:text="${tx.nomorTransaksi}"></div>
-              <div style="color:#64748b;">Tanggal Proses:</div><div style="font-weight:900;" th:text="${#temporals.format(tx.processedAt,'dd/MM/yyyy HH:mm:ss')}"></div>
-              <div style="color:#64748b;">Tipe Transaksi:</div><div style="font-weight:900;" th:text="${tx.tipe}"></div>
-              <div style="color:#64748b;">Kanal:</div><div style="font-weight:900;">TELLER</div>
-              <div style="color:#64748b;">Diproses Oleh:</div><div style="font-weight:900;" th:text="${tx.processedBy}"></div>
-            </div>
-
-            <div style="margin-top:14px; font-weight:900; color:#0f172a;">Keterangan</div>
-            <div style="margin-top:6px; color:#0f172a;" th:text="${tx.keterangan}">Setoran Tunai</div>
+            <div class="section-label">Informasi Transaksi</div>
+            <div class="data-grid"><div class="data-label">Ref. Sistem:</div><div class="data-value" th:text="${tx.id}"></div></div>
+            <div class="data-grid"><div class="data-label">Tanggal Jam:</div><div class="data-value" th:text="${#temporals.format(tx.processedAt,'dd/MM/yyyy HH:mm:ss')}"></div></div>
+            <div class="data-grid"><div class="data-label">Keterangan:</div><div class="data-value" style="font-weight: 500;" th:text="${tx.keterangan}">Setoran Tunai</div></div>
+            <div class="data-grid"><div class="data-label">Oleh Petugas:</div><div class="data-value" th:text="${tx.processedBy}">teller1</div></div>
           </div>
 
           <div>
-            <div style="font-weight:900; color:#0f172a; margin-bottom:8px;">Informasi Rekening</div>
-            <div style="display:grid; grid-template-columns: 160px 1fr; gap:6px; font-size:13px;">
-              <div style="color:#64748b;">Nomor Rekening:</div><div style="font-weight:900;" th:text="${tx.rekening.nomorRekening}">A2000034</div>
-              <div style="color:#64748b;">Pemilik:</div><div style="font-weight:900;" th:text="${tx.rekening.namaNasabah}">Nama</div>
-              <div style="color:#64748b;">No. Nasabah:</div><div style="font-weight:900;" th:text="${tx.rekening.cifNasabah}">C1000017</div>
-              <div style="color:#64748b;">Produk:</div><div style="font-weight:900;" th:text="${tx.rekening.produk}">Produk</div>
-            </div>
-
-            <div style="margin-top:14px; font-weight:900; color:#0f172a;">Perubahan Saldo</div>
-            <div style="display:grid; grid-template-columns: 160px 1fr; gap:6px; font-size:13px; margin-top:6px;">
-              <div style="color:#64748b;">Saldo Sebelum:</div>
-              <div style="font-weight:900;"
-                   th:text="${'IDR ' + #numbers.formatDecimal(T(java.math.BigDecimal).valueOf(tx.saldoSebelum.doubleValue()),1,'COMMA',2,'POINT')}">IDR 450,000.00</div>
-
-                   <div>
-                    Jumlah Transaksi:
-                    <div th:if="${tx.tipe.name() == 'WITHDRAWAL'
-                    or (tx.tipe.name() == 'TRANSFER'
-                        and tx.keterangan != null
-                        and #strings.startsWith(#strings.toLowerCase(tx.keterangan),'transfer ke'))
-                    or (tx.saldoSesudah != null and tx.saldoSebelum != null and tx.saldoSesudah < tx.saldoSebelum)}"
-             style="font-weight:900;color:#dc2626;">
-          <span>-IDR </span>
-          <span th:text="${#numbers.formatDecimal(tx.jumlah,1,'COMMA',2,'POINT')}">0.00</span>
-        </div>
-        
-        <div th:unless="${tx.tipe.name() == 'WITHDRAWAL'
-                        or (tx.tipe.name() == 'TRANSFER'
-                            and tx.keterangan != null
-                            and #strings.startsWith(#strings.toLowerCase(tx.keterangan),'transfer ke'))
-                        or (tx.saldoSesudah != null and tx.saldoSebelum != null and tx.saldoSesudah < tx.saldoSebelum)}"
-             style="font-weight:900;color:#16a34a;">
-          <span>+IDR </span>
-          <span th:text="${#numbers.formatDecimal(tx.jumlah,1,'COMMA',2,'POINT')}">0.00</span>
-        </div>
-                  </div>
-                  
-                  <span>
-              <div style="color:#64748b;">Saldo Setelah:</div>
-              <div style="font-weight:900;"
-                   th:text="${'IDR ' + #numbers.formatDecimal(T(java.math.BigDecimal).valueOf(tx.saldoSesudah.doubleValue()),1,'COMMA',2,'POINT')}">IDR 550,000.00</div>
-                  </span>
-            </div>
+            <div class="section-label">Informasi Rekening</div>
+            <div class="data-grid"><div class="data-label">No. Rekening:</div><div class="data-value" style="color: #2563eb;" th:text="${tx.rekening.nomorRekening}">A2000034</div></div>
+            <div class="data-grid"><div class="data-label">Nama Pemilik:</div><div class="data-value" th:text="${tx.rekening.namaNasabah}">Nama Nasabah</div></div>
+            <div class="data-grid"><div class="data-label">No. Nasabah:</div><div class="data-value" th:text="${tx.rekening.cifNasabah}">C1000017</div></div>
+            <div class="data-grid"><div class="data-label">Produk Bank:</div><div class="data-value" th:text="${tx.rekening.produk}">Produk</div></div>
           </div>
         </div>
 
-        <div style="margin-top:16px; padding:12px 14px; border-radius:12px; border:1px solid rgba(37,99,235,.25); background:rgba(37,99,235,.06);">
-          <div style="font-weight:900; color:#1d4ed8; margin-bottom:6px;">Informasi Sistem</div>
-          <div style="font-size:12px; color:#0f172a;">
-            <div><b>ID Transaksi:</b> <span th:text="${tx.id}"></span></div>
-            <div><b>Mata Uang:</b> IDR</div>
-            <div><b>Status:</b> Berhasil diproses</div>
+        <div style="margin-top: 35px; border-top: 1px solid #f1f5f9; padding-top: 25px;">
+            <div class="section-label" style="border-left-color: #64748b;">Mutasi Saldo Rekening</div>
+            <div style="display: flex; gap: 50px;">
+                <div>
+                    <div class="data-label">Saldo Sebelum:</div>
+                    <div class="data-value" style="font-size: 16px;" 
+                         th:text="${'IDR ' + #numbers.formatDecimal(T(java.math.BigDecimal).valueOf(tx.saldoSebelum.doubleValue()),1,'COMMA',2,'POINT')}">IDR 0.00</div>
+                </div>
+                <div>
+                    <div class="data-label">Saldo Sesudah:</div>
+                    <div class="data-value" style="font-size: 18px; color: #1e3a8a;" 
+                         th:text="${'IDR ' + #numbers.formatDecimal(T(java.math.BigDecimal).valueOf(tx.saldoSesudah.doubleValue()),1,'COMMA',2,'POINT')}">IDR 0.00</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="system-box">
+          <div style="font-weight:800; color:#1e3a8a; font-size: 12px; margin-bottom:8px; text-transform: uppercase;">Audit Log Sistem</div>
+          <div style="font-size:11px; color:#475569; display: flex; gap: 20px;">
+            <span><b>Status:</b> Selesai diproses</span>
+            <span><b>Internal ID:</b> <span th:text="${tx.id}"></span></span>
+            <span><b>Mata Uang:</b> Rupiah (IDR)</span>
           </div>
         </div>
 
-
-            <button id="print-receipt-button" onclick="window.print()" 
-                        class="btn">
-                    Cetak Bukti
-                </button>
-          
+        <div style="display: flex; justify-content: flex-end;">
+            <button id="print-receipt-button" onclick="window.print()" class="btn-print">
+                <span style="font-size: 18px;">&#128424;</span> Cetak Bukti Transaksi
+            </button>
         </div>
+
       </div>
-
     </main>
   </div>
 </div>
- <!-- Print styles -->
-    <style>
-        @media print {
-            .container {
-                max-width: none !important;
-            }
-            
-            .bg-white {
-                box-shadow: none !important;
-            }
-            
-            a, button {
-                display: none !important;
-            }
-            
-            .bg-gray-50, .bg-blue-50 {
-                border: 1px solid #e5e7eb !important;
-            }
-        }
-    </style>
 </body>
 </html>

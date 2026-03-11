@@ -5,14 +5,18 @@
     <title>Login</title>
 
     <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
         body {
             margin: 0;
             padding: 0;
-            font-family: 'Poppins', sans-serif;
             background: url('/images/login-bg.jpg') no-repeat center center/cover;
         }
 
-        /* Overlay blur */
+        /* Overlay */
         .overlay {
             width: 100%;
             height: 100vh;
@@ -23,10 +27,10 @@
             align-items: center;
         }
 
-        /* Form container */
+        /* Card */
         .glass-card {
             width: 430px;
-            padding: 50px 45px;
+            padding: 45px 40px;
             background: rgba(255, 255, 255, 0.55);
             backdrop-filter: blur(22px);
             border-radius: 30px;
@@ -34,27 +38,33 @@
             position: relative;
         }
 
-        /* Back button */
+        /* Header */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            margin-bottom: 35px;
+        }
+
         .back-btn {
             position: absolute;
-            left: 20px;
-            top: 20px;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
             font-size: 26px;
-            cursor: pointer;
-            color: #1f3c88;
             text-decoration: none;
+            color: #1f3c88;
             font-weight: bold;
         }
 
-        /* Title */
         .title {
             font-size: 32px;
             font-weight: 800;
-            margin-bottom: 35px;
             color: #1f3c88;
         }
 
-        /* Input fields */
+        /* Input Global */
         .input-field,
         select {
             width: 100%;
@@ -62,11 +72,10 @@
             border-radius: 32px;
             border: 2px solid rgba(0, 0, 0, 0.18);
             padding: 0 20px;
-            margin-bottom: 18px;
+            margin-bottom: 18px; /* Ini margin default untuk input biasa */
             font-size: 15px;
             background: rgba(255, 255, 255, 0.92);
             outline: none;
-            box-sizing: border-box;
         }
 
         .input-field:focus,
@@ -75,7 +84,58 @@
             box-shadow: 0 0 6px rgba(75, 123, 255, 0.35);
         }
 
-        /* Forgot password */
+        /* --- PERBAIKAN DI SINI (Password Section) --- */
+        .password-wrapper {
+            width: 100%;
+            height: 52px;
+            display: flex;
+            align-items: center;
+            position: relative;
+            margin-bottom: 18px; /* Pindahkan margin ke wrapper */
+        }
+
+        /* Reset margin input password karena sudah di-handle wrapper */
+        .password-wrapper .input-field {
+            margin-bottom: 0;
+            width: 100%;
+            height: 100%;
+            padding-right: 50px; /* Space agar text tidak nabrak icon mata */
+        }
+
+        /* Eye Icon */
+        .password-eye {
+            position: absolute;
+            right: 18px;
+            top: 50%; /* Center secara vertikal absolut */
+            transform: translateY(-50%); /* Koreksi posisi agar tepat di tengah */
+            
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #64748b;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10; /* Pastikan di atas input */
+        }
+        /* ------------------------------------------- */
+
+        /* Select custom */
+        select {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+
+            background-image: url("data:image/svg+xml;utf8,<svg fill='black' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+            background-repeat: no-repeat;
+            background-position: right 20px center;
+            background-size: 18px;
+
+            padding-right: 45px;
+        }
+
+        /* Forgot */
         .forgot {
             text-align: left;
             font-size: 12px;
@@ -85,7 +145,7 @@
             padding-left: 5px;
         }
 
-        /* Login button */
+        /* Button */
         .btn-login {
             width: 100%;
             height: 52px;
@@ -96,9 +156,14 @@
             font-weight: 800;
             cursor: pointer;
             margin-top: 5px;
+            transition: 0.2s;
         }
 
-        /* Signup link */
+        .btn-login:hover {
+            opacity: 0.9;
+        }
+
+        /* Signup */
         .signup-text {
             font-size: 13px;
             margin-top: 18px;
@@ -111,24 +176,17 @@
             text-decoration: none;
         }
 
-        .password-wrapper {
-            position: relative;
+        /* Message */
+        .msg-error {
+            color: #b00020;
+            font-size: 13px;
+            margin-bottom: 12px;
         }
 
-        .password-eye {
-            position: absolute;
-            right: 18px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: none;
-            border: none;
-            cursor: pointer;
-            color: #64748b;
-            padding: 0;
-        }
-
-        .password-eye:active {
-            color: #1f3c88;
+        .msg-success {
+            color: green;
+            font-size: 13px;
+            margin-bottom: 12px;
         }
     </style>
 </head>
@@ -139,26 +197,30 @@
 
         <div class="glass-card">
 
-            <a href="/" class="back-btn">←</a>
-
-            <div class="title">Welcome Back!</div>
-
-            <div th:if="${param.error}" style="color:#b00020; font-size:13px; margin-bottom:12px;">
-                Login gagal. Cek username/password, atau akun belum disetujui (approved).
+            <div class="header">
+                <a href="/" class="back-btn">←</a>
+                <div class="title">Welcome Back!</div>
             </div>
 
-            <div th:if="${param.logout}" style="color:green; font-size:13px; margin-bottom:12px;">
+            <div th:if="${param.error}" class="msg-error">
+                Login gagal. Cek username/password atau akun belum disetujui.
+            </div>
+
+            <div th:if="${param.logout}" class="msg-success">
                 Kamu sudah logout.
             </div>
-            <div th:if="${param.registered}" style="color:green; font-size:13px; margin-bottom:12px;">
+
+            <div th:if="${param.registered}" class="msg-success">
                 Registrasi berhasil. Menunggu approval admin.
             </div>
+
             <form th:action="@{/login}" method="post">
 
                 <input type="text" name="username" class="input-field" placeholder="Username" required>
 
                 <div class="password-wrapper">
                     <input type="password" name="password" class="input-field" placeholder="Password" required>
+
                     <button type="button" class="password-eye" tabindex="-1">
                         <svg viewBox="0 0 24 24" width="20" height="20">
                             <path fill="currentColor"
@@ -167,7 +229,7 @@
                     </button>
                 </div>
 
-                <select name="module" class="input-field" required>
+                <select name="module" required>
                     <option value="" disabled selected>Modul</option>
                     <option value="CS">CS</option>
                     <option value="TELLER">Teller</option>
@@ -178,6 +240,7 @@
                 <div class="forgot">Forgot Username or Password?</div>
 
                 <button type="submit" class="btn-login">LOGIN</button>
+
             </form>
 
             <div class="signup-text">
@@ -187,8 +250,10 @@
         </div>
 
     </div>
+
     <script>
         document.querySelectorAll('.password-eye').forEach(btn => {
+
             const input = btn.previousElementSibling;
 
             const show = () => input.type = 'text';
@@ -198,10 +263,12 @@
             btn.addEventListener('mouseup', hide);
             btn.addEventListener('mouseleave', hide);
 
-            btn.addEventListener('touchstart', show, { passive: true });
+            btn.addEventListener('touchstart', show);
             btn.addEventListener('touchend', hide);
+
         });
-    </script>   
+    </script>
+
 </body>
 
 </html>

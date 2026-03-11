@@ -2,11 +2,58 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Teller - Setoran Tunai</title>
+  
   <link rel="stylesheet" th:href="@{/css/cs-shell.css}">
   <link rel="stylesheet" th:href="@{/css/custom.css}">
   <link rel="stylesheet" th:href="@{/css/minibank-ui.css}">
   <link rel="stylesheet" th:href="@{/css/account.css}">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    /* Sinkronisasi Global Font */
+    body {
+      font-family: 'Poppins', sans-serif !important;
+      background-color: #f8fafc;
+      color: #0f172a;
+    }
+
+    .page-title {
+      font-size: 24px;
+      font-weight: 800;
+      color: #1e3a8a;
+      margin-bottom: 20px;
+    }
+
+    /* Container Card Style */
+    .content-card {
+      background: #fff;
+      border-radius: 20px;
+      border: 1px solid rgba(0,0,0,.05);
+      box-shadow: 0 10px 30px rgba(0,0,0,.04);
+      padding: 30px;
+      margin-top: 20px;
+    }
+
+    .placeholder-label {
+      color: #64748b;
+      font-weight: 700;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+
+    .placeholder-text {
+      font-size: 16px;
+      font-weight: 600;
+      color: #334155;
+    }
+  </style>
 </head>
 
 <body>
@@ -17,14 +64,18 @@
   <div class="cs-content">
     <div th:replace="~{cs/fragments :: topbar}"></div>
 
-    <main class="cs-page">
-      <div style="font-size:22px; font-weight:900; color:#1e3a8a;">Setoran Tunai</div>
+    <main class="cs-page" style="padding: 30px;">
+      
+      <h1 class="page-title">Setoran Tunai</h1>
 
-      <div style="margin-top:12px; background:#fff; border-radius:16px; border:1px solid rgba(0,0,0,.06);
-                  box-shadow:0 10px 25px rgba(0,0,0,.05); padding:14px;">
-        <div style="color:#64748b; font-weight:700; font-size:12px;">Placeholder</div>
-        <div style="margin-top:6px; font-weight:800;">Form setoran tunai (nanti)</div>
+      <div class="content-card">
+        <div class="placeholder-label">Modul Transaksi</div>
+        <div class="placeholder-text">
+          Formulir setoran tunai sedang dalam tahap pengembangan (Placeolder). 
+          Gunakan modul ini untuk melakukan deposit saldo ke rekening nasabah.
+        </div>
       </div>
+
     </main>
   </div>
 </div>

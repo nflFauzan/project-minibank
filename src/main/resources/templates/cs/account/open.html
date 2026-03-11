@@ -3,57 +3,238 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Open Account</title>
+  <title>CS - Open Account</title>
 
-<!-- Samakan dengan halaman CS lain -->
-<link rel="stylesheet" th:href="@{/css/cs-shell.css}">
-<link rel="stylesheet" th:href="@{/css/custom.css}">
-<link rel="stylesheet" th:href="@{/css/minibank-ui.css}">
-<link rel="stylesheet" th:href="@{/css/account.css}">
+  <link rel="stylesheet" th:href="@{/css/cs-shell.css}">
+  <link rel="stylesheet" th:href="@{/css/custom.css}">
+  <link rel="stylesheet" th:href="@{/css/minibank-ui.css}">
+  <link rel="stylesheet" th:href="@{/css/account.css}">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    /* Sinkronisasi Global Font Poppins */
+    body {
+      font-family: 'Poppins', sans-serif !important;
+      background-color: #f8fafc;
+      color: #0f172a;
+    }
+
+    .page-title {
+      font-size: 24px;
+      font-weight: 800;
+      color: #1e3a8a;
+      margin: 0;
+    }
+
+    /* Search/Toolbar Styling */
+    .search-container {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      background: #fff;
+      padding: 16px;
+      border-radius: 16px;
+      border: 1px solid rgba(0,0,0,.05);
+      box-shadow: 0 10px 30px rgba(0,0,0,.03);
+      margin-top: 25px;
+      margin-bottom: 20px;
+    }
+
+    .search-input {
+      flex: 1;
+      padding: 12px 16px;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 12px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 14px;
+      outline: none;
+      transition: all 0.2s;
+    }
+
+    .search-input:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+    }
+
+    /* Customer Card Styling */
+    .customer-card {
+      background: #fff;
+      border-radius: 20px;
+      border: 1px solid rgba(0,0,0,.05);
+      box-shadow: 0 10px 25px rgba(0,0,0,.04);
+      padding: 24px;
+      margin-bottom: 16px;
+      transition: transform 0.2s;
+    }
+
+    .customer-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px rgba(0,0,0,.06);
+    }
+
+    .customer-name {
+      font-weight: 800;
+      font-size: 18px;
+      color: #0f172a;
+      margin-bottom: 8px;
+    }
+
+    .info-item {
+      font-size: 13px;
+      color: #64748b;
+      font-weight: 600;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .info-label {
+      color: #94a3b8;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 11px;
+      letter-spacing: 0.5px;
+      width: 140px;
+    }
+
+    /* Badge Style */
+    .status-badge {
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 800;
+      background: #ecfdf5;
+      color: #059669;
+    }
+
+    /* Buttons */
+    .btn-primary-gradient {
+      padding: 12px 24px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #1e3a8a, #2563eb);
+      color: #fff;
+      text-decoration: none;
+      font-weight: 800;
+      font-size: 14px;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(30, 58, 138, 0.2);
+      transition: all 0.2s;
+    }
+
+    .btn-primary-gradient:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 15px rgba(30, 58, 138, 0.3);
+    }
+
+    .btn-ghost {
+      padding: 10px 20px;
+      border-radius: 12px;
+      background: #f1f5f9;
+      color: #475569;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 13px;
+      transition: all 0.2s;
+    }
+
+    .btn-ghost:hover {
+      background: #e2e8f0;
+      color: #0f172a;
+    }
+
+    .alert-error {
+      background: #fef2f2;
+      color: #991b1b;
+      padding: 16px;
+      border-radius: 12px;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+  </style>
 </head>
 
 <body>
 <div class="cs-shell">
-<div th:replace="~{cs/fragments :: sidebar('account')}"></div>
+  <div th:replace="~{cs/fragments :: sidebar('account')}"></div>
 
-<div class="cs-content">
-  <div th:replace="~{cs/fragments :: topbar}"></div>
+  <div class="cs-content">
+    <div th:replace="~{cs/fragments :: topbar}"></div>
 
-  <main class="cs-page">
+    <main class="cs-page" style="padding: 30px;">
 
-    <div style="display:flex; justify-content:space-between; align-items:center; gap:12px;">
-      <h2 style="margin:0;">Select Customer for Account Opening</h2>
-      <a class="btn btn-ghost" th:href="@{/cs/account}">Back to Account List</a>
-    </div>
-
-    <div th:if="${error}" class="alert error" th:text="${error}"></div>
-
-    <form method="get" th:action="@{/cs/account/open}" class="toolbar">
-      <input type="text" name="search" placeholder="Search by CIF, name, NIK, email..." th:value="${search}">
-      <button type="submit" class="btn">Search</button>
-      <a class="btn btn-ghost" th:href="@{/cs/account/open}">Clear</a>
-    </form>
-
-    <div class="stack">
-      <div class="card customer" th:each="c : ${customers}">
-        <div style="display:flex; justify-content:space-between; gap:12px; align-items:flex-start;">
-          <div>
-            <div style="font-weight:800;" th:text="${c.namaLengkap}">Nama</div>
-            <div class="muted">Customer Number: <span th:text="${c.cif}">CIF</span></div>
-            <div class="muted">Email: <span th:text="${c.email}">email</span></div>
-            <div class="muted">Phone: <span th:text="${c.noHp}">hp</span></div>
-            <div class="muted">Status: <span th:text="${c.status}">ACTIVE</span></div>
-          </div>
-          <a class="btn btn-primary" th:href="@{/cs/account/open/{id}(id=${c.id})}">Open</a>
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:12px;">
+        <div>
+          <h1 class="page-title">Pilih Nasabah</h1>
+          <p style="font-size: 13px; color: #64748b; font-weight: 600; margin-top: 4px;">Cari nasabah aktif untuk proses pembukaan rekening baru.</p>
         </div>
+        <a class="btn-ghost" th:href="@{/cs/account}">&larr; Kembali ke List Rekening</a>
       </div>
 
-      <div th:if="${#lists.isEmpty(customers)}" class="muted" style="padding:12px;">
-        Tidak ada nasabah ACTIVE yang bisa dibuka rekeningnya.
+      <div th:if="${error}" class="alert-error" th:text="${error}"></div>
+
+      <form method="get" th:action="@{/cs/account/open}" class="search-container">
+        <input type="text" name="search" class="search-input" 
+               placeholder="Cari berdasarkan Nomor CIF, Nama Lengkap, NIK, atau Email..." 
+               th:value="${search}">
+        
+        <button type="submit" class="btn-primary-gradient" style="box-shadow: 0 4px 12px rgba(30, 58, 138, 0.2);">
+          Cari Nasabah
+        </button>
+        
+        <a class="btn-ghost" th:href="@{/cs/account/open}">Reset</a>
+      </form>
+
+      <div class="stack">
+        
+        <div class="customer-card" th:each="c : ${customers}">
+          <div style="display:flex; justify-content:space-between; gap:20px; align-items:center;">
+            <div>
+              <div class="customer-name" th:text="${c.namaLengkap}">Nama Nasabah</div>
+              
+              <div class="info-item">
+                <span class="info-label">Customer Number:</span>
+                <span style="color: #1e3a8a; font-weight: 800;" th:text="${c.cif}">CIF12345</span>
+              </div>
+              
+              <div class="info-item">
+                <span class="info-label">Email Address:</span>
+                <span th:text="${c.email}">email@contoh.com</span>
+              </div>
+              
+              <div class="info-item">
+                <span class="info-label">Phone Number:</span>
+                <span th:text="${c.noHp}">08123456789</span>
+              </div>
+              
+              <div class="info-item" style="margin-top: 8px;">
+                <span class="info-label">Status Data:</span>
+                <span class="status-badge" th:text="${c.status}">ACTIVE</span>
+              </div>
+            </div>
+            
+            <div>
+              <a class="btn-primary-gradient" th:href="@{/cs/account/open/{id}(id=${c.id})}">
+                Pilih & Buka Rekening &rarr;
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div th:if="${#lists.isEmpty(customers)}" 
+             style="text-align: center; padding: 60px 20px; background: #fff; border-radius: 20px; border: 1.5px dashed #e2e8f0;">
+          <div style="font-size: 14px; color: #94a3b8; font-weight: 600;">
+            Tidak ditemukan nasabah dengan status <b style="color: #059669;">ACTIVE</b> yang sesuai dengan pencarian Anda.
+          </div>
+        </div>
+
       </div>
-    </div>
-  </main>
-</div>
+    </main>
+  </div>
 </div>
 </body>
 </html>

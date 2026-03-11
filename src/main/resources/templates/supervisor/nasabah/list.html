@@ -2,12 +2,162 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Supervisor - Approval Nasabah</title>
+  
   <link rel="stylesheet" th:href="@{/css/cs-shell.css}">
   <link rel="stylesheet" th:href="@{/css/custom.css}">
   <link rel="stylesheet" th:href="@{/css/minibank-ui.css}">
   <link rel="stylesheet" th:href="@{/css/account.css}">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    /* Sinkronisasi Global Font */
+    body {
+      font-family: 'Poppins', sans-serif !important;
+      background-color: #f8fafc;
+      color: #0f172a;
+    }
+
+    .page-title {
+      font-size: 24px;
+      font-weight: 800;
+      color: #1e3a8a;
+    }
+
+    /* Floating Card Style */
+    .content-card {
+      margin-top: 20px;
+      background: #fff;
+      border-radius: 20px;
+      border: 1px solid rgba(0,0,0,.05);
+      box-shadow: 0 10px 30px rgba(0,0,0,.04);
+      padding: 24px;
+    }
+
+    /* Filter Form Styling */
+    .filter-section {
+      display: flex; 
+      gap: 12px; 
+      align-items: flex-end; 
+      margin-bottom: 24px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .form-label-custom {
+      font-weight: 700;
+      font-size: 12px;
+      color: #64748b;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .select-custom {
+      padding: 10px 14px;
+      border-radius: 12px;
+      border: 1.5px solid #e2e8f0;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      color: #0f172a;
+      outline: none;
+    }
+
+    .btn-apply {
+      padding: 11px 24px;
+      border-radius: 12px;
+      background: #1e3a8a;
+      color: #fff;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-apply:hover {
+      background: #2563eb;
+      transform: translateY(-1px);
+    }
+
+    /* Table Styling */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    thead tr {
+      text-align: left;
+      color: #64748b;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+
+    th {
+      padding: 16px 12px;
+      font-weight: 700;
+      border-bottom: 2px solid #f8fafc;
+    }
+
+    td {
+      padding: 16px 12px;
+      vertical-align: middle;
+      border-bottom: 1px solid #f8fafc;
+      font-size: 14px;
+      color: #475569;
+    }
+
+    tbody tr:hover {
+      background-color: #fcfdfe;
+    }
+
+    /* Status Badges */
+    .status-badge {
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-weight: 800;
+      font-size: 11px;
+      display: inline-block;
+    }
+    .badge-pending { background: #fef3c7; color: #92400e; }
+    .badge-active { background: #ecfdf5; color: #059669; }
+    .badge-rejected { background: #fef2f2; color: #dc2626; }
+
+    /* Action Button Link */
+    .btn-detail {
+      text-decoration: none;
+      padding: 8px 16px;
+      border-radius: 10px;
+      border: 1.5px solid #e2e8f0;
+      background: #fff;
+      color: #1e3a8a;
+      font-weight: 700;
+      font-size: 13px;
+      transition: all 0.2s;
+    }
+
+    .btn-detail:hover {
+      border-color: #1e3a8a;
+      background: #f1f5f9;
+    }
+
+    .pending-count-box {
+      background: #fff;
+      border: 1.5px solid #e2e8f0;
+      padding: 8px 16px;
+      border-radius: 12px;
+      font-weight: 700;
+      color: #475569;
+      font-size: 14px;
+    }
+  </style>
 </head>
+
 <body>
 <div class="cs-shell">
   <div th:replace="~{cs/fragments :: supervisorSidebar('nasabah')}"></div>
@@ -15,83 +165,78 @@
   <div class="cs-content">
     <div th:replace="~{cs/fragments :: topbar}"></div>
 
-    <main class="cs-page">
+    <main class="cs-page" style="padding: 30px;">
 
-      <div style="display:flex; align-items:center; justify-content:space-between; gap:12px;">
-        <div style="font-size:20px; font-weight:900; color:#1e3a8a;">
-          Approval Nasabah
-        </div>
-        <div style="display:flex; gap:10px; align-items:center;">
-          <div style="font-weight:800; color:#334155;">
-            Pending: <span th:text="${pendingCount}">0</span>
-          </div>
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom: 20px;">
+        <h1 class="page-title">Approval Nasabah</h1>
+        <div class="pending-count-box">
+          Status Pending: <span style="color: #b45309;" th:text="${pendingCount}">0</span>
         </div>
       </div>
 
-      <div th:if="${success}" style="margin-top:10px; padding:10px 12px; border-radius:10px; background:#ecfdf5; border:1px solid #bbf7d0; font-weight:800;"
-           th:text="${success}"></div>
-      <div th:if="${error}" style="margin-top:10px; padding:10px 12px; border-radius:10px; background:#fff7ed; border:1px solid #fed7aa; font-weight:800;"
-           th:text="${error}"></div>
+      <div th:if="${success}" style="background:#ecfdf5; color:#059669; padding:16px; border-radius:12px; font-weight:700; margin-bottom:15px; border:none;" th:text="${success}"></div>
+      <div th:if="${error}" style="background:#fef2f2; color:#dc2626; padding:16px; border-radius:12px; font-weight:700; margin-bottom:15px; border:none;" th:text="${error}"></div>
 
-      <div style="margin-top:14px; background:#fff; border:1px solid rgba(0,0,0,.06); border-radius:16px; box-shadow:0 10px 25px rgba(0,0,0,.05); padding:16px;">
+      <div class="content-card">
 
-        <form method="get" th:action="@{/supervisor/nasabah}" style="display:flex; gap:10px; align-items:end; margin-bottom:12px;">
+        <form method="get" th:action="@{/supervisor/nasabah}" class="filter-section">
           <div style="display:flex; flex-direction:column; gap:6px;">
-            <label style="font-weight:900; color:#334155; font-size:12px;">Filter Status</label>
-            <select name="filter" style="padding:10px 12px; border-radius:10px; border:1px solid rgba(0,0,0,.12); font-weight:800;">
-              <option value="PENDING" th:selected="${filter=='PENDING'}">Pending</option>
-              <option value="APPROVED" th:selected="${filter=='APPROVED'}">Approved</option>
-              <option value="REJECTED" th:selected="${filter=='REJECTED'}">Rejected</option>
-              <option value="ALL" th:selected="${filter=='ALL'}">Semua</option>
+            <label class="form-label-custom">Filter Status Approval</label>
+            <select name="filter" class="select-custom">
+              <option value="PENDING" th:selected="${filter=='PENDING'}">PENDING (INACTIVE)</option>
+              <option value="APPROVED" th:selected="${filter=='APPROVED'}">APPROVED (ACTIVE)</option>
+              <option value="REJECTED" th:selected="${filter=='REJECTED'}">REJECTED</option>
+              <option value="ALL" th:selected="${filter=='ALL'}">SEMUA DATA</option>
             </select>
           </div>
 
-          <button type="submit"
-                  style="padding:10px 12px; border-radius:10px; border:1px solid rgba(0,0,0,.12); background:#fff; font-weight:900; cursor:pointer;">
-            Terapkan
+          <button type="submit" class="btn-apply">
+            Terapkan Filter
           </button>
         </form>
 
-        <table style="width:100%; border-collapse:collapse; font-size:13px;">
-          <thead>
-          <tr style="text-align:left; border-bottom:1px solid rgba(0,0,0,.08);">
-            <th style="padding:10px 8px; color:#64748b; font-weight:900;">CIF</th>
-            <th style="padding:10px 8px; color:#64748b; font-weight:900;">Nama</th>
-            <th style="padding:10px 8px; color:#64748b; font-weight:900;">NIK</th>
-            <th style="padding:10px 8px; color:#64748b; font-weight:900;">Status</th>
-            <th style="padding:10px 8px; color:#64748b; font-weight:900;">Created At</th>
-            <th style="padding:10px 8px; color:#64748b; font-weight:900;">Approved At</th>
-            <th style="padding:10px 8px; color:#64748b; font-weight:900;">Approved By</th>
-            <th style="padding:10px 8px; color:#64748b; font-weight:900;">Aksi</th>
-          </tr>
-          </thead>
+        <div style="overflow-x: auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>CIF</th>
+                <th>Nama Lengkap</th>
+                <th>NIK</th>
+                <th>Status</th>
+                <th>Pendaftaran</th>
+                <th>Tgl. Approve</th>
+                <th>Oleh SPV</th>
+                <th style="width: 100px;">Aksi</th>
+              </tr>
+            </thead>
 
-          <tbody>
-          <tr th:if="${#lists.isEmpty(list)}">
-            <td colspan="8" style="padding:12px 8px; color:#64748b; font-weight:800;">
-              Tidak ada data.
-            </td>
-          </tr>
+            <tbody>
+              <tr th:if="${#lists.isEmpty(list)}">
+                <td colspan="8" style="padding:40px; text-align:center; color:#94a3b8; font-weight:600;">
+                  Tidak ada data nasabah ditemukan untuk kriteria filter ini.
+                </td>
+              </tr>
 
-          <tr th:each="n : ${list}" style="border-bottom:1px solid rgba(0,0,0,.06);">
-            <td style="padding:10px 8px; font-weight:800;" th:text="${n.cif}">C0000001</td>
-            <td style="padding:10px 8px;" th:text="${n.namaLengkap}">Nama</td>
-            <td style="padding:10px 8px;" th:text="${n.nik}">NIK</td>
-            <td style="padding:10px 8px; font-weight:900;"
-                th:text="${n.status}">INACTIVE</td>
-            <td style="padding:10px 8px;" th:text="${n.createdAt}">-</td>
-            <td style="padding:10px 8px;" th:text="${n.approvedAt}">-</td>
-            <td style="padding:10px 8px;" th:text="${n.approvedBy}">-</td>
-            <td style="padding:10px 8px;">
-              <a th:href="@{|/supervisor/nasabah/${n.id}|}"
-                 style="text-decoration:none; padding:8px 10px; border-radius:10px; border:1px solid rgba(0,0,0,.12); background:#fff; font-weight:900;">
-                Detail
-              </a>
-            </td>
-          </tr>
-
-          </tbody>
-        </table>
+              <tr th:each="n : ${list}">
+                <td style="font-weight:800; color: #1e3a8a;" th:text="${n.cif}">C0000001</td>
+                <td style="font-weight:700; color: #0f172a;" th:text="${n.namaLengkap}">Nama Nasabah</td>
+                <td th:text="${n.nik}">NIK</td>
+                <td>
+                  <span th:class="'status-badge ' + ${n.status.name() == 'ACTIVE' ? 'badge-active' : (n.status.name() == 'REJECTED' ? 'badge-rejected' : 'badge-pending')}"
+                        th:text="${n.status}">INACTIVE</span>
+                </td>
+                <td style="font-size: 12px;" th:text="${n.createdAt}">-</td>
+                <td style="font-size: 12px;" th:text="${n.approvedAt}">-</td>
+                <td style="font-weight: 600;" th:text="${n.approvedBy}">-</td>
+                <td>
+                  <a th:href="@{|/supervisor/nasabah/${n.id}|}" class="btn-detail">
+                    Detail
+                  </a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
 
       </div>
     </main>

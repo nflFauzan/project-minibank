@@ -3,96 +3,221 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Account</title>
+  <title>CS - Open New Account</title>
 
- <!-- Samakan dengan halaman CS lain -->
- <link rel="stylesheet" th:href="@{/css/cs-shell.css}">
- <link rel="stylesheet" th:href="@{/css/custom.css}">
- <link rel="stylesheet" th:href="@{/css/minibank-ui.css}">
- <link rel="stylesheet" th:href="@{/css/account.css}">
+  <link rel="stylesheet" th:href="@{/css/cs-shell.css}">
+  <link rel="stylesheet" th:href="@{/css/custom.css}">
+  <link rel="stylesheet" th:href="@{/css/minibank-ui.css}">
+  <link rel="stylesheet" th:href="@{/css/account.css}">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    /* Sinkronisasi Global Font Poppins */
+    body {
+      font-family: 'Poppins', sans-serif !important;
+      background-color: #f8fafc;
+      color: #0f172a;
+    }
+
+    /* Page Header Styling */
+    .page-title {
+      font-size: 24px;
+      font-weight: 800;
+      color: #1e3a8a;
+      margin: 0;
+    }
+
+    .page-subtitle {
+      font-size: 13px;
+      color: #64748b;
+      font-weight: 600;
+      margin-top: 4px;
+    }
+
+    /* Floating Card Style - Identik dengan Dashboard */
+    .card-custom {
+      background: #fff;
+      border-radius: 20px;
+      border: 1px solid rgba(0,0,0,.05);
+      box-shadow: 0 10px 30px rgba(0,0,0,.04);
+      padding: 24px;
+      margin-top: 20px;
+    }
+
+    .card-heading {
+      font-size: 16px;
+      font-weight: 800;
+      color: #0f172a;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Info Display Styling */
+    .label-muted {
+      font-size: 11px;
+      font-weight: 700;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+
+    .value-highlight {
+      font-size: 15px;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    /* Form Input Styling */
+    .form-label-custom {
+      font-weight: 700;
+      font-size: 14px;
+      color: #334155;
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    .form-control-custom {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 12px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 14px;
+      outline: none;
+      transition: all 0.2s;
+    }
+
+    .form-control-custom:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+    }
+
+    /* Buttons */
+    .btn-primary-gradient {
+      padding: 12px 28px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #1e3a8a, #2563eb);
+      color: #fff;
+      text-decoration: none;
+      font-weight: 800;
+      font-size: 14px;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 8px 15px rgba(30, 58, 138, 0.2);
+      transition: all 0.2s;
+    }
+
+    .btn-primary-gradient:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 20px rgba(30, 58, 138, 0.3);
+    }
+
+    .btn-ghost {
+      padding: 10px 20px;
+      border-radius: 10px;
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      color: #64748b;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+
+    .btn-ghost:hover {
+      background: #f1f5f9;
+      color: #1e3a8a;
+    }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+
+    @media (max-width: 900px) {
+      .grid-3 { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
 
 <body>
 <div class="cs-shell">
- <div th:replace="~{cs/fragments :: sidebar('account')}"></div>
+  <div th:replace="~{cs/fragments :: sidebar('account')}"></div>
 
- <div class="cs-content">
-   <div th:replace="~{cs/fragments :: topbar}"></div>
+  <div class="cs-content">
+    <div th:replace="~{cs/fragments :: topbar}"></div>
 
-   <main class="cs-page">
-<div class="page-header">
-  <div>
-    <h2 class="page-title">Open New Account</h2>
-    <p class="page-subtitle">Lengkapi data pembukaan rekening nasabah.</p>
+    <main class="cs-page" style="padding: 30px;">
+      
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom: 25px;">
+        <div>
+          <h1 class="page-title">Open New Account</h1>
+          <p class="page-subtitle">Lengkapi data pembukaan rekening nasabah di bawah ini.</p>
+        </div>
+        <a class="btn-ghost" th:href="@{/cs/account/open}">&larr; Kembali</a>
+      </div>
+
+      <div th:if="${error}" style="background:#fef2f2; color:#991b1b; padding:16px; border-radius:12px; font-weight:700; margin-bottom:20px;" th:text="${error}"></div>
+      <div th:if="${success}" style="background:#ecfdf5; color:#059669; padding:16px; border-radius:12px; font-weight:700; margin-bottom:20px;" th:text="${success}"></div>
+
+      <div class="card-custom">
+        <h3 class="card-heading">Customer Information</h3>
+        <div class="grid-2">
+          <div>
+            <div class="label-muted">Customer Name</div>
+            <div class="value-highlight" th:text="${nasabah.namaSesuaiIdentitas}">Nama Nasabah</div>
+
+            <div class="label-muted" style="margin-top:16px;">Nomor CIF</div>
+            <div class="value-highlight" style="color: #1e3a8a;" th:text="${nasabah.cif}">C0000001</div>
+          </div>
+
+          <div>
+            <div class="label-muted">Email Address</div>
+            <div class="value-highlight" th:text="${nasabah.email}">email@contoh.com</div>
+
+            <div class="label-muted" style="margin-top:16px;">Phone Number</div>
+            <div class="value-highlight" th:text="${nasabah.noHp}">08123456789</div>
+          </div>
+        </div>
+      </div>
+
+      <form method="post" th:action="@{/cs/account/open/{id}(id=${nasabah.id})}" th:object="${form}" class="card-custom">
+        <h3 class="card-heading">Account Configuration</h3>
+        
+        <div class="grid-3">
+          <div class="form-group">
+            <label class="form-label-custom">Pilih Produk *</label>
+            <select th:field="*{produkId}" class="form-control-custom" required>
+              <option value="" disabled selected>-- Pilih Produk Bank --</option>
+              <option th:each="p : ${products}"
+                      th:value="${p.id}"
+                      th:text="${p.namaProduk + ' (' + p.kodeProduk + ')'}">
+              </option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label-custom">Nominal Setoran Awal (IDR) *</label>
+            <input type="number" step="0.01" min="0" th:field="*{nominalSetoranAwal}" class="form-control-custom" placeholder="0.00" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label-custom">Tujuan Pembukaan Rekening *</label>
+            <input type="text" th:field="*{tujuanPembukaan}" class="form-control-custom" placeholder="Contoh: Tabungan Haji" required>
+          </div>
+        </div>
+
+        <div style="display:flex; justify-content:flex-end; gap:12px; margin-top: 30px; padding-top: 25px; border-top: 1px solid #f1f5f9;">
+          <a class="btn-ghost" th:href="@{/cs/account/open}">Cancel</a>
+          <button class="btn-primary-gradient" type="submit">Open Account Now &rarr;</button>
+        </div>
+      </form>
+
+    </main>
   </div>
-
-  <div class="page-actions">
-    <a class="btn" th:href="@{/cs/account/open}">Back</a>
-  </div>
-</div>
-
-<div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
-<div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
-
-<div class="card">
-  <h3 class="card-title">Customer Information</h3>
-
-  <div class="grid-2">
-    <div>
-      <div class="muted">Customer Name</div>
-      <div class="value" th:text="${nasabah.namaSesuaiIdentitas}">Nama</div>
-
-      <div class="muted" style="margin-top:8px;">CIF</div>
-      <div class="value" th:text="${nasabah.cif}">CIF</div>
-    </div>
-
-    <div>
-      <div class="muted">Email</div>
-      <div class="value" th:text="${nasabah.email}">email</div>
-
-      <div class="muted" style="margin-top:8px;">Phone</div>
-      <div class="value" th:text="${nasabah.noHp}">hp</div>
-    </div>
-  </div>
-</div>
-
-<form method="post"
-      th:action="@{/cs/account/open/{id}(id=${nasabah.id})}"
-      th:object="${form}"
-      class="card"
-      style="margin-top:16px;">
-
-  <div class="form-grid-3">
-    <div class="form-group">
-      <label>Product *</label>
-      <select th:field="*{produkId}" required>
-        <option value="" disabled selected>-- Pilih Product --</option>
-        <option th:each="p : ${products}"
-                th:value="${p.id}"
-                th:text="${p.namaProduk + ' (' + p.kodeProduk + ')'}">
-        </option>
-      </select>
-    </div>
-
-    <div class="form-group">
-      <label>Nominal Setoran Awal *</label>
-      <input type="number" step="0.01" min="0" th:field="*{nominalSetoranAwal}" required>
-    </div>
-
-    <div class="form-group">
-      <label>Tujuan Pembukaan Rekening *</label>
-      <input type="text" th:field="*{tujuanPembukaan}" required>
-    </div>
-  </div>
-
-  <div class="form-actions">
-    <a class="btn" th:href="@{/cs/account/open}">Cancel</a>
-    <button class="btn btn-primary" type="submit">Open Account</button>
-  </div>
-</form>
-
-</main>
-</div>
 </div>
 </body>
 </html>
