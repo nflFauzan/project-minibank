@@ -82,7 +82,21 @@
         <scope>test</scope>
     </dependency>
 
-        <!-- PDF generation -->
+    <!-- SECURITY TEST -->
+    <dependency>
+        <groupId>org.springframework.security</groupId>
+        <artifactId>spring-security-test</artifactId>
+        <scope>test</scope>
+    </dependency>
+
+    <!-- H2 IN-MEMORY DATABASE FOR TESTING -->
+    <dependency>
+        <groupId>com.h2database</groupId>
+        <artifactId>h2</artifactId>
+        <scope>test</scope>
+    </dependency>
+
+    <!-- PDF generation -->
     <dependency>
         <groupId>org.apache.pdfbox</groupId>
         <artifactId>pdfbox</artifactId>
@@ -117,6 +131,27 @@
             <configuration>
                 <executable>true</executable>
             </configuration>
+        </plugin>
+
+        <!-- JACOCO CODE COVERAGE -->
+        <plugin>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+            <version>0.8.12</version>
+            <executions>
+                <execution>
+                    <goals>
+                        <goal>prepare-agent</goal>
+                    </goals>
+                </execution>
+                <execution>
+                    <id>report</id>
+                    <phase>verify</phase>
+                    <goals>
+                        <goal>report</goal>
+                    </goals>
+                </execution>
+            </executions>
         </plugin>
 
     </plugins>
