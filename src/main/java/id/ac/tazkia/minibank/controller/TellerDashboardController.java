@@ -2,6 +2,7 @@ package id.ac.tazkia.minibank.controller;
 
 import id.ac.tazkia.minibank.service.TellerDashboardService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,11 +27,12 @@ public class TellerDashboardController {
     }
 
     
-@GetMapping("/transaction")
-public String transaction(Model model) {
-    model.addAttribute("active", "transaction");
-    return "teller/transaction/list";
-}
+    @GetMapping("/transaction")
+    public String transaction(Model model) {
+        model.addAttribute("active", "transaction");
+        model.addAttribute("page", Page.empty());
+        return "teller/transaction/list";
+    }
 
     // placeholder settings biar link sidebar ga 500
     @GetMapping("/settings")

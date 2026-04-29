@@ -3,6 +3,7 @@ package id.ac.tazkia.minibank.controller;
 import id.ac.tazkia.minibank.entity.Nasabah;
 import id.ac.tazkia.minibank.entity.NasabahStatus;
 import id.ac.tazkia.minibank.entity.Rekening;
+import id.ac.tazkia.minibank.repository.UserRepository;
 import id.ac.tazkia.minibank.service.RekeningService;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.DisplayName;
@@ -34,6 +35,9 @@ class CsAccountControllerTest {
 
     @MockBean
     private RekeningService rekeningService;
+
+    @MockBean
+    private UserRepository userRepository;
 
     @Test
     @DisplayName("GET /cs/account - list accounts")

@@ -1,5 +1,6 @@
 package id.ac.tazkia.minibank.controller;
 
+import id.ac.tazkia.minibank.repository.UserRepository;
 import id.ac.tazkia.minibank.service.TellerDashboardService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,6 +27,9 @@ class TellerDashboardControllerTest {
 
     @MockBean
     private TellerDashboardService dashboardService;
+
+    @MockBean
+    private UserRepository userRepository;
 
     @Test
     @DisplayName("GET /teller/dashboard - should return teller/dashboard view")

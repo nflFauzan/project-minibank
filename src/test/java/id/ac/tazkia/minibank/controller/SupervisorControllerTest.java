@@ -1,4 +1,6 @@
 package id.ac.tazkia.minibank.controller;
+ 
+import id.ac.tazkia.minibank.repository.UserRepository;
 
 import id.ac.tazkia.minibank.entity.NasabahStatus;
 import id.ac.tazkia.minibank.repository.NasabahRepository;
@@ -27,6 +29,9 @@ class SupervisorControllerTest {
 
     @MockBean
     private DashboardService dashboardService;
+
+    @MockBean
+    private UserRepository userRepository;
 
     @MockBean
     private NasabahRepository nasabahRepository;

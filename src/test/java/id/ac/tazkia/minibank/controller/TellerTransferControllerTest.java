@@ -1,5 +1,6 @@
 package id.ac.tazkia.minibank.controller;
 
+import id.ac.tazkia.minibank.repository.UserRepository;
 import id.ac.tazkia.minibank.service.TellerTransferService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,6 +32,9 @@ class TellerTransferControllerTest {
 
     @MockBean
     private TellerTransferService tellerTransferService;
+
+    @MockBean
+    private UserRepository userRepository;
 
     @Test
     @DisplayName("GET /teller/transfer - list")

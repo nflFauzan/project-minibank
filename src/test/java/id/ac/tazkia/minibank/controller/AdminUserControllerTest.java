@@ -1,6 +1,7 @@
 package id.ac.tazkia.minibank.controller;
 
 import id.ac.tazkia.minibank.entity.User;
+import id.ac.tazkia.minibank.repository.UserRepository;
 import id.ac.tazkia.minibank.service.AdminUserService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,6 +29,9 @@ class AdminUserControllerTest {
 
     @MockBean
     private AdminUserService adminService;
+
+    @MockBean
+    private UserRepository userRepository;
 
     @Test
     @DisplayName("GET /admin/dashboard - should return admin/dashboard view")

@@ -1,6 +1,7 @@
 package id.ac.tazkia.minibank.controller;
 
 import id.ac.tazkia.minibank.dto.DashboardSummaryDto;
+import id.ac.tazkia.minibank.repository.UserRepository;
 import id.ac.tazkia.minibank.service.DashboardService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,6 +27,9 @@ class CsDashboardControllerTest {
 
     @MockBean
     private DashboardService dashboardService;
+
+    @MockBean
+    private UserRepository userRepository;
 
     @Test
     @DisplayName("GET /cs/dashboard - should return cs/dashboard view")

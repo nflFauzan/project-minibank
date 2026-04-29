@@ -2,6 +2,7 @@ package id.ac.tazkia.minibank.controller;
 
 import id.ac.tazkia.minibank.entity.ProdukTabungan;
 import id.ac.tazkia.minibank.repository.ProdukTabunganRepository;
+import id.ac.tazkia.minibank.repository.UserRepository;
 import id.ac.tazkia.minibank.service.CsProductService;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.DisplayName;
@@ -38,12 +39,15 @@ class CsProductControllerTest {
     @MockBean
     private CsProductService csProductService;
 
+    @MockBean
+    private UserRepository userRepository;
+
     @Test
     @DisplayName("GET /cs/product - list products")
     void list_shouldReturnView() throws Exception {
         when(csProductService.search(any(), any(), any())).thenReturn(Page.empty());
 
-        mockMvc.perform(get("/cs/product").param("status", "ACTIVE"))
+        mockMvc.perform(get("/cs/product").param("status", "ACTIVE").param("q", ""))
                 .andExpect(status().isOk())
                 .andExpect(view().name("cs/product/list"))
                 .andExpect(model().attributeExists("page", "active", "q", "status"));
@@ -52,7 +56,7 @@ class CsProductControllerTest {
     @Test
     @DisplayName("GET /cs/product/new - create form")
     void createForm_shouldReturnView() throws Exception {
-        when(csProductService.akadOptions()).thenReturn(List.of("MUDHARABAH", "WADIAH"));
+        when(csProductService.akadOptions()).thenReturn(List.of(new CsProductService.AkadOption("MUDHARABAH", "Mudharabah"), new CsProductService.AkadOption("WADIAH", "Wadiah")));
 
         mockMvc.perform(get("/cs/product/new"))
                 .andExpect(status().isOk())
@@ -89,7 +93,7 @@ class CsProductControllerTest {
     @DisplayName("GET /cs/product/{id}/edit - edit form success")
     void editForm_shouldReturnView() throws Exception {
         when(produkTabunganRepository.findById(1L)).thenReturn(Optional.of(new ProdukTabungan()));
-        when(csProductService.akadOptions()).thenReturn(List.of("MUDHARABAH"));
+        when(csProductService.akadOptions()).thenReturn(List.of(new CsProductService.AkadOption("MUDHARABAH", "Mudharabah")));
 
         mockMvc.perform(get("/cs/product/1/edit"))
                 .andExpect(status().isOk())

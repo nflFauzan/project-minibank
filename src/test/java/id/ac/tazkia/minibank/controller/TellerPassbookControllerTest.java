@@ -1,4 +1,6 @@
 package id.ac.tazkia.minibank.controller;
+ 
+import id.ac.tazkia.minibank.repository.UserRepository;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,6 +20,9 @@ class TellerPassbookControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @org.springframework.boot.test.mock.mockito.MockBean
+    private UserRepository userRepository;
 
     @Test
     @DisplayName("GET /teller/passbook/select-account - should return view")

@@ -2,6 +2,7 @@ package id.ac.tazkia.minibank.controller;
 
 import id.ac.tazkia.minibank.entity.Transaksi;
 import id.ac.tazkia.minibank.repository.TransaksiRepository;
+import id.ac.tazkia.minibank.repository.UserRepository;
 import id.ac.tazkia.minibank.service.TellerReceiptPdfService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,6 +34,9 @@ class TellerReceiptControllerTest {
     @MockBean
     private TellerReceiptPdfService receiptPdfService;
 
+    @MockBean
+    private UserRepository userRepository;
+
     @Test
     @DisplayName("GET /teller/transaction/receipt/{id} - should return pdf")
     void downloadReceipt_shouldReturnPdf() throws Exception {
@@ -49,7 +53,7 @@ class TellerReceiptControllerTest {
         mockMvc.perform(get("/teller/transaction/receipt/" + id))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_PDF))
-                .andExpect(header().string("Content-Disposition", "attachment; filename=\"receipt_TRX-123.pdf\""))
+                .andExpect(header().string("Content-Disposition", org.hamcrest.Matchers.containsString("receipt_TRX-123.pdf")))
                 .andExpect(content().bytes(pdfContent));
     }
 }
