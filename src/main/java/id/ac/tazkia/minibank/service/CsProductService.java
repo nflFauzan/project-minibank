@@ -23,8 +23,7 @@ public class CsProductService {
 
     private final ProdukTabunganRepository produkTabunganRepository;
 
-    @PersistenceContext
-    private EntityManager em;
+    private final EntityManager em;
 
     private static final BigDecimal MAX_SETORAN = new BigDecimal("1000000000");
 
