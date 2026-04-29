@@ -14,10 +14,10 @@ Aplikasi web berbasis Spring Boot untuk kebutuhan MVP MiniBank: autentikasi + ro
 
 | No | Nama | NIM | Peran |
 |---:|---|---|---|
-| 1 | Muhammad Naufal Fauzan | **[ISI NIM]** | Project Manager / Developer |
-| 2 | Rackisha Dhia Ezelly | 241572010011 | UI/UX DESIGNER |
-| 3 | Muhammad Akmal Syarif | **[ISI NIM]** | Database / Developer |
-| 4 | Siti Tahtia Ainun Zahra | **[ISI NIM]** | QA / Dokumentasi |
+| 1 | Muhammad Naufal Fauzan | **241572010008** | Project Manager / Developer |
+| 2 | Rackisha Dhia Ezelly | **241572010011** | UI/UX DESIGNER |
+| 3 | Muhammad Akmal Syarif | **241572010004** | Database / Developer |
+| 4 | Siti Tahtia Ainun Zahra | **241572010014** | QA / Dokumentasi |
 
 ---
 
