@@ -1,97 +1,77 @@
 package id.ac.tazkia.minibank.service;
 
-import id.ac.tazkia.minibank.entity.Nasabah;
-import id.ac.tazkia.minibank.entity.NasabahStatus;
-import id.ac.tazkia.minibank.repository.NasabahRepository;
+import id.ac.tazkia.minibank.BaseIntegrationTest;
+import id.ac.tazkia.minibank.entity.*;
+import id.ac.tazkia.minibank.repository.*;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.Optional;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
-@DisplayName("NasabahApprovalService Unit Tests")
-class NasabahApprovalServiceTest {
+@DisplayName("NasabahApprovalService Integration Tests")
+class NasabahApprovalServiceTest extends BaseIntegrationTest {
 
-    @Mock private NasabahRepository nasabahRepository;
+    @Autowired private NasabahApprovalService approvalService;
+    @Autowired private NasabahRepository nasabahRepository;
 
-    @InjectMocks
-    private NasabahApprovalService approvalService;
+    private Long nasabahId;
 
-    private Nasabah createInactiveNasabah() {
+    @BeforeEach
+    void setUp() {
         Nasabah n = new Nasabah();
-        n.setId(1L);
-        n.setStatus(NasabahStatus.INACTIVE);
+        n.setCif("C9860001");
+        n.setNik("9860001234567890");
         n.setNamaSesuaiIdentitas("Test Nasabah");
-        return n;
+        n.setStatus(NasabahStatus.INACTIVE);
+        n = nasabahRepository.save(n);
+        nasabahId = n.getId();
     }
 
     @Test
-    @DisplayName("approve - berhasil mengubah status ke ACTIVE")
+    @DisplayName("approve - berhasil mengubah status ke ACTIVE di DB")
     void approve_success() {
-        Nasabah n = createInactiveNasabah();
-        when(nasabahRepository.findById(1L)).thenReturn(Optional.of(n));
-        when(nasabahRepository.save(any(Nasabah.class))).thenAnswer(inv -> inv.getArgument(0));
+        approvalService.approve(nasabahId, "Supervisor A", "OK");
 
-        approvalService.approve(1L, "Supervisor A", "OK");
-
-        assertEquals(NasabahStatus.ACTIVE, n.getStatus());
-        assertEquals("Supervisor A", n.getApprovedBy());
-        assertNotNull(n.getApprovedAt());
-        assertNull(n.getRejectionReason());
-        verify(nasabahRepository).save(n);
+        Nasabah after = nasabahRepository.findById(nasabahId).orElseThrow();
+        assertEquals(NasabahStatus.ACTIVE, after.getStatus());
+        assertEquals("Supervisor A", after.getApprovedBy());
+        assertNotNull(after.getApprovedAt());
+        assertNull(after.getRejectionReason());
     }
 
     @Test
     @DisplayName("approve - throw jika status bukan INACTIVE")
     void approve_shouldThrow_whenNotInactive() {
-        Nasabah n = createInactiveNasabah();
-        n.setStatus(NasabahStatus.ACTIVE); // sudah active
-        when(nasabahRepository.findById(1L)).thenReturn(Optional.of(n));
-
+        approvalService.approve(nasabahId, "Supervisor", "OK");
         assertThrows(IllegalStateException.class,
-                () -> approvalService.approve(1L, "Supervisor", "OK"));
+                () -> approvalService.approve(nasabahId, "Supervisor", "OK"));
     }
 
     @Test
     @DisplayName("approve - throw jika nasabah tidak ditemukan")
     void approve_shouldThrow_whenNotFound() {
-        when(nasabahRepository.findById(999L)).thenReturn(Optional.empty());
         assertThrows(IllegalArgumentException.class,
-                () -> approvalService.approve(999L, "Supervisor", "OK"));
+                () -> approvalService.approve(999999L, "Supervisor", "OK"));
     }
 
     @Test
-    @DisplayName("reject - berhasil mengubah status ke REJECTED")
+    @DisplayName("reject - berhasil mengubah status ke REJECTED di DB")
     void reject_success() {
-        Nasabah n = createInactiveNasabah();
-        when(nasabahRepository.findById(1L)).thenReturn(Optional.of(n));
-        when(nasabahRepository.save(any(Nasabah.class))).thenAnswer(inv -> inv.getArgument(0));
+        approvalService.reject(nasabahId, "Supervisor B", "Data tidak lengkap");
 
-        approvalService.reject(1L, "Supervisor B", "Data tidak lengkap");
-
-        assertEquals(NasabahStatus.REJECTED, n.getStatus());
-        assertEquals("Supervisor B", n.getApprovedBy());
-        assertEquals("Data tidak lengkap", n.getRejectionReason());
-        verify(nasabahRepository).save(n);
+        Nasabah after = nasabahRepository.findById(nasabahId).orElseThrow();
+        assertEquals(NasabahStatus.REJECTED, after.getStatus());
+        assertEquals("Supervisor B", after.getApprovedBy());
+        assertEquals("Data tidak lengkap", after.getRejectionReason());
     }
 
     @Test
     @DisplayName("reject - throw jika status bukan INACTIVE")
     void reject_shouldThrow_whenNotInactive() {
-        Nasabah n = createInactiveNasabah();
-        n.setStatus(NasabahStatus.ACTIVE);
-        when(nasabahRepository.findById(1L)).thenReturn(Optional.of(n));
-
+        approvalService.approve(nasabahId, "Supervisor", "OK");
         assertThrows(IllegalStateException.class,
-                () -> approvalService.reject(1L, "Supervisor", "Alasan"));
+                () -> approvalService.reject(nasabahId, "Supervisor", "Alasan"));
     }
 }

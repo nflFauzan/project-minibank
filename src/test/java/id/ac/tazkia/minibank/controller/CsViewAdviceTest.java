@@ -1,101 +1,53 @@
 package id.ac.tazkia.minibank.controller;
 
+import id.ac.tazkia.minibank.BaseIntegrationTest;
 import id.ac.tazkia.minibank.entity.User;
 import id.ac.tazkia.minibank.repository.UserRepository;
-import jakarta.servlet.http.HttpServletRequest;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.core.Authentication;
-import org.springframework.ui.Model;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.Optional;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import static org.mockito.Mockito.*;
+@DisplayName("CsViewAdvice Integration Tests")
+class CsViewAdviceTest extends BaseIntegrationTest {
 
-@ExtendWith(MockitoExtension.class)
-@DisplayName("CsViewAdvice Unit Tests")
-class CsViewAdviceTest {
+    @Autowired private MockMvc mockMvc;
+    @Autowired private UserRepository userRepository;
 
-    @Mock
-    private UserRepository userRepository;
-
-    @Mock
-    private Model model;
-
-    @Mock
-    private Authentication auth;
-
-    @Mock
-    private HttpServletRequest request;
-
-    @InjectMocks
-    private CsViewAdvice csViewAdvice;
-
-    @Test
-    @DisplayName("injectCsHeader - should inject attributes when URI starts with /cs")
-    void injectCsHeader_shouldInjectWhenUriStartsWithCs() {
-        when(request.getRequestURI()).thenReturn("/cs/dashboard");
-        when(auth.getName()).thenReturn("testuser");
-        
-        User user = new User();
-        user.setFullName("Test User");
-        when(userRepository.findByUsername("testuser")).thenReturn(Optional.of(user));
-
-        csViewAdvice.injectCsHeader(model, auth, request);
-
-        verify(model).addAttribute(eq("nowText"), anyString());
-        verify(model).addAttribute("roleLabel", "Customer Service");
-        verify(model).addAttribute("currentFullName", "Test User");
-        verify(model).addAttribute("employeeId", "testuser");
+    @BeforeEach
+    void setUp() {
+        if (userRepository.findByUsername("csuser").isEmpty()) {
+            User u = new User();
+            u.setUsername("csuser");
+            u.setPassword("$2a$10$dummy");
+            u.setEmail("cs@tazkia.ac.id");
+            u.setFullName("CS User");
+            u.setApproved(true);
+            u.setEnabled(true);
+            userRepository.save(u);
+        }
     }
 
     @Test
-    @DisplayName("injectCsHeader - should use username if full name is missing")
-    void injectCsHeader_shouldUseUsernameIfFullNameMissing() {
-        when(request.getRequestURI()).thenReturn("/cs/customers");
-        when(auth.getName()).thenReturn("testuser");
-        
-        when(userRepository.findByUsername("testuser")).thenReturn(Optional.empty());
-
-        csViewAdvice.injectCsHeader(model, auth, request);
-
-        verify(model).addAttribute("currentFullName", "testuser");
+    @WithMockUser(username = "csuser", roles = {"CS"})
+    @DisplayName("GET /cs/dashboard - CsViewAdvice menyuntikkan atribut model")
+    void csDashboard_shouldHaveAdviceAttributes() throws Exception {
+        mockMvc.perform(get("/cs/dashboard"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("cs/dashboard"))
+                .andExpect(model().attributeExists("nowText", "roleLabel"));
     }
 
     @Test
-    @DisplayName("injectCsHeader - should skip if URI is null")
-    void injectCsHeader_shouldSkipIfUriNull() {
-        when(request.getRequestURI()).thenReturn(null);
-
-        csViewAdvice.injectCsHeader(model, auth, request);
-
-        verifyNoInteractions(model);
-    }
-
-    @Test
-    @DisplayName("injectCsHeader - should skip if URI does not start with /cs")
-    void injectCsHeader_shouldSkipIfUriDoesNotStartWithCs() {
-        when(request.getRequestURI()).thenReturn("/teller/dashboard");
-
-        csViewAdvice.injectCsHeader(model, auth, request);
-
-        verifyNoInteractions(model);
-    }
-
-    @Test
-    @DisplayName("injectCsHeader - should not add user info if auth is null")
-    void injectCsHeader_shouldNotAddUserInfoIfAuthNull() {
-        when(request.getRequestURI()).thenReturn("/cs/dashboard");
-
-        csViewAdvice.injectCsHeader(model, null, request);
-
-        verify(model).addAttribute(eq("nowText"), anyString());
-        verify(model).addAttribute("roleLabel", "Customer Service");
-        verify(model, never()).addAttribute(eq("currentFullName"), any());
-        verify(model, never()).addAttribute(eq("employeeId"), any());
+    @DisplayName("GET /teller/dashboard - CsViewAdvice tidak aktif di /teller/")
+    void tellerDashboard_csAdviceNotActive() throws Exception {
+        mockMvc.perform(get("/teller/dashboard"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("teller/dashboard"));
     }
 }

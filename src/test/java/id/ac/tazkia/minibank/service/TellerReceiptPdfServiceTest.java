@@ -1,19 +1,21 @@
 package id.ac.tazkia.minibank.service;
 
+import id.ac.tazkia.minibank.BaseIntegrationTest;
 import id.ac.tazkia.minibank.entity.TipeTransaksi;
 import id.ac.tazkia.minibank.entity.Transaksi;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@DisplayName("TellerReceiptPdfService Unit Tests")
-class TellerReceiptPdfServiceTest {
+@DisplayName("TellerReceiptPdfService Integration Tests")
+class TellerReceiptPdfServiceTest extends BaseIntegrationTest {
 
-    private final TellerReceiptPdfService pdfService = new TellerReceiptPdfService();
+    @Autowired private TellerReceiptPdfService pdfService;
 
     private Transaksi createTx(TipeTransaksi tipe) {
         Transaksi t = new Transaksi();
@@ -39,7 +41,6 @@ class TellerReceiptPdfServiceTest {
         byte[] pdf = pdfService.generateReceipt(createTx(TipeTransaksi.DEPOSIT));
         assertNotNull(pdf);
         assertTrue(pdf.length > 0, "PDF byte array harus > 0");
-        // PDF files start with %PDF
         assertEquals('%', (char) pdf[0]);
     }
 

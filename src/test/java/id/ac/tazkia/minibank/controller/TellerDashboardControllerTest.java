@@ -1,49 +1,27 @@
 package id.ac.tazkia.minibank.controller;
 
-import id.ac.tazkia.minibank.repository.UserRepository;
-import id.ac.tazkia.minibank.service.TellerDashboardService;
+import id.ac.tazkia.minibank.BaseIntegrationTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.math.BigDecimal;
-import java.util.List;
-
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(controllers = TellerDashboardController.class)
-@AutoConfigureMockMvc(addFilters = false)
-@DisplayName("TellerDashboardController Unit Tests")
-class TellerDashboardControllerTest {
+@DisplayName("TellerDashboardController Integration Tests")
+class TellerDashboardControllerTest extends BaseIntegrationTest {
 
-    @Autowired
-    private MockMvc mockMvc;
-
-    @MockBean
-    private TellerDashboardService dashboardService;
-
-    @MockBean
-    private UserRepository userRepository;
+    @Autowired private MockMvc mockMvc;
 
     @Test
     @DisplayName("GET /teller/dashboard - should return teller/dashboard view")
     void dashboard_shouldReturnView() throws Exception {
-        when(dashboardService.totalNasabahAktif()).thenReturn(10L);
-        when(dashboardService.totalRekeningAktif()).thenReturn(5L);
-        when(dashboardService.totalDepositAwal()).thenReturn(BigDecimal.valueOf(1000));
-        when(dashboardService.totalTransaksi()).thenReturn(20L);
-        when(dashboardService.produkAktif()).thenReturn(List.of());
-
         mockMvc.perform(get("/teller/dashboard"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("teller/dashboard"))
-                .andExpect(model().attributeExists("totalNasabah", "totalRekeningAktif", "totalDeposit", "totalTransaksi", "products"));
+                .andExpect(model().attributeExists("totalNasabah", "totalRekeningAktif",
+                        "totalDeposit", "totalTransaksi", "products"));
     }
 
     @Test

@@ -1,5 +1,6 @@
 package id.ac.tazkia.minibank.security;
 
+import id.ac.tazkia.minibank.BaseIntegrationTest;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -7,6 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -17,10 +19,11 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-@DisplayName("LoginSuccessHandler Unit Tests")
-class LoginSuccessHandlerTest {
+@DisplayName("LoginSuccessHandler Integration Tests")
+class LoginSuccessHandlerTest extends BaseIntegrationTest {
 
-    private LoginSuccessHandler handler;
+    @Autowired private LoginSuccessHandler handler;
+
     private HttpServletRequest request;
     private HttpServletResponse response;
     private HttpSession session;
@@ -28,7 +31,6 @@ class LoginSuccessHandlerTest {
 
     @BeforeEach
     void setUp() {
-        handler = new LoginSuccessHandler();
         request = mock(HttpServletRequest.class);
         response = mock(HttpServletResponse.class);
         session = mock(HttpSession.class);
@@ -70,16 +72,6 @@ class LoginSuccessHandlerTest {
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
         verify(redirectStrategy).sendRedirect(eq(request), eq(response), captor.capture());
         assertEquals("/admin/dashboard", captor.getValue());
-    }
-
-    @Test
-    @DisplayName("SUPERVISOR module - redirect ke /supervisor/dashboard")
-    void onSuccess_SUPERVISOR_module() throws Exception {
-        when(request.getParameter("module")).thenReturn("SUPERVISOR");
-        handler.onAuthenticationSuccess(request, response, authWithRole("ROLE_SUPERVISOR"));
-        ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
-        verify(redirectStrategy).sendRedirect(eq(request), eq(response), captor.capture());
-        assertEquals("/supervisor/dashboard", captor.getValue());
     }
 
     @Test

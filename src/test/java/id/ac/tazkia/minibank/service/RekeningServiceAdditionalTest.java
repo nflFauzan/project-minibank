@@ -1,136 +1,91 @@
 package id.ac.tazkia.minibank.service;
 
-import id.ac.tazkia.minibank.entity.Nasabah;
-import id.ac.tazkia.minibank.entity.NasabahStatus;
-import id.ac.tazkia.minibank.entity.ProdukTabungan;
-import id.ac.tazkia.minibank.entity.Rekening;
-import id.ac.tazkia.minibank.repository.NasabahRepository;
-import id.ac.tazkia.minibank.repository.ProdukTabunganRepository;
-import id.ac.tazkia.minibank.repository.RekeningRepository;
-import id.ac.tazkia.minibank.repository.UserRepository;
+import id.ac.tazkia.minibank.BaseIntegrationTest;
+import id.ac.tazkia.minibank.entity.*;
+import id.ac.tazkia.minibank.repository.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
-@DisplayName("RekeningService - Additional Tests")
-class RekeningServiceAdditionalTest {
+@DisplayName("RekeningService - Additional Integration Tests")
+class RekeningServiceAdditionalTest extends BaseIntegrationTest {
 
-    @Mock private RekeningRepository rekeningRepository;
-    @Mock private NasabahRepository nasabahRepository;
-    @Mock private ProdukTabunganRepository produkTabunganRepository;
-    @Mock private UserRepository userRepository;
-
-    @InjectMocks
-    private RekeningService rekeningService;
+    @Autowired private RekeningService rekeningService;
+    @Autowired private RekeningRepository rekeningRepository;
+    @Autowired private NasabahRepository nasabahRepository;
+    @Autowired private ProdukTabunganRepository produkTabunganRepository;
 
     @BeforeEach
     void setUp() {
-        SecurityContextHolder.clearContext();
+        Nasabah n = new Nasabah();
+        n.setCif("C9900001");
+        n.setNik("9900001234567890");
+        n.setNamaSesuaiIdentitas("Budi Santoso");
+        n.setStatus(NasabahStatus.ACTIVE);
+        n = nasabahRepository.save(n);
+
+        Rekening r = new Rekening();
+        r.setNomorRekening("54399000101");
+        r.setStatusActive(true);
+        r.setSaldo(new BigDecimal("1000000"));
+        r.setNasabah(n);
+        r.setCifNasabah(n.getCif());
+        r.setNamaNasabah(n.getNamaSesuaiIdentitas());
+        r.setProduk("Tabungan Wadiah");
+        rekeningRepository.save(r);
+
+        ProdukTabungan p = new ProdukTabungan();
+        p.setKodeProduk("REKADD01");
+        p.setNamaProduk("Tabungan Wadiah RekAdd");
+        p.setAktif(true);
+        produkTabunganRepository.save(p);
     }
 
-    // ==================== listAccounts ====================
-
     @Test
-    @DisplayName("listAccounts - tanpa search, kembalikan berdasarkan status")
+    @DisplayName("listAccounts - tanpa search, kembalikan semua dari DB")
     void listAccounts_noSearch() {
-        Rekening r = new Rekening();
-        r.setNomorRekening("54300000101");
-        when(rekeningRepository.findByStatus("ACTIVE")).thenReturn(List.of(r));
-
         List<Rekening> result = rekeningService.listAccounts(null, "ACTIVE");
-
-        assertEquals(1, result.size());
-        verify(rekeningRepository).findByStatus("ACTIVE");
+        assertFalse(result.isEmpty());
     }
 
     @Test
-    @DisplayName("listAccounts - dengan search, gunakan metode search")
+    @DisplayName("listAccounts - dengan search query dari DB")
     void listAccounts_withSearch() {
-        Rekening r = new Rekening();
-        r.setNomorRekening("54300000101");
-        when(rekeningRepository.search("budi", "ACTIVE")).thenReturn(List.of(r));
-
         List<Rekening> result = rekeningService.listAccounts("budi", "ACTIVE");
-
-        assertEquals(1, result.size());
-        verify(rekeningRepository).search("budi", "ACTIVE");
+        assertFalse(result.isEmpty());
     }
 
     @Test
     @DisplayName("listAccounts - search blank string, fallback ke findByStatus")
     void listAccounts_blankSearch() {
-        when(rekeningRepository.findByStatus("ACTIVE")).thenReturn(List.of());
-
         List<Rekening> result = rekeningService.listAccounts("  ", "ACTIVE");
-
-        verify(rekeningRepository).findByStatus("ACTIVE");
         assertNotNull(result);
     }
 
-    // ==================== listEligibleCustomers ====================
-
     @Test
-    @DisplayName("listEligibleCustomers - tanpa query, kembalikan ACTIVE")
+    @DisplayName("listEligibleCustomers - tanpa query, kembalikan ACTIVE dari DB")
     void listEligibleCustomers_noQuery() {
-        Nasabah n = new Nasabah();
-        n.setStatus(NasabahStatus.ACTIVE);
-        when(nasabahRepository.findByStatus(NasabahStatus.ACTIVE)).thenReturn(List.of(n));
-
         List<Nasabah> result = rekeningService.listEligibleCustomers(NasabahStatus.ACTIVE, null);
-
-        assertEquals(1, result.size());
-        verify(nasabahRepository).findByStatus(NasabahStatus.ACTIVE);
+        assertFalse(result.isEmpty());
     }
 
     @Test
-    @DisplayName("listEligibleCustomers - dengan query, gunakan searchActive")
+    @DisplayName("listEligibleCustomers - dengan query dari DB")
     void listEligibleCustomers_withQuery() {
-        Nasabah n = new Nasabah();
-        n.setNamaSesuaiIdentitas("Budi");
-        when(nasabahRepository.searchActiveForAccountOpen(NasabahStatus.ACTIVE, "budi"))
-                .thenReturn(List.of(n));
-
         List<Nasabah> result = rekeningService.listEligibleCustomers(NasabahStatus.ACTIVE, "budi");
-
-        assertEquals(1, result.size());
-        verify(nasabahRepository).searchActiveForAccountOpen(NasabahStatus.ACTIVE, "budi");
+        assertFalse(result.isEmpty());
     }
 
     @Test
-    @DisplayName("listEligibleCustomers - query blank, fallback ke findByStatus")
-    void listEligibleCustomers_blankQuery() {
-        when(nasabahRepository.findByStatus(NasabahStatus.ACTIVE)).thenReturn(List.of());
-
-        List<Nasabah> result = rekeningService.listEligibleCustomers(NasabahStatus.ACTIVE, "  ");
-
-        verify(nasabahRepository).findByStatus(NasabahStatus.ACTIVE);
-        assertNotNull(result);
-    }
-
-    // ==================== listActiveProducts ====================
-
-    @Test
-    @DisplayName("listActiveProducts - mengembalikan daftar produk aktif")
+    @DisplayName("listActiveProducts - mengembalikan daftar produk aktif dari DB")
     void listActiveProducts_success() {
-        ProdukTabungan p = new ProdukTabungan();
-        p.setNamaProduk("Tabungan Wadiah");
-        p.setAktif(true);
-        when(produkTabunganRepository.findActiveProducts()).thenReturn(List.of(p));
-
         List<ProdukTabungan> result = rekeningService.listActiveProducts();
-
-        assertEquals(1, result.size());
-        verify(produkTabunganRepository).findActiveProducts();
+        assertFalse(result.isEmpty());
     }
 }

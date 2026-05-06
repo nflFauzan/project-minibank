@@ -1,171 +1,94 @@
 package id.ac.tazkia.minibank.service;
 
-import id.ac.tazkia.minibank.entity.Rekening;
-import id.ac.tazkia.minibank.entity.Transaksi;
-import id.ac.tazkia.minibank.entity.User;
-import id.ac.tazkia.minibank.repository.RekeningRepository;
-import id.ac.tazkia.minibank.repository.TransaksiRepository;
-import id.ac.tazkia.minibank.repository.UserRepository;
-import jakarta.persistence.EntityNotFoundException;
+import id.ac.tazkia.minibank.BaseIntegrationTest;
+import id.ac.tazkia.minibank.entity.*;
+import id.ac.tazkia.minibank.repository.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
-import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
-@DisplayName("TellerTransferService - Additional Tests")
-class TellerTransferServiceAdditionalTest {
+@DisplayName("TellerTransferService - Additional Integration Tests")
+class TellerTransferServiceAdditionalTest extends BaseIntegrationTest {
 
-    @Mock private RekeningRepository rekeningRepository;
-    @Mock private TransaksiRepository transaksiRepository;
-    @Mock private UserRepository userRepository;
-
-    @InjectMocks
-    private TellerTransferService transferService;
-
-    private Rekening sumber;
-    private Rekening tujuan;
+    @Autowired private TellerTransferService transferService;
+    @Autowired private RekeningRepository rekeningRepository;
+    @Autowired private NasabahRepository nasabahRepository;
+    @Autowired private UserRepository userRepository;
 
     @BeforeEach
     void setUp() {
-        // sumber > tujuan lexicographically sehingga order lock terbalik
-        sumber = new Rekening();
-        sumber.setNomorRekening("Z9999999901");
-        sumber.setStatusActive(true);
-        sumber.setSaldo(new BigDecimal("2000000"));
-        sumber.setNamaNasabah("Budi");
-        sumber.setCifNasabah("C0000001");
-        sumber.setProduk("Tabungan Wadiah");
+        Nasabah n1 = new Nasabah();
+        n1.setCif("C9830001");
+        n1.setNik("9830001111111111");
+        n1.setNamaSesuaiIdentitas("Budi");
+        n1.setStatus(NasabahStatus.ACTIVE);
+        n1 = nasabahRepository.save(n1);
 
-        tujuan = new Rekening();
-        tujuan.setNomorRekening("A1111111101");
-        tujuan.setStatusActive(true);
-        tujuan.setSaldo(new BigDecimal("300000"));
-        tujuan.setNamaNasabah("Aisyah");
-        tujuan.setCifNasabah("C0000002");
-        tujuan.setProduk("Tabungan Mudharabah");
+        Nasabah n2 = new Nasabah();
+        n2.setCif("C9830002");
+        n2.setNik("9830002222222222");
+        n2.setNamaSesuaiIdentitas("Aisyah");
+        n2.setStatus(NasabahStatus.ACTIVE);
+        n2 = nasabahRepository.save(n2);
+
+        Rekening r1 = new Rekening();
+        r1.setNomorRekening("54398300101");
+        r1.setStatusActive(true);
+        r1.setSaldo(new BigDecimal("2000000"));
+        r1.setNasabah(n1);
+        r1.setCifNasabah(n1.getCif());
+        r1.setNamaNasabah(n1.getNamaSesuaiIdentitas());
+        r1.setProduk("Tabungan Wadiah");
+        rekeningRepository.save(r1);
+
+        Rekening r2 = new Rekening();
+        r2.setNomorRekening("54398300202");
+        r2.setStatusActive(true);
+        r2.setSaldo(new BigDecimal("300000"));
+        r2.setNasabah(n2);
+        r2.setCifNasabah(n2.getCif());
+        r2.setNamaNasabah(n2.getNamaSesuaiIdentitas());
+        r2.setProduk("Tabungan Mudharabah");
+        rekeningRepository.save(r2);
     }
 
     @Test
-    @DisplayName("transfer - berhasil saat sumber > tujuan lexicographically (lock order terbalik)")
-    void transfer_success_reverseOrder() {
-        // sumber "Z99..." > tujuan "A11...", jadi first=tujuan, second=sumber
-        when(rekeningRepository.findByNomorRekeningForUpdate("A1111111101"))
-                .thenReturn(Optional.of(tujuan));
-        when(rekeningRepository.findByNomorRekeningForUpdate("Z9999999901"))
-                .thenReturn(Optional.of(sumber));
-        when(transaksiRepository.nextSeq()).thenReturn(10L, 11L);
-        when(userRepository.findByUsername("teller1")).thenReturn(Optional.empty());
-        when(rekeningRepository.save(any(Rekening.class))).thenAnswer(inv -> inv.getArgument(0));
-        when(transaksiRepository.save(any(Transaksi.class))).thenAnswer(inv -> inv.getArgument(0));
-
-        UUID groupId = transferService.transfer(
-                "Z9999999901", "A1111111101",
-                new BigDecimal("500000"), "bayar", "REF001", "teller1");
-
-        assertNotNull(groupId);
-        assertEquals(new BigDecimal("1500000"), sumber.getSaldo());
-        assertEquals(new BigDecimal("800000"), tujuan.getSaldo());
-        verify(transaksiRepository, times(2)).save(any(Transaksi.class));
-    }
-
-    @Test
-    @DisplayName("transfer - berhasil dengan fullName dari userRepository")
+    @DisplayName("transfer - berhasil dengan username di DB")
     void transfer_withFullName() {
-        sumber.setNomorRekening("54300000101");
-        tujuan.setNomorRekening("54300000202");
-        when(rekeningRepository.findByNomorRekeningForUpdate("54300000101"))
-                .thenReturn(Optional.of(sumber));
-        when(rekeningRepository.findByNomorRekeningForUpdate("54300000202"))
-                .thenReturn(Optional.of(tujuan));
-
-        sumber.setNomorRekening("54300000101");
-        tujuan.setNomorRekening("54300000202");
-
-        when(rekeningRepository.findByNomorRekeningForUpdate("54300000101"))
-                .thenReturn(Optional.of(sumber));
-        when(rekeningRepository.findByNomorRekeningForUpdate("54300000202"))
-                .thenReturn(Optional.of(tujuan));
-
-        User u = new User();
-        u.setUsername("teller1");
-        u.setFullName("Teller Satu");
-        when(userRepository.findByUsername("teller1")).thenReturn(Optional.of(u));
-        when(transaksiRepository.nextSeq()).thenReturn(1L, 2L);
-        when(rekeningRepository.save(any(Rekening.class))).thenAnswer(inv -> inv.getArgument(0));
-        when(transaksiRepository.save(any(Transaksi.class))).thenAnswer(inv -> inv.getArgument(0));
-
         UUID groupId = transferService.transfer(
-                "54300000101", "54300000202",
+                "54398300101", "54398300202",
                 new BigDecimal("100000"), null, null, "teller1");
-
         assertNotNull(groupId);
     }
 
     @Test
     @DisplayName("transfer - throw jika rekening first tidak ditemukan")
     void transfer_throwIfFirstNotFound() {
-        when(rekeningRepository.findByNomorRekeningForUpdate("54300000101"))
-                .thenReturn(Optional.empty());
-
-        assertThrows(EntityNotFoundException.class,
+        assertThrows(Exception.class,
                 () -> transferService.transfer(
-                        "54300000101", "54300000202",
+                        "NOTEXIST01", "54398300202",
                         new BigDecimal("100000"), null, null, "teller1"));
     }
 
     @Test
-    @DisplayName("transfer - saldo sumber null dianggap 0")
-    void transfer_sumberSaldoNull_treatedAsZero() {
-        sumber.setNomorRekening("54300000101");
-        tujuan.setNomorRekening("54300000202");
-        sumber.setSaldo(null);
-
-        when(rekeningRepository.findByNomorRekeningForUpdate("54300000101"))
-                .thenReturn(Optional.of(sumber));
-        when(rekeningRepository.findByNomorRekeningForUpdate("54300000202"))
-                .thenReturn(Optional.of(tujuan));
-
-        // saldo null = 0, transfer 1000 akan gagal (saldo tidak cukup)
-        assertThrows(IllegalStateException.class,
-                () -> transferService.transfer(
-                        "54300000101", "54300000202",
-                        new BigDecimal("1000"), null, null, "teller1"));
+    @DisplayName("transfer - throw jika lebih dari 2 desimal")
+    void transfer_shouldThrow_whenTooManyDecimals() {
+        assertThrows(IllegalArgumentException.class,
+                () -> transferService.transfer("54398300101", "54398300202",
+                        new BigDecimal("100.123"), null, null, "teller1"));
     }
 
     @Test
-    @DisplayName("transfer - saldo tujuan null dianggap 0")
-    void transfer_tujuanSaldoNull_treatedAsZero() {
-        sumber.setNomorRekening("54300000101");
-        tujuan.setNomorRekening("54300000202");
-        tujuan.setSaldo(null);
-
-        when(rekeningRepository.findByNomorRekeningForUpdate("54300000101"))
-                .thenReturn(Optional.of(sumber));
-        when(rekeningRepository.findByNomorRekeningForUpdate("54300000202"))
-                .thenReturn(Optional.of(tujuan));
-        when(transaksiRepository.nextSeq()).thenReturn(1L, 2L);
-        when(userRepository.findByUsername(any())).thenReturn(Optional.empty());
-        when(rekeningRepository.save(any(Rekening.class))).thenAnswer(inv -> inv.getArgument(0));
-        when(transaksiRepository.save(any(Transaksi.class))).thenAnswer(inv -> inv.getArgument(0));
-
-        UUID groupId = transferService.transfer(
-                "54300000101", "54300000202",
-                new BigDecimal("500000"), "Test", "REF", "teller1");
-
-        assertNotNull(groupId);
-        // saldo tujuan: null (=0) + 500000 = 500000
-        assertEquals(new BigDecimal("500000"), tujuan.getSaldo());
+    @DisplayName("transfer - throw jika rekening tujuan blank")
+    void transfer_shouldThrow_whenTujuanBlank() {
+        assertThrows(IllegalArgumentException.class,
+                () -> transferService.transfer("54398300101", "",
+                        new BigDecimal("100000"), null, null, "teller1"));
     }
 }

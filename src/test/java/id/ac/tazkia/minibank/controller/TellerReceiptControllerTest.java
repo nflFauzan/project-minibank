@@ -1,59 +1,77 @@
 package id.ac.tazkia.minibank.controller;
 
-import id.ac.tazkia.minibank.entity.Transaksi;
-import id.ac.tazkia.minibank.repository.TransaksiRepository;
-import id.ac.tazkia.minibank.repository.UserRepository;
-import id.ac.tazkia.minibank.service.TellerReceiptPdfService;
+import id.ac.tazkia.minibank.BaseIntegrationTest;
+import id.ac.tazkia.minibank.entity.*;
+import id.ac.tazkia.minibank.repository.*;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.Optional;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(controllers = TellerReceiptController.class)
-@AutoConfigureMockMvc(addFilters = false)
-@DisplayName("TellerReceiptController Unit Tests")
-class TellerReceiptControllerTest {
+@DisplayName("TellerReceiptController Integration Tests")
+class TellerReceiptControllerTest extends BaseIntegrationTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+    @Autowired private MockMvc mockMvc;
+    @Autowired private TransaksiRepository transaksiRepository;
+    @Autowired private RekeningRepository rekeningRepository;
+    @Autowired private NasabahRepository nasabahRepository;
 
-    @MockBean
-    private TransaksiRepository transaksiRepository;
+    private UUID transaksiId;
 
-    @MockBean
-    private TellerReceiptPdfService receiptPdfService;
+    @BeforeEach
+    void setUp() {
+        Nasabah n = new Nasabah();
+        n.setCif("C0000001");
+        n.setNik("1234567890123456");
+        n.setNamaSesuaiIdentitas("Budi");
+        n.setStatus(NasabahStatus.ACTIVE);
+        n = nasabahRepository.save(n);
 
-    @MockBean
-    private UserRepository userRepository;
+        Rekening r = new Rekening();
+        r.setNomorRekening("54300000101");
+        r.setStatusActive(true);
+        r.setSaldo(new BigDecimal("1000000"));
+        r.setNasabah(n);
+        r.setCifNasabah(n.getCif());
+        r.setNamaNasabah(n.getNamaSesuaiIdentitas());
+        r = rekeningRepository.save(r);
+
+        transaksiId = UUID.randomUUID();
+        Transaksi t = new Transaksi();
+        t.setId(transaksiId);
+        t.setGroupId(UUID.randomUUID());
+        t.setNomorTransaksi("T1000001");
+        t.setTipe(TipeTransaksi.DEPOSIT);
+        t.setChannel("TELLER");
+        t.setRekening(r);
+        t.setNomorRekening(r.getNomorRekening());
+        t.setNamaRekening("Budi - Tabungan");
+        t.setCifNasabah(n.getCif());
+        t.setJumlah(new BigDecimal("500000"));
+        t.setSaldoSebelum(new BigDecimal("500000"));
+        t.setSaldoSesudah(new BigDecimal("1000000"));
+        t.setKeterangan("Setoran Tunai");
+        t.setProcessedAt(LocalDateTime.now());
+        t.setProcessedBy("teller1");
+        t.setProcessedByUsername("teller1");
+        t.setProcessedByFullName("Teller Satu");
+        transaksiRepository.save(t);
+    }
 
     @Test
     @DisplayName("GET /teller/transaction/receipt/{id} - should return pdf")
     void downloadReceipt_shouldReturnPdf() throws Exception {
-        UUID id = UUID.randomUUID();
-        Transaksi tx = new Transaksi();
-        tx.setId(id);
-        tx.setNomorTransaksi("TRX-123");
-
-        byte[] pdfContent = "dummy pdf".getBytes();
-
-        when(transaksiRepository.findById(id)).thenReturn(Optional.of(tx));
-        when(receiptPdfService.generateReceipt(tx)).thenReturn(pdfContent);
-
-        mockMvc.perform(get("/teller/transaction/receipt/" + id))
+        mockMvc.perform(get("/teller/transaction/receipt/" + transaksiId))
                 .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_PDF))
-                .andExpect(header().string("Content-Disposition", org.hamcrest.Matchers.containsString("receipt_TRX-123.pdf")))
-                .andExpect(content().bytes(pdfContent));
+                .andExpect(header().string("Content-Disposition",
+                        org.hamcrest.Matchers.containsString("receipt_T1000001.pdf")));
     }
 }

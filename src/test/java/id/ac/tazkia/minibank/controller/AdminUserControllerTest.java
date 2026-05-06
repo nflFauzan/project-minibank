@@ -1,45 +1,42 @@
 package id.ac.tazkia.minibank.controller;
 
+import id.ac.tazkia.minibank.BaseIntegrationTest;
 import id.ac.tazkia.minibank.entity.User;
+import id.ac.tazkia.minibank.repository.RoleRepository;
 import id.ac.tazkia.minibank.repository.UserRepository;
-import id.ac.tazkia.minibank.service.AdminUserService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.List;
-
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(controllers = AdminUserController.class)
-@AutoConfigureMockMvc(addFilters = false)
-@DisplayName("AdminUserController Unit Tests")
-class AdminUserControllerTest {
+@DisplayName("AdminUserController Integration Tests")
+class AdminUserControllerTest extends BaseIntegrationTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+    @Autowired private MockMvc mockMvc;
+    @Autowired private UserRepository userRepository;
 
-    @MockBean
-    private AdminUserService adminService;
+    private User pendingUser;
 
-    @MockBean
-    private UserRepository userRepository;
+    @BeforeEach
+    void setUp() {
+        User u = new User();
+        u.setUsername("pendinguser");
+        u.setPassword("$2a$10$dummyhash");
+        u.setEmail("pending@tazkia.ac.id");
+        u.setFullName("Pending User");
+        u.setApproved(false);
+        u.setEnabled(false);
+        pendingUser = userRepository.save(u);
+    }
 
     @Test
-    @DisplayName("GET /admin/dashboard - should return admin/dashboard view")
-    void dashboard_shouldReturnView() throws Exception {
-        User user = new User();
-        user.setId(1L);
-        when(adminService.listPending()).thenReturn(List.of(user));
-
+    @DisplayName("GET /admin/dashboard - menampilkan daftar user pending")
+    void listPending_shouldReturnView() throws Exception {
         mockMvc.perform(get("/admin/dashboard"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("admin/dashboard"))
@@ -47,35 +44,36 @@ class AdminUserControllerTest {
     }
 
     @Test
-    @DisplayName("GET /admin/approval/{id} - should return admin/approval view")
-    void approvalDetail_shouldReturnView() throws Exception {
-        User user = new User();
-        user.setId(1L);
-        when(adminService.findById(1L)).thenReturn(user);
+    @DisplayName("POST /admin/approve/{id} - approve user & DB berubah")
+    void approve_success() throws Exception {
+        mockMvc.perform(post("/admin/approve/" + pendingUser.getId()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/admin/dashboard?approved"));
 
-        mockMvc.perform(get("/admin/approval/1"))
+        User approved = userRepository.findById(pendingUser.getId()).orElseThrow();
+        assertTrue(approved.isApproved());
+        assertTrue(approved.isEnabled());
+        assertFalse(approved.getRoles().isEmpty());
+    }
+
+    @Test
+    @DisplayName("POST /admin/reject/{id} - reject & hapus user dari DB")
+    void reject_success() throws Exception {
+        Long userId = pendingUser.getId();
+
+        mockMvc.perform(post("/admin/reject/" + userId))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/admin/dashboard?rejected"));
+
+        assertFalse(userRepository.findById(userId).isPresent());
+    }
+
+    @Test
+    @DisplayName("GET /admin/approval/{id} - detail approval page")
+    void approval_detail() throws Exception {
+        mockMvc.perform(get("/admin/approval/" + pendingUser.getId()))
                 .andExpect(status().isOk())
                 .andExpect(view().name("admin/approval"))
-                .andExpect(model().attributeExists("user", "maskedPassword", "maskedConfirm"));
-    }
-
-    @Test
-    @DisplayName("POST /admin/approve/{id} - should redirect to dashboard")
-    void approve_shouldRedirect() throws Exception {
-        mockMvc.perform(post("/admin/approve/1"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/admin/dashboard?approved"));
-
-        verify(adminService).approve(1L);
-    }
-
-    @Test
-    @DisplayName("POST /admin/reject/{id} - should redirect to dashboard")
-    void reject_shouldRedirect() throws Exception {
-        mockMvc.perform(post("/admin/reject/1"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/admin/dashboard?rejected"));
-
-        verify(adminService).reject(1L);
+                .andExpect(model().attributeExists("user"));
     }
 }

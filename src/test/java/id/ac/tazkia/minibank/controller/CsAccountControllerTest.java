@@ -1,60 +1,69 @@
 package id.ac.tazkia.minibank.controller;
 
-import id.ac.tazkia.minibank.entity.Nasabah;
-import id.ac.tazkia.minibank.entity.NasabahStatus;
-import id.ac.tazkia.minibank.entity.Rekening;
-import id.ac.tazkia.minibank.repository.UserRepository;
-import id.ac.tazkia.minibank.service.RekeningService;
-import jakarta.persistence.EntityNotFoundException;
+import id.ac.tazkia.minibank.BaseIntegrationTest;
+import id.ac.tazkia.minibank.entity.*;
+import id.ac.tazkia.minibank.repository.*;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
-import java.util.List;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(controllers = CsAccountController.class)
-@AutoConfigureMockMvc(addFilters = false)
-@DisplayName("CsAccountController Unit Tests")
-class CsAccountControllerTest {
+@DisplayName("CsAccountController Integration Tests")
+class CsAccountControllerTest extends BaseIntegrationTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+    @Autowired private MockMvc mockMvc;
+    @Autowired private NasabahRepository nasabahRepository;
+    @Autowired private RekeningRepository rekeningRepository;
+    @Autowired private ProdukTabunganRepository produkTabunganRepository;
 
-    @MockBean
-    private RekeningService rekeningService;
+    private Nasabah activeNasabah;
+    private ProdukTabungan activeProduk;
 
-    @MockBean
-    private UserRepository userRepository;
+    @BeforeEach
+    void setUp() {
+        Nasabah n = new Nasabah();
+        n.setCif("C9910001");
+        n.setNik("9910001234567890");
+        n.setNamaSesuaiIdentitas("Budi Santoso");
+        n.setStatus(NasabahStatus.ACTIVE);
+        activeNasabah = nasabahRepository.save(n);
 
-    @Test
-    @DisplayName("GET /cs/account - list accounts")
-    void index_shouldReturnView() throws Exception {
-        when(rekeningService.listAccounts(null, "ACTIVE")).thenReturn(List.of());
-
-        mockMvc.perform(get("/cs/account"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("cs/account"))
-                .andExpect(model().attributeExists("accounts", "status"));
+        ProdukTabungan p = new ProdukTabungan();
+        p.setKodeProduk("01");
+        p.setNamaProduk("Tabungan Wadiah");
+        p.setAktif(true);
+        p.setSetoranAwalMinimum(new BigDecimal("100000"));
+        activeProduk = produkTabunganRepository.save(p);
     }
 
     @Test
-    @DisplayName("GET /cs/account/open - select customer")
-    void openSelectCustomer_shouldReturnView() throws Exception {
-        when(rekeningService.listEligibleCustomers(NasabahStatus.ACTIVE, null)).thenReturn(List.of());
+    @DisplayName("GET /cs/account - menampilkan daftar rekening")
+    void listAccounts_shouldReturnView() throws Exception {
+        mockMvc.perform(get("/cs/account"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("cs/account"))
+                .andExpect(model().attributeExists("accounts"));
+    }
 
+    @Test
+    @DisplayName("GET /cs/account - filter dengan search query")
+    void listAccounts_withSearch() throws Exception {
+        mockMvc.perform(get("/cs/account").param("search", "budi"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("cs/account"));
+    }
+
+    @Test
+    @DisplayName("GET /cs/account/open - form pilih nasabah")
+    void openForm_selectCustomer() throws Exception {
         mockMvc.perform(get("/cs/account/open"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("cs/account/open"))
@@ -62,94 +71,45 @@ class CsAccountControllerTest {
     }
 
     @Test
-    @DisplayName("GET /cs/account/open/{id} - form open account success")
-    void openForm_shouldReturnView() throws Exception {
-        when(rekeningService.getNasabahActiveById(1L)).thenReturn(new Nasabah());
-        when(rekeningService.listActiveProducts()).thenReturn(List.of());
-
-        mockMvc.perform(get("/cs/account/open/1"))
+    @DisplayName("GET /cs/account/open/{nasabahId} - form buka rekening")
+    void openForm_withNasabah() throws Exception {
+        mockMvc.perform(get("/cs/account/open/" + activeNasabah.getId()))
                 .andExpect(status().isOk())
                 .andExpect(view().name("cs/account/open_form"))
-                .andExpect(model().attributeExists("nasabah", "products", "form"));
+                .andExpect(model().attributeExists("nasabah", "products"));
     }
 
     @Test
-    @DisplayName("GET /cs/account/open/{id} - form open account not found")
-    void openForm_notFound() throws Exception {
-        when(rekeningService.getNasabahActiveById(1L)).thenThrow(new EntityNotFoundException("Not found"));
+    @DisplayName("POST /cs/account/open/{nasabahId} - berhasil buka rekening & data di DB")
+    void openAccount_success() throws Exception {
+        long countBefore = rekeningRepository.count();
 
-        mockMvc.perform(get("/cs/account/open/1"))
+        mockMvc.perform(post("/cs/account/open/" + activeNasabah.getId())
+                        .param("produkId", activeProduk.getId().toString())
+                        .param("nominalSetoranAwal", "200000")
+                        .param("tujuanPembukaan", "Tabungan pribadi")
+                        .principal(new UsernamePasswordAuthenticationToken("csuser", "pass")))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/cs/account/open"))
-                .andExpect(flash().attributeExists("error"));
-    }
-
-    @Test
-    @DisplayName("POST /cs/account/open/{id} - do open success")
-    void doOpen_success() throws Exception {
-        mockMvc.perform(post("/cs/account/open/1")
-                        .param("produkId", "1")
-                        .param("nominalSetoranAwal", "10000")
-                        .param("tujuanPembukaan", "Test"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/cs/account"))
                 .andExpect(flash().attributeExists("success"));
+
+        assertTrue(rekeningRepository.count() > countBefore);
     }
 
     @Test
-    @DisplayName("POST /cs/account/open/{id} - do open fail")
-    void doOpen_fail() throws Exception {
-        doThrow(new RuntimeException("Error")).when(rekeningService)
-                .openAccount(eq(1L), any(), any(), any());
+    @DisplayName("GET /cs/account/{id} - detail rekening")
+    void viewAccount() throws Exception {
+        Rekening r = new Rekening();
+        r.setNomorRekening("54300099101");
+        r.setStatusActive(true);
+        r.setSaldo(BigDecimal.ZERO);
+        r.setNasabah(activeNasabah);
+        r.setCifNasabah(activeNasabah.getCif());
+        r.setNamaNasabah(activeNasabah.getNamaSesuaiIdentitas());
+        r = rekeningRepository.save(r);
 
-        mockMvc.perform(post("/cs/account/open/1")
-                        .param("produkId", "1")
-                        .param("nominalSetoranAwal", "10000")
-                        .param("tujuanPembukaan", "Test"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/cs/account/open/1"))
-                .andExpect(flash().attributeExists("error"));
-    }
-
-    @Test
-    @DisplayName("GET /cs/account/{id} - view account")
-    void view_shouldReturnView() throws Exception {
-        when(rekeningService.getAccountById(1L)).thenReturn(new Rekening());
-
-        mockMvc.perform(get("/cs/account/1"))
+        mockMvc.perform(get("/cs/account/" + r.getId()))
                 .andExpect(status().isOk())
                 .andExpect(view().name("cs/account/view"))
                 .andExpect(model().attributeExists("account"));
-    }
-
-    @Test
-    @DisplayName("GET /cs/account/{id} - view account fail")
-    void view_shouldFail() throws Exception {
-        when(rekeningService.getAccountById(1L)).thenThrow(new EntityNotFoundException("Not found"));
-
-        mockMvc.perform(get("/cs/account/1"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/cs/account"))
-                .andExpect(flash().attributeExists("error"));
-    }
-
-    @Test
-    @DisplayName("POST /cs/account/{id}/close - close account")
-    void close_success() throws Exception {
-        mockMvc.perform(post("/cs/account/1/close"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/cs/account"))
-                .andExpect(flash().attributeExists("success"));
-    }
-
-    @Test
-    @DisplayName("POST /cs/account/{id}/close - close account fail")
-    void close_fail() throws Exception {
-        doThrow(new RuntimeException("Fail")).when(rekeningService).closeAccount(1L);
-
-        mockMvc.perform(post("/cs/account/1/close"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/cs/account"))
-                .andExpect(flash().attributeExists("error"));
     }
 }

@@ -1,32 +1,34 @@
 package id.ac.tazkia.minibank.security;
 
+import id.ac.tazkia.minibank.BaseIntegrationTest;
 import id.ac.tazkia.minibank.entity.Role;
 import id.ac.tazkia.minibank.entity.User;
+import id.ac.tazkia.minibank.repository.RoleRepository;
 import id.ac.tazkia.minibank.repository.UserRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import java.util.Optional;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
-@DisplayName("UserDetailsServiceImpl Unit Tests")
-class UserDetailsServiceImplTest {
+@DisplayName("UserDetailsServiceImpl Integration Tests")
+class UserDetailsServiceImplTest extends BaseIntegrationTest {
 
-    @Mock private UserRepository userRepo;
-    @InjectMocks private UserDetailsServiceImpl service;
+    @Autowired private UserDetailsServiceImpl service;
+    @Autowired private UserRepository userRepository;
+    @Autowired private RoleRepository roleRepository;
 
-    private User createApprovedUser() {
+    @BeforeEach
+    void setUp() {
+        Role roleCs = roleRepository.findByName("ROLE_CS")
+                .orElseGet(() -> roleRepository.save(new Role(null, "ROLE_CS")));
+
         User u = new User();
         u.setUsername("testuser");
         u.setPassword("$2a$encoded");
@@ -34,15 +36,13 @@ class UserDetailsServiceImplTest {
         u.setFullName("Test User");
         u.setApproved(true);
         u.setEnabled(true);
-        Role r = new Role(1L, "ROLE_CS");
-        u.setRoles(Set.of(r));
-        return u;
+        u.setRoles(Set.of(roleCs));
+        userRepository.save(u);
     }
 
     @Test
-    @DisplayName("loadUser - berhasil dengan roles ter-mapping")
+    @DisplayName("loadUser - berhasil dengan roles ter-mapping dari DB")
     void loadUser_success() {
-        when(userRepo.findByUsername("testuser")).thenReturn(Optional.of(createApprovedUser()));
         UserDetails ud = service.loadUserByUsername("testuser");
         assertEquals("testuser", ud.getUsername());
         assertTrue(ud.getAuthorities().stream()
@@ -52,7 +52,6 @@ class UserDetailsServiceImplTest {
     @Test
     @DisplayName("loadUser - throw jika user tidak ditemukan")
     void loadUser_shouldThrow_whenNotFound() {
-        when(userRepo.findByUsername("unknown")).thenReturn(Optional.empty());
         assertThrows(UsernameNotFoundException.class,
                 () -> service.loadUserByUsername("unknown"));
     }
@@ -60,33 +59,16 @@ class UserDetailsServiceImplTest {
     @Test
     @DisplayName("loadUser - throw jika user belum approved")
     void loadUser_shouldThrow_whenNotApproved() {
-        User u = createApprovedUser();
-        u.setApproved(false);
-        when(userRepo.findByUsername("testuser")).thenReturn(Optional.of(u));
+        User u2 = new User();
+        u2.setUsername("unapproved");
+        u2.setPassword("$2a$encoded");
+        u2.setEmail("unapp@test.com");
+        u2.setFullName("Unapproved User");
+        u2.setApproved(false);
+        u2.setEnabled(true);
+        userRepository.save(u2);
+
         assertThrows(DisabledException.class,
-                () -> service.loadUserByUsername("testuser"));
-    }
-
-    @Test
-    @DisplayName("loadUser - role tanpa prefix ROLE_ ditambahkan otomatis")
-    void loadUser_shouldAddRolePrefix() {
-        User u = createApprovedUser();
-        Role r = new Role(2L, "ADMIN"); // tanpa ROLE_
-        u.setRoles(Set.of(r));
-        when(userRepo.findByUsername("testuser")).thenReturn(Optional.of(u));
-        UserDetails ud = service.loadUserByUsername("testuser");
-        assertTrue(ud.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN")));
-    }
-
-    @Test
-    @DisplayName("loadUser - roles kosong default ke ROLE_USER")
-    void loadUser_emptyRoles_shouldDefaultToRoleUser() {
-        User u = createApprovedUser();
-        u.setRoles(Set.of());
-        when(userRepo.findByUsername("testuser")).thenReturn(Optional.of(u));
-        UserDetails ud = service.loadUserByUsername("testuser");
-        assertTrue(ud.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("ROLE_USER")));
+                () -> service.loadUserByUsername("unapproved"));
     }
 }

@@ -1,18 +1,20 @@
 package id.ac.tazkia.minibank.security;
 
+import id.ac.tazkia.minibank.BaseIntegrationTest;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.mockito.Mockito.*;
 
-@DisplayName("ActiveModuleFilter Unit Tests")
-class ActiveModuleFilterTest {
+@DisplayName("ActiveModuleFilter Integration Tests")
+class ActiveModuleFilterTest extends BaseIntegrationTest {
 
-    private final ActiveModuleFilter filter = new ActiveModuleFilter();
+    @Autowired private ActiveModuleFilter filter;
 
     @Test
     @DisplayName("public path (/login) - langsung lewat")

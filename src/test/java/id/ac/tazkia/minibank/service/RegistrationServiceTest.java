@@ -1,35 +1,19 @@
 package id.ac.tazkia.minibank.service;
 
+import id.ac.tazkia.minibank.BaseIntegrationTest;
 import id.ac.tazkia.minibank.dto.SignupForm;
-import id.ac.tazkia.minibank.entity.Role;
-import id.ac.tazkia.minibank.entity.User;
-import id.ac.tazkia.minibank.repository.RoleRepository;
 import id.ac.tazkia.minibank.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.crypto.password.PasswordEncoder;
-
-import java.util.Optional;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
-@DisplayName("RegistrationService Unit Tests")
-class RegistrationServiceTest {
+@DisplayName("RegistrationService Integration Tests")
+class RegistrationServiceTest extends BaseIntegrationTest {
 
-    @Mock private UserRepository userRepository;
-    @Mock private RoleRepository roleRepository;
-    @Mock private PasswordEncoder passwordEncoder;
-
-    @InjectMocks
-    private RegistrationService registrationService;
+    @Autowired private RegistrationService registrationService;
+    @Autowired private UserRepository userRepository;
 
     private SignupForm createForm() {
         SignupForm form = new SignupForm();
@@ -44,37 +28,28 @@ class RegistrationServiceTest {
     }
 
     @Test
-    @DisplayName("register - berhasil menyimpan user baru")
+    @DisplayName("register - berhasil menyimpan user baru di DB")
     void register_success() {
         SignupForm form = createForm();
-        when(userRepository.findByUsername("testuser")).thenReturn(Optional.empty());
-        when(passwordEncoder.encode("password123")).thenReturn("$2a$encoded");
-        when(roleRepository.findByName("ROLE_USER")).thenReturn(Optional.of(new Role(1L, "ROLE_USER")));
-        when(userRepository.save(any(User.class))).thenAnswer(inv -> inv.getArgument(0));
+        long countBefore = userRepository.count();
 
         registrationService.register(form);
 
-        ArgumentCaptor<User> captor = ArgumentCaptor.forClass(User.class);
-        verify(userRepository).save(captor.capture());
-        User saved = captor.getValue();
-
-        assertEquals("testuser", saved.getUsername());
-        assertEquals("$2a$encoded", saved.getPassword());
+        assertTrue(userRepository.count() > countBefore);
+        var saved = userRepository.findByUsername("testuser").orElseThrow();
         assertEquals("Test User", saved.getFullName());
         assertFalse(saved.isApproved());
         assertFalse(saved.isEnabled());
-        assertEquals(1, saved.getRoles().size());
+        assertFalse(saved.getRoles().isEmpty());
     }
 
     @Test
     @DisplayName("register - throw jika username sudah dipakai")
     void register_shouldThrow_whenUsernameExists() {
-        SignupForm form = createForm();
-        when(userRepository.findByUsername("testuser"))
-                .thenReturn(Optional.of(new User()));
+        registrationService.register(createForm());
 
-        assertThrows(IllegalArgumentException.class,
-                () -> registrationService.register(form));
-        verify(userRepository, never()).save(any());
+        SignupForm dup = createForm();
+        dup.setEmail("dup@tazkia.ac.id");
+        assertThrows(IllegalArgumentException.class, () -> registrationService.register(dup));
     }
 }
