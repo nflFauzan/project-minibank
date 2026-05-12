@@ -1,0 +1,14 @@
+{
+  "name": "minibank-playwright-tests",
+  "version": "1.0.0",
+  "description": "E2E tests for Mini Bank application",
+  "main": "index.js",
+  "scripts": {
+    "test": "npx playwright test",
+    "test:headed": "npx playwright test --headed"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.44.0",
+    "typescript": "^5.0.0"
+  }
+}
