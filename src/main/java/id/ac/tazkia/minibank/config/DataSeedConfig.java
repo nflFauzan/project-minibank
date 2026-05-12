@@ -13,15 +13,17 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
+import org.springframework.core.env.Environment;
+import org.springframework.core.env.Profiles;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.math.BigDecimal;
 
 @Configuration
-@Profile("!test")
 @RequiredArgsConstructor
 public class DataSeedConfig {
+    
+    private final Environment env;
 
     @Bean
     CommandLineRunner seed(RoleRepository roleRepo, 
@@ -66,35 +68,39 @@ public class DataSeedConfig {
                     userRepo.save(zann);
                 }
 
-                // Nasabah ACTIVE default untuk testing
-                nasabahRepo.findByCif("C0000001").ifPresentOrElse(
-                    n -> {
-                        if (n.getStatus() != NasabahStatus.ACTIVE) {
+                // Nasabah & Produk cuma kalau BUKAN profile test
+                // Karena JUnit test pakai data yang sama
+                if (!env.acceptsProfiles(Profiles.of("test"))) {
+                    // Nasabah ACTIVE default untuk testing
+                    nasabahRepo.findByCif("C0000001").ifPresentOrElse(
+                        n -> {
+                            if (n.getStatus() != NasabahStatus.ACTIVE) {
+                                n.setStatus(NasabahStatus.ACTIVE);
+                                nasabahRepo.save(n);
+                            }
+                        },
+                        () -> {
+                            Nasabah n = new Nasabah();
+                            n.setCif("C0000001");
+                            n.setNik("1234567890123456");
+                            n.setNamaLengkap("Budi Santoso");
                             n.setStatus(NasabahStatus.ACTIVE);
+                            n.setTempatLahir("Jakarta");
+                            n.setNamaIbuKandung("Siti Aminah");
                             nasabahRepo.save(n);
                         }
-                    },
-                    () -> {
-                        Nasabah n = new Nasabah();
-                        n.setCif("C0000001");
-                        n.setNik("1234567890123456");
-                        n.setNamaLengkap("Budi Santoso");
-                        n.setStatus(NasabahStatus.ACTIVE);
-                        n.setTempatLahir("Jakarta");
-                        n.setNamaIbuKandung("Siti Aminah");
-                        nasabahRepo.save(n);
+                    );
+    
+                    // Produk default
+                    if (produkRepo.findActiveProducts().isEmpty()) {
+                        ProdukTabungan p = new ProdukTabungan();
+                        p.setKodeProduk("TAB_UTAMA");
+                        p.setNamaProduk("Tabungan Utama");
+                        p.setJenisAkad("WADIAH");
+                        p.setSetoranAwalMinimum(new BigDecimal("100000"));
+                        p.setAktif(true);
+                        produkRepo.save(p);
                     }
-                );
-
-                // Produk default
-                if (produkRepo.findActiveProducts().isEmpty()) {
-                    ProdukTabungan p = new ProdukTabungan();
-                    p.setKodeProduk("TAB_UTAMA");
-                    p.setNamaProduk("Tabungan Utama");
-                    p.setJenisAkad("WADIAH");
-                    p.setSetoranAwalMinimum(new BigDecimal("100000"));
-                    p.setAktif(true);
-                    produkRepo.save(p);
                 }
             } catch (Exception ex) {
                 System.err.println("Seeding error (non fatal): " + ex.getMessage());
