@@ -6,6 +6,10 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.TestInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import id.ac.tazkia.minibank.repository.NasabahRepository;
+import id.ac.tazkia.minibank.repository.RekeningRepository;
+import id.ac.tazkia.minibank.repository.TransaksiRepository;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -41,6 +45,17 @@ import org.springframework.transaction.annotation.Transactional;
 public abstract class BaseIntegrationTest {
 
     private static final Logger log = LoggerFactory.getLogger(BaseIntegrationTest.class);
+
+    @Autowired protected NasabahRepository nasabahRepository;
+    @Autowired protected RekeningRepository rekeningRepository;
+    @Autowired protected TransaksiRepository transaksiRepository;
+
+    @org.junit.jupiter.api.BeforeEach
+    void cleanupDatabase() {
+        transaksiRepository.deleteAllInBatch();
+        rekeningRepository.deleteAllInBatch();
+        nasabahRepository.deleteAllInBatch();
+    }
 
     // ==================== LIFECYCLE 1: @BeforeAll ====================
     @BeforeAll

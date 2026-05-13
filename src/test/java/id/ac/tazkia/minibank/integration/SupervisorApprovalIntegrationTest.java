@@ -20,6 +20,7 @@ class SupervisorApprovalIntegrationTest extends BaseIntegrationTest {
 
     @Autowired private MockMvc mockMvc;
     @Autowired private NasabahRepository nasabahRepository;
+    @Autowired private RekeningRepository rekeningRepository;
     @Autowired private UserRepository userRepository;
     @Autowired private RoleRepository roleRepository;
 
@@ -28,8 +29,8 @@ class SupervisorApprovalIntegrationTest extends BaseIntegrationTest {
     @BeforeEach
     void setUp() {
         Nasabah n = new Nasabah();
-        n.setCif("C8888001");
-        n.setNik("8888000000000001");
+        n.setCif("T" + java.util.UUID.randomUUID().toString().substring(0, 7));
+        n.setNik("9" + java.util.UUID.randomUUID().toString().replace("-", "").substring(0, 15));
         n.setNamaSesuaiIdentitas("Test Pending Nasabah");
         n.setStatus(NasabahStatus.INACTIVE);
         n = nasabahRepository.save(n);

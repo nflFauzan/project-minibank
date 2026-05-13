@@ -32,8 +32,8 @@ class TellerTransactionIntegrationTest extends BaseIntegrationTest {
     void setUp() {
         // Buat nasabah aktif
         Nasabah n = new Nasabah();
-        n.setCif("C9999001");
-        n.setNik("9999000000000001");
+        n.setCif("T" + java.util.UUID.randomUUID().toString().substring(0, 7));
+        n.setNik("9" + java.util.UUID.randomUUID().toString().replace("-", "").substring(0, 15));
         n.setNamaSesuaiIdentitas("Test Nasabah Teller");
         n.setStatus(NasabahStatus.ACTIVE);
         n = nasabahRepository.save(n);

@@ -29,8 +29,8 @@ class TellerReceiptControllerTest extends BaseIntegrationTest {
     @BeforeEach
     void setUp() {
         Nasabah n = new Nasabah();
-        n.setCif("C0000001");
-        n.setNik("1234567890123456");
+        n.setCif("T" + java.util.UUID.randomUUID().toString().substring(0, 7));
+        n.setNik("9" + java.util.UUID.randomUUID().toString().replace("-", "").substring(0, 15));
         n.setNamaSesuaiIdentitas("Budi");
         n.setStatus(NasabahStatus.ACTIVE);
         n = nasabahRepository.save(n);
