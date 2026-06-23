@@ -64,13 +64,30 @@ jobs:
         run: npx playwright install --with-deps chromium
 
       - name: Run Spring Boot App in Background
-        run: java -jar target/*.jar &
+        run: |
+          nohup java -jar target/*.jar > app.log 2>&1 &
+          echo "Started Spring Boot app in background"
         env:
           SPRING_PROFILES_ACTIVE: dev
 
       - name: Wait for Spring Boot to be ready
         run: |
-          npx wait-on http://localhost:8080/login --timeout 60000
+          npx wait-on http://localhost:8080/login --timeout 120000
+
+      - name: Print Spring Boot logs on failure
+        if: failure()
+        run: |
+          echo "==== app.log ===="
+          cat app.log || echo "app.log not found"
+          echo "==== end app.log ===="
+
+      - name: Upload Spring Boot Log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: spring-app-log
+          path: app.log
+          retention-days: 7
 
       - name: Run Playwright E2E Tests
         working-directory: playwright-tests
