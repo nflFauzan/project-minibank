@@ -34,11 +34,11 @@ public class AdminUserService {
         u.setEnabled(true);
 
         Role roleCs = roleRepository.findByName("ROLE_CS")
-                .orElseThrow(() -> new IllegalStateException("Role ROLE_CS not found"));
+                .orElseGet(() -> roleRepository.save(new Role(null, "ROLE_CS")));
         Role roleTeller = roleRepository.findByName("ROLE_TELLER")
-                .orElseThrow(() -> new IllegalStateException("Role ROLE_TELLER not found"));
+                .orElseGet(() -> roleRepository.save(new Role(null, "ROLE_TELLER")));
         Role roleSupervisor = roleRepository.findByName("ROLE_SUPERVISOR")
-                .orElseThrow(() -> new IllegalStateException("Role ROLE_SUPERVISOR not found"));
+                .orElseGet(() -> roleRepository.save(new Role(null, "ROLE_SUPERVISOR")));
 
         u.getRoles().add(roleCs);
         u.getRoles().add(roleTeller);

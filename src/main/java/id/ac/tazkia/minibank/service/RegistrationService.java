@@ -41,7 +41,7 @@ public class RegistrationService {
 
         // optional: ROLE_USER biar ada baseline
         Role roleUser = roleRepository.findByName("ROLE_USER")
-                .orElseThrow(() -> new IllegalStateException("Role ROLE_USER not found"));
+                .orElseGet(() -> roleRepository.save(new Role(null, "ROLE_USER")));
         u.getRoles().add(roleUser);
 
         userRepository.save(u);
