@@ -74,7 +74,7 @@ public abstract class BaseIntegrationTest {
 
     // ==================== LIFECYCLE 4: @AfterEach ====================
     @AfterEach
-    void tearDownBase(TestInfo testInfo) {
+    void tearDownBase(TestInfo testInfo) { 
         log.info("  ✔ SELESAI: {} → data di-rollback oleh @Transactional",
                 testInfo.getDisplayName());
     }
