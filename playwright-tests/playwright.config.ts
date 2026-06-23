@@ -7,8 +7,10 @@ import path from 'path';
  */
 // require('dotenv').config();
 
-export const STORAGE_STATE_CS = path.join(__dirname, '.auth/cs.json');
-export const STORAGE_STATE_ADMIN = path.join(__dirname, '.auth/admin.json');
+export const STORAGE_STATE_CS         = path.join(__dirname, '.auth/cs.json');
+export const STORAGE_STATE_ADMIN      = path.join(__dirname, '.auth/admin.json');
+export const STORAGE_STATE_SUPERVISOR = path.join(__dirname, '.auth/supervisor.json');
+export const STORAGE_STATE_TELLER     = path.join(__dirname, '.auth/teller.json');
 
 export default defineConfig({
   testDir: './tests',
@@ -40,18 +42,25 @@ export default defineConfig({
 
   /* Configure projects for major browsers */
   projects: [
-    // Reset project
+    // ─── Setup projects ────────────────────────────────────────────────────────
     {
       name: 'reset',
       testMatch: /reset\.setup\.ts/,
     },
-    // Setup project (Auth)
     {
       name: 'setup',
       testMatch: /auth\.setup\.ts/,
       dependencies: ['reset'],
     },
 
+    // ─── No-auth tests (signup, login flow) ────────────────────────────────────
+    {
+      name: 'chromium-no-auth',
+      use: { ...devices['Desktop Chrome'] },
+      testMatch: [/auth\.spec\.ts/, /signup\.spec\.ts/],
+    },
+
+    // ─── CS tests ──────────────────────────────────────────────────────────────
     {
       name: 'chromium-cs',
       use: { 
@@ -59,9 +68,16 @@ export default defineConfig({
         storageState: STORAGE_STATE_CS,
       },
       dependencies: ['setup'],
-      testMatch: [/nasabah\.spec\.ts/, /rekening\.spec\.ts/],
+      testMatch: [
+        /nasabah\.spec\.ts/,
+        /rekening\.spec\.ts/,
+        /product\.spec\.ts/,
+        /cs-dashboard\.spec\.ts/,
+        /cs-account-close\.spec\.ts/,
+      ],
     },
 
+    // ─── Admin tests ───────────────────────────────────────────────────────────
     {
       name: 'chromium-admin',
       use: { 
@@ -69,15 +85,33 @@ export default defineConfig({
         storageState: STORAGE_STATE_ADMIN,
       },
       dependencies: ['setup'],
-      // Currently no admin-specific tests, ignoring CS/Auth tests
-      testIgnore: [/.*/], 
+      testMatch: [/admin\.spec\.ts/],
     },
-    
-    // Optional: a project for tests that don't need auth or handle it themselves
+
+    // ─── Supervisor tests ──────────────────────────────────────────────────────
     {
-      name: 'chromium-no-auth',
-      use: { ...devices['Desktop Chrome'] },
-      testMatch: /auth\.spec\.ts/, // auth.spec.ts tests the login process itself
+      name: 'chromium-supervisor',
+      use: { 
+        ...devices['Desktop Chrome'],
+        storageState: STORAGE_STATE_SUPERVISOR,
+      },
+      dependencies: ['setup'],
+      testMatch: [/supervisor\.spec\.ts/],
+    },
+
+    // ─── Teller tests ──────────────────────────────────────────────────────────
+    {
+      name: 'chromium-teller',
+      use: { 
+        ...devices['Desktop Chrome'],
+        storageState: STORAGE_STATE_TELLER,
+      },
+      dependencies: ['setup'],
+      testMatch: [
+        /teller-dashboard\.spec\.ts/,
+        /teller-transaction\.spec\.ts/,
+      ],
     },
   ],
 });
+
