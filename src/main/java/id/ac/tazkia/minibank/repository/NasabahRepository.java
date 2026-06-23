@@ -37,7 +37,7 @@ public interface NasabahRepository extends JpaRepository<Nasabah, Long> {
     long countByStatus(NasabahStatus status);
     List<Nasabah> findTop5ByStatusOrderByCreatedAtDesc(NasabahStatus status);
 
-    @Query("select max(n.cif) from Nasabah n")
+    @Query("select max(n.cif) from Nasabah n where n.cif like 'C%' and length(n.cif) = 8")
     String findMaxCif();
 
     // kompatibilitas kalau masih ada yang manggil method lama

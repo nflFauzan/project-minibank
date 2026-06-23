@@ -53,7 +53,13 @@ public class NasabahService {
                 // fallback tetap next=1
             }
         }
-        return String.format("C%07d", next);
+
+        String candidate = String.format("C%07d", next);
+        while (nasabahRepository.findByCif(candidate).isPresent()) {
+            next++;
+            candidate = String.format("C%07d", next);
+        }
+        return candidate;
     }
 
     @Transactional(readOnly = true)
