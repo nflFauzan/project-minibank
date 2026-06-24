@@ -12,23 +12,26 @@ export class SignupPage {
   }
 
   async fillSignupForm(data: {
-    username: string;
-    password: string;
-    confirmPassword: string;
     fullName: string;
+    dosenPembimbing: string;
     email: string;
-    role: string; // e.g. 'CS', 'TELLER', 'SUPERVISOR'
+    username: string;
+    prodi: string;       // 'Informatics' | 'Accounting' | 'Sharia Business Management'
+    password: string;
+    nim: string;
+    confirmPassword: string;
   }) {
-    await this.page.locator('#username').fill(data.username);
-    await this.page.locator('#password').fill(data.password);
-    await this.page.locator('#confirmPassword').fill(data.confirmPassword);
+    // Thymeleaf th:field generates id from field name
     await this.page.locator('#fullName').fill(data.fullName);
+    await this.page.locator('#dosenPembimbing').fill(data.dosenPembimbing);
     await this.page.locator('#email').fill(data.email);
-    // Role select
-    const roleSelect = this.page.locator('select[name="role"], #role');
-    if (await roleSelect.count() > 0) {
-      await roleSelect.selectOption(data.role);
-    }
+    await this.page.locator('#username').fill(data.username);
+    // Prodi is a select
+    await this.page.locator('#prodi').selectOption(data.prodi);
+    await this.page.locator('#password').fill(data.password);
+    await this.page.locator('#nim').fill(data.nim);
+    // Confirm password has name="confirmPasswordVisualOnly" (not a th:field)
+    await this.page.locator('input[name="confirmPasswordVisualOnly"]').fill(data.confirmPassword);
   }
 
   async submitForm() {
@@ -38,10 +41,11 @@ export class SignupPage {
   async expectRegisteredMessage() {
     // After successful signup, redirected to /login?registered
     await expect(this.page).toHaveURL(/\/login/);
-    await expect(this.page.locator('body')).toContainText(/registrasi|berhasil|registered|sukses/i);
+    await expect(this.page.locator('.msg-success')).toContainText(/Registrasi berhasil/i);
   }
 
   async expectValidationError() {
-    await expect(this.page.locator('.alert-danger, .error, [class*="error"]')).toBeVisible();
+    // Stays on /signup with .err div visible
+    await expect(this.page.locator('.err')).toBeVisible();
   }
 }

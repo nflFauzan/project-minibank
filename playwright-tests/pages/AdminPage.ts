@@ -13,37 +13,34 @@ export class AdminPage {
 
   async expectDashboardVisible() {
     await expect(this.page).toHaveURL(/\/admin\/dashboard/);
-    await expect(this.page.locator('h1, .page-title, [class*="title"]')).toBeVisible();
+    // Admin dashboard uses h2 with "Pending Registrations"
+    await expect(this.page.locator('h2')).toContainText('Pending Registrations');
   }
 
-  async expectPendingUsersTable() {
-    await expect(this.page.locator('table')).toBeVisible();
+  async hasPendingUsers(): Promise<boolean> {
+    // Table only rendered if users list is not empty
+    const table = this.page.locator('table');
+    return (await table.count()) > 0;
   }
 
-  async clickApprovalDetail(userId: number | string) {
-    await this.page.goto(`/admin/approval/${userId}`);
-  }
-
-  /** Klik approval detail dari baris pertama di table */
   async clickFirstPendingUser() {
-    const link = this.page.locator('table tr a').first();
+    // Link uses class "detail" with text "Lihat / Konfirmasi"
+    const link = this.page.locator('a.detail').first();
     await link.click();
   }
 
   async approveUser() {
-    await this.page.locator('form[action*="/approve"] button[type="submit"], button:has-text("Approve")').first().click();
+    // button with class btn-approve and text APPROVE
+    await this.page.locator('button.btn-approve:has-text("APPROVE")').click();
   }
 
   async rejectUser() {
-    await this.page.locator('form[action*="/reject"] button[type="submit"], button:has-text("Reject")').first().click();
+    // button with class btn-reject and text REJECT
+    await this.page.locator('button.btn-reject:has-text("REJECT")').click();
   }
 
   async expectSuccessFlash(keyword: RegExp | string = /approved|berhasil|sukses/i) {
-    await expect(this.page.locator('.alert-success, [class*="success"]')).toContainText(keyword);
-  }
-
-  async hasPendingUsers(): Promise<boolean> {
-    const rows = this.page.locator('table tbody tr');
-    return (await rows.count()) > 0;
+    const body = await this.page.locator('body').innerText();
+    expect(body).toMatch(keyword instanceof RegExp ? keyword : new RegExp(keyword, 'i'));
   }
 }

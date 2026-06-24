@@ -28,25 +28,22 @@ export class TellerPage {
     await expect(this.page.locator('table')).toBeVisible();
   }
 
-  async viewFirstTransactionDetail() {
-    const link = this.page.locator('table tr a').first();
-    await link.click();
-  }
-
   // ─── Deposit ───────────────────────────────────────────────────────────────
 
   async navigateToDepositSelect() {
     await this.page.goto('/teller/transaction/deposit');
   }
 
+  /** Search and click "Pilih Rekening" on first account card */
   async searchAndSelectRekeningForDeposit(query: string) {
-    const searchInput = this.page.locator('input[name="q"], #q, input[type="search"]');
-    if (await searchInput.count() > 0) {
-      await searchInput.fill(query);
-      await searchInput.press('Enter');
-    }
-    // Pilih rekening pertama yang muncul
-    const selectBtn = this.page.locator('table tr a, table tr button').first();
+    // Search input has name="q"
+    const searchInput = this.page.locator('input[name="q"]');
+    await searchInput.fill(query);
+    // Click Cari button
+    await this.page.locator('button:has-text("Cari")').click();
+    await this.page.waitForLoadState('networkidle');
+    // Cards layout — click "Pilih Rekening" link on first card
+    const selectBtn = this.page.locator('a.btn-primary-custom:has-text("Pilih Rekening")').first();
     await selectBtn.click();
   }
 
@@ -55,14 +52,13 @@ export class TellerPage {
     keterangan?: string;
     noReferensi?: string;
   }) {
-    await this.page.locator('#jumlahSetoran, input[name="jumlahSetoran"]').fill(data.jumlahSetoran);
+    // Thymeleaf th:field="${form.jumlahSetoran}" generates id="jumlahSetoran"
+    await this.page.locator('#jumlahSetoran').fill(data.jumlahSetoran);
     if (data.keterangan) {
-      const ket = this.page.locator('#keterangan, input[name="keterangan"], textarea[name="keterangan"]');
-      if (await ket.count() > 0) await ket.fill(data.keterangan);
+      await this.page.locator('#keterangan').fill(data.keterangan);
     }
     if (data.noReferensi) {
-      const ref = this.page.locator('#noReferensi, input[name="noReferensi"]');
-      if (await ref.count() > 0) await ref.fill(data.noReferensi);
+      await this.page.locator('#noReferensi').fill(data.noReferensi);
     }
   }
 
@@ -73,12 +69,11 @@ export class TellerPage {
   }
 
   async searchAndSelectRekeningForWithdrawal(query: string) {
-    const searchInput = this.page.locator('input[name="q"], #q, input[type="search"]');
-    if (await searchInput.count() > 0) {
-      await searchInput.fill(query);
-      await searchInput.press('Enter');
-    }
-    const selectBtn = this.page.locator('table tr a, table tr button').first();
+    const searchInput = this.page.locator('input[name="q"]');
+    await searchInput.fill(query);
+    await this.page.locator('button:has-text("Cari")').click();
+    await this.page.waitForLoadState('networkidle');
+    const selectBtn = this.page.locator('a.btn-withdrawal-gradient:has-text("Pilih Rekening")').first();
     await selectBtn.click();
   }
 
@@ -87,14 +82,13 @@ export class TellerPage {
     keterangan?: string;
     noReferensi?: string;
   }) {
-    await this.page.locator('#jumlahPenarikan, input[name="jumlahPenarikan"]').fill(data.jumlahPenarikan);
+    // Thymeleaf th:field="*{jumlahPenarikan}" generates id="jumlahPenarikan"
+    await this.page.locator('#jumlahPenarikan').fill(data.jumlahPenarikan);
     if (data.keterangan) {
-      const ket = this.page.locator('#keterangan, input[name="keterangan"], textarea[name="keterangan"]');
-      if (await ket.count() > 0) await ket.fill(data.keterangan);
+      await this.page.locator('#keterangan').fill(data.keterangan);
     }
     if (data.noReferensi) {
-      const ref = this.page.locator('#noReferensi, input[name="noReferensi"]');
-      if (await ref.count() > 0) await ref.fill(data.noReferensi);
+      await this.page.locator('#noReferensi').fill(data.noReferensi);
     }
   }
 
@@ -105,23 +99,27 @@ export class TellerPage {
   }
 
   async selectSourceRekening(query: string) {
-    const searchInput = this.page.locator('input[name="q"], #q, input[type="search"]');
-    if (await searchInput.count() > 0) {
+    const searchInput = this.page.locator('input[name="q"]');
+    if (query) {
       await searchInput.fill(query);
-      await searchInput.press('Enter');
+      await this.page.locator('button:has-text("Cari")').click();
+      await this.page.waitForLoadState('networkidle');
     }
-    const selectBtn = this.page.locator('table tr a, table tr button').first();
+    // Click "Pilih Rekening" on first card
+    const selectBtn = this.page.locator('a.btn-primary-gradient:has-text("Pilih Rekening")').first();
     await selectBtn.click();
   }
 
   async selectTargetRekening(query: string) {
-    // Setelah memilih source, akan diarahkan ke halaman pilih target
-    const searchInput = this.page.locator('input[name="q"], #q, input[type="search"]');
-    if (await searchInput.count() > 0) {
+    // After selecting source, we're on select target page
+    if (query) {
+      const searchInput = this.page.locator('input[name="q"]');
       await searchInput.fill(query);
-      await searchInput.press('Enter');
+      await this.page.locator('button:has-text("Cari")').click();
+      await this.page.waitForLoadState('networkidle');
     }
-    const selectBtn = this.page.locator('table tr a, table tr button').first();
+    // Click "Pilih Tujuan" or "Pilih Rekening" on first card
+    const selectBtn = this.page.locator('a.btn-primary-gradient:has-text("Pilih Tujuan")').first();
     await selectBtn.click();
   }
 
@@ -130,14 +128,13 @@ export class TellerPage {
     keteranganTambahan?: string;
     noReferensi?: string;
   }) {
-    await this.page.locator('#jumlah, input[name="jumlah"]').fill(data.jumlah);
+    // Thymeleaf th:field="*{jumlah}" generates id="jumlah"
+    await this.page.locator('#jumlah').fill(data.jumlah);
     if (data.keteranganTambahan) {
-      const ket = this.page.locator('#keteranganTambahan, input[name="keteranganTambahan"], textarea[name="keteranganTambahan"]');
-      if (await ket.count() > 0) await ket.fill(data.keteranganTambahan);
+      await this.page.locator('#keteranganTambahan').fill(data.keteranganTambahan);
     }
     if (data.noReferensi) {
-      const ref = this.page.locator('#noReferensi, input[name="noReferensi"]');
-      if (await ref.count() > 0) await ref.fill(data.noReferensi);
+      await this.page.locator('#noReferensi').fill(data.noReferensi);
     }
   }
 
@@ -148,10 +145,12 @@ export class TellerPage {
   }
 
   async expectSuccessFlash() {
-    await expect(this.page.locator('.alert-success, [class*="success"]')).toBeVisible();
+    // Flash success message style used in teller templates
+    await expect(this.page.locator('[style*="background:#ecfdf5"], [style*="background:#f0fdf4"], .alert-success')).toBeVisible();
   }
 
   async expectErrorFlash() {
-    await expect(this.page.locator('.alert-danger, [class*="error"]')).toBeVisible();
+    // Flash error message style
+    await expect(this.page.locator('[style*="background:#fef2f2"], .alert-danger, .error-alert, .alert-error')).toBeVisible();
   }
 }

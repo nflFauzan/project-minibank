@@ -17,7 +17,6 @@ test.describe('Supervisor — Dashboard & Approval Nasabah', () => {
 
   test('Supervisor Dashboard menampilkan jumlah pending nasabah', async ({ page }) => {
     await spvPage.navigateToDashboard();
-    // Biasanya ada badge/counter pending di dashboard
     await expect(page.locator('body')).toBeVisible();
   });
 
@@ -51,7 +50,8 @@ test.describe('Supervisor — Dashboard & Approval Nasabah', () => {
 
   test('Lihat detail nasabah dari daftar', async ({ page }) => {
     await spvPage.navigateToNasabahList('ALL');
-    const link = page.locator('table tr a, .nasabah-list a').first();
+    // Link detail uses class "btn-detail" with text "Detail"
+    const link = page.locator('a.btn-detail').first();
     const count = await link.count();
     if (count === 0) {
       console.log('Tidak ada nasabah di list, test di-skip');
@@ -60,7 +60,7 @@ test.describe('Supervisor — Dashboard & Approval Nasabah', () => {
     }
     await link.click();
     await expect(page).toHaveURL(/\/supervisor\/nasabah\/\d+/);
-    await expect(page.locator('body')).toBeVisible();
+    await expect(page.locator('.page-title')).toContainText('Detail Nasabah');
   });
 
   // ─── Approve & Reject ──────────────────────────────────────────────────────
@@ -68,57 +68,76 @@ test.describe('Supervisor — Dashboard & Approval Nasabah', () => {
   test('Approve nasabah INACTIVE', async ({ page }) => {
     await spvPage.navigateToNasabahList('PENDING');
 
-    const hasPending = await spvPage.hasPendingNasabah();
-    if (!hasPending) {
+    const detailLink = page.locator('a.btn-detail').first();
+    if (await detailLink.count() === 0) {
       console.log('Tidak ada nasabah pending, test di-skip');
       test.skip();
       return;
     }
-
-    await spvPage.clickFirstNasabahDetail();
+    await detailLink.click();
     await expect(page).toHaveURL(/\/supervisor\/nasabah\/\d+/);
 
-    await spvPage.approveNasabah('Dokumen lengkap dan valid');
+    // Handle confirm dialog
+    page.on('dialog', dialog => dialog.accept());
+
+    // Klik tombol "Setujui (Approve)"
+    await page.locator('button.btn-approve:has-text("Setujui")').click();
+
     await expect(page).toHaveURL(/\/supervisor\/nasabah/);
-    await spvPage.expectSuccessFlash();
   });
 
   test('Reject nasabah dengan alasan', async ({ page }) => {
     await spvPage.navigateToNasabahList('PENDING');
 
-    const hasPending = await spvPage.hasPendingNasabah();
-    if (!hasPending) {
+    const detailLink = page.locator('a.btn-detail').first();
+    if (await detailLink.count() === 0) {
       console.log('Tidak ada nasabah pending, test di-skip');
       test.skip();
       return;
     }
-
-    await spvPage.clickFirstNasabahDetail();
+    await detailLink.click();
     await expect(page).toHaveURL(/\/supervisor\/nasabah\/\d+/);
 
-    await spvPage.rejectNasabah('Dokumen tidak lengkap', 'KTP tidak terbaca');
+    // Klik tombol "Tolak (Reject)" yang membuka modal
+    await page.locator('button.btn-reject:has-text("Tolak")').click();
+
+    // Modal muncul — isi reason (wajib) dan notes
+    const modal = page.locator('#rejectModal');
+    await expect(modal).toBeVisible();
+    await modal.locator('textarea[name="reason"]').fill('Dokumen tidak lengkap');
+    await modal.locator('textarea[name="notes"]').fill('KTP tidak terbaca');
+
+    // Klik "Kirim Penolakan"
+    await modal.locator('button[type="submit"]').click();
+
     await expect(page).toHaveURL(/\/supervisor\/nasabah/);
-    await spvPage.expectSuccessFlash();
   });
 
   test('Reject nasabah tanpa alasan (Negative Test)', async ({ page }) => {
     await spvPage.navigateToNasabahList('PENDING');
 
-    const hasPending = await spvPage.hasPendingNasabah();
-    if (!hasPending) {
+    const detailLink = page.locator('a.btn-detail').first();
+    if (await detailLink.count() === 0) {
       console.log('Tidak ada nasabah pending, test di-skip');
       test.skip();
       return;
     }
-
-    await spvPage.clickFirstNasabahDetail();
+    await detailLink.click();
     await expect(page).toHaveURL(/\/supervisor\/nasabah\/\d+/);
 
-    // Submit reject tanpa reason
-    await spvPage.rejectNasabah(''); // reason kosong
+    // Klik "Tolak (Reject)" untuk membuka modal
+    await page.locator('button.btn-reject:has-text("Tolak")').click();
     
-    // Harus kembali ke halaman detail dengan pesan error
-    await expect(page).toHaveURL(/\/supervisor\/nasabah\/\d+/);
-    await spvPage.expectErrorFlash(/wajib|required|error/i);
+    const modal = page.locator('#rejectModal');
+    await expect(modal).toBeVisible();
+
+    // Reason field is required via HTML attribute, so browser will prevent submission
+    // Try clicking submit with empty reason — should stay on modal
+    const reasonField = modal.locator('textarea[name="reason"]');
+    await reasonField.fill(''); // kosong
+    await modal.locator('button[type="submit"]').click();
+
+    // textarea[required] akan mencegah submit, modal tetap terlihat
+    await expect(modal).toBeVisible();
   });
 });

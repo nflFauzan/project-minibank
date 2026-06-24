@@ -181,6 +181,10 @@
         </div>
       </div>
 
+      <!-- ALERTS -->
+      <div th:if="${success}" class="alert-success" style="margin-top:20px; padding:16px; background:#ecfdf5; color:#059669; border-radius:12px; font-weight:700; border:none; box-shadow: 0 4px 6px rgba(0,0,0,0.02);" th:text="${success}">Success</div>
+      <div th:if="${error}" class="alert-error" style="margin-top:20px; padding:16px; background:#fef2f2; color:#dc2626; border-radius:12px; font-weight:700; border:none; box-shadow: 0 4px 6px rgba(0,0,0,0.02);" th:text="${error}">Error</div>
+
       <div class="filter-card">
         <form th:action="@{/teller/transaction/list}" method="get">
           <div style="display:grid; grid-template-columns: 1.5fr 1fr auto auto; gap:15px; align-items:end;">

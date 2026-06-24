@@ -36,14 +36,18 @@ test.describe('Teller — Transaksi (Deposit, Withdrawal, Transfer)', () => {
   test('Halaman pilih rekening untuk deposit tampil', async ({ page }) => {
     await tellerPage.navigateToDepositSelect();
     await expect(page).toHaveURL(/\/teller\/transaction\/deposit/);
-    await expect(page.locator('body')).toBeVisible();
+    await expect(page.locator('.page-title')).toContainText('Setoran Tunai');
   });
 
   test('Deposit ke rekening berhasil', async ({ page }) => {
     await tellerPage.navigateToDepositSelect();
     
-    // Pilih rekening pertama yang tersedia (dari seed data: Budi Santoso)
+    // Cari rekening (Budi Santoso dari seed data)
     await tellerPage.searchAndSelectRekeningForDeposit('Budi');
+
+    // Pastikan di form deposit
+    await expect(page).toHaveURL(/\/teller\/transaction\/deposit\/.+/);
+    await expect(page.locator('.page-title')).toContainText('Formulir Setoran Tunai');
 
     // Isi form deposit
     await tellerPage.fillDepositForm({
@@ -53,7 +57,7 @@ test.describe('Teller — Transaksi (Deposit, Withdrawal, Transfer)', () => {
     });
     await tellerPage.submitForm();
 
-    // Verifikasi sukses — redirect ke list transaksi
+    // Sukses → redirect ke list transaksi
     await expect(page).toHaveURL(/\/teller\/transaction\/list/);
     await tellerPage.expectSuccessFlash();
   });
@@ -69,8 +73,9 @@ test.describe('Teller — Transaksi (Deposit, Withdrawal, Transfer)', () => {
   test('Penarikan dari rekening berhasil (jika saldo cukup)', async ({ page }) => {
     await tellerPage.navigateToWithdrawalSelect();
     
-    // Pilih rekening pertama (harus sudah memiliki saldo dari deposit sebelumnya)
+    // Cari rekening yang sudah ada saldo dari deposit sebelumnya
     await tellerPage.searchAndSelectRekeningForWithdrawal('Budi');
+    await expect(page).toHaveURL(/\/teller\/transaction\/withdrawal\/.+/);
 
     await tellerPage.fillWithdrawalForm({
       jumlahPenarikan: '100000',
@@ -88,15 +93,16 @@ test.describe('Teller — Transaksi (Deposit, Withdrawal, Transfer)', () => {
     await tellerPage.navigateToWithdrawalSelect();
     
     await tellerPage.searchAndSelectRekeningForWithdrawal('Budi');
+    await expect(page).toHaveURL(/\/teller\/transaction\/withdrawal\/.+/);
 
     await tellerPage.fillWithdrawalForm({
-      jumlahPenarikan: '999999999', // jumlah sangat besar
+      jumlahPenarikan: '999999999',
       keterangan: 'Penarikan Test Melebihi Saldo',
       noReferensi: `REF-WD-NEG-${Date.now()}`,
     });
     await tellerPage.submitForm();
 
-    // Harus redirect kembali dengan pesan error
+    // Harus kembali ke halaman form dengan pesan error
     await tellerPage.expectErrorFlash();
   });
 
@@ -111,16 +117,16 @@ test.describe('Teller — Transaksi (Deposit, Withdrawal, Transfer)', () => {
   test('Transfer antar rekening berhasil', async ({ page }) => {
     // STEP 1: Pilih rekening sumber
     await tellerPage.navigateToTransferSelectSource();
-    await tellerPage.selectSourceRekening('Budi');
+    await tellerPage.selectSourceRekening('');
 
-    // STEP 2: Setelah memilih source, akan diarahkan ke halaman pilih target
+    // STEP 2: Pilih rekening target
     await expect(page).toHaveURL(/\/teller\/transaction\/transfer\/.+/);
-
-    // STEP 3: Pilih rekening target (rekening berbeda)
     await tellerPage.selectTargetRekening('');
 
-    // STEP 4: Isi form transfer
+    // STEP 3: Isi form transfer
     await expect(page).toHaveURL(/\/teller\/transaction\/transfer\/.+\/.+/);
+    await expect(page.locator('.page-title')).toContainText('Formulir Transfer Dana');
+
     await tellerPage.fillTransferForm({
       jumlah: '50000',
       keteranganTambahan: 'Transfer Test Playwright',
@@ -128,7 +134,7 @@ test.describe('Teller — Transaksi (Deposit, Withdrawal, Transfer)', () => {
     });
     await tellerPage.submitForm();
 
-    // Verifikasi sukses
+    // Sukses → redirect ke transaction list
     await expect(page).toHaveURL(/\/teller\/transaction\/list/);
     await tellerPage.expectSuccessFlash();
   });
@@ -138,19 +144,17 @@ test.describe('Teller — Transaksi (Deposit, Withdrawal, Transfer)', () => {
   test('Lihat detail transaksi', async ({ page }) => {
     await tellerPage.navigateToTransactionList();
 
-    const count = await page.locator('table tbody tr').count();
-    if (count === 0) {
+    // Link Detail di tabel
+    const detailLink = page.locator('a.action-link:has-text("Detail")').first();
+    if (await detailLink.count() === 0) {
       console.log('Belum ada transaksi, test di-skip');
       test.skip();
       return;
     }
 
-    // Klik detail transaksi pertama
-    const detailLink = page.locator('table tr a[href*="/teller/transaction/"]').first();
     await detailLink.click();
-
     await expect(page).toHaveURL(/\/teller\/transaction\/.+/);
-    await expect(page.locator('body')).toBeVisible();
+    await expect(page.locator('.page-title')).toBeVisible();
   });
 
   // ─── Download Struk PDF ────────────────────────────────────────────────────
@@ -158,33 +162,23 @@ test.describe('Teller — Transaksi (Deposit, Withdrawal, Transfer)', () => {
   test('Unduh struk PDF transaksi', async ({ page }) => {
     await tellerPage.navigateToTransactionList();
 
-    const count = await page.locator('table tbody tr').count();
-    if (count === 0) {
-      console.log('Belum ada transaksi, test di-skip');
+    // Link "Struk PDF" di tabel
+    const receiptLink = page.locator('a.action-link:has-text("Struk PDF")').first();
+
+    if (await receiptLink.count() === 0) {
+      console.log('Tidak ada link struk PDF');
       test.skip();
       return;
     }
 
-    // Masuk ke detail transaksi pertama
-    const detailLink = page.locator('table tr a[href*="/teller/transaction/"]').first();
-    await detailLink.click();
-
-    // Cek ada link/tombol download struk
-    const receiptLink = page.locator('a[href*="/receipt/"], a:has-text("Struk"), a:has-text("Download")');
+    // Intercept download
+    const [download] = await Promise.all([
+      page.waitForEvent('download').catch(() => null),
+      receiptLink.click(),
+    ]);
     
-    if (await receiptLink.count() > 0) {
-      // Intercept download request dan verifikasi content-type
-      const [download] = await Promise.all([
-        page.waitForEvent('download').catch(() => null),
-        receiptLink.first().click(),
-      ]);
-      // Verifikasi file berhasil di-download atau link valid
-      if (download) {
-        expect(download.suggestedFilename()).toMatch(/receipt.*\.pdf/i);
-      }
-    } else {
-      // Receipt link tidak ditemukan di halaman ini, skip dengan graceful
-      console.log('Receipt link tidak tersedia di halaman detail ini');
+    if (download) {
+      expect(download.suggestedFilename()).toMatch(/receipt.*\.pdf/i);
     }
   });
 });
