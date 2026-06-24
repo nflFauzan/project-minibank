@@ -68,6 +68,34 @@ public class DataSeedConfig {
                     userRepo.save(zann);
                 }
 
+                // spv (Supervisor) default
+                if (userRepo.findByUsername("spv").isEmpty()) {
+                    Role spvRole = roleRepo.findByName("ROLE_SUPERVISOR").orElseThrow();
+                    User spv = new User();
+                    spv.setUsername("spv");
+                    spv.setPassword(encoder.encode("spv1234"));
+                    spv.setFullName("Supervisor Default");
+                    spv.setEmail("spv@tazkia.ac.id");
+                    spv.setApproved(true);
+                    spv.setEnabled(true);
+                    spv.getRoles().add(spvRole);
+                    userRepo.save(spv);
+                }
+
+                // teller (Teller) default
+                if (userRepo.findByUsername("teller").isEmpty()) {
+                    Role tellerRole = roleRepo.findByName("ROLE_TELLER").orElseThrow();
+                    User teller = new User();
+                    teller.setUsername("teller");
+                    teller.setPassword(encoder.encode("teller1234"));
+                    teller.setFullName("Teller Default");
+                    teller.setEmail("teller@tazkia.ac.id");
+                    teller.setApproved(true);
+                    teller.setEnabled(true);
+                    teller.getRoles().add(tellerRole);
+                    userRepo.save(teller);
+                }
+
                 // Nasabah & Produk cuma kalau BUKAN profile test
                 // Karena JUnit test pakai data yang sama
                 if (!env.acceptsProfiles(Profiles.of("test"))) {

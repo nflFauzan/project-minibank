@@ -22,8 +22,27 @@ setup('authenticate as Admin', async ({ page }) => {
   await loginPage.login('admin', 'admin1234', 'ADMIN');
   
   // Wait for navigation to dashboard
-  // TODO: verify selector against actual HTML (dashboard check)
   await page.waitForURL('**/admin/dashboard'); 
   
   await page.context().storageState({ path: path.join(authDir, 'admin.json') });
+});
+
+setup('authenticate as Supervisor', async ({ page }) => {
+  const loginPage = new LoginPage(page);
+  await loginPage.navigate();
+  await loginPage.login('spv', 'spv1234', 'SUPERVISOR');
+  
+  await page.waitForURL('**/supervisor/dashboard');
+  
+  await page.context().storageState({ path: path.join(authDir, 'supervisor.json') });
+});
+
+setup('authenticate as Teller', async ({ page }) => {
+  const loginPage = new LoginPage(page);
+  await loginPage.navigate();
+  await loginPage.login('teller', 'teller1234', 'TELLER');
+  
+  await page.waitForURL('**/teller/dashboard');
+  
+  await page.context().storageState({ path: path.join(authDir, 'teller.json') });
 });
