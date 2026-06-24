@@ -76,6 +76,8 @@ public class DataSeedConfigTest {
             when(roleRepo.findByName(anyString())).thenReturn(Optional.empty());
             when(userRepo.findByUsername("admin")).thenReturn(Optional.of(new User()));
             when(userRepo.findByUsername("zann")).thenReturn(Optional.of(new User()));
+            when(userRepo.findByUsername("spv")).thenReturn(Optional.of(new User()));
+            when(userRepo.findByUsername("teller")).thenReturn(Optional.of(new User()));
             when(env.acceptsProfiles(any(Profiles.class))).thenReturn(true);
 
             runner.run(new String[]{});
@@ -94,6 +96,8 @@ public class DataSeedConfigTest {
             when(roleRepo.findByName(anyString())).thenReturn(Optional.of(new Role(1L, "ROLE")));
             when(userRepo.findByUsername("admin")).thenReturn(Optional.of(new User()));
             when(userRepo.findByUsername("zann")).thenReturn(Optional.of(new User()));
+            when(userRepo.findByUsername("spv")).thenReturn(Optional.of(new User()));
+            when(userRepo.findByUsername("teller")).thenReturn(Optional.of(new User()));
             when(env.acceptsProfiles(any(Profiles.class))).thenReturn(true);
 
             runner.run(new String[]{});
@@ -122,6 +126,8 @@ public class DataSeedConfigTest {
 
             when(userRepo.findByUsername("admin")).thenReturn(Optional.empty());
             when(userRepo.findByUsername("zann")).thenReturn(Optional.empty());
+            when(userRepo.findByUsername("spv")).thenReturn(Optional.of(new User()));
+            when(userRepo.findByUsername("teller")).thenReturn(Optional.of(new User()));
             when(encoder.encode(anyString())).thenReturn("hashed_pass");
             when(env.acceptsProfiles(any(Profiles.class))).thenReturn(true);
 
@@ -151,6 +157,8 @@ public class DataSeedConfigTest {
             when(roleRepo.findByName(anyString())).thenReturn(Optional.of(new Role(1L, "ROLE")));
             when(userRepo.findByUsername("admin")).thenReturn(Optional.of(new User()));
             when(userRepo.findByUsername("zann")).thenReturn(Optional.of(new User()));
+            when(userRepo.findByUsername("spv")).thenReturn(Optional.of(new User()));
+            when(userRepo.findByUsername("teller")).thenReturn(Optional.of(new User()));
             when(env.acceptsProfiles(any(Profiles.class))).thenReturn(true);
 
             runner.run(new String[]{});
@@ -172,6 +180,8 @@ public class DataSeedConfigTest {
             when(roleRepo.findByName(anyString())).thenReturn(Optional.of(new Role(1L, "ROLE")));
             when(userRepo.findByUsername("admin")).thenReturn(Optional.of(new User()));
             when(userRepo.findByUsername("zann")).thenReturn(Optional.of(new User()));
+            when(userRepo.findByUsername("spv")).thenReturn(Optional.of(new User()));
+            when(userRepo.findByUsername("teller")).thenReturn(Optional.of(new User()));
             when(env.acceptsProfiles(any(Profiles.class))).thenReturn(true); // profile is "test"
 
             runner.run(new String[]{});
@@ -186,6 +196,8 @@ public class DataSeedConfigTest {
             when(roleRepo.findByName(anyString())).thenReturn(Optional.of(new Role(1L, "ROLE")));
             when(userRepo.findByUsername("admin")).thenReturn(Optional.of(new User()));
             when(userRepo.findByUsername("zann")).thenReturn(Optional.of(new User()));
+            when(userRepo.findByUsername("spv")).thenReturn(Optional.of(new User()));
+            when(userRepo.findByUsername("teller")).thenReturn(Optional.of(new User()));
             when(env.acceptsProfiles(any(Profiles.class))).thenReturn(false); // profile is not "test"
 
             when(nasabahRepo.findByCif("C0000001")).thenReturn(Optional.of(new Nasabah()));
@@ -210,6 +222,8 @@ public class DataSeedConfigTest {
             lenient().when(roleRepo.findByName(anyString())).thenReturn(Optional.of(new Role(1L, "ROLE")));
             lenient().when(userRepo.findByUsername("admin")).thenReturn(Optional.of(new User()));
             lenient().when(userRepo.findByUsername("zann")).thenReturn(Optional.of(new User()));
+            lenient().when(userRepo.findByUsername("spv")).thenReturn(Optional.of(new User()));
+            lenient().when(userRepo.findByUsername("teller")).thenReturn(Optional.of(new User()));
             lenient().when(env.acceptsProfiles(any(Profiles.class))).thenReturn(false); // non-test
             lenient().when(produkRepo.findActiveProducts()).thenReturn(List.of(new ProdukTabungan()));
         }
@@ -271,6 +285,8 @@ public class DataSeedConfigTest {
             lenient().when(roleRepo.findByName(anyString())).thenReturn(Optional.of(new Role(1L, "ROLE")));
             lenient().when(userRepo.findByUsername("admin")).thenReturn(Optional.of(new User()));
             lenient().when(userRepo.findByUsername("zann")).thenReturn(Optional.of(new User()));
+            lenient().when(userRepo.findByUsername("spv")).thenReturn(Optional.of(new User()));
+            lenient().when(userRepo.findByUsername("teller")).thenReturn(Optional.of(new User()));
             lenient().when(env.acceptsProfiles(any(Profiles.class))).thenReturn(false); // non-test
             lenient().when(nasabahRepo.findByCif("C0000001")).thenReturn(Optional.of(new Nasabah()));
         }
