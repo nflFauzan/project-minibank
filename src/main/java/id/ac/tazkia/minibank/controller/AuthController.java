@@ -21,7 +21,10 @@ public class AuthController {
     private final RegistrationService registrationService;
 
     @GetMapping("/")
-    public String index() {
+    public String index(Authentication auth) {
+        if (auth != null && auth.isAuthenticated() && !(auth instanceof AnonymousAuthenticationToken)) {
+            return "redirect:/dashboard";
+        }
         return "index";
     }
 
@@ -47,7 +50,7 @@ public class AuthController {
     @GetMapping("/login")
     public String login(Authentication auth) {
         if (auth != null && auth.isAuthenticated() && !(auth instanceof AnonymousAuthenticationToken)) {
-            return "redirect:/";
+            return "redirect:/dashboard";
         }
         return "login";
     }

@@ -11,7 +11,6 @@ export class LoginPage {
 
   constructor(page: Page) {
     this.page = page;
-    // TODO: verify selector against actual HTML
     this.usernameInput = page.locator('input[name="username"]');
     this.passwordInput = page.locator('input[name="password"]');
     this.loginButton = page.locator('button[type="submit"]');
@@ -28,13 +27,10 @@ export class LoginPage {
     await this.usernameInput.fill(username);
     await this.passwordInput.fill(password);
     
-    if (module) {
-      await this.moduleSelect.selectOption(module);
-    } else {
-      // Default to CS if not specified, or use the first valid option if available
-      // The user said module is not needed in the method, but it is required in HTML.
-      // We'll try to select 'CS' as a sensible default if none provided.
-      await this.moduleSelect.selectOption('CS');
+    if (await this.moduleSelect.isVisible().catch(() => false)) {
+      if (module) {
+        await this.moduleSelect.selectOption(module);
+      }
     }
     
     await this.loginButton.click();

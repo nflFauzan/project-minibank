@@ -15,6 +15,7 @@ public class ActiveModuleFilter extends OncePerRequestFilter {
 
     private boolean isPublicOrTechPath(String uri) {
         return uri.equals("/")
+                || uri.startsWith("/dashboard")
                 || uri.startsWith("/login")
                 || uri.startsWith("/signup")
                 || uri.startsWith("/logout")
@@ -31,7 +32,7 @@ public class ActiveModuleFilter extends OncePerRequestFilter {
         return switch (module) {
             case "CS" -> "/cs/";
             case "TELLER" -> "/teller/";
-            case "SUPERVISOR" -> "/supervisor/";
+            case "SUPERVISOR", "BRANCH_MANAGER" -> "/supervisor/";
             case "ADMIN" -> "/admin/";
             default -> null;
         };
@@ -44,7 +45,7 @@ public class ActiveModuleFilter extends OncePerRequestFilter {
 
         String uri = request.getRequestURI();
 
-        // Jangan ganggu request yang harus bebas (assets + api + auth pages)
+        // Jangan ganggu request yang harus bebas (assets + api + auth pages + dashboard)
         if (isPublicOrTechPath(uri)) {
             filterChain.doFilter(request, response);
             return;
