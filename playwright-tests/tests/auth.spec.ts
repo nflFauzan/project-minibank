@@ -8,7 +8,6 @@ test.describe('Authentication & Authorization', () => {
     await loginPage.navigate();
     await loginPage.login('wronguser', 'wrongpass');
     
-    // TODO: verify selector against actual HTML
     await loginPage.expectErrorMessage('Login gagal');
   });
 
@@ -19,9 +18,8 @@ test.describe('Authentication & Authorization', () => {
     await loginPage.login('zann', 'zann');
     
     // Then logout
-    // TODO: verify selector against actual HTML (logout button)
     const logoutBtn = page.locator('a:has-text("Logout"), button:has-text("Logout")');
-    await logoutBtn.click();
+    await logoutBtn.first().click();
     
     await expect(page).toHaveURL(/\/login/);
     await loginPage.expectLogoutMessage();
@@ -33,12 +31,10 @@ test.describe('Authentication & Authorization', () => {
     await loginPage.navigate();
     await loginPage.login('zann', 'zann');
     
-    // Attempt to access Admin dashboard
-    await page.goto('/admin/dashboard');
+    // Attempt to access Admin dashboard directly
+    const response = await page.goto('/admin/dashboard');
     
-    // Expect redirect to login or a forbidden page
-    // TODO: verify behavior against actual application
-    const url = page.url();
-    expect(url).not.toContain('/admin/dashboard');
+    // Spring Security enforces RBAC and returns HTTP 403 Forbidden
+    expect(response?.status()).toBe(403);
   });
 });

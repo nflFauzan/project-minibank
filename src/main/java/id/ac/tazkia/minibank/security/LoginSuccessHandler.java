@@ -19,6 +19,11 @@ public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
                                         HttpServletResponse response,
                                         Authentication authentication) throws IOException, ServletException {
 
+        String module = request.getParameter("module");
+        if (module != null && !module.isBlank()) {
+            request.getSession(true).setAttribute(SESSION_ACTIVE_MODULE, module.trim().toUpperCase());
+        }
+
         clearAuthenticationAttributes(request);
         getRedirectStrategy().sendRedirect(request, response, "/dashboard");
     }

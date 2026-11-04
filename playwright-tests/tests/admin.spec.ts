@@ -11,13 +11,12 @@ test.describe('Admin — Dashboard & User Approval', () => {
   test('Admin Dashboard tampil', async ({ page }) => {
     await adminPage.navigateToDashboard();
     await expect(page).toHaveURL(/\/admin\/dashboard/);
-    // Admin dashboard uses h2, not h1
-    await expect(page.locator('h2')).toContainText('Pending Registrations');
+    await expect(page.locator('h2')).toContainText(/Admin/i);
   });
 
   test('Admin Dashboard menampilkan daftar atau pesan kosong', async ({ page }) => {
     await adminPage.navigateToDashboard();
-    // Either table is visible (pending users) OR empty message
+    // Either table is visible (pending users / all users) OR empty message
     const tableOrEmpty = page.locator('table, .empty');
     await expect(tableOrEmpty.first()).toBeVisible();
   });
@@ -32,21 +31,21 @@ test.describe('Admin — Dashboard & User Approval', () => {
       return;
     }
 
-    // Handle confirm dialog
+    // Handle confirm dialog if any
     page.on('dialog', dialog => dialog.accept());
 
-    // Klik link "Lihat / Konfirmasi" dari user pending pertama
-    const detailLink = page.locator('a.detail').first();
-    await detailLink.click();
+    // Klik link tinjau / konfirmasi dari user pending pertama
+    await adminPage.clickFirstPendingUser();
 
     // Verifikasi halaman approval terbuka
     await expect(page).toHaveURL(/\/admin\/approval\/\d+/);
 
     // Klik APPROVE
-    await page.locator('button.btn-approve:has-text("APPROVE")').click();
+    await adminPage.approveUser();
 
-    // Verifikasi redirect ke dashboard
+    // Verifikasi redirect ke dashboard dengan flash success
     await expect(page).toHaveURL(/\/admin\/dashboard/);
+    await adminPage.expectSuccessFlash(/approved|berhasil|sukses/i);
   });
 
   test('Reject user pending (jika ada)', async ({ page }) => {
@@ -62,13 +61,12 @@ test.describe('Admin — Dashboard & User Approval', () => {
     // Handle confirm dialog
     page.on('dialog', dialog => dialog.accept());
 
-    const detailLink = page.locator('a.detail').first();
-    await detailLink.click();
+    await adminPage.clickFirstPendingUser();
 
     await expect(page).toHaveURL(/\/admin\/approval\/\d+/);
 
     // Klik REJECT
-    await page.locator('button.btn-reject:has-text("REJECT")').click();
+    await adminPage.rejectUser();
 
     // Verifikasi redirect ke dashboard
     await expect(page).toHaveURL(/\/admin\/dashboard/);

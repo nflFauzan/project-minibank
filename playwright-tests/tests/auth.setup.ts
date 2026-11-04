@@ -5,44 +5,48 @@ import path from 'path';
 const authDir = path.join(__dirname, '../.auth');
 
 setup('authenticate as CS', async ({ page }) => {
+  setup.setTimeout(60_000); // Extra time for slowMo
   const loginPage = new LoginPage(page);
   await loginPage.navigate();
   await loginPage.login('zann', 'zann', 'CS');
   
   // Wait for navigation to dashboard or check for successful login
-  // TODO: verify selector against actual HTML (dashboard check)
-  await page.waitForURL('**/cs/dashboard'); 
+  await page.waitForURL('**/cs/dashboard', { timeout: 30_000 }); 
   
   await page.context().storageState({ path: path.join(authDir, 'cs.json') });
 });
 
 setup('authenticate as Admin', async ({ page }) => {
+  setup.setTimeout(60_000); // Extra time for slowMo
   const loginPage = new LoginPage(page);
   await loginPage.navigate();
-  await loginPage.login('admin', 'admin1234', 'ADMIN');
+  await loginPage.login('admin', 'admin123', 'ADMIN');
   
   // Wait for navigation to dashboard
-  await page.waitForURL('**/admin/dashboard'); 
+  await page.waitForURL('**/admin/dashboard', { timeout: 30_000 }); 
   
   await page.context().storageState({ path: path.join(authDir, 'admin.json') });
 });
 
 setup('authenticate as Supervisor', async ({ page }) => {
+  setup.setTimeout(60_000); // Extra time for slowMo
   const loginPage = new LoginPage(page);
   await loginPage.navigate();
   await loginPage.login('spv', 'spv1234', 'SUPERVISOR');
   
-  await page.waitForURL('**/supervisor/dashboard');
+  await page.waitForURL('**/supervisor/dashboard', { timeout: 30_000 });
   
   await page.context().storageState({ path: path.join(authDir, 'supervisor.json') });
 });
 
 setup('authenticate as Teller', async ({ page }) => {
+  setup.setTimeout(60_000); // Extra time for slowMo
   const loginPage = new LoginPage(page);
   await loginPage.navigate();
   await loginPage.login('teller', 'teller1234', 'TELLER');
   
-  await page.waitForURL('**/teller/dashboard');
+  await page.waitForURL('**/teller/dashboard', { timeout: 30_000 });
   
   await page.context().storageState({ path: path.join(authDir, 'teller.json') });
 });
+

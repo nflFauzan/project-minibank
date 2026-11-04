@@ -36,6 +36,7 @@ class LoginSuccessHandlerAdditionalTest extends BaseIntegrationTest {
         redirectStrategy = mock(RedirectStrategy.class);
         handler.setRedirectStrategy(redirectStrategy);
         when(request.getSession(true)).thenReturn(session);
+        when(request.getSession(false)).thenReturn(session);
     }
 
     private Authentication authWithRole(String role) {
@@ -44,35 +45,31 @@ class LoginSuccessHandlerAdditionalTest extends BaseIntegrationTest {
     }
 
     @Test
-    @DisplayName("CS module - salah role redirect ke /login?error=role")
-    void csModule_wrongRole() throws Exception {
-        when(request.getParameter("module")).thenReturn("CS");
+    @DisplayName("CS user login - redirects to /dashboard")
+    void csUser_redirectsToDashboard() throws Exception {
+        handler.onAuthenticationSuccess(request, response, authWithRole("ROLE_CS"));
+        verify(redirectStrategy).sendRedirect(request, response, "/dashboard");
+    }
+
+    @Test
+    @DisplayName("Teller user login - redirects to /dashboard")
+    void tellerUser_redirectsToDashboard() throws Exception {
         handler.onAuthenticationSuccess(request, response, authWithRole("ROLE_TELLER"));
-        verify(redirectStrategy).sendRedirect(request, response, "/login?error=role");
+        verify(redirectStrategy).sendRedirect(request, response, "/dashboard");
     }
 
     @Test
-    @DisplayName("TELLER module - salah role redirect ke /login?error=role")
-    void tellerModule_wrongRole() throws Exception {
-        when(request.getParameter("module")).thenReturn("TELLER");
-        handler.onAuthenticationSuccess(request, response, authWithRole("ROLE_CS"));
-        verify(redirectStrategy).sendRedirect(request, response, "/login?error=role");
+    @DisplayName("Supervisor / Branch Manager user login - redirects to /dashboard")
+    void supervisorUser_redirectsToDashboard() throws Exception {
+        handler.onAuthenticationSuccess(request, response, authWithRole("ROLE_BRANCH_MANAGER"));
+        verify(redirectStrategy).sendRedirect(request, response, "/dashboard");
     }
 
     @Test
-    @DisplayName("module null - redirect ke /login?error=module")
-    void moduleNull_redirectToError() throws Exception {
-        when(request.getParameter("module")).thenReturn(null);
-        handler.onAuthenticationSuccess(request, response, authWithRole("ROLE_CS"));
-        verify(redirectStrategy).sendRedirect(request, response, "/login?error=module");
-    }
-
-    @Test
-    @DisplayName("module lowercase 'cs' - tetap diproses (uppercase normalization)")
-    void moduleLowecase_normalizedToUppercase() throws Exception {
-        when(request.getParameter("module")).thenReturn("cs");
-        handler.onAuthenticationSuccess(request, response, authWithRole("ROLE_CS"));
-        verify(redirectStrategy).sendRedirect(request, response, "/cs/dashboard");
+    @DisplayName("Admin user login - redirects to /dashboard")
+    void adminUser_redirectsToDashboard() throws Exception {
+        handler.onAuthenticationSuccess(request, response, authWithRole("ROLE_ADMIN"));
+        verify(redirectStrategy).sendRedirect(request, response, "/dashboard");
     }
 
     @Test

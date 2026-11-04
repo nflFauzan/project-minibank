@@ -97,7 +97,7 @@
               <td th:text="${u.email}"></td>
               <td><span th:text="${u.prodi != null ? u.prodi : '-'}"></span><br/><small th:text="${u.nim}"></small></td>
               <td>
-                <a th:href="@{/admin/approval/{id}(id=${u.id})}" class="action-link">Tinjau & Beri Role</a>
+                <a th:href="@{/admin/approval/{id}(id=${u.id})}" class="action-link detail">Tinjau & Beri Role</a>
               </td>
             </tr>
           </tbody>

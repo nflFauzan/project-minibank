@@ -76,16 +76,19 @@ public class DataSeedConfigTest {
             when(roleRepo.findByName(anyString())).thenReturn(Optional.empty());
             when(userRepo.findByUsername("admin")).thenReturn(Optional.of(new User()));
             when(userRepo.findByUsername("zann")).thenReturn(Optional.of(new User()));
+            when(userRepo.findByUsername("spv")).thenReturn(Optional.of(new User()));
+            when(userRepo.findByUsername("teller")).thenReturn(Optional.of(new User()));
             when(env.acceptsProfiles(any(Profiles.class))).thenReturn(true);
 
             runner.run(new String[]{});
 
-            verify(roleRepo, times(5)).save(any(Role.class));
+            verify(roleRepo, times(6)).save(any(Role.class));
             verify(roleRepo).save(argThat(role -> role.getName().equals("ROLE_ADMIN")));
             verify(roleRepo).save(argThat(role -> role.getName().equals("ROLE_USER")));
             verify(roleRepo).save(argThat(role -> role.getName().equals("ROLE_CS")));
             verify(roleRepo).save(argThat(role -> role.getName().equals("ROLE_TELLER")));
             verify(roleRepo).save(argThat(role -> role.getName().equals("ROLE_SUPERVISOR")));
+            verify(roleRepo).save(argThat(role -> role.getName().equals("ROLE_BRANCH_MANAGER")));
         }
 
         @Test
@@ -94,6 +97,8 @@ public class DataSeedConfigTest {
             when(roleRepo.findByName(anyString())).thenReturn(Optional.of(new Role(1L, "ROLE")));
             when(userRepo.findByUsername("admin")).thenReturn(Optional.of(new User()));
             when(userRepo.findByUsername("zann")).thenReturn(Optional.of(new User()));
+            when(userRepo.findByUsername("spv")).thenReturn(Optional.of(new User()));
+            when(userRepo.findByUsername("teller")).thenReturn(Optional.of(new User()));
             when(env.acceptsProfiles(any(Profiles.class))).thenReturn(true);
 
             runner.run(new String[]{});
@@ -122,13 +127,15 @@ public class DataSeedConfigTest {
 
             when(userRepo.findByUsername("admin")).thenReturn(Optional.empty());
             when(userRepo.findByUsername("zann")).thenReturn(Optional.empty());
+            when(userRepo.findByUsername("spv")).thenReturn(Optional.of(new User()));
+            when(userRepo.findByUsername("teller")).thenReturn(Optional.of(new User()));
             when(encoder.encode(anyString())).thenReturn("hashed_pass");
             when(env.acceptsProfiles(any(Profiles.class))).thenReturn(true);
 
             runner.run(new String[]{});
 
             // 3 roles saved (since ROLE_ADMIN and ROLE_CS already exist and are not saved)
-            verify(roleRepo, times(3)).save(any(Role.class));
+            verify(roleRepo, times(4)).save(any(Role.class));
             // 2 default users saved
             verify(userRepo, times(2)).save(any(User.class));
             verify(userRepo).save(argThat(u -> u.getUsername().equals("admin") 
@@ -151,6 +158,8 @@ public class DataSeedConfigTest {
             when(roleRepo.findByName(anyString())).thenReturn(Optional.of(new Role(1L, "ROLE")));
             when(userRepo.findByUsername("admin")).thenReturn(Optional.of(new User()));
             when(userRepo.findByUsername("zann")).thenReturn(Optional.of(new User()));
+            when(userRepo.findByUsername("spv")).thenReturn(Optional.of(new User()));
+            when(userRepo.findByUsername("teller")).thenReturn(Optional.of(new User()));
             when(env.acceptsProfiles(any(Profiles.class))).thenReturn(true);
 
             runner.run(new String[]{});
@@ -172,6 +181,8 @@ public class DataSeedConfigTest {
             when(roleRepo.findByName(anyString())).thenReturn(Optional.of(new Role(1L, "ROLE")));
             when(userRepo.findByUsername("admin")).thenReturn(Optional.of(new User()));
             when(userRepo.findByUsername("zann")).thenReturn(Optional.of(new User()));
+            when(userRepo.findByUsername("spv")).thenReturn(Optional.of(new User()));
+            when(userRepo.findByUsername("teller")).thenReturn(Optional.of(new User()));
             when(env.acceptsProfiles(any(Profiles.class))).thenReturn(true); // profile is "test"
 
             runner.run(new String[]{});
@@ -186,6 +197,8 @@ public class DataSeedConfigTest {
             when(roleRepo.findByName(anyString())).thenReturn(Optional.of(new Role(1L, "ROLE")));
             when(userRepo.findByUsername("admin")).thenReturn(Optional.of(new User()));
             when(userRepo.findByUsername("zann")).thenReturn(Optional.of(new User()));
+            when(userRepo.findByUsername("spv")).thenReturn(Optional.of(new User()));
+            when(userRepo.findByUsername("teller")).thenReturn(Optional.of(new User()));
             when(env.acceptsProfiles(any(Profiles.class))).thenReturn(false); // profile is not "test"
 
             when(nasabahRepo.findByCif("C0000001")).thenReturn(Optional.of(new Nasabah()));

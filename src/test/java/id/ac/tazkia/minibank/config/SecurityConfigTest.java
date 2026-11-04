@@ -270,8 +270,8 @@ public class SecurityConfigTest {
         @DisplayName("authenticated user with ROLE_ADMIN - can access general authenticated endpoints")
         void authenticatedAccess_shouldBeOk() throws Exception {
             mockMvc.perform(get("/dashboard"))
-                    .andExpect(status().isOk())
-                    .andExpect(view().name("dashboard-admin"));
+                    .andExpect(status().is3xxRedirection())
+                    .andExpect(redirectedUrl("/admin/dashboard"));
         }
     }
 
@@ -291,7 +291,7 @@ public class SecurityConfigTest {
                             .param("module", "ADMIN")
                             .with(csrf()))
                     .andExpect(status().is3xxRedirection())
-                    .andExpect(redirectedUrl("/admin/dashboard"));
+                    .andExpect(redirectedUrl("/dashboard"));
         }
 
         @Test
@@ -303,7 +303,7 @@ public class SecurityConfigTest {
                             .param("module", "CS")
                             .with(csrf()))
                     .andExpect(status().is3xxRedirection())
-                    .andExpect(redirectedUrl("/cs/dashboard"));
+                    .andExpect(redirectedUrl("/dashboard"));
         }
 
         @Test
@@ -315,7 +315,7 @@ public class SecurityConfigTest {
                             .param("module", "TELLER")
                             .with(csrf()))
                     .andExpect(status().is3xxRedirection())
-                    .andExpect(redirectedUrl("/teller/dashboard"));
+                    .andExpect(redirectedUrl("/dashboard"));
         }
 
         @Test
@@ -327,7 +327,7 @@ public class SecurityConfigTest {
                             .param("module", "SUPERVISOR")
                             .with(csrf()))
                     .andExpect(status().is3xxRedirection())
-                    .andExpect(redirectedUrl("/supervisor/dashboard"));
+                    .andExpect(redirectedUrl("/dashboard"));
         }
 
         @Test

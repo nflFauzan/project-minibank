@@ -35,14 +35,18 @@ test.describe('Registrasi Akun (Signup)', () => {
 
   test('Registrasi dengan field wajib kosong (Negative Test)', async ({ page }) => {
     await signupPage.navigate();
-    // Submit tanpa mengisi apapun — browser validation akan mencegah,
-    // tapi kita bisa test server-side validation juga
-    // Isi hanya sebagian field
+    // Submit tanpa mengisi apapun — browser native validation (required) akan mencegah submit.
+    // Kita isi hanya sebagian field, lalu cek form tidak ter-submit.
     await page.locator('#fullName').fill('Test');
     await page.locator('#username').fill('');  // kosong
-    await signupPage.submitForm();
 
-    // Seharusnya tetap di halaman signup
+    // Klik submit — HTML5 required validation akan mencegah pengiriman
+    await page.locator('button[type="submit"]').click();
+
+    // Tunggu sebentar untuk memastikan tidak ada navigasi
+    await page.waitForTimeout(1000);
+
+    // Seharusnya tetap di halaman signup karena browser validation mencegah submit
     await expect(page).toHaveURL(/\/signup/);
   });
 });

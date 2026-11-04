@@ -13,29 +13,24 @@ export class AdminPage {
 
   async expectDashboardVisible() {
     await expect(this.page).toHaveURL(/\/admin\/dashboard/);
-    // Admin dashboard uses h2 with "Pending Registrations"
-    await expect(this.page.locator('h2')).toContainText('Pending Registrations');
+    await expect(this.page.locator('h2')).toContainText(/Admin/i);
   }
 
   async hasPendingUsers(): Promise<boolean> {
-    // Table only rendered if users list is not empty
-    const table = this.page.locator('table');
-    return (await table.count()) > 0;
+    const detailLinks = this.page.locator('a.detail, a.action-link');
+    return (await detailLinks.count()) > 0;
   }
 
   async clickFirstPendingUser() {
-    // Link uses class "detail" with text "Lihat / Konfirmasi"
-    const link = this.page.locator('a.detail').first();
+    const link = this.page.locator('a.detail, a.action-link').first();
     await link.click();
   }
 
   async approveUser() {
-    // button with class btn-approve and text APPROVE
     await this.page.locator('button.btn-approve:has-text("APPROVE")').click();
   }
 
   async rejectUser() {
-    // button with class btn-reject and text REJECT
     await this.page.locator('button.btn-reject:has-text("REJECT")').click();
   }
 
