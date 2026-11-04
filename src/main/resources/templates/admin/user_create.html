@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <title>Tambah Pengguna Baru - Admin</title>
+    <link th:href="@{/css/custom.css}" rel="stylesheet" />
+    <style>
+      body { margin:0; font-family: Arial, sans-serif; background: #f3f8ff; padding: 30px; }
+      .container { max-width: 800px; margin: 0 auto; background: #fff; border-radius: 14px; padding: 30px 40px; box-shadow: 0 6px 24px rgba(0,0,0,0.06); }
+      .back { font-size:15px; text-decoration:none; color:#113C8D; font-weight:700; display:inline-block; margin-bottom:16px; }
+      h2 { color: #113C8D; margin-top: 0; }
+      p.sub { color: #556; margin-bottom: 24px; font-size: 14px; }
+      .form-group { margin-bottom: 18px; }
+      label { display: block; font-weight: 700; color: #334; margin-bottom: 6px; font-size: 14px; }
+      input[type="text"], input[type="email"], input[type="password"] {
+        width: 100%; box-sizing: border-box; padding: 10px 14px; border: 1.5px solid #d0d7de; border-radius: 8px; font-size: 14px;
+      }
+      .roles-container { background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 8px; padding: 14px 18px; }
+      .roles-grid { display: flex; gap: 20px; flex-wrap: wrap; margin-top: 8px; }
+      .role-label { display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 14px; }
+      .btn-submit {
+        background: #113C8D; color: #fff; border: none; border-radius: 8px; padding: 12px 24px; font-weight: 700; font-size: 15px; cursor: pointer;
+      }
+      .btn-submit:hover { background: #0c2d6e; }
+      .field-error { color: #dc2626; font-size: 13px; margin-top: 4px; }
+    </style>
+</head>
+<body>
+  <div class="container">
+    <a href="/admin/dashboard" class="back">&#8592; Kembali ke Dashboard</a>
+    <h2>Buat Akun Pengguna Langsung</h2>
+    <p class="sub">Admin dapat membuat akun staf / penguji / mahasiswa secara langsung tanpa perlu proses approval mandiri.</p>
+
+    <form th:action="@{/admin/users/create}" th:object="${userDto}" method="post">
+      <div class="form-group">
+        <label for="fullName">Nama Lengkap *</label>
+        <input type="text" id="fullName" th:field="*{fullName}" placeholder="Contoh: Muhammad Ihsan" />
+        <div class="field-error" th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}"></div>
+      </div>
+
+      <div class="form-group">
+        <label for="username">Username *</label>
+        <input type="text" id="username" th:field="*{username}" placeholder="Contoh: teller_syariah" />
+        <div class="field-error" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></div>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Alamat Email *</label>
+        <input type="email" id="email" th:field="*{email}" placeholder="Contoh: ihsan@tazkia.ac.id" />
+        <div class="field-error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password Default *</label>
+        <input type="password" id="password" th:field="*{password}" placeholder="Masukkan password awal" />
+        <div class="field-error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+      </div>
+
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+        <div class="form-group">
+          <label for="nim">NIM (Opsional)</label>
+          <input type="text" id="nim" th:field="*{nim}" placeholder="Contoh: 211011001" />
+        </div>
+        <div class="form-group">
+          <label for="prodi">Program Studi (Opsional)</label>
+          <input type="text" id="prodi" th:field="*{prodi}" placeholder="Contoh: Akuntansi Syariah" />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Tugaskan Hak Akses (Role):</label>
+        <div class="roles-container">
+          <div class="roles-grid">
+            <label class="role-label">
+              <input type="checkbox" name="roles" value="ROLE_CS" checked />
+              <span>Customer Service (ROLE_CS)</span>
+            </label>
+            <label class="role-label">
+              <input type="checkbox" name="roles" value="ROLE_TELLER" />
+              <span>Teller (ROLE_TELLER)</span>
+            </label>
+            <label class="role-label">
+              <input type="checkbox" name="roles" value="ROLE_BRANCH_MANAGER" />
+              <span>Branch Manager (ROLE_BRANCH_MANAGER)</span>
+            </label>
+            <label class="role-label">
+              <input type="checkbox" name="roles" value="ROLE_ADMIN" />
+              <span>Admin (ROLE_ADMIN)</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top: 24px;">
+        <button type="submit" class="btn-submit">Simpan & Buat Akun</button>
+      </div>
+    </form>
+  </div>
+</body>
+</html>
+

@@ -2,44 +2,79 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8"/>
-    <title>Admin - Pending Registrations</title>
+    <title>Admin Dashboard - Manajemen Pengguna & Hak Akses</title>
     <link th:href="@{/css/custom.css}" rel="stylesheet" />
     <style>
       body { font-family: Arial, sans-serif; margin: 0; padding: 24px; background: #f3f8ff; }
       .container { max-width: 1100px; margin: 0 auto; }
-      .topbar { display:flex; justify-content:space-between; align-items:center; margin-bottom: 10px; }
-      h2 { color: #113C8D; text-align:center; margin: 0; flex:1;}
-      .logout-form { margin:0; }
-      .btn-logout {
-        border: none; border-radius: 10px; padding: 10px 14px;
-        cursor: pointer; font-weight: 700;
+      .topbar { display:flex; justify-content:space-between; align-items:center; margin-bottom: 16px; }
+      h2 { color: #113C8D; margin: 0; }
+      .top-actions { display:flex; gap: 12px; align-items:center; }
+      .btn-create {
+        background: #113C8D; color: #fff; text-decoration: none; border-radius: 8px; padding: 10px 16px;
+        font-weight: 700; font-size: 14px; display: inline-block;
       }
-      p.sub { text-align:center; color: #556; margin-bottom: 20px; }
-      .list { background: rgba(255,255,255,0.9); border-radius: 12px; padding: 18px; box-shadow: 0 6px 20px rgba(0,0,0,0.05); }
+      .btn-create:hover { background: #0b2d6d; }
+      .btn-logout {
+        background: #fff; border: 1.5px solid #d0d7de; border-radius: 8px; padding: 9px 14px;
+        cursor: pointer; font-weight: 700; color: #334;
+      }
+      .btn-logout:hover { background: #f8fafc; }
+      .alert {
+        padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; font-size: 14px; font-weight: 600;
+      }
+      .alert-success { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+      .alert-danger { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+      .section-card { background: #fff; border-radius: 12px; padding: 20px 24px; box-shadow: 0 4px 16px rgba(0,0,0,0.04); margin-bottom: 28px; }
+      .section-title { font-size: 18px; font-weight: 700; color: #113C8D; margin-bottom: 14px; display:flex; justify-content:space-between; align-items:center; }
       table { width:100%; border-collapse: collapse; }
-      th, td { padding: 12px 10px; text-align:left; border-bottom: 1px solid #eee; }
-      a.detail { color:#0F3FA8; text-decoration:none; font-weight:700; }
-      .empty { text-align:center; padding: 40px 10px; color:#556; }
+      th, td { padding: 12px 10px; text-align:left; border-bottom: 1px solid #eee; font-size: 14px; }
+      th { color: #556; background: #fafbfc; }
+      a.action-link { color:#0F3FA8; text-decoration:none; font-weight:700; margin-right: 8px; }
+      a.action-link:hover { text-decoration: underline; }
+      .badge { display: inline-block; padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: 600; margin-right: 4px; }
+      .badge-role { background: #e0f2fe; color: #0369a1; }
+      .badge-active { background: #dcfce7; color: #15803d; }
+      .badge-pending { background: #fef3c7; color: #b45309; }
+      .empty { text-align:center; padding: 30px 10px; color:#64748b; font-size: 14px; }
     </style>
 </head>
 <body>
   <div class="container">
 
     <div class="topbar">
-      <div style="width:120px;"></div>
-      <h2>Pending Registrations</h2>
-
-      <!-- Logout harus POST biar pasti kena Spring Security -->
-      <form class="logout-form" th:action="@{/logout}" method="post">
-        <button class="btn-logout" type="submit">Logout</button>
-      </form>
+      <h2>Admin - Pengelolaan Akun & Hak Akses (RBAC)</h2>
+      <div class="top-actions">
+        <a th:href="@{/admin/users/create}" class="btn-create">+ Tambah Pengguna</a>
+        <form th:action="@{/logout}" method="post" style="margin:0;">
+          <button class="btn-logout" type="submit">Logout</button>
+        </form>
+      </div>
     </div>
 
-    <p class="sub">Ada meminta konfirmasi pembuatan akun nih, yuk segera dikonfirmasi!</p>
+    <!-- Alert Notifikasi -->
+    <div th:if="${param.approved != null}" class="alert alert-success">
+      Akun pengguna berhasil disetujui (Approved) dan hak akses telah ditetapkan!
+    </div>
+    <div th:if="${param.rejected != null}" class="alert alert-danger">
+      Pendaftaran akun pengguna telah ditolak dan dihapus.
+    </div>
+    <div th:if="${param.userCreated != null}" class="alert alert-success">
+      Akun pengguna baru berhasil dibuat dan langsung aktif!
+    </div>
+    <div th:if="${param.rolesUpdated != null}" class="alert alert-success">
+      Hak akses (Roles) pengguna berhasil diperbarui!
+    </div>
 
-    <div class="list">
+    <!-- Section 1: Pendaftaran Menunggu Persetujuan (Pending Approvals) -->
+    <div class="section-card">
+      <div class="section-title">
+        <span>Menunggu Persetujuan Pendaftaran</span>
+        <span style="font-size: 13px; font-weight: normal; color: #64748b;">(Registrasi Mandiri oleh Pengguna)</span>
+      </div>
+
       <div th:if="${users == null or #lists.isEmpty(users)}" class="empty">
-        Tidak ada request pendaftaran saat ini.
+        Tidak ada permohonan pendaftaran yang menunggu persetujuan saat ini.
       </div>
 
       <div th:if="${users != null and !#lists.isEmpty(users)}">
@@ -47,30 +82,69 @@
           <thead>
             <tr>
               <th>#</th>
-              <th>Full Name</th>
+              <th>Nama Lengkap</th>
               <th>Username</th>
+              <th>Email</th>
               <th>Prodi / NIM</th>
               <th>Aksi</th>
             </tr>
           </thead>
           <tbody>
-            <tr th:each="u,iterStat : ${users}">
+            <tr th:each="u, iterStat : ${users}">
               <td th:text="${iterStat.index + 1}"></td>
               <td th:text="${u.fullName}"></td>
               <td th:text="${u.username}"></td>
-              <td><span th:text="${u.prodi}"></span><br/><small th:text="${u.nim}"></small></td>
+              <td th:text="${u.email}"></td>
+              <td><span th:text="${u.prodi != null ? u.prodi : '-'}"></span><br/><small th:text="${u.nim}"></small></td>
               <td>
-                <a th:href="@{/admin/approval/{id}(id=${u.id})}" class="detail">Lihat / Konfirmasi</a>
+                <a th:href="@{/admin/approval/{id}(id=${u.id})}" class="action-link">Tinjau & Beri Role</a>
               </td>
             </tr>
-            <form action="/logout" method="post">
-              <button type="submit">Logout</button>
-            </form>
-            
           </tbody>
         </table>
       </div>
     </div>
+
+    <!-- Section 2: Daftar Semua Pengguna & Role Terdaftar -->
+    <div class="section-card" th:if="${allUsers != null}">
+      <div class="section-title">
+        <span>Daftar Pengguna Sistem & Hak Akses Aktif</span>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Nama Lengkap</th>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Roles</th>
+            <th>Status</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="u, iterStat : ${allUsers}">
+            <td th:text="${iterStat.index + 1}"></td>
+            <td th:text="${u.fullName}"></td>
+            <td th:text="${u.username}"></td>
+            <td th:text="${u.email}"></td>
+            <td>
+              <span th:each="r : ${u.roles}" class="badge badge-role" th:text="${r.name}"></span>
+              <span th:if="${#sets.isEmpty(u.roles)}" style="color: #94a3b8; font-size: 13px;">Belum ada role</span>
+            </td>
+            <td>
+              <span th:if="${u.enabled and u.approved}" class="badge badge-active">Aktif</span>
+              <span th:if="${!u.approved}" class="badge badge-pending">Pending</span>
+            </td>
+            <td>
+              <a th:href="@{/admin/users/{id}/roles(id=${u.id})}" class="action-link">Ubah Role</a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
   </div>
 </body>
 </html>

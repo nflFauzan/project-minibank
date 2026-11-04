@@ -35,16 +35,17 @@ class AdminUserControllerTest extends BaseIntegrationTest {
     }
 
     @Test
-    @DisplayName("GET /admin/dashboard - menampilkan daftar user pending")
+    @DisplayName("GET /admin/dashboard - menampilkan daftar user pending dan all users")
     void listPending_shouldReturnView() throws Exception {
         mockMvc.perform(get("/admin/dashboard"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("admin/dashboard"))
-                .andExpect(model().attributeExists("users"));
+                .andExpect(model().attributeExists("users"))
+                .andExpect(model().attributeExists("allUsers"));
     }
 
     @Test
-    @DisplayName("POST /admin/approve/{id} - approve user & DB berubah")
+    @DisplayName("POST /admin/approve/{id} - approve user default")
     void approve_success() throws Exception {
         mockMvc.perform(post("/admin/approve/" + pendingUser.getId()))
                 .andExpect(status().is3xxRedirection())
@@ -54,6 +55,20 @@ class AdminUserControllerTest extends BaseIntegrationTest {
         assertTrue(approved.isApproved());
         assertTrue(approved.isEnabled());
         assertFalse(approved.getRoles().isEmpty());
+    }
+
+    @Test
+    @DisplayName("POST /admin/approve/{id} - approve user dengan role custom")
+    void approve_withCustomRoles() throws Exception {
+        mockMvc.perform(post("/admin/approve/" + pendingUser.getId())
+                        .param("roles", "ROLE_BRANCH_MANAGER"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/admin/dashboard?approved"));
+
+        User approved = userRepository.findById(pendingUser.getId()).orElseThrow();
+        assertTrue(approved.isApproved());
+        assertEquals(1, approved.getRoles().size());
+        assertTrue(approved.getRoles().stream().anyMatch(r -> r.getName().equals("ROLE_BRANCH_MANAGER")));
     }
 
     @Test
@@ -69,11 +84,64 @@ class AdminUserControllerTest extends BaseIntegrationTest {
     }
 
     @Test
-    @DisplayName("GET /admin/approval/{id} - detail approval page")
+    @DisplayName("GET /admin/approval/{id} - detail approval page menyediakan availableRoles")
     void approval_detail() throws Exception {
         mockMvc.perform(get("/admin/approval/" + pendingUser.getId()))
                 .andExpect(status().isOk())
                 .andExpect(view().name("admin/approval"))
-                .andExpect(model().attributeExists("user"));
+                .andExpect(model().attributeExists("user"))
+                .andExpect(model().attributeExists("availableRoles"));
+    }
+
+    @Test
+    @DisplayName("GET /admin/users/create - menampilkan form create user langsung")
+    void showCreateUserForm() throws Exception {
+        mockMvc.perform(get("/admin/users/create"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("admin/user_create"))
+                .andExpect(model().attributeExists("userDto"))
+                .andExpect(model().attributeExists("availableRoles"));
+    }
+
+    @Test
+    @DisplayName("POST /admin/users/create - membuat user baru langsung aktif")
+    void createUser_success() throws Exception {
+        mockMvc.perform(post("/admin/users/create")
+                        .param("username", "directadminuser")
+                        .param("password", "directpassword")
+                        .param("email", "directadmin@tazkia.ac.id")
+                        .param("fullName", "Direct Admin User")
+                        .param("nim", "123456")
+                        .param("prodi", "Akuntansi Syariah")
+                        .param("roles", "ROLE_TELLER", "ROLE_CS"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/admin/dashboard?userCreated"));
+
+        User created = userRepository.findByUsername("directadminuser").orElseThrow();
+        assertTrue(created.isApproved());
+        assertTrue(created.isEnabled());
+        assertEquals(2, created.getRoles().size());
+    }
+
+    @Test
+    @DisplayName("GET /admin/users/{id}/roles - form edit role user")
+    void showEditUserRoles() throws Exception {
+        mockMvc.perform(get("/admin/users/" + pendingUser.getId() + "/roles"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("admin/user_edit_roles"))
+                .andExpect(model().attributeExists("user"))
+                .andExpect(model().attributeExists("availableRoles"));
+    }
+
+    @Test
+    @DisplayName("POST /admin/users/{id}/roles - update role user yang ada")
+    void updateUserRoles_success() throws Exception {
+        mockMvc.perform(post("/admin/users/" + pendingUser.getId() + "/roles")
+                        .param("roles", "ROLE_BRANCH_MANAGER"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/admin/dashboard?rolesUpdated"));
+
+        User updated = userRepository.findById(pendingUser.getId()).orElseThrow();
+        assertTrue(updated.getRoles().stream().anyMatch(r -> r.getName().equals("ROLE_BRANCH_MANAGER")));
     }
 }
