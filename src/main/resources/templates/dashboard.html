@@ -1,5 +1,70 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head><title>Dashboard</title></head>
-<body><h1>Dashboard</h1></body>
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Dashboard - Minibank</title>
+    <link rel="stylesheet" th:href="@{/css/custom.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            background: #f8fafc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .status-card {
+            background: #fff;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            max-width: 500px;
+            text-align: center;
+            border: 1px solid #e2e8f0;
+        }
+        .icon-badge {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: #eff6ff;
+            color: #2563eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            margin: 0 auto 20px;
+        }
+        h2 { color: #1e3a8a; margin-bottom: 12px; font-weight: 700; }
+        p { color: #64748b; line-height: 1.6; font-size: 15px; margin-bottom: 24px; }
+        .btn-logout {
+            background: #ef4444;
+            color: #fff;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.2s;
+        }
+        .btn-logout:hover { background: #dc2626; }
+    </style>
+</head>
+<body>
+    <div class="status-card">
+        <div class="icon-badge">⏳</div>
+        <h2>Akun Belum Memiliki Akses</h2>
+        <p>
+            Halo, <strong th:text="${username} ?: 'Pengguna'">Pengguna</strong>!<br>
+            Akun Anda telah disetujui, namun Administrator belum menugaskan role operasional (Customer Service, Teller, atau Branch Manager). Silakan hubungi Administrator untuk mengonfigurasi akses Anda.
+        </p>
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" class="btn-logout">Logout</button>
+        </form>
+    </div>
+</body>
 </html>
