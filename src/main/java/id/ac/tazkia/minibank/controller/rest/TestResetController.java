@@ -3,11 +3,13 @@ package id.ac.tazkia.minibank.controller.rest;
 import id.ac.tazkia.minibank.entity.Nasabah;
 import id.ac.tazkia.minibank.entity.NasabahStatus;
 import id.ac.tazkia.minibank.entity.ProdukTabungan;
+import id.ac.tazkia.minibank.entity.Role;
 import id.ac.tazkia.minibank.entity.User;
 import id.ac.tazkia.minibank.entity.Rekening;
 import id.ac.tazkia.minibank.repository.NasabahRepository;
 import id.ac.tazkia.minibank.repository.ProdukTabunganRepository;
 import id.ac.tazkia.minibank.repository.RekeningRepository;
+import id.ac.tazkia.minibank.repository.RoleRepository;
 import id.ac.tazkia.minibank.repository.TransaksiRepository;
 import id.ac.tazkia.minibank.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +22,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Map;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/test")
@@ -31,6 +34,7 @@ public class TestResetController {
     private final NasabahRepository nasabahRepo;
     private final ProdukTabunganRepository produkRepo;
     private final UserRepository userRepo;
+    private final RoleRepository roleRepo;
     private final PasswordEncoder passwordEncoder;
 
     @PostMapping("/reset")
@@ -182,6 +186,9 @@ public class TestResetController {
         r2.setPetugasCs("CS");
         rekeningRepo.save(r2);
 
+        // ─── Ensure admin user exists with correct password ──────────────────
+        ensureAdminUser();
+
         // ─── User PENDING (approved=false) untuk Admin approval test ─────────
         if (userRepo.findByUsername("pending_test_user").isEmpty()) {
             User pendingUser = new User();
@@ -211,6 +218,31 @@ public class TestResetController {
             pendingUser2.setEnabled(false);
             pendingUser2.setCreatedAt(LocalDateTime.now());
             userRepo.save(pendingUser2);
+        }
+    }
+
+    private void ensureAdminUser() {
+        User admin = userRepo.findByUsername("admin").orElse(null);
+        if (admin == null) {
+            admin = new User();
+            admin.setUsername("admin");
+            admin.setEmail("admin@minibank.test");
+            admin.setFullName("Administrator");
+            admin.setCreatedAt(LocalDateTime.now());
+        }
+        admin.setPassword(passwordEncoder.encode("admin123"));
+        admin.setApproved(true);
+        admin.setEnabled(true);
+        userRepo.save(admin);
+
+        // Ensure ROLE_ADMIN exists and is assigned
+        if (roleRepo.findByName("ROLE_BRANCH_MANAGER").isEmpty()) {
+            roleRepo.save(new Role(null, "ROLE_BRANCH_MANAGER"));
+        }
+        Role roleAdmin = roleRepo.findByName("ROLE_ADMIN").orElse(null);
+        if (roleAdmin != null && !admin.getRoles().contains(roleAdmin)) {
+            admin.getRoles().add(roleAdmin);
+            userRepo.save(admin);
         }
     }
 }

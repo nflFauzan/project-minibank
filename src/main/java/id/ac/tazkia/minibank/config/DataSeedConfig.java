@@ -39,6 +39,7 @@ public class DataSeedConfig {
                 if (roleRepo.findByName("ROLE_CS").isEmpty()) roleRepo.save(new Role(null, "ROLE_CS"));
                 if (roleRepo.findByName("ROLE_TELLER").isEmpty()) roleRepo.save(new Role(null, "ROLE_TELLER"));
                 if (roleRepo.findByName("ROLE_SUPERVISOR").isEmpty()) roleRepo.save(new Role(null, "ROLE_SUPERVISOR"));
+                if (roleRepo.findByName("ROLE_BRANCH_MANAGER").isEmpty()) roleRepo.save(new Role(null, "ROLE_BRANCH_MANAGER"));
 
                 // admin default
                 if (userRepo.findByUsername("admin").isEmpty()) {
@@ -79,6 +80,7 @@ public class DataSeedConfig {
                     spv.setApproved(true);
                     spv.setEnabled(true);
                     spv.getRoles().add(spvRole);
+                    roleRepo.findByName("ROLE_BRANCH_MANAGER").ifPresent(spv.getRoles()::add);
                     userRepo.save(spv);
                 }
 
