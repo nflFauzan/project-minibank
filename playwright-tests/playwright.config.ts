@@ -57,7 +57,7 @@ export default defineConfig({
     {
       name: 'chromium-no-auth',
       use: { ...devices['Desktop Chrome'] },
-      testMatch: [/auth\.spec\.ts/, /signup\.spec\.ts/],
+      testMatch: [/auth\.spec\.ts/, /signup\.spec\.ts/, /minibank-unified-dashboard\.spec\.ts/],
     },
 
     // ─── CS tests ──────────────────────────────────────────────────────────────

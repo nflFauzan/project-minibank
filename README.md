@@ -76,6 +76,39 @@ Aplikasi web berbasis Spring Boot untuk kebutuhan MVP MiniBank: autentikasi + ro
 Cek Java:
 ```bash
 java -version
+```
+
+---
+
+## 5) Cara Menjalankan
+
+### Cara Cepat (Windows Batch Script — Otomatis)
+Telah disediakan script praktis untuk otomasi pengecekan port, Docker PostgreSQL, startup Spring Boot, dan pembersihan proses:
+
+1. **Nyalakan Server & Database**:
+   - Double-click file `start-dev.bat` atau jalankan via terminal:
+     ```cmd
+     .\start-dev.bat
+     ```
+   - Script akan otomatis:
+     - Mengecek prasyarat (Docker & Java).
+     - Mengecek ketersediaan port 8080 (Spring Boot) & 2345 (PostgreSQL).
+     - Menjalankan container database PostgreSQL (`docker compose up -d`).
+     - Memverifikasi database sudah siap menerima koneksi (`pg_isready`).
+     - Menjalankan backend Spring Boot di jendela baru.
+     - Membuka browser secara otomatis ke `http://localhost:8080`.
+   - *Opsional: Untuk menjalankan di terminal yang sama (foreground), gunakan `.\start-dev.bat --fg`.*
+
+2. **Matikan Seluruh Layanan (Cleanup)**:
+   - Double-click file `stop-dev.bat` atau jalankan via terminal:
+     ```cmd
+     .\stop-dev.bat
+     ```
+   - Script akan otomatis mematikan aplikasi Spring Boot pada port 8080, menutup jendela log, dan menjalankan `docker compose down` untuk mematikan container database.
+
+---
+
+### Cara Manual
 5) Cara Menjalankan (Dari Clone sampai http://localhost:8080)
 Step 1 — Clone Repository
 bash

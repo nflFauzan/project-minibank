@@ -270,8 +270,8 @@ public class SecurityConfigTest {
         @DisplayName("authenticated user with ROLE_ADMIN - can access general authenticated endpoints")
         void authenticatedAccess_shouldBeOk() throws Exception {
             mockMvc.perform(get("/dashboard"))
-                    .andExpect(status().is3xxRedirection())
-                    .andExpect(redirectedUrl("/admin/dashboard"));
+                    .andExpect(status().isOk())
+                    .andExpect(view().name("dashboard"));
         }
     }
 

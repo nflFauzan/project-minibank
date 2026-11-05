@@ -31,3 +31,9 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Playwright & Transient Tools ###
+.playwright-mcp/
+.superpowers/
+playwright-tests/test-results/
+playwright-tests/playwright-report/

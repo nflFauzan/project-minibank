@@ -23,46 +23,72 @@ public class DashboardControllerTest {
 
     @Test
     @WithMockUser(username = "admin_user", roles = {"ADMIN"})
-    @DisplayName("GET /dashboard for ROLE_ADMIN should redirect to /admin/dashboard")
-    void adminDashboard_redirect() throws Exception {
+    @DisplayName("GET /dashboard for ROLE_ADMIN should render dashboard directly with Branch Manager label")
+    void adminDashboard_rendersDashboard() throws Exception {
         mockMvc.perform(get("/dashboard"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/admin/dashboard"));
+                .andExpect(status().isOk())
+                .andExpect(view().name("dashboard"))
+                .andExpect(model().attribute("roleLabel", "Branch Manager"))
+                .andExpect(model().attribute("userInitial", "A"))
+                .andExpect(model().attribute("isAdmin", true))
+                .andExpect(model().attributeExists("totalCustomers", "activeAccounts", "totalDeposits", "todayTransactions"));
     }
 
     @Test
     @WithMockUser(username = "bm_user", roles = {"BRANCH_MANAGER"})
-    @DisplayName("GET /dashboard for ROLE_BRANCH_MANAGER should redirect to /supervisor/dashboard")
-    void branchManagerDashboard_redirect() throws Exception {
+    @DisplayName("GET /dashboard for ROLE_BRANCH_MANAGER should render dashboard directly with Branch Manager label")
+    void branchManagerDashboard_rendersDashboard() throws Exception {
         mockMvc.perform(get("/dashboard"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/supervisor/dashboard"));
+                .andExpect(status().isOk())
+                .andExpect(view().name("dashboard"))
+                .andExpect(model().attribute("roleLabel", "Branch Manager"))
+                .andExpect(model().attribute("userInitial", "B"))
+                .andExpect(model().attribute("isBranchManager", true))
+                .andExpect(model().attributeExists("totalCustomers", "activeAccounts", "totalDeposits", "todayTransactions"));
     }
 
     @Test
     @WithMockUser(username = "cs_user", roles = {"CS"})
-    @DisplayName("GET /dashboard for ROLE_CS should redirect to /cs/dashboard")
-    void csDashboard_redirect() throws Exception {
+    @DisplayName("GET /dashboard for ROLE_CS should render dashboard directly with Customer Service label")
+    void csDashboard_rendersDashboard() throws Exception {
         mockMvc.perform(get("/dashboard"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/cs/dashboard"));
+                .andExpect(status().isOk())
+                .andExpect(view().name("dashboard"))
+                .andExpect(model().attribute("roleLabel", "Customer Service"))
+                .andExpect(model().attribute("userInitial", "C"))
+                .andExpect(model().attribute("isCs", true))
+                .andExpect(model().attributeExists("totalCustomers", "activeAccounts", "totalDeposits", "todayTransactions"));
     }
 
     @Test
     @WithMockUser(username = "teller_user", roles = {"TELLER"})
-    @DisplayName("GET /dashboard for ROLE_TELLER should redirect to /teller/dashboard")
-    void tellerDashboard_redirect() throws Exception {
+    @DisplayName("GET /dashboard for ROLE_TELLER should render dashboard directly with Teller label")
+    void tellerDashboard_rendersDashboard() throws Exception {
         mockMvc.perform(get("/dashboard"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/teller/dashboard"));
+                .andExpect(status().isOk())
+                .andExpect(view().name("dashboard"))
+                .andExpect(model().attribute("roleLabel", "Teller"))
+                .andExpect(model().attribute("userInitial", "T"))
+                .andExpect(model().attribute("isTeller", true))
+                .andExpect(model().attributeExists("totalCustomers", "activeAccounts", "totalDeposits", "todayTransactions"));
     }
 
     @Test
     @WithMockUser(username = "guest_user", roles = {"USER"})
-    @DisplayName("GET /dashboard for user without operational role should render fallback dashboard view")
-    void noRoleDashboard_view() throws Exception {
+    @DisplayName("GET /dashboard for user with no operational role should render dashboard with Staff label")
+    void noRoleDashboard_rendersDashboard() throws Exception {
         mockMvc.perform(get("/dashboard"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("dashboard"));
+                .andExpect(view().name("dashboard"))
+                .andExpect(model().attribute("roleLabel", "Staff"))
+                .andExpect(model().attribute("username", "guest_user"));
+    }
+
+    @Test
+    @DisplayName("GET /dashboard unauthenticated should redirect to /login")
+    void unauthenticated_redirectsToLogin() throws Exception {
+        mockMvc.perform(get("/dashboard"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("http://localhost/login"));
     }
 }

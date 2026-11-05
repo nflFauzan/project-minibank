@@ -98,9 +98,71 @@ public class DataSeedConfig {
                     userRepo.save(teller);
                 }
 
-                // Nasabah & Produk cuma kalau BUKAN profile test
+                // Nasabah & Produk & Live Minibank Accounts cuma kalau BUKAN profile test
                 // Karena JUnit test pakai data yang sama
                 if (!env.acceptsProfiles(Profiles.of("test"))) {
+                    // Minibank Tazkia live credential seeding & role cleanup
+                    Role adminRole = roleRepo.findByName("ROLE_ADMIN").orElse(null);
+                    Role bmRole = roleRepo.findByName("ROLE_BRANCH_MANAGER").orElse(null);
+                    Role csRole = roleRepo.findByName("ROLE_CS").orElse(null);
+                    Role tellerRole = roleRepo.findByName("ROLE_TELLER").orElse(null);
+
+                    // Ensure admin password is minibank123 and has BRANCH_MANAGER
+                    userRepo.findByUsername("admin").ifPresent(admin -> {
+                        admin.setPassword(encoder.encode("minibank123"));
+                        if (bmRole != null && !admin.getRoles().contains(bmRole)) {
+                            admin.getRoles().add(bmRole);
+                        }
+                        userRepo.save(admin);
+                    });
+
+                    // Ensure cs1 exists with minibank123
+                    if (userRepo.findByUsername("cs1").isEmpty() && csRole != null) {
+                        User cs1 = new User();
+                        cs1.setUsername("cs1");
+                        cs1.setPassword(encoder.encode("minibank123"));
+                        cs1.setFullName("Customer Service 1");
+                        cs1.setEmail("cs1@tazkia.ac.id");
+                        cs1.setApproved(true);
+                        cs1.setEnabled(true);
+                        cs1.getRoles().add(csRole);
+                        userRepo.save(cs1);
+                    } else {
+                        userRepo.findByUsername("cs1").ifPresent(cs1 -> {
+                            cs1.setPassword(encoder.encode("minibank123"));
+                            userRepo.save(cs1);
+                        });
+                    }
+
+                    // Ensure teller1 exists with minibank123
+                    if (userRepo.findByUsername("teller1").isEmpty() && tellerRole != null) {
+                        User teller1 = new User();
+                        teller1.setUsername("teller1");
+                        teller1.setPassword(encoder.encode("minibank123"));
+                        teller1.setFullName("Teller 1");
+                        teller1.setEmail("teller1@tazkia.ac.id");
+                        teller1.setApproved(true);
+                        teller1.setEnabled(true);
+                        teller1.getRoles().add(tellerRole);
+                        userRepo.save(teller1);
+                    } else {
+                        userRepo.findByUsername("teller1").ifPresent(t1 -> {
+                            t1.setPassword(encoder.encode("minibank123"));
+                            userRepo.save(t1);
+                        });
+                    }
+
+                    // Reset zann to only have ROLE_CS
+                    userRepo.findByUsername("zann").ifPresent(z -> {
+                        if (csRole != null) {
+                            z.getRoles().removeIf(r -> !r.getName().equals("ROLE_CS"));
+                            if (!z.getRoles().contains(csRole)) {
+                                z.getRoles().add(csRole);
+                            }
+                            userRepo.save(z);
+                        }
+                    });
+
                     // Nasabah ACTIVE default untuk testing
                     nasabahRepo.findByCif("C0000001").ifPresentOrElse(
                         n -> {

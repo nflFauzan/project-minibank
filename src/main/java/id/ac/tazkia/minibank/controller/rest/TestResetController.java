@@ -222,27 +222,58 @@ public class TestResetController {
     }
 
     private void ensureAdminUser() {
-        User admin = userRepo.findByUsername("admin").orElse(null);
-        if (admin == null) {
-            admin = new User();
-            admin.setUsername("admin");
-            admin.setEmail("admin@minibank.test");
-            admin.setFullName("Administrator");
-            admin.setCreatedAt(LocalDateTime.now());
-        }
-        admin.setPassword(passwordEncoder.encode("admin123"));
+        Role roleAdmin = roleRepo.findByName("ROLE_ADMIN").orElseGet(() -> roleRepo.save(new Role(null, "ROLE_ADMIN")));
+        Role roleBm = roleRepo.findByName("ROLE_BRANCH_MANAGER").orElseGet(() -> roleRepo.save(new Role(null, "ROLE_BRANCH_MANAGER")));
+        Role roleCs = roleRepo.findByName("ROLE_CS").orElseGet(() -> roleRepo.save(new Role(null, "ROLE_CS")));
+        Role roleTeller = roleRepo.findByName("ROLE_TELLER").orElseGet(() -> roleRepo.save(new Role(null, "ROLE_TELLER")));
+
+        // admin
+        User admin = userRepo.findByUsername("admin").orElseGet(User::new);
+        admin.setUsername("admin");
+        admin.setEmail("admin@minibank.test");
+        admin.setFullName("Administrator");
+        admin.setPassword(passwordEncoder.encode("minibank123"));
         admin.setApproved(true);
         admin.setEnabled(true);
+        admin.getRoles().clear();
+        admin.getRoles().add(roleAdmin);
+        admin.getRoles().add(roleBm);
         userRepo.save(admin);
 
-        // Ensure ROLE_ADMIN exists and is assigned
-        if (roleRepo.findByName("ROLE_BRANCH_MANAGER").isEmpty()) {
-            roleRepo.save(new Role(null, "ROLE_BRANCH_MANAGER"));
-        }
-        Role roleAdmin = roleRepo.findByName("ROLE_ADMIN").orElse(null);
-        if (roleAdmin != null && !admin.getRoles().contains(roleAdmin)) {
-            admin.getRoles().add(roleAdmin);
-            userRepo.save(admin);
-        }
+        // cs1
+        User cs1 = userRepo.findByUsername("cs1").orElseGet(User::new);
+        cs1.setUsername("cs1");
+        cs1.setEmail("cs1@tazkia.ac.id");
+        cs1.setFullName("Customer Service 1");
+        cs1.setPassword(passwordEncoder.encode("minibank123"));
+        cs1.setApproved(true);
+        cs1.setEnabled(true);
+        cs1.getRoles().clear();
+        cs1.getRoles().add(roleCs);
+        userRepo.save(cs1);
+
+        // teller1
+        User teller1 = userRepo.findByUsername("teller1").orElseGet(User::new);
+        teller1.setUsername("teller1");
+        teller1.setEmail("teller1@tazkia.ac.id");
+        teller1.setFullName("Teller 1");
+        teller1.setPassword(passwordEncoder.encode("minibank123"));
+        teller1.setApproved(true);
+        teller1.setEnabled(true);
+        teller1.getRoles().clear();
+        teller1.getRoles().add(roleTeller);
+        userRepo.save(teller1);
+
+        // zann (legacy CS)
+        User zann = userRepo.findByUsername("zann").orElseGet(User::new);
+        zann.setUsername("zann");
+        zann.setEmail("zann@tazkia.ac.id");
+        zann.setFullName("Zann Customer Service");
+        zann.setPassword(passwordEncoder.encode("zann"));
+        zann.setApproved(true);
+        zann.setEnabled(true);
+        zann.getRoles().clear();
+        zann.getRoles().add(roleCs);
+        userRepo.save(zann);
     }
 }
