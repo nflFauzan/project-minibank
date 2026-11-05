@@ -8,7 +8,7 @@ setup('authenticate as CS', async ({ page }) => {
   setup.setTimeout(60_000); // Extra time for slowMo
   const loginPage = new LoginPage(page);
   await loginPage.navigate();
-  await loginPage.login('cs1', 'minibank123', 'CS');
+  await loginPage.login('zann', 'zann', 'CS');
   
   // Wait for navigation to dashboard or check for successful login
   await page.waitForURL('**/dashboard', { timeout: 30_000 }); 
@@ -20,7 +20,7 @@ setup('authenticate as Admin', async ({ page }) => {
   setup.setTimeout(60_000); // Extra time for slowMo
   const loginPage = new LoginPage(page);
   await loginPage.navigate();
-  await loginPage.login('admin', 'minibank123', 'ADMIN');
+  await loginPage.login('admin', 'admin123', 'ADMIN');
   
   // Wait for navigation to dashboard
   await page.waitForURL('**/dashboard', { timeout: 30_000 }); 
@@ -43,7 +43,7 @@ setup('authenticate as Teller', async ({ page }) => {
   setup.setTimeout(60_000); // Extra time for slowMo
   const loginPage = new LoginPage(page);
   await loginPage.navigate();
-  await loginPage.login('teller1', 'minibank123', 'TELLER');
+  await loginPage.login('teller', 'teller1234', 'TELLER');
   
   await page.waitForURL('**/dashboard', { timeout: 30_000 });
   

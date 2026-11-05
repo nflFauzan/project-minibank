@@ -20,8 +20,8 @@ test.describe('Minibank Unified Dashboard - Reverse Engineered Flow', () => {
 
   test('CS login lands directly on /dashboard with Customer Service perspective', async ({ page }) => {
     await page.goto('/login');
-    await page.fill('#username', 'cs1');
-    await page.fill('#password', 'minibank123');
+    await page.fill('#username', 'zann');
+    await page.fill('#password', 'zann');
     await page.click('#login-button');
 
     // Must stay on unified /dashboard URL, NOT /cs/dashboard
@@ -29,7 +29,7 @@ test.describe('Minibank Unified Dashboard - Reverse Engineered Flow', () => {
     expect(page.url()).toMatch(/\/dashboard$/);
 
     // Top bar user info
-    await expect(page.locator('#header-username')).toHaveText('cs1');
+    await expect(page.locator('#header-username')).toHaveText('zann');
     await expect(page.locator('#header-role')).toHaveText('Customer Service');
 
     // Sidebar navigation
@@ -57,8 +57,8 @@ test.describe('Minibank Unified Dashboard - Reverse Engineered Flow', () => {
 
   test('Teller login lands directly on /dashboard with Teller perspective', async ({ page }) => {
     await page.goto('/login');
-    await page.fill('#username', 'teller1');
-    await page.fill('#password', 'minibank123');
+    await page.fill('#username', 'teller');
+    await page.fill('#password', 'teller1234');
     await page.click('#login-button');
 
     // Must stay on unified /dashboard URL, NOT /teller/dashboard
@@ -66,7 +66,7 @@ test.describe('Minibank Unified Dashboard - Reverse Engineered Flow', () => {
     expect(page.url()).toMatch(/\/dashboard$/);
 
     // Top bar user info
-    await expect(page.locator('#header-username')).toHaveText('teller1');
+    await expect(page.locator('#header-username')).toHaveText('teller');
     await expect(page.locator('#header-role')).toHaveText('Teller');
 
     // Sidebar navigation
@@ -86,7 +86,7 @@ test.describe('Minibank Unified Dashboard - Reverse Engineered Flow', () => {
   test('Admin login lands directly on /dashboard with Branch Manager perspective', async ({ page }) => {
     await page.goto('/login');
     await page.fill('#username', 'admin');
-    await page.fill('#password', 'minibank123');
+    await page.fill('#password', 'admin123');
     await page.click('#login-button');
 
     // Must stay on unified /dashboard URL, NOT /admin/dashboard
@@ -130,3 +130,4 @@ test.describe('Minibank Unified Dashboard - Reverse Engineered Flow', () => {
     await expect(page.locator('#success-message')).toBeVisible();
   });
 });
+

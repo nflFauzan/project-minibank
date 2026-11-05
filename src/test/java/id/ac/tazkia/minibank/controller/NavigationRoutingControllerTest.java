@@ -129,3 +129,4 @@ public class NavigationRoutingControllerTest {
                 .andExpect(redirectedUrl("/admin/users/create"));
     }
 }
+
