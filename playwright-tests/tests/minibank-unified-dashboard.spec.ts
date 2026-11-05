@@ -85,7 +85,7 @@ test.describe('Minibank Unified Dashboard - Native UI & Flow Verification', () =
   test('Admin login lands directly on unified /dashboard with native Admin view & RBAC', async ({ page }) => {
     await page.goto('/login');
     await page.fill('#username', 'admin');
-    await page.fill('#password', 'admin123');
+    await page.fill('#password', 'minibank123');
     await page.click('#login-button');
 
     // Must stay strictly on unified /dashboard URL, NOT /admin/dashboard
@@ -108,23 +108,49 @@ test.describe('Minibank Unified Dashboard - Native UI & Flow Verification', () =
     await expect(page.locator('#success-message')).toBeVisible();
   });
 
-  test('Sub-dashboard endpoints are completely eliminated and return HTTP 404', async ({ page }) => {
-    // Login first as admin to have valid session
+  test('Sub-dashboard endpoints are completely eliminated and return HTTP 404 for their authorized roles', async ({ page }) => {
+    test.setTimeout(90_000);
+
+    // 1. Admin accessing /admin/dashboard -> 404
+    await page.context().clearCookies();
     await page.goto('/login');
     await page.fill('#username', 'admin');
-    await page.fill('#password', 'admin123');
+    await page.fill('#password', 'minibank123');
     await page.click('#login-button');
     await page.waitForURL('**/dashboard');
 
-    // Direct access to all old sub-dashboards MUST return 404
+    const resAdmin = await page.goto('/admin/dashboard');
+    expect(resAdmin?.status()).toBe(404);
+
+    // 2. CS accessing /cs/dashboard -> 404
+    await page.context().clearCookies();
+    await page.goto('/login');
+    await page.fill('#username', 'zann');
+    await page.fill('#password', 'zann');
+    await page.click('#login-button');
+    await page.waitForURL('**/dashboard');
+
     const resCs = await page.goto('/cs/dashboard');
     expect(resCs?.status()).toBe(404);
+
+    // 3. Teller accessing /teller/dashboard -> 404
+    await page.context().clearCookies();
+    await page.goto('/login');
+    await page.fill('#username', 'teller');
+    await page.fill('#password', 'teller1234');
+    await page.click('#login-button');
+    await page.waitForURL('**/dashboard');
 
     const resTeller = await page.goto('/teller/dashboard');
     expect(resTeller?.status()).toBe(404);
 
-    const resAdmin = await page.goto('/admin/dashboard');
-    expect(resAdmin?.status()).toBe(404);
+    // 4. Supervisor accessing /supervisor/dashboard -> 404
+    await page.context().clearCookies();
+    await page.goto('/login');
+    await page.fill('#username', 'spv');
+    await page.fill('#password', 'spv1234');
+    await page.click('#login-button');
+    await page.waitForURL('**/dashboard');
 
     const resSpv = await page.goto('/supervisor/dashboard');
     expect(resSpv?.status()).toBe(404);
