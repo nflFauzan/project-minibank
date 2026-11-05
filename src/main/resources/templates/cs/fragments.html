@@ -13,7 +13,7 @@
     </div>
 
     <nav class="cs-nav">
-      <a th:href="@{/cs/dashboard}" th:classappend="${active == 'dashboard'} ? ' active' : ''">Dashboard</a>
+      <a th:href="@{/dashboard}" th:classappend="${active == 'dashboard'} ? ' active' : ''">Dashboard</a>
       <a th:href="@{/cs/customers}" th:classappend="${active == 'customers'} ? ' active' : ''">Customers</a>
       <a th:href="@{/cs/account}" th:classappend="${active == 'account'} ? ' active' : ''">Account</a>
       <a th:href="@{/cs/product}" th:classappend="${active == 'product'} ? ' active' : ''">Pengelolaan Produk Bank</a>
@@ -37,7 +37,7 @@
     </div>
 
     <nav class="cs-nav">
-      <a th:href="@{/teller/dashboard}" th:classappend="${active == 'dashboard'} ? ' active' : ''">Dashboard</a>
+      <a th:href="@{/dashboard}" th:classappend="${active == 'dashboard'} ? ' active' : ''">Dashboard</a>
       <a th:href="@{/teller/transaction/list}" th:classappend="${active == 'transaction'} ? ' active' : ''">Transaksi</a>
       <a th:href="@{/teller/transaction/deposit}" th:classappend="${active == 'deposit'} ? ' active' : ''">Setoran Tunai</a>
       <a th:href="@{/teller/transaction/withdrawal}" th:classappend="${active == 'withdrawal'} ? ' active' : ''">Penarikan Tunai</a>
@@ -63,7 +63,7 @@
     </div>
 
     <nav class="cs-nav">
-      <a th:href="@{/supervisor/dashboard}" th:classappend="${active == 'dashboard'} ? ' active' : ''">Dashboard</a>
+      <a th:href="@{/dashboard}" th:classappend="${active == 'dashboard'} ? ' active' : ''">Dashboard</a>
       <a th:href="@{/supervisor/nasabah}" th:classappend="${active == 'nasabah'} ? ' active' : ''">Approval Nasabah</a>
     </nav>
 

@@ -35,21 +35,11 @@ class AdminUserControllerTest extends BaseIntegrationTest {
     }
 
     @Test
-    @DisplayName("GET /admin/dashboard - menampilkan daftar user pending dan all users")
-    void listPending_shouldReturnView() throws Exception {
-        mockMvc.perform(get("/admin/dashboard"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("admin/dashboard"))
-                .andExpect(model().attributeExists("users"))
-                .andExpect(model().attributeExists("allUsers"));
-    }
-
-    @Test
     @DisplayName("POST /admin/approve/{id} - approve user default")
     void approve_success() throws Exception {
         mockMvc.perform(post("/admin/approve/" + pendingUser.getId()))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/admin/dashboard?approved"));
+                .andExpect(redirectedUrl("/dashboard?approved"));
 
         User approved = userRepository.findById(pendingUser.getId()).orElseThrow();
         assertTrue(approved.isApproved());
@@ -63,7 +53,7 @@ class AdminUserControllerTest extends BaseIntegrationTest {
         mockMvc.perform(post("/admin/approve/" + pendingUser.getId())
                         .param("roles", "ROLE_BRANCH_MANAGER"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/admin/dashboard?approved"));
+                .andExpect(redirectedUrl("/dashboard?approved"));
 
         User approved = userRepository.findById(pendingUser.getId()).orElseThrow();
         assertTrue(approved.isApproved());
@@ -78,7 +68,7 @@ class AdminUserControllerTest extends BaseIntegrationTest {
 
         mockMvc.perform(post("/admin/reject/" + userId))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/admin/dashboard?rejected"));
+                .andExpect(redirectedUrl("/dashboard?rejected"));
 
         assertFalse(userRepository.findById(userId).isPresent());
     }
@@ -115,7 +105,7 @@ class AdminUserControllerTest extends BaseIntegrationTest {
                         .param("prodi", "Akuntansi Syariah")
                         .param("roles", "ROLE_TELLER", "ROLE_CS"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/admin/dashboard?userCreated"));
+                .andExpect(redirectedUrl("/dashboard?userCreated"));
 
         User created = userRepository.findByUsername("directadminuser").orElseThrow();
         assertTrue(created.isApproved());
@@ -139,7 +129,7 @@ class AdminUserControllerTest extends BaseIntegrationTest {
         mockMvc.perform(post("/admin/users/" + pendingUser.getId() + "/roles")
                         .param("roles", "ROLE_BRANCH_MANAGER"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/admin/dashboard?rolesUpdated"));
+                .andExpect(redirectedUrl("/dashboard?rolesUpdated"));
 
         User updated = userRepository.findById(pendingUser.getId()).orElseThrow();
         assertTrue(updated.getRoles().stream().anyMatch(r -> r.getName().equals("ROLE_BRANCH_MANAGER")));

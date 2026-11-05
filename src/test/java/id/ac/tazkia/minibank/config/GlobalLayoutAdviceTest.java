@@ -153,9 +153,9 @@ public class GlobalLayoutAdviceTest {
 
         @Test
         @WithMockUser(username = "custom_admin", roles = {"ADMIN"})
-        @DisplayName("GET /dashboard (authenticated as ADMIN) – should inject 'Admin' label and username")
+        @DisplayName("GET /admin/users/create (authenticated as ADMIN) – should inject 'Admin' label and username")
         void authenticatedAdminRequest_shouldInjectAdminMeta() throws Exception {
-            mockMvc.perform(get("/admin/dashboard"))
+            mockMvc.perform(get("/admin/users/create"))
                     .andExpect(status().isOk())
                     .andExpect(model().attribute("roleLabel", "Admin"))
                     .andExpect(model().attribute("userCode", "custom_admin"));
@@ -163,9 +163,9 @@ public class GlobalLayoutAdviceTest {
 
         @Test
         @WithMockUser(username = "custom_supervisor", roles = {"SUPERVISOR"})
-        @DisplayName("GET /dashboard (authenticated as SUPERVISOR) – should inject 'Supervisor' label and username")
+        @DisplayName("GET /supervisor/nasabah (authenticated as SUPERVISOR) – should inject 'Supervisor' label and username")
         void authenticatedSupervisorRequest_shouldInjectSupervisorMeta() throws Exception {
-            mockMvc.perform(get("/supervisor/dashboard"))
+            mockMvc.perform(get("/supervisor/nasabah"))
                     .andExpect(status().isOk())
                     .andExpect(model().attribute("roleLabel", "Supervisor"))
                     .andExpect(model().attribute("userCode", "custom_supervisor"));
@@ -173,9 +173,9 @@ public class GlobalLayoutAdviceTest {
 
         @Test
         @WithMockUser(username = "custom_teller", roles = {"TELLER"})
-        @DisplayName("GET /dashboard (authenticated as TELLER) – should inject 'Teller' label and username")
+        @DisplayName("GET /teller/transaction (authenticated as TELLER) – should inject 'Teller' label and username")
         void authenticatedTellerRequest_shouldInjectTellerMeta() throws Exception {
-            mockMvc.perform(get("/teller/dashboard"))
+            mockMvc.perform(get("/teller/transaction"))
                     .andExpect(status().isOk())
                     .andExpect(model().attribute("roleLabel", "Teller"))
                     .andExpect(model().attribute("userCode", "custom_teller"));
@@ -183,9 +183,9 @@ public class GlobalLayoutAdviceTest {
 
         @Test
         @WithMockUser(username = "custom_cs", roles = {"CS"})
-        @DisplayName("GET /dashboard (authenticated as CS) – should inject 'Customer Service' label and username")
+        @DisplayName("GET /cs/customers (authenticated as CS) – should inject 'Customer Service' label and username")
         void authenticatedCsRequest_shouldInjectCsMeta() throws Exception {
-            mockMvc.perform(get("/cs/dashboard"))
+            mockMvc.perform(get("/cs/customers"))
                     .andExpect(status().isOk())
                     .andExpect(model().attribute("roleLabel", "Customer Service"))
                     .andExpect(model().attribute("userCode", "custom_cs"));

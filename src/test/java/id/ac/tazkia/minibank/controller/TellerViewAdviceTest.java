@@ -33,21 +33,18 @@ class TellerViewAdviceTest extends BaseIntegrationTest {
     }
 
     @Test
-    @DisplayName("GET /teller/dashboard - TellerViewAdvice menambahkan atribut model")
+    @DisplayName("GET /teller/transaction - TellerViewAdvice menambahkan atribut model")
     void tellerDashboard_shouldHaveAdviceAttributes() throws Exception {
-        // TellerViewAdvice hanya menyuntikkan atribut jika session punya ACTIVE_MODULE=TELLER.
-        // Tanpa session module, atribut tidak disuntikkan. Kita cukup verifikasi bahwa
-        // halaman tetap bisa di-render tanpa error.
-        mockMvc.perform(get("/teller/dashboard"))
+        mockMvc.perform(get("/teller/transaction"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("teller/dashboard"));
+                .andExpect(view().name("teller/transaction/list"));
     }
 
     @Test
-    @DisplayName("GET /cs/dashboard - TellerViewAdvice tidak aktif di path /cs/")
+    @DisplayName("GET /cs/customers - TellerViewAdvice tidak aktif di path /cs/")
     void csDashboard_tellerAdviceNotActive() throws Exception {
-        mockMvc.perform(get("/cs/dashboard"))
+        mockMvc.perform(get("/cs/customers"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("cs/dashboard"));
+                .andExpect(view().name("cs/customers"));
     }
 }

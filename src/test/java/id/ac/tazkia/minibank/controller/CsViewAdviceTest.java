@@ -35,19 +35,19 @@ class CsViewAdviceTest extends BaseIntegrationTest {
 
     @Test
     @WithMockUser(username = "csuser", roles = {"CS"})
-    @DisplayName("GET /cs/dashboard - CsViewAdvice menyuntikkan atribut model")
+    @DisplayName("GET /cs/customers - CsViewAdvice menyuntikkan atribut model")
     void csDashboard_shouldHaveAdviceAttributes() throws Exception {
-        mockMvc.perform(get("/cs/dashboard"))
+        mockMvc.perform(get("/cs/customers"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("cs/dashboard"))
+                .andExpect(view().name("cs/customers"))
                 .andExpect(model().attributeExists("nowText", "roleLabel"));
     }
 
     @Test
-    @DisplayName("GET /teller/dashboard - CsViewAdvice tidak aktif di /teller/")
+    @DisplayName("GET /teller/transaction - CsViewAdvice tidak aktif di /teller/")
     void tellerDashboard_csAdviceNotActive() throws Exception {
-        mockMvc.perform(get("/teller/dashboard"))
+        mockMvc.perform(get("/teller/transaction"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("teller/dashboard"));
+                .andExpect(view().name("teller/transaction/list"));
     }
 }

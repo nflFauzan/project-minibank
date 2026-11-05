@@ -1,10 +1,15 @@
 package id.ac.tazkia.minibank.controller;
 
+import id.ac.tazkia.minibank.dto.DashboardSummaryDto;
 import id.ac.tazkia.minibank.entity.NasabahStatus;
+import id.ac.tazkia.minibank.entity.ProdukTabungan;
 import id.ac.tazkia.minibank.repository.NasabahRepository;
 import id.ac.tazkia.minibank.repository.ProdukTabunganRepository;
 import id.ac.tazkia.minibank.repository.RekeningRepository;
 import id.ac.tazkia.minibank.repository.TransaksiRepository;
+import id.ac.tazkia.minibank.service.AdminUserService;
+import id.ac.tazkia.minibank.service.DashboardService;
+import id.ac.tazkia.minibank.service.TellerDashboardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -15,7 +20,9 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Locale;
 
 @Controller
@@ -26,6 +33,9 @@ public class DashboardController {
     private final RekeningRepository rekeningRepository;
     private final ProdukTabunganRepository produkTabunganRepository;
     private final TransaksiRepository transaksiRepository;
+    private final AdminUserService adminService;
+    private final DashboardService dashboardService;
+    private final TellerDashboardService tellerDashboardService;
 
     @GetMapping("/dashboard")
     public String dashboard(Authentication auth, Model model) {
@@ -44,7 +54,6 @@ public class DashboardController {
         boolean isCs = auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_CS"));
         boolean isTeller = auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_TELLER"));
 
-        // Match minibank.tazkia.ac.id role labels
         String roleLabel = "Staff";
         if (isBranchManager || isAdmin) {
             roleLabel = "Branch Manager";
@@ -78,6 +87,11 @@ public class DashboardController {
             todayTrx = transaksiRepository.count();
         } catch (Exception ignored) {}
 
+        long totalProd = 0;
+        try {
+            totalProd = produkTabunganRepository.count();
+        } catch (Exception ignored) {}
+
         String totalCustomersFormatted = (totalCust > 0) ? countFormatter.format(totalCust) : "1,248";
         String activeAccountsFormatted = (activeAcc > 0) ? countFormatter.format(activeAcc) : "892";
         String totalDepositsFormatted;
@@ -96,7 +110,9 @@ public class DashboardController {
 
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy", Locale.ENGLISH);
         String todayFormatted = LocalDate.now().format(dateFormatter);
+        String currentDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("EEEE, dd-MM-yyyy | HH:mm"));
 
+        // Models for native Minibank UI
         model.addAttribute("username", username);
         model.addAttribute("userInitial", initial);
         model.addAttribute("roleLabel", roleLabel);
@@ -105,11 +121,50 @@ public class DashboardController {
         model.addAttribute("isCs", isCs);
         model.addAttribute("isTeller", isTeller);
 
+        model.addAttribute("totalNasabah", totalCust);
+        model.addAttribute("totalRekeningAktif", activeAcc);
+        model.addAttribute("totalDeposit", totalDep);
+        model.addAttribute("totalTransaksi", todayTrx);
+        model.addAttribute("totalProduk", totalProd);
+
         model.addAttribute("totalCustomers", totalCustomersFormatted);
         model.addAttribute("activeAccounts", activeAccountsFormatted);
         model.addAttribute("totalDeposits", totalDepositsFormatted);
         model.addAttribute("todayTransactions", todayTransactionsFormatted);
         model.addAttribute("todayFormatted", todayFormatted);
+        model.addAttribute("currentDate", currentDate);
+
+        // Fetch products
+        List<ProdukTabungan> activeProducts = List.of();
+        try {
+            activeProducts = dashboardService.getActiveProdukTabungan();
+        } catch (Exception ignored) {}
+        model.addAttribute("products", activeProducts);
+
+        // Summary object for CS views
+        try {
+            DashboardSummaryDto summary = dashboardService.getSummary();
+            model.addAttribute("summary", summary);
+            if (summary != null) {
+                model.addAttribute("nasabahTerbaru", summary.getNasabahTerbaru());
+            }
+        } catch (Exception ignored) {}
+
+        // Admin-specific data
+        if (isAdmin) {
+            try {
+                model.addAttribute("users", adminService.listPending());
+                model.addAttribute("allUsers", adminService.listAllUsers());
+            } catch (Exception ignored) {}
+        }
+
+        // Supervisor-specific data
+        if (isBranchManager) {
+            try {
+                long pendingCount = nasabahRepository.countByStatus(NasabahStatus.INACTIVE);
+                model.addAttribute("pendingCount", pendingCount);
+            } catch (Exception ignored) {}
+        }
 
         return "dashboard";
     }

@@ -10,8 +10,8 @@ test.describe('Admin — Dashboard & User Approval', () => {
 
   test('Admin Dashboard tampil', async ({ page }) => {
     await adminPage.navigateToDashboard();
-    await expect(page).toHaveURL(/\/admin\/dashboard/);
-    await expect(page.locator('h2')).toContainText(/Admin/i);
+    await expect(page).toHaveURL(/\/dashboard/);
+    await expect(page.locator('h2, .section-title, .greeting-title')).toBeVisible();
   });
 
   test('Admin Dashboard menampilkan daftar atau pesan kosong', async ({ page }) => {
@@ -44,7 +44,7 @@ test.describe('Admin — Dashboard & User Approval', () => {
     await adminPage.approveUser();
 
     // Verifikasi redirect ke dashboard dengan flash success
-    await expect(page).toHaveURL(/\/admin\/dashboard/);
+    await expect(page).toHaveURL(/\/dashboard/);
     await adminPage.expectSuccessFlash(/approved|berhasil|sukses/i);
   });
 
@@ -69,6 +69,6 @@ test.describe('Admin — Dashboard & User Approval', () => {
     await adminPage.rejectUser();
 
     // Verifikasi redirect ke dashboard
-    await expect(page).toHaveURL(/\/admin\/dashboard/);
+    await expect(page).toHaveURL(/\/dashboard/);
   });
 });

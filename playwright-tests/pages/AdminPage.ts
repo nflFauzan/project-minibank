@@ -8,12 +8,12 @@ export class AdminPage {
   }
 
   async navigateToDashboard() {
-    await this.page.goto('/admin/dashboard');
+    await this.page.goto('/dashboard');
   }
 
   async expectDashboardVisible() {
-    await expect(this.page).toHaveURL(/\/admin\/dashboard/);
-    await expect(this.page.locator('h2')).toContainText(/Admin/i);
+    await expect(this.page).toHaveURL(/\/dashboard/);
+    await expect(this.page.locator('h2, .section-title, .greeting-title')).toBeVisible();
   }
 
   async hasPendingUsers(): Promise<boolean> {

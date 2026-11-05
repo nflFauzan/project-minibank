@@ -15,16 +15,6 @@ class TellerDashboardControllerTest extends BaseIntegrationTest {
     @Autowired private MockMvc mockMvc;
 
     @Test
-    @DisplayName("GET /teller/dashboard - should return teller/dashboard view")
-    void dashboard_shouldReturnView() throws Exception {
-        mockMvc.perform(get("/teller/dashboard"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("teller/dashboard"))
-                .andExpect(model().attributeExists("totalNasabah", "totalRekeningAktif",
-                        "totalDeposit", "totalTransaksi", "products"));
-    }
-
-    @Test
     @DisplayName("GET /teller/transaction - should return teller/transaction/list view")
     void transaction_shouldReturnView() throws Exception {
         mockMvc.perform(get("/teller/transaction"))

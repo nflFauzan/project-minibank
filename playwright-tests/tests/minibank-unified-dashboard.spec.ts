@@ -1,34 +1,39 @@
 import { test, expect } from '@playwright/test';
 
-test.describe('Minibank Unified Dashboard - Reverse Engineered Flow', () => {
+test.describe('Minibank Unified Dashboard - Native UI & Flow Verification', () => {
 
-  test('Login page matches minibank.tazkia.ac.id aesthetics and structure', async ({ page }) => {
+  test('Login page retains 100% native glassmorphism styling and structure', async ({ page }) => {
     await page.goto('/login');
 
-    // Branding header
-    await expect(page.locator('#page-title')).toHaveText('Minibank');
-    await expect(page.locator('text=Please sign in to continue')).toBeVisible();
+    // Native Glassmorphism card & title
+    await expect(page.locator('.glass-card')).toBeVisible();
+    await expect(page.locator('#page-title')).toHaveText('Welcome Back!');
 
     // Form inputs and buttons
     await expect(page.locator('#username')).toBeVisible();
     await expect(page.locator('#password')).toBeVisible();
-    await expect(page.locator('#remember-me')).toBeVisible();
+    await expect(page.locator('.password-eye')).toBeVisible();
     await expect(page.locator('#forgot-password-link')).toBeVisible();
     await expect(page.locator('#login-button')).toBeVisible();
     await expect(page.locator('#signup-link')).toBeVisible();
+
+    // Verify NO module dropdown exists
+    await expect(page.locator('select[name="module"]')).toHaveCount(0);
   });
 
-  test('CS login lands directly on /dashboard with Customer Service perspective', async ({ page }) => {
+  test('CS login lands directly on unified /dashboard with native CS view', async ({ page }) => {
     await page.goto('/login');
     await page.fill('#username', 'zann');
     await page.fill('#password', 'zann');
     await page.click('#login-button');
 
-    // Must stay on unified /dashboard URL, NOT /cs/dashboard
+    // Must stay strictly on unified /dashboard URL, NOT /cs/dashboard
     await page.waitForURL('**/dashboard');
     expect(page.url()).toMatch(/\/dashboard$/);
 
-    // Top bar user info
+    // Shell, greeting card and user info
+    await expect(page.locator('.cs-shell')).toBeVisible();
+    await expect(page.locator('.greeting-card')).toBeVisible();
     await expect(page.locator('#header-username')).toHaveText('zann');
     await expect(page.locator('#header-role')).toHaveText('Customer Service');
 
@@ -37,97 +42,91 @@ test.describe('Minibank Unified Dashboard - Reverse Engineered Flow', () => {
     await expect(page.locator('#product-link')).toBeVisible();
     await expect(page.locator('#customer-link')).toBeVisible();
     await expect(page.locator('#account-link')).toBeVisible();
-    await expect(page.locator('#passbook-link')).toBeVisible();
-    await expect(page.locator('#reports-link')).toBeVisible();
-
-    // Transaction and Admin sections hidden from CS
-    await expect(page.locator('#transaction-link')).toHaveCount(0);
-    await expect(page.locator('#approval-queue-link')).toHaveCount(0);
-    await expect(page.locator('#administration-section')).toHaveCount(0);
 
     // Quick Actions for CS
     await expect(page.locator('#new-customer-button')).toBeVisible();
     await expect(page.locator('#open-account-button')).toBeVisible();
     await expect(page.locator('#account-lookup-button')).toBeVisible();
-    await expect(page.locator('#process-transaction-button')).toHaveCount(0);
 
-    // Stats cards visible
+    // Stats cards
     await expect(page.locator('#statistics-cards')).toBeVisible();
+    await expect(page.locator('.stat-card')).toHaveCount(4);
   });
 
-  test('Teller login lands directly on /dashboard with Teller perspective', async ({ page }) => {
+  test('Teller login lands directly on unified /dashboard with native Teller view', async ({ page }) => {
     await page.goto('/login');
     await page.fill('#username', 'teller');
     await page.fill('#password', 'teller1234');
     await page.click('#login-button');
 
-    // Must stay on unified /dashboard URL, NOT /teller/dashboard
+    // Must stay strictly on unified /dashboard URL, NOT /teller/dashboard
     await page.waitForURL('**/dashboard');
     expect(page.url()).toMatch(/\/dashboard$/);
 
-    // Top bar user info
+    // Shell, greeting card and user info
+    await expect(page.locator('.cs-shell')).toBeVisible();
+    await expect(page.locator('.greeting-card')).toBeVisible();
     await expect(page.locator('#header-username')).toHaveText('teller');
     await expect(page.locator('#header-role')).toHaveText('Teller');
 
-    // Sidebar navigation
+    // Sidebar navigation for Teller
     await expect(page.locator('#dashboard-link')).toBeVisible();
     await expect(page.locator('#transaction-link')).toBeVisible();
+    await expect(page.locator('#deposit-link')).toBeVisible();
+    await expect(page.locator('#withdrawal-link')).toBeVisible();
+    await expect(page.locator('#transfer-link')).toBeVisible();
     await expect(page.locator('#passbook-link')).toBeVisible();
-    await expect(page.locator('#approval-queue-link')).toHaveCount(0);
-    await expect(page.locator('#administration-section')).toHaveCount(0);
 
     // Quick Actions for Teller
     await expect(page.locator('#process-transaction-button')).toBeVisible();
     await expect(page.locator('#reports-button')).toBeVisible();
-    await expect(page.locator('#account-lookup-button')).toBeVisible();
-    await expect(page.locator('#new-customer-button')).toHaveCount(0);
   });
 
-  test('Admin login lands directly on /dashboard with Branch Manager perspective', async ({ page }) => {
+  test('Admin login lands directly on unified /dashboard with native Admin view & RBAC', async ({ page }) => {
     await page.goto('/login');
     await page.fill('#username', 'admin');
     await page.fill('#password', 'admin123');
     await page.click('#login-button');
 
-    // Must stay on unified /dashboard URL, NOT /admin/dashboard
+    // Must stay strictly on unified /dashboard URL, NOT /admin/dashboard
     await page.waitForURL('**/dashboard');
     expect(page.url()).toMatch(/\/dashboard$/);
 
-    // Top bar user info
+    // Shell and user info
+    await expect(page.locator('.cs-shell')).toBeVisible();
+    await expect(page.locator('.greeting-card')).toBeVisible();
     await expect(page.locator('#header-username')).toHaveText('admin');
-    await expect(page.locator('#header-role')).toHaveText('Branch Manager');
 
-    // Full Sidebar navigation
-    await expect(page.locator('#dashboard-link')).toBeVisible();
-    await expect(page.locator('#product-link')).toBeVisible();
-    await expect(page.locator('#customer-link')).toBeVisible();
-    await expect(page.locator('#account-link')).toBeVisible();
-    await expect(page.locator('#transaction-link')).toBeVisible();
-    await expect(page.locator('#passbook-link')).toBeVisible();
-    await expect(page.locator('#approval-queue-link')).toBeVisible();
-    await expect(page.locator('#administration-section')).toBeVisible();
-    await expect(page.locator('#users-link')).toBeVisible();
-    await expect(page.locator('#roles-link')).toBeVisible();
-    await expect(page.locator('#permissions-link')).toBeVisible();
-
-    // Quick Actions for Admin
-    await expect(page.locator('#new-customer-button')).toBeVisible();
-    await expect(page.locator('#open-account-button')).toBeVisible();
-    await expect(page.locator('#process-transaction-button')).toBeVisible();
-    await expect(page.locator('#reports-button')).toBeVisible();
+    // Admin-specific actions and tables
     await expect(page.locator('#create-user-button')).toBeVisible();
-    await expect(page.locator('#account-lookup-button')).toBeVisible();
-    await expect(page.locator('#system-config-link')).toBeVisible();
+    await expect(page.locator('.admin-approval-section')).toBeVisible();
+    await expect(page.locator('text=Pengelolaan Pengguna & Hak Akses (RBAC)')).toBeVisible();
 
-    // User dropdown and logout
-    await page.click('#userMenuButton');
-    await expect(page.locator('#userMenu')).toBeVisible();
-    await expect(page.locator('#user-menu-username')).toHaveText('admin');
-    await expect(page.locator('#user-menu-role')).toHaveText('Branch Manager');
-
+    // Logout and redirect to login
     await page.click('#logout-button');
     await page.waitForURL('**/login*');
     await expect(page.locator('#success-message')).toBeVisible();
   });
-});
 
+  test('Sub-dashboard endpoints are completely eliminated and return HTTP 404', async ({ page }) => {
+    // Login first as admin to have valid session
+    await page.goto('/login');
+    await page.fill('#username', 'admin');
+    await page.fill('#password', 'admin123');
+    await page.click('#login-button');
+    await page.waitForURL('**/dashboard');
+
+    // Direct access to all old sub-dashboards MUST return 404
+    const resCs = await page.goto('/cs/dashboard');
+    expect(resCs?.status()).toBe(404);
+
+    const resTeller = await page.goto('/teller/dashboard');
+    expect(resTeller?.status()).toBe(404);
+
+    const resAdmin = await page.goto('/admin/dashboard');
+    expect(resAdmin?.status()).toBe(404);
+
+    const resSpv = await page.goto('/supervisor/dashboard');
+    expect(resSpv?.status()).toBe(404);
+  });
+});

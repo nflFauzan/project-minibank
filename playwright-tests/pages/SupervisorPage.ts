@@ -8,11 +8,11 @@ export class SupervisorPage {
   }
 
   async navigateToDashboard() {
-    await this.page.goto('/supervisor/dashboard');
+    await this.page.goto('/dashboard');
   }
 
   async expectDashboardVisible() {
-    await expect(this.page).toHaveURL(/\/supervisor\/dashboard/);
+    await expect(this.page).toHaveURL(/\/dashboard/);
     await expect(this.page.locator('body')).toBeVisible();
   }
 

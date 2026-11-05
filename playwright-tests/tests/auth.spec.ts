@@ -31,8 +31,8 @@ test.describe('Authentication & Authorization', () => {
     await loginPage.navigate();
     await loginPage.login('zann', 'zann');
     
-    // Attempt to access Admin dashboard directly
-    const response = await page.goto('/admin/dashboard');
+    // Attempt to access Admin area directly
+    const response = await page.goto('/admin/users/create');
     
     // Spring Security enforces RBAC and returns HTTP 403 Forbidden
     expect(response?.status()).toBe(403);

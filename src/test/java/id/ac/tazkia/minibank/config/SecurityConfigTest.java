@@ -140,33 +140,33 @@ public class SecurityConfigTest {
         }
 
         @Test
-        @DisplayName("GET /admin/dashboard - anonymous access redirects to /login")
+        @DisplayName("GET /admin/users/create - anonymous access redirects to /login")
         void getAdminDashboardAnonymous_shouldRedirectToLogin() throws Exception {
-            mockMvc.perform(get("/admin/dashboard"))
+            mockMvc.perform(get("/admin/users/create"))
                     .andExpect(status().is3xxRedirection())
                     .andExpect(header().string("Location", containsString("/login")));
         }
 
         @Test
-        @DisplayName("GET /cs/dashboard - anonymous access redirects to /login")
+        @DisplayName("GET /cs/customers - anonymous access redirects to /login")
         void getCsDashboardAnonymous_shouldRedirectToLogin() throws Exception {
-            mockMvc.perform(get("/cs/dashboard"))
+            mockMvc.perform(get("/cs/customers"))
                     .andExpect(status().is3xxRedirection())
                     .andExpect(header().string("Location", containsString("/login")));
         }
 
         @Test
-        @DisplayName("GET /teller/dashboard - anonymous access redirects to /login")
+        @DisplayName("GET /teller/transaction - anonymous access redirects to /login")
         void getTellerDashboardAnonymous_shouldRedirectToLogin() throws Exception {
-            mockMvc.perform(get("/teller/dashboard"))
+            mockMvc.perform(get("/teller/transaction"))
                     .andExpect(status().is3xxRedirection())
                     .andExpect(header().string("Location", containsString("/login")));
         }
 
         @Test
-        @DisplayName("GET /supervisor/dashboard - anonymous access redirects to /login")
+        @DisplayName("GET /supervisor/nasabah - anonymous access redirects to /login")
         void getSupervisorDashboardAnonymous_shouldRedirectToLogin() throws Exception {
-            mockMvc.perform(get("/supervisor/dashboard"))
+            mockMvc.perform(get("/supervisor/nasabah"))
                     .andExpect(status().is3xxRedirection())
                     .andExpect(header().string("Location", containsString("/login")));
         }
@@ -191,16 +191,16 @@ public class SecurityConfigTest {
         @WithMockUser(username = "adminUser", roles = {"ADMIN"})
         @DisplayName("ROLE_ADMIN - can access admin pages but not others")
         void adminAccessControl() throws Exception {
-            mockMvc.perform(get("/admin/dashboard"))
+            mockMvc.perform(get("/admin/users/create"))
                     .andExpect(status().isOk());
 
-            mockMvc.perform(get("/cs/dashboard"))
+            mockMvc.perform(get("/cs/customers"))
                     .andExpect(status().isForbidden());
 
-            mockMvc.perform(get("/teller/dashboard"))
+            mockMvc.perform(get("/teller/transaction"))
                     .andExpect(status().isForbidden());
 
-            mockMvc.perform(get("/supervisor/dashboard"))
+            mockMvc.perform(get("/supervisor/nasabah"))
                     .andExpect(status().isForbidden());
         }
 
@@ -208,16 +208,16 @@ public class SecurityConfigTest {
         @WithMockUser(username = "csUser", roles = {"CS"})
         @DisplayName("ROLE_CS - can access CS pages but not others")
         void csAccessControl() throws Exception {
-            mockMvc.perform(get("/admin/dashboard"))
+            mockMvc.perform(get("/admin/users/create"))
                     .andExpect(status().isForbidden());
 
-            mockMvc.perform(get("/cs/dashboard"))
+            mockMvc.perform(get("/cs/customers"))
                     .andExpect(status().isOk());
 
-            mockMvc.perform(get("/teller/dashboard"))
+            mockMvc.perform(get("/teller/transaction"))
                     .andExpect(status().isForbidden());
 
-            mockMvc.perform(get("/supervisor/dashboard"))
+            mockMvc.perform(get("/supervisor/nasabah"))
                     .andExpect(status().isForbidden());
         }
 
@@ -225,16 +225,16 @@ public class SecurityConfigTest {
         @WithMockUser(username = "tellerUser", roles = {"TELLER"})
         @DisplayName("ROLE_TELLER - can access Teller pages but not others")
         void tellerAccessControl() throws Exception {
-            mockMvc.perform(get("/admin/dashboard"))
+            mockMvc.perform(get("/admin/users/create"))
                     .andExpect(status().isForbidden());
 
-            mockMvc.perform(get("/cs/dashboard"))
+            mockMvc.perform(get("/cs/customers"))
                     .andExpect(status().isForbidden());
 
-            mockMvc.perform(get("/teller/dashboard"))
+            mockMvc.perform(get("/teller/transaction"))
                     .andExpect(status().isOk());
 
-            mockMvc.perform(get("/supervisor/dashboard"))
+            mockMvc.perform(get("/supervisor/nasabah"))
                     .andExpect(status().isForbidden());
         }
 
@@ -242,16 +242,16 @@ public class SecurityConfigTest {
         @WithMockUser(username = "supervisorUser", roles = {"SUPERVISOR"})
         @DisplayName("ROLE_SUPERVISOR - can access Supervisor pages but not others")
         void supervisorAccessControl() throws Exception {
-            mockMvc.perform(get("/admin/dashboard"))
+            mockMvc.perform(get("/admin/users/create"))
                     .andExpect(status().isForbidden());
 
-            mockMvc.perform(get("/cs/dashboard"))
+            mockMvc.perform(get("/cs/customers"))
                     .andExpect(status().isForbidden());
 
-            mockMvc.perform(get("/teller/dashboard"))
+            mockMvc.perform(get("/teller/transaction"))
                     .andExpect(status().isForbidden());
 
-            mockMvc.perform(get("/supervisor/dashboard"))
+            mockMvc.perform(get("/supervisor/nasabah"))
                     .andExpect(status().isOk());
         }
 
@@ -259,10 +259,10 @@ public class SecurityConfigTest {
         @WithMockUser(username = "anyUser", roles = {"USER"})
         @DisplayName("ROLE_USER - access to prefix paths is forbidden")
         void userAccessControl() throws Exception {
-            mockMvc.perform(get("/admin/dashboard")).andExpect(status().isForbidden());
-            mockMvc.perform(get("/cs/dashboard")).andExpect(status().isForbidden());
-            mockMvc.perform(get("/teller/dashboard")).andExpect(status().isForbidden());
-            mockMvc.perform(get("/supervisor/dashboard")).andExpect(status().isForbidden());
+            mockMvc.perform(get("/admin/users/create")).andExpect(status().isForbidden());
+            mockMvc.perform(get("/cs/customers")).andExpect(status().isForbidden());
+            mockMvc.perform(get("/teller/transaction")).andExpect(status().isForbidden());
+            mockMvc.perform(get("/supervisor/nasabah")).andExpect(status().isForbidden());
         }
 
         @Test
@@ -368,12 +368,12 @@ public class SecurityConfigTest {
 
         @Test
         @WithMockUser(username = "crossUser", roles = {"CS", "TELLER"})
-        @DisplayName("GET /cs/dashboard with activeModule=TELLER in session - redirected to teller dashboard by ActiveModuleFilter")
+        @DisplayName("GET /cs/customers with activeModule=TELLER in session - redirected to /dashboard by ActiveModuleFilter")
         void activeModuleFilterMismatchedModule_shouldRedirectToActiveDashboard() throws Exception {
-            mockMvc.perform(get("/cs/dashboard")
+            mockMvc.perform(get("/cs/customers")
                             .sessionAttr(LoginSuccessHandler.SESSION_ACTIVE_MODULE, "TELLER"))
                     .andExpect(status().is3xxRedirection())
-                    .andExpect(redirectedUrl("/teller/dashboard"));
+                    .andExpect(redirectedUrl("/dashboard"));
         }
     }
 

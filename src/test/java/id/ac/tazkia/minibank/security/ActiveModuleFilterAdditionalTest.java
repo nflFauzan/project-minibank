@@ -207,11 +207,11 @@ class ActiveModuleFilterAdditionalTest extends BaseIntegrationTest {
     }
 
     // ──────────────────────────────────────────────────────────────────────────
-    // 7. Redirect – modul salah → redirect ke dashboard modul aktif
+    // 7. Redirect – modul salah → redirect ke dashboard terpadu /dashboard
     // ──────────────────────────────────────────────────────────────────────────
 
     @Test
-    @DisplayName("TELLER mengakses /cs/ → redirect ke /teller/dashboard")
+    @DisplayName("TELLER mengakses /cs/ → redirect ke /dashboard")
     void tellerModule_accessingCsPath_shouldRedirectToTellerDashboard() throws Exception {
         HttpServletRequest req = requestWithSession("/cs/customers", "TELLER");
         HttpServletResponse res = mock(HttpServletResponse.class);
@@ -219,12 +219,12 @@ class ActiveModuleFilterAdditionalTest extends BaseIntegrationTest {
 
         filter.doFilter(req, res, chain);
 
-        verify(res).sendRedirect("/teller/dashboard");
+        verify(res).sendRedirect("/dashboard");
         verify(chain, never()).doFilter(req, res);
     }
 
     @Test
-    @DisplayName("TELLER mengakses /admin/ → redirect ke /teller/dashboard")
+    @DisplayName("TELLER mengakses /admin/ → redirect ke /dashboard")
     void tellerModule_accessingAdminPath_shouldRedirectToTellerDashboard() throws Exception {
         HttpServletRequest req = requestWithSession("/admin/users", "TELLER");
         HttpServletResponse res = mock(HttpServletResponse.class);
@@ -232,12 +232,12 @@ class ActiveModuleFilterAdditionalTest extends BaseIntegrationTest {
 
         filter.doFilter(req, res, chain);
 
-        verify(res).sendRedirect("/teller/dashboard");
+        verify(res).sendRedirect("/dashboard");
         verify(chain, never()).doFilter(req, res);
     }
 
     @Test
-    @DisplayName("SUPERVISOR mengakses /cs/ → redirect ke /supervisor/dashboard")
+    @DisplayName("SUPERVISOR mengakses /cs/ → redirect ke /dashboard")
     void supervisorModule_accessingCsPath_shouldRedirectToSupervisorDashboard() throws Exception {
         HttpServletRequest req = requestWithSession("/cs/customers", "SUPERVISOR");
         HttpServletResponse res = mock(HttpServletResponse.class);
@@ -245,12 +245,12 @@ class ActiveModuleFilterAdditionalTest extends BaseIntegrationTest {
 
         filter.doFilter(req, res, chain);
 
-        verify(res).sendRedirect("/supervisor/dashboard");
+        verify(res).sendRedirect("/dashboard");
         verify(chain, never()).doFilter(req, res);
     }
 
     @Test
-    @DisplayName("SUPERVISOR mengakses /teller/ → redirect ke /supervisor/dashboard")
+    @DisplayName("SUPERVISOR mengakses /teller/ → redirect ke /dashboard")
     void supervisorModule_accessingTellerPath_shouldRedirectToSupervisorDashboard() throws Exception {
         HttpServletRequest req = requestWithSession("/teller/transaksi", "SUPERVISOR");
         HttpServletResponse res = mock(HttpServletResponse.class);
@@ -258,12 +258,12 @@ class ActiveModuleFilterAdditionalTest extends BaseIntegrationTest {
 
         filter.doFilter(req, res, chain);
 
-        verify(res).sendRedirect("/supervisor/dashboard");
+        verify(res).sendRedirect("/dashboard");
         verify(chain, never()).doFilter(req, res);
     }
 
     @Test
-    @DisplayName("ADMIN mengakses /cs/ → redirect ke /admin/dashboard")
+    @DisplayName("ADMIN mengakses /cs/ → redirect ke /dashboard")
     void adminModule_accessingCsPath_shouldRedirectToAdminDashboard() throws Exception {
         HttpServletRequest req = requestWithSession("/cs/customers", "ADMIN");
         HttpServletResponse res = mock(HttpServletResponse.class);
@@ -271,12 +271,12 @@ class ActiveModuleFilterAdditionalTest extends BaseIntegrationTest {
 
         filter.doFilter(req, res, chain);
 
-        verify(res).sendRedirect("/admin/dashboard");
+        verify(res).sendRedirect("/dashboard");
         verify(chain, never()).doFilter(req, res);
     }
 
     @Test
-    @DisplayName("ADMIN mengakses /supervisor/ → redirect ke /admin/dashboard")
+    @DisplayName("ADMIN mengakses /supervisor/ → redirect ke /dashboard")
     void adminModule_accessingSupervisorPath_shouldRedirectToAdminDashboard() throws Exception {
         HttpServletRequest req = requestWithSession("/supervisor/laporan", "ADMIN");
         HttpServletResponse res = mock(HttpServletResponse.class);
@@ -284,12 +284,12 @@ class ActiveModuleFilterAdditionalTest extends BaseIntegrationTest {
 
         filter.doFilter(req, res, chain);
 
-        verify(res).sendRedirect("/admin/dashboard");
+        verify(res).sendRedirect("/dashboard");
         verify(chain, never()).doFilter(req, res);
     }
 
     @Test
-    @DisplayName("CS mengakses /supervisor/ → redirect ke /cs/dashboard")
+    @DisplayName("CS mengakses /supervisor/ → redirect ke /dashboard")
     void csModule_accessingSupervisorPath_shouldRedirectToCsDashboard() throws Exception {
         HttpServletRequest req = requestWithSession("/supervisor/laporan", "CS");
         HttpServletResponse res = mock(HttpServletResponse.class);
@@ -297,7 +297,7 @@ class ActiveModuleFilterAdditionalTest extends BaseIntegrationTest {
 
         filter.doFilter(req, res, chain);
 
-        verify(res).sendRedirect("/cs/dashboard");
+        verify(res).sendRedirect("/dashboard");
         verify(chain, never()).doFilter(req, res);
     }
 
@@ -306,7 +306,7 @@ class ActiveModuleFilterAdditionalTest extends BaseIntegrationTest {
     // ──────────────────────────────────────────────────────────────────────────
 
     @Test
-    @DisplayName("CS mengakses /cs (tanpa trailing slash) → tidak dianggap prefix /cs/ → redirect")
+    @DisplayName("CS mengakses /cs (tanpa trailing slash) → tidak dianggap prefix /cs/ → redirect ke /dashboard")
     void csModule_accessingCsWithoutTrailingSlash_shouldRedirect() throws Exception {
         // /cs TIDAK startsWith /cs/ → harus redirect
         HttpServletRequest req = requestWithSession("/cs", "CS");
@@ -315,12 +315,12 @@ class ActiveModuleFilterAdditionalTest extends BaseIntegrationTest {
 
         filter.doFilter(req, res, chain);
 
-        verify(res).sendRedirect("/cs/dashboard");
+        verify(res).sendRedirect("/dashboard");
         verify(chain, never()).doFilter(req, res);
     }
 
     @Test
-    @DisplayName("TELLER mengakses /teller (tanpa trailing slash) → redirect ke /teller/dashboard")
+    @DisplayName("TELLER mengakses /teller (tanpa trailing slash) → redirect ke /dashboard")
     void tellerModule_accessingTellerWithoutTrailingSlash_shouldRedirect() throws Exception {
         HttpServletRequest req = requestWithSession("/teller", "TELLER");
         HttpServletResponse res = mock(HttpServletResponse.class);
@@ -328,7 +328,7 @@ class ActiveModuleFilterAdditionalTest extends BaseIntegrationTest {
 
         filter.doFilter(req, res, chain);
 
-        verify(res).sendRedirect("/teller/dashboard");
+        verify(res).sendRedirect("/dashboard");
         verify(chain, never()).doFilter(req, res);
     }
 
@@ -345,7 +345,7 @@ class ActiveModuleFilterAdditionalTest extends BaseIntegrationTest {
 
         filter.doFilter(req, res, chain);
 
-        verify(res, times(1)).sendRedirect("/cs/dashboard");
+        verify(res, times(1)).sendRedirect("/dashboard");
         verifyNoInteractions(chain);
     }
 }

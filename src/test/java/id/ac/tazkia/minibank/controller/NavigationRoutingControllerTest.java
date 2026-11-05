@@ -104,20 +104,20 @@ public class NavigationRoutingControllerTest {
 
     @Test
     @WithMockUser(roles = "ADMIN")
-    @DisplayName("GET /approval/queue for ADMIN redirects to /admin/dashboard")
+    @DisplayName("GET /approval/queue for ADMIN redirects to /dashboard")
     void approvalQueueAdmin_redirects() throws Exception {
         mockMvc.perform(get("/approval/queue"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/admin/dashboard"));
+                .andExpect(redirectedUrl("/dashboard"));
     }
 
     @Test
     @WithMockUser(roles = "ADMIN")
-    @DisplayName("GET /rbac/users/list redirects to /admin/dashboard")
+    @DisplayName("GET /rbac/users/list redirects to /dashboard")
     void rbacUsersList_redirects() throws Exception {
         mockMvc.perform(get("/rbac/users/list"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/admin/dashboard"));
+                .andExpect(redirectedUrl("/dashboard"));
     }
 
     @Test

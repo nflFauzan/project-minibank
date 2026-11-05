@@ -58,19 +58,19 @@ class ActiveModuleFilterTest extends BaseIntegrationTest {
     }
 
     @Test
-    @DisplayName("wrong module (CS accessing /teller/) - redirect ke /cs/dashboard")
+    @DisplayName("wrong module (CS accessing /teller/) - redirect ke /dashboard")
     void wrongModule_shouldRedirect() throws Exception {
         HttpServletRequest req = mock(HttpServletRequest.class);
         HttpServletResponse res = mock(HttpServletResponse.class);
         FilterChain chain = mock(FilterChain.class);
         HttpSession session = mock(HttpSession.class);
 
-        when(req.getRequestURI()).thenReturn("/teller/dashboard");
+        when(req.getRequestURI()).thenReturn("/teller/transaction");
         when(req.getSession(false)).thenReturn(session);
         when(session.getAttribute(LoginSuccessHandler.SESSION_ACTIVE_MODULE)).thenReturn("CS");
 
         filter.doFilter(req, res, chain);
-        verify(res).sendRedirect("/cs/dashboard");
+        verify(res).sendRedirect("/dashboard");
         verify(chain, never()).doFilter(req, res);
     }
 }

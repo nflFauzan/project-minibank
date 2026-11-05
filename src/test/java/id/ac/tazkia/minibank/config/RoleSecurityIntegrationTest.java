@@ -23,17 +23,17 @@ public class RoleSecurityIntegrationTest {
 
     @Test
     @WithMockUser(username = "bm_user", roles = {"BRANCH_MANAGER"})
-    @DisplayName("User with ROLE_BRANCH_MANAGER should access /supervisor/dashboard")
+    @DisplayName("User with ROLE_BRANCH_MANAGER should access /supervisor/nasabah")
     void branchManagerCanAccessSupervisorDashboard() throws Exception {
-        mockMvc.perform(get("/supervisor/dashboard"))
+        mockMvc.perform(get("/supervisor/nasabah"))
                 .andExpect(status().isOk());
     }
 
     @Test
     @WithMockUser(username = "teller_user", roles = {"TELLER"})
-    @DisplayName("User without BRANCH_MANAGER should be forbidden from /supervisor/dashboard")
+    @DisplayName("User without BRANCH_MANAGER should be forbidden from /supervisor/nasabah")
     void tellerForbiddenFromSupervisorDashboard() throws Exception {
-        mockMvc.perform(get("/supervisor/dashboard"))
+        mockMvc.perform(get("/supervisor/nasabah"))
                 .andExpect(status().isForbidden());
     }
 }

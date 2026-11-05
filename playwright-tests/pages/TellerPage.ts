@@ -10,11 +10,11 @@ export class TellerPage {
   // ─── Dashboard ─────────────────────────────────────────────────────────────
 
   async navigateToDashboard() {
-    await this.page.goto('/teller/dashboard');
+    await this.page.goto('/dashboard');
   }
 
   async expectDashboardVisible() {
-    await expect(this.page).toHaveURL(/\/teller\/dashboard/);
+    await expect(this.page).toHaveURL(/\/dashboard/);
     await expect(this.page.locator('body')).toBeVisible();
   }
 
