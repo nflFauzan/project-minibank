@@ -57,12 +57,12 @@ public class NavigationRoutingController {
                 a.getAuthority().equals("ROLE_SUPERVISOR") || a.getAuthority().equals("ROLE_BRANCH_MANAGER"))) {
             return "redirect:/supervisor/nasabah";
         }
-        return "redirect:/admin/dashboard";
+        return "redirect:/dashboard";
     }
 
     @GetMapping({"/rbac/users/list", "/rbac/roles/list", "/rbac/permissions/list"})
     public String rbacUsersList() {
-        return "redirect:/admin/dashboard";
+        return "redirect:/dashboard";
     }
 
     @GetMapping("/rbac/users/create")

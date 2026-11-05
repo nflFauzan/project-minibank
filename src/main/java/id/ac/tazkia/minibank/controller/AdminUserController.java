@@ -26,12 +26,7 @@ public class AdminUserController {
             "ROLE_ADMIN"
     );
 
-    @GetMapping("/dashboard")
-    public String dashboard(Model model) {
-        model.addAttribute("users", adminService.listPending());
-        model.addAttribute("allUsers", adminService.listAllUsers());
-        return "admin/dashboard";
-    }
+    // Sub-dashboard /admin/dashboard removed. All roles use unified /dashboard.
 
     @GetMapping("/approval/{id}")
     public String approvalDetail(@PathVariable Long id, Model model) {
@@ -50,13 +45,13 @@ public class AdminUserController {
         } else {
             adminService.approve(id);
         }
-        return "redirect:/admin/dashboard?approved";
+        return "redirect:/dashboard?approved";
     }
 
     @PostMapping("/reject/{id}")
     public String reject(@PathVariable Long id) {
         adminService.reject(id);
-        return "redirect:/admin/dashboard?rejected";
+        return "redirect:/dashboard?rejected";
     }
 
     @GetMapping("/users/create")
@@ -77,7 +72,7 @@ public class AdminUserController {
             return "admin/user_create";
         }
         adminService.createUser(dto);
-        return "redirect:/admin/dashboard?userCreated";
+        return "redirect:/dashboard?userCreated";
     }
 
     @GetMapping("/users/{id}/roles")
@@ -92,6 +87,6 @@ public class AdminUserController {
     public String updateUserRoles(@PathVariable Long id,
                                   @RequestParam(name = "roles", required = false) List<String> roles) {
         adminService.updateRoles(id, roles);
-        return "redirect:/admin/dashboard?rolesUpdated";
+        return "redirect:/dashboard?rolesUpdated";
     }
 }

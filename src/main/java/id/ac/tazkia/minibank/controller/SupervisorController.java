@@ -16,21 +16,5 @@ import java.util.List;
 @Controller
 @RequestMapping("/supervisor")
 public class SupervisorController {
-
-@Autowired
-    private DashboardService dashboardService;
-    private final NasabahRepository nasabahRepository;
-
-    public SupervisorController(NasabahRepository nasabahRepository) {
-        this.nasabahRepository = nasabahRepository;
-    }
-
-    @GetMapping("/dashboard")
-    public String supervisorDashboard(Model model) {
-
-        long pendingCount = nasabahRepository.countByStatus(NasabahStatus.INACTIVE);
-        model.addAttribute("pendingCount", pendingCount);
-  model.addAttribute("products", dashboardService.getActiveProdukTabungan());
-        return "supervisor/dashboard";
-    }
+    // Sub-dashboard /supervisor/dashboard removed. All roles use unified /dashboard.
 }

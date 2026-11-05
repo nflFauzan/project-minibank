@@ -15,17 +15,7 @@ public class TellerDashboardController {
 
     private final TellerDashboardService dashboardService;
 
-    @GetMapping("/dashboard")
-    public String dashboard(Model model) {
-        model.addAttribute("active","dashboard");
-        model.addAttribute("totalNasabah", dashboardService.totalNasabahAktif());
-        model.addAttribute("totalRekeningAktif", dashboardService.totalRekeningAktif());
-        model.addAttribute("totalDeposit", dashboardService.totalDepositAwal());
-        model.addAttribute("totalTransaksi", dashboardService.totalTransaksi());
-        model.addAttribute("products", dashboardService.produkAktif());
-        return "teller/dashboard";
-    }
-
+    // Sub-dashboard /teller/dashboard removed. All roles use unified /dashboard.
     
     @GetMapping("/transaction")
     public String transaction(Model model) {

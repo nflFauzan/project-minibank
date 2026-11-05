@@ -14,29 +14,5 @@ import java.util.List;
 
 @Controller
 public class CsDashboardController {
-
-    @Autowired
-    private DashboardService dashboardService;
-
-@GetMapping("/cs/dashboard")
-public String dashboard(Model model){
-    DashboardSummaryDto summary = dashboardService.getSummary();
-    List<ProdukTabungan> products = dashboardService.getActiveProdukTabungan();
-
-        // yang sudah ada
-        model.addAttribute("summary", summary);
-        
-
-        // FIX: ini yang dashboard.html kamu butuhin
-        model.addAttribute("totalNasabah", summary.getTotalNasabah());
-        model.addAttribute("totalRekeningAktif", summary.getTotalRekening());
-        model.addAttribute("totalProduk", summary.getTotalProduk());
-        model.addAttribute("nasabahTerbaru", summary.getNasabahTerbaru());
-
-        model.addAttribute("currentDate", LocalDateTime.now().format(DateTimeFormatter.ofPattern("EEEE, dd-MM-yyyy | HH:mm")) );
-        model.addAttribute("csName", "Tazkia");
-        model.addAttribute("roleAndName", "| Costumer Service | ID00010003");
-        model.addAttribute("products", products);
-        return "cs/dashboard";
-    }
+    // Sub-dashboard /cs/dashboard removed. All roles use unified /dashboard.
 }

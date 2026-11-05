@@ -72,7 +72,7 @@ public class ActiveModuleFilter extends OncePerRequestFilter {
             return;
         }
 
-        // Selain itu: paksa balik ke dashboard module aktif
-        response.sendRedirect(prefix + "dashboard");
+        // Selain itu: paksa balik ke dashboard terpadu
+        response.sendRedirect("/dashboard");
     }
 }
