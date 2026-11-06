@@ -17,12 +17,12 @@ public class GlobalLayoutAdvice {
 
     @ModelAttribute
     public void injectHeaderMeta(Model model, Authentication auth) {
-        if (auth == null || !auth.isAuthenticated()) return;
+        boolean isAuthenticated = auth != null && auth.isAuthenticated() && !"anonymousUser".equals(auth.getPrincipal());
 
-        String username = auth.getName();
-        Set<String> roles = auth.getAuthorities().stream()
+        String username = isAuthenticated ? auth.getName() : "";
+        Set<String> roles = isAuthenticated ? auth.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toSet()) : Set.of();
 
         boolean isAdmin = roles.contains("ROLE_ADMIN");
         boolean isBranchManager = roles.contains("ROLE_BRANCH_MANAGER") || roles.contains("ROLE_SUPERVISOR");

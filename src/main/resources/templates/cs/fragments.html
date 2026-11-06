@@ -18,14 +18,14 @@
       <a id="dashboard-link" th:href="@{/dashboard}" th:classappend="${active == 'dashboard'} ? ' active' : ''">Dashboard</a>
 
       <!-- CS Links -->
-      <th:block th:if="${isCs or isAdmin}">
+      <th:block th:if="${(isCs ?: false) or (isAdmin ?: false)}">
         <a id="customer-link" th:href="@{/cs/customers}" th:classappend="${active == 'customers'} ? ' active' : ''">Customers</a>
         <a id="account-link" th:href="@{/cs/account}" th:classappend="${active == 'account'} ? ' active' : ''">Account</a>
         <a id="product-link" th:href="@{/cs/product}" th:classappend="${active == 'product'} ? ' active' : ''">Pengelolaan Produk Bank</a>
       </th:block>
 
       <!-- Teller Links -->
-      <th:block th:if="${isTeller}">
+      <th:block th:if="${isTeller ?: false}">
         <a id="transaction-link" th:href="@{/teller/transaction/list}" th:classappend="${active == 'transaction'} ? ' active' : ''">Transaksi</a>
         <a id="deposit-link" th:href="@{/teller/transaction/deposit}" th:classappend="${active == 'deposit'} ? ' active' : ''">Setoran Tunai</a>
         <a id="withdrawal-link" th:href="@{/teller/transaction/withdrawal}" th:classappend="${active == 'withdrawal'} ? ' active' : ''">Penarikan Tunai</a>
@@ -34,12 +34,12 @@
       </th:block>
 
       <!-- Supervisor / Branch Manager Links -->
-      <th:block th:if="${isBranchManager}">
+      <th:block th:if="${isBranchManager ?: false}">
         <a id="approval-queue-link" th:href="@{/supervisor/nasabah}" th:classappend="${active == 'nasabah'} ? ' active' : ''">Approval Nasabah</a>
       </th:block>
 
       <!-- Admin Links -->
-      <th:block th:if="${isAdmin}">
+      <th:block th:if="${isAdmin ?: false}">
         <a id="admin-user-create-link" th:href="@{/admin/users/create}" th:classappend="${active == 'admin-create'} ? ' active' : ''">Tambah Pengguna</a>
       </th:block>
     </nav>
