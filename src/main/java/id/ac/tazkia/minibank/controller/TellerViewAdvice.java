@@ -40,8 +40,7 @@ public class TellerViewAdvice {
 
         String username = (auth == null) ? "-" : auth.getName();
 
-        // 1) Topbar kanan: Teller | username
-        model.addAttribute("roleLabel", "Teller");
+        // 1) Topbar kanan: employeeId
         model.addAttribute("employeeId", username);
 
         // 2) Greeting: full_name

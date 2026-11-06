@@ -29,9 +29,6 @@ public class CsViewAdvice {
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("EEEE, dd-MM-yyyy | HH:mm", new Locale("id", "ID"));
         model.addAttribute("nowText", LocalDateTime.now().format(fmt));
 
-        // role label (CS)
-        model.addAttribute("roleLabel", "Customer Service");
-
         // nama user
         if (auth != null) {
             String username = auth.getName();
