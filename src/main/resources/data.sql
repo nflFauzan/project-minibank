@@ -2,7 +2,7 @@ INSERT INTO users (id, username, password, full_name, approved, enabled, created
 VALUES (
     1,
     'admin',
-    '$2a$10$5POFt3XZYy5ce1zBvdgr1O1tRcZIdnpCfDw2ZAOsncJDN7xt8o.Xa',  -- admin123
+    '$2a$10$0arsw2cRFpHA4CfStXN/cOoWg.t4z69DyHS60pQYW/F1v0G1zJgVm',  -- minibank123
     'Administrator', 
     true, 
     true,

@@ -1,5 +1,5 @@
 INSERT INTO users (username, password, full_name, enabled)
-VALUES ('admin', '$2a$10$XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX', 'Administrator', true)
+VALUES ('admin', '$2a$10$0arsw2cRFpHA4CfStXN/cOoWg.t4z69DyHS60pQYW/F1v0G1zJgVm', 'Administrator', true)
 ON CONFLICT (username) DO NOTHING;
 
 -- ganti password hash di atas dengan hash BCrypt untuk "minibank123" (generate di local)
