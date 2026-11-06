@@ -29,8 +29,8 @@ class NasabahServiceTest extends BaseIntegrationTest {
     }
 
     @Test
-    @DisplayName("createNasabah - harus set status INACTIVE jika status null")
-    void createNasabah_shouldSetDefaultStatusInactive() {
+    @DisplayName("createNasabah - harus set status ACTIVE jika status null")
+    void createNasabah_shouldSetDefaultStatusActive() {
         Nasabah form = new Nasabah();
         form.setNik("9710001234567890");
         form.setNamaSesuaiIdentitas("Budi Santoso");
@@ -39,7 +39,7 @@ class NasabahServiceTest extends BaseIntegrationTest {
 
         Nasabah result = nasabahService.createNasabah(form);
 
-        assertEquals(NasabahStatus.INACTIVE, result.getStatus());
+        assertEquals(NasabahStatus.ACTIVE, result.getStatus());
         assertNotNull(result.getId());
     }
 

@@ -4,6 +4,7 @@ import id.ac.tazkia.minibank.entity.Nasabah;
 import id.ac.tazkia.minibank.entity.NasabahStatus;
 import id.ac.tazkia.minibank.entity.ProdukTabungan;
 import id.ac.tazkia.minibank.entity.Rekening;
+import id.ac.tazkia.minibank.entity.RekeningStatus;
 import id.ac.tazkia.minibank.repository.NasabahRepository;
 import id.ac.tazkia.minibank.repository.ProdukTabunganRepository;
 import id.ac.tazkia.minibank.repository.RekeningRepository;
@@ -141,7 +142,8 @@ public List<Nasabah> listEligibleCustomers(NasabahStatus status, String q) {
         r.setNasabah(n);
         r.setNomorRekening("543" + noUrut6 + kodeProduk2);
 
-        r.setStatusActive(true);
+        r.setStatus(RekeningStatus.PENDING);
+        r.setStatusActive(false);
         r.setCifNasabah(n.getCif());
         r.setNik(n.getNik());
         r.setNamaNasabah(n.getNamaSesuaiIdentitas());
@@ -174,6 +176,7 @@ public List<Nasabah> listEligibleCustomers(NasabahStatus status, String q) {
     @Transactional
     public void closeAccount(Long rekeningId, String reason) {
         Rekening r = getAccountById(rekeningId);
+        r.setStatus(RekeningStatus.CLOSED);
         r.setStatusActive(false);
         if (reason != null && !reason.isBlank()) {
             r.setReasonForClosure(reason);

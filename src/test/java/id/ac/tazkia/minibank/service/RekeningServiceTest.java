@@ -63,7 +63,8 @@ class RekeningServiceTest extends BaseIntegrationTest {
         assertTrue(result.getNomorRekening().startsWith("543"));
         assertEquals("C9890001", result.getCifNasabah());
         assertEquals("Budi Santoso", result.getNamaNasabah());
-        assertTrue(result.isStatusActive());
+        assertEquals(id.ac.tazkia.minibank.entity.RekeningStatus.PENDING, result.getStatus());
+        assertFalse(result.isStatusActive());
         assertTrue(rekeningRepository.findById(result.getId()).isPresent());
     }
 
@@ -117,11 +118,12 @@ class RekeningServiceTest extends BaseIntegrationTest {
 
         Rekening created = rekeningService.openAccount(activeNasabah.getId(), activeProduk.getId(),
                 new BigDecimal("500000"), "Menabung");
-        assertTrue(created.isStatusActive());
+        assertEquals(id.ac.tazkia.minibank.entity.RekeningStatus.PENDING, created.getStatus());
 
         rekeningService.closeAccount(created.getId());
 
         Rekening closed = rekeningRepository.findById(created.getId()).orElseThrow();
+        assertEquals(id.ac.tazkia.minibank.entity.RekeningStatus.CLOSED, closed.getStatus());
         assertFalse(closed.isStatusActive());
     }
 

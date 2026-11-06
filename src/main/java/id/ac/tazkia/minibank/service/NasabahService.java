@@ -30,7 +30,7 @@ public class NasabahService {
 
         // default status
         if (form.getStatus() == null) {
-            form.setStatus(NasabahStatus.INACTIVE);
+            form.setStatus(NasabahStatus.ACTIVE);
         }
 
         // CIF auto-generate kalau kosong
