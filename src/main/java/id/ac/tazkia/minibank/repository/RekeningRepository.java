@@ -1,6 +1,7 @@
 package id.ac.tazkia.minibank.repository;
 
 import id.ac.tazkia.minibank.entity.Rekening;
+import id.ac.tazkia.minibank.entity.RekeningStatus;
 import jakarta.persistence.LockModeType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -64,6 +65,10 @@ public interface RekeningRepository extends JpaRepository<Rekening, Long> {
 
     // biar DashboardService kamu gak error lagi
     long countByStatusActive(boolean statusActive);
+
+    long countByStatus(RekeningStatus status);
+    List<Rekening> findByStatusOrderByCreatedAtDesc(RekeningStatus status);
+    List<Rekening> findByStatusInOrderByApprovedAtDesc(List<RekeningStatus> statuses);
 
     // ---------------------------
     // Methods used by TELLER UI

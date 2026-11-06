@@ -21,7 +21,7 @@ public class Nasabah {
     // ====== STATUS APPROVAL ======
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
-    private NasabahStatus status = NasabahStatus.INACTIVE; // DEFAULT SESUAI REQUIREMENT
+    private NasabahStatus status = NasabahStatus.ACTIVE;
 
     @Column(name = "created_by", length = 255)
     private String createdBy;
@@ -89,7 +89,7 @@ public class Nasabah {
     @PrePersist
     public void onPrePersist() {
         if (this.createdAt == null) this.createdAt = LocalDateTime.now();
-        if (this.status == null) this.status = NasabahStatus.INACTIVE;
+        if (this.status == null) this.status = NasabahStatus.ACTIVE;
     }
 
     // ====== getter / setter ======

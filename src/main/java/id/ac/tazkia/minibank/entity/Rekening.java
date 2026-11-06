@@ -19,6 +19,22 @@ public class Rekening {
     @Column(name = "status_active")
     private boolean statusActive = true;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", length = 20)
+    private RekeningStatus status = RekeningStatus.PENDING;
+
+    @Column(name = "approved_by", length = 255)
+    private String approvedBy;
+
+    @Column(name = "approved_at")
+    private LocalDateTime approvedAt;
+
+    @Column(name = "approval_notes", columnDefinition = "text")
+    private String approvalNotes;
+
+    @Column(name = "rejection_reason", columnDefinition = "text")
+    private String rejectionReason;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "nasabah_id")
     private Nasabah nasabah;
@@ -74,6 +90,7 @@ public class Rekening {
     @PrePersist
     public void onPrePersist() {
         if (createdAt == null) createdAt = LocalDateTime.now();
+        if (status == null) status = RekeningStatus.PENDING;
     }
 
     // getters & setters
@@ -82,8 +99,25 @@ public class Rekening {
     public String getNomorRekening() { return nomorRekening; }
     public void setNomorRekening(String nomorRekening) { this.nomorRekening = nomorRekening; }
 
-    public boolean isStatusActive() { return statusActive; }
+    public boolean isStatusActive() {
+        return statusActive && (status == null || status == RekeningStatus.ACTIVE);
+    }
     public void setStatusActive(boolean statusActive) { this.statusActive = statusActive; }
+
+    public RekeningStatus getStatus() { return status; }
+    public void setStatus(RekeningStatus status) { this.status = status; }
+
+    public String getApprovedBy() { return approvedBy; }
+    public void setApprovedBy(String approvedBy) { this.approvedBy = approvedBy; }
+
+    public LocalDateTime getApprovedAt() { return approvedAt; }
+    public void setApprovedAt(LocalDateTime approvedAt) { this.approvedAt = approvedAt; }
+
+    public String getApprovalNotes() { return approvalNotes; }
+    public void setApprovalNotes(String approvalNotes) { this.approvalNotes = approvalNotes; }
+
+    public String getRejectionReason() { return rejectionReason; }
+    public void setRejectionReason(String rejectionReason) { this.rejectionReason = rejectionReason; }
 
     public Nasabah getNasabah() { return nasabah; }
     public void setNasabah(Nasabah nasabah) { this.nasabah = nasabah; }
