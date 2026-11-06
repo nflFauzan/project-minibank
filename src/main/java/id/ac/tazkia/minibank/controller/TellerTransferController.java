@@ -29,7 +29,7 @@ public class TellerTransferController {
      */
     @GetMapping
     public String listRekening() {
-        return "teller/transfer/list"; 
+        return "redirect:/teller/transaction/transfer"; 
     }
 
     /**

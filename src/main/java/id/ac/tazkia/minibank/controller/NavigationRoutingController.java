@@ -41,9 +41,14 @@ public class NavigationRoutingController {
         return "redirect:/teller/transaction/list";
     }
 
-    @GetMapping("/transaction/cash-deposit")
+    @GetMapping({"/teller/deposit", "/transaction/cash-deposit"})
     public String transactionDeposit() {
         return "redirect:/teller/transaction/deposit";
+    }
+
+    @GetMapping("/teller/withdrawal")
+    public String transactionWithdrawal() {
+        return "redirect:/teller/transaction/withdrawal";
     }
 
     @GetMapping("/passbook/select-account")

@@ -18,10 +18,8 @@ public class TellerDashboardController {
     // Sub-dashboard /teller/dashboard removed. All roles use unified /dashboard.
     
     @GetMapping("/transaction")
-    public String transaction(Model model) {
-        model.addAttribute("active", "transaction");
-        model.addAttribute("page", Page.empty());
-        return "teller/transaction/list";
+    public String transaction() {
+        return "redirect:/teller/transaction/list";
     }
 
     // placeholder settings biar link sidebar ga 500

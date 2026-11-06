@@ -128,5 +128,41 @@ public class NavigationRoutingControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/admin/users/create"));
     }
+
+    @Test
+    @WithMockUser(roles = "TELLER")
+    @DisplayName("GET /teller/deposit redirects to /teller/transaction/deposit")
+    void tellerDeposit_redirects() throws Exception {
+        mockMvc.perform(get("/teller/deposit"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/teller/transaction/deposit"));
+    }
+
+    @Test
+    @WithMockUser(roles = "TELLER")
+    @DisplayName("GET /teller/withdrawal redirects to /teller/transaction/withdrawal")
+    void tellerWithdrawal_redirects() throws Exception {
+        mockMvc.perform(get("/teller/withdrawal"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/teller/transaction/withdrawal"));
+    }
+
+    @Test
+    @WithMockUser(roles = "TELLER")
+    @DisplayName("GET /teller/transfer redirects to /teller/transaction/transfer")
+    void tellerTransfer_redirects() throws Exception {
+        mockMvc.perform(get("/teller/transfer"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/teller/transaction/transfer"));
+    }
+
+    @Test
+    @WithMockUser(roles = "TELLER")
+    @DisplayName("GET /teller/transaction redirects to /teller/transaction/list")
+    void tellerTransaction_redirects() throws Exception {
+        mockMvc.perform(get("/teller/transaction"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/teller/transaction/list"));
+    }
 }
 
