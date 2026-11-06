@@ -51,7 +51,6 @@ public class SupervisorNasabahController {
         };
 
         model.addAttribute("active", "nasabah");
-        model.addAttribute("roleLabel", "Supervisor");
         model.addAttribute("employeeId", auth != null ? auth.getName() : "-");
 
         model.addAttribute("filter", filter.name());
@@ -70,7 +69,6 @@ public class SupervisorNasabahController {
         Nasabah n = approvalService.getByIdOrThrow(id);
 
         model.addAttribute("active", "nasabah");
-        model.addAttribute("roleLabel", "Supervisor");
         model.addAttribute("employeeId", auth != null ? auth.getName() : "-");
 
         model.addAttribute("nasabah", n);
