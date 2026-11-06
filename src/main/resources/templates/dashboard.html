@@ -303,75 +303,14 @@
 <body>
 <div class="cs-shell">
 
-  <!-- Sidebar (Deep Navy Blue #0d1b45) -->
-  <aside class="cs-sidebar">
-    <div class="cs-sidebar__top">
-      <div class="cs-mini-icon">
-        <div class="cs-brand-text">
-          <img th:src="@{/images/logo-tazkia.png}" style="height:24px; vertical-align:middle; margin-right:8px;" alt="logo">
-          Tazkia Minibank
-        </div>
-      </div>
-    </div>
-
-    <nav class="cs-nav">
-      <!-- Universal Dashboard Link -->
-      <a id="dashboard-link" th:href="@{/dashboard}" class="active">Dashboard</a>
-
-      <!-- CS Links -->
-      <th:block th:if="${isCs or isAdmin}">
-        <a id="customer-link" th:href="@{/cs/customers}">Customers</a>
-        <a id="account-link" th:href="@{/cs/account}">Account</a>
-        <a id="product-link" th:href="@{/cs/product}">Pengelolaan Produk Bank</a>
-      </th:block>
-
-      <!-- Teller Links -->
-      <th:block th:if="${isTeller}">
-        <a id="transaction-link" th:href="@{/teller/transaction}">Transaksi</a>
-        <a id="deposit-link" th:href="@{/teller/deposit}">Setoran Tunai</a>
-        <a id="withdrawal-link" th:href="@{/teller/withdrawal}">Penarikan Tunai</a>
-        <a id="transfer-link" th:href="@{/teller/transfer}">Transfer Dana</a>
-        <a id="passbook-link" th:href="@{/teller/passbook/select-account}">Passbook</a>
-      </th:block>
-
-      <!-- Supervisor / Branch Manager Links -->
-      <th:block th:if="${isBranchManager}">
-        <a id="approval-queue-link" th:href="@{/supervisor/nasabah}">Approval Nasabah</a>
-      </th:block>
-
-      <!-- Admin Links -->
-      <th:block th:if="${isAdmin}">
-        <a id="admin-user-create-link" th:href="@{/admin/users/create}">Tambah Pengguna</a>
-      </th:block>
-    </nav>
-
-    <div class="cs-sidebar__bottom">
-      <a class="cs-settings" th:href="@{/settings}">Settings</a>
-      <a class="cs-logout" id="logout-button" th:href="@{/logout}">Logout</a>
-    </div>
-  </aside>
+  <!-- Unified Sidebar -->
+  <div th:replace="~{cs/fragments :: sidebar('dashboard')}"></div>
 
   <!-- Main Content Shell -->
   <div class="cs-content">
 
-    <!-- Topbar with Minibank Banner -->
-    <header class="cs-topbar">
-      <div class="cs-header-banner">
-        <img th:src="@{/images/dashboard-tazkia-minibank.png}" class="cs-header-img" alt="Banner">
-      </div>
-
-      <div class="cs-meta">
-        <div class="cs-meta__left" th:text="${currentDate} ?: ${todayFormatted}">
-          Senin, 05-01-2026 | 00:14
-        </div>
-
-        <div class="cs-meta__right">
-          <span id="header-role" th:text="${roleLabel} ?: 'Staff'">Customer Service</span>
-          <span class="cs-meta__sep">|</span>
-          <span id="header-username" th:text="${username} ?: 'User'">User</span>
-        </div>
-      </div>
-    </header>
+    <!-- Unified Topbar with Minibank Banner -->
+    <div th:replace="~{cs/fragments :: topbar}"></div>
 
     <!-- Page Content -->
     <main class="cs-page">
