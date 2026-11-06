@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Direct Passbook Printing - Minibank</title>
+  
+  <link rel="stylesheet" th:href="@{/css/cs-shell.css}">
+  <link rel="stylesheet" th:href="@{/css/custom.css}">
+  <link rel="stylesheet" th:href="@{/css/minibank-ui.css}">
+  <link rel="stylesheet" th:href="@{/css/account.css}">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif !important;
+      background-color: #f8fafc;
+      color: #0f172a;
+    }
+
+    .page-title {
+      font-size: 24px;
+      font-weight: 800;
+      color: #1e3a8a;
+      margin-bottom: 0;
+    }
+
+    .content-card {
+      background: #fff;
+      border-radius: 20px;
+      border: 1px solid rgba(0,0,0,.05);
+      box-shadow: 0 10px 30px rgba(0,0,0,.04);
+      padding: 30px;
+      margin-top: 20px;
+    }
+
+    .btn-act {
+      padding: 8px 18px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-gray { background-color: #64748b; color: #fff; }
+    .btn-gray:hover { background-color: #475569; }
+
+    .btn-blue { background-color: #2563eb; color: #fff; }
+    .btn-blue:hover { background-color: #1d4ed8; }
+
+    .btn-green { background-color: #16a34a; color: #fff; }
+    .btn-green:hover { background-color: #15803d; }
+
+    .btn-yellow { background-color: #eab308; color: #fff; }
+    .btn-yellow:hover { background-color: #ca8a04; }
+
+    .warning-box {
+      background-color: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin-bottom: 20px;
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+    }
+
+    .info-card {
+      background-color: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 14px;
+      padding: 20px 24px;
+      margin-bottom: 20px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .info-col h3 {
+      font-size: 13px;
+      font-weight: 700;
+      color: #1e40af;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .info-row {
+      font-size: 13px;
+      margin-bottom: 8px;
+      color: #1e293b;
+    }
+
+    .info-row strong {
+      color: #475569;
+    }
+
+    .config-card {
+      background-color: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 12px;
+      padding: 18px 20px;
+      margin-bottom: 20px;
+    }
+
+    .printer-status-card {
+      background-color: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .unprinted-card {
+      background-color: #fefce8;
+      border: 1px solid #fef08a;
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .controls-card {
+      background-color: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 14px;
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+
+    .controls-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .log-box {
+      background: #0f172a;
+      color: #f8fafc;
+      border-radius: 10px;
+      padding: 14px;
+      height: 160px;
+      overflow-y: auto;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .direct-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    .direct-table th {
+      background-color: #f1f5f9;
+      color: #334155;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 11px;
+      letter-spacing: 0.5px;
+      padding: 10px 14px;
+      border-bottom: 2px solid #e2e8f0;
+    }
+
+    .direct-table td {
+      padding: 12px 14px;
+      border-bottom: 1px solid #f1f5f9;
+      vertical-align: middle;
+    }
+
+    .status-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 8px;
+    }
+    .status-dot.gray { background-color: #cbd5e1; }
+    .status-dot.green { background-color: #22c55e; }
+    .status-dot.red { background-color: #ef4444; }
+
+    .hidden { display: none !important; }
+  </style>
+</head>
+
+<body>
+<div class="cs-shell">
+
+  <!-- Sidebar teller versi fragment CS -->
+  <div th:replace="~{cs/fragments :: tellerSidebar('passbook-printing')}"></div>
+
+  <div class="cs-content">
+    <div th:replace="~{cs/fragments :: topbar}"></div>
+
+    <main class="cs-page" style="padding: 30px;">
+
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h1 class="page-title" id="page-title">Passbook Printing (ESC-POS)</h1>
+        <a th:href="@{/teller/passbook/select-account}" id="back-to-selection-button" class="btn-act btn-gray">Back to Selection</a>
+      </div>
+
+      <div class="content-card">
+
+        <!-- Browser warning -->
+        <div id="browser-warning" class="warning-box">
+          <div style="font-size: 20px; color: #ef4444;">⚠️</div>
+          <div>
+            <h3 style="font-size: 14px; font-weight: 700; color: #991b1b; margin-bottom: 4px;">ESC-POS Printer Manager Not Running</h3>
+            <p id="browser-warning-text" style="font-size: 13px; color: #b91c1c; margin: 0;">ESC-POS Printer Manager is not running or no printers configured. Please start ESC-POS Printer Manager and configure your printer.</p>
+          </div>
+        </div>
+
+        <!-- Account information card -->
+        <div class="info-card">
+          <div class="info-col">
+            <h3>Account Details</h3>
+            <div class="info-row"><strong>Account Number:</strong> <span id="account-number" th:text="${account.nomorRekening}">A2000009</span></div>
+            <div class="info-row"><strong>Account Name:</strong> <span th:text="${account.namaNasabah}">Saniatun Nurhasanah</span></div>
+            <div class="info-row"><strong>Product:</strong> <span th:text="${account.produk != null ? account.produk : 'Tabungan Wadiah Basic'}">Tabungan Wadiah</span></div>
+          </div>
+          <div class="info-col">
+            <h3>Customer Details</h3>
+            <div class="info-row"><strong>Customer:</strong> <span th:text="${customer != null ? customer.namaLengkap : account.namaNasabah}">Saniatun Nurhasanah</span></div>
+            <div class="info-row"><strong>Customer Number:</strong> <span th:text="${account.cifNasabah}">C1000014</span></div>
+            <div class="info-row"><strong>Current Balance:</strong> 
+              <span style="font-weight: 700;">IDR <span th:text="${#numbers.formatDecimal(account.saldo, 1, 'COMMA', 2, 'POINT')}">3,500,000.00</span></span>
+            </div>
+          </div>
+          <div class="info-col">
+            <h3>Passbook Status</h3>
+            <div class="info-row"><strong>Passbook No:</strong> <span id="passbook-number" th:text="${passbook.passbookNumber}">PB0000003</span></div>
+            <div class="info-row"><strong>Current Page:</strong> <span id="current-page" th:text="${passbook.currentPage}">1</span></div>
+            <div class="info-row"><strong>Last Printed Line:</strong> <span id="last-printed-line" th:text="${passbook.lastPrintedLine}">0</span></div>
+            <div class="info-row"><strong>Remaining Lines:</strong> <span id="remaining-lines" th:text="${passbook.remainingLines}">30</span></div>
+          </div>
+        </div>
+
+        <!-- Printer Server Configuration -->
+        <div class="config-card">
+          <h3 style="font-size: 13px; font-weight: 700; color: #166534; margin-bottom: 8px;">Printer Server Configuration</h3>
+          <div style="display: flex; gap: 10px;">
+            <div style="flex: 1;">
+              <input type="text" id="printer-server-url" class="form-control" style="width: 100%; padding: 8px 12px; border-radius: 8px; border: 1px solid #86efac;" value="http://localhost:8000" placeholder="http://localhost:8000 or http://192.168.1.100:8000" />
+              <small style="color: #15803d; font-size: 11px;">For production: Use your machine's local network IP (e.g. http://192.168.1.100:8000)</small>
+            </div>
+            <div>
+              <button id="save-server-url-btn" class="btn-act btn-blue">Save &amp; Apply</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Printer Connection Status -->
+        <div class="printer-status-card">
+          <div style="display: flex; align-items: center;">
+            <div id="printer-status-icon" class="status-dot gray"></div>
+            <div>
+              <div style="font-size: 14px; font-weight: 600; color: #1e293b;">Printer Status</div>
+              <div id="printer-status-text" style="font-size: 12px; color: #64748b;">Not connected</div>
+            </div>
+          </div>
+          <button id="connect-printer-btn" class="btn-act btn-blue" disabled>Connect Printer</button>
+        </div>
+
+        <!-- Unprinted transactions info -->
+        <div id="unprinted-info" class="unprinted-card">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <div style="font-size: 20px;">⏱️</div>
+            <div>
+              <div style="font-size: 14px; font-weight: 600; color: #854d0e;">Unprinted Transactions</div>
+              <div id="unprinted-count" style="font-size: 13px; color: #a16207;">Checking...</div>
+            </div>
+          </div>
+          <button id="refresh-status-btn" style="background: none; border: none; color: #854d0e; text-decoration: underline; font-weight: 600; cursor: pointer; font-size: 13px;">Refresh</button>
+        </div>
+
+        <!-- Print Controls -->
+        <div class="controls-card">
+          <h3 style="font-size: 16px; font-weight: 700; color: #166534; margin-bottom: 16px;">Print Controls</h3>
+          <div class="controls-grid">
+            <div>
+              <button id="print-btn" class="btn-act btn-green" style="width: 100%; justify-content: center; padding: 14px; font-size: 15px;" disabled>🖨️ Print to Passbook</button>
+              <p style="font-size: 12px; color: #15803d; text-align: center; margin-top: 8px;">Prints unprinted transactions to ESC-POS printer</p>
+            </div>
+            <div>
+              <button id="next-page-btn" class="btn-act btn-yellow" style="width: 100%; justify-content: center; padding: 14px; font-size: 15px;" disabled>📄 Advance to Next Page</button>
+              <p style="font-size: 12px; color: #a16207; text-align: center; margin-top: 8px;">Use when current passbook page is full</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Print Progress -->
+        <div id="print-progress" class="hidden" style="background-color: #eff6ff; border: 1px solid #bfdbfe; border-radius: 12px; padding: 16px; margin-bottom: 20px;">
+          <h4 style="font-size: 13px; font-weight: 700; color: #1e40af; margin-bottom: 8px;">Printing Progress</h4>
+          <div style="width: 100%; background-color: #bfdbfe; height: 16px; border-radius: 8px; overflow: hidden; margin-bottom: 8px;">
+            <div id="progress-bar" style="width: 0%; height: 100%; background-color: #2563eb; transition: width 0.3s;"></div>
+          </div>
+          <p id="progress-text" style="font-size: 12px; color: #1e40af; margin: 0;">Preparing...</p>
+        </div>
+
+        <!-- Activity Log -->
+        <h3 style="font-size: 14px; font-weight: 700; color: #1e293b; margin-bottom: 8px;">Activity Log</h3>
+        <div id="status-log" class="log-box mb-4">
+          <p style="color: #94a3b8; margin: 0;">Ready for printing...</p>
+        </div>
+
+        <!-- Transactions Preview Table -->
+        <h3 style="font-size: 16px; font-weight: 700; color: #1e293b; margin-top: 24px; margin-bottom: 12px;">Transactions to Print</h3>
+        <div style="overflow-x: auto;">
+          <table class="direct-table">
+            <thead>
+              <tr>
+                <th style="width: 8%;">Line</th>
+                <th style="width: 14%;">Date</th>
+                <th style="width: 32%;">Description</th>
+                <th style="width: 14%; text-align: right;">Debit</th>
+                <th style="width: 14%; text-align: right;">Credit</th>
+                <th style="width: 18%; text-align: right;">Balance</th>
+              </tr>
+            </thead>
+            <tbody id="transactions-tbody">
+              <tr>
+                <td colspan="6" style="text-align: center; color: #64748b; padding: 25px;">Loading transactions...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script th:src="@{/js/escpos-printer.bundle.js}"></script>
+<script th:inline="javascript">
+  /*<![CDATA[*/
+  const accountId = /*[[${accountId}]]*/ '6964b269-79fd-4a59-93e2-61011233fc30';
+  const PRINTER_SERVER_URL_KEY = "escpos_printer_server_url";
+  let printerServerUrl = localStorage.getItem(PRINTER_SERVER_URL_KEY) || "http://localhost:8000";
+
+  let printManager = null;
+  if (window.PassbookPrinter && window.PassbookPrinter.PassbookPrintManager) {
+    printManager = new PassbookPrinter.PassbookPrintManager("", printerServerUrl);
+  }
+  let printData = null;
+
+  const browserWarning = document.getElementById("browser-warning");
+  const browserWarningText = document.getElementById("browser-warning-text");
+  const printerServerUrlInput = document.getElementById("printer-server-url");
+  const saveServerUrlBtn = document.getElementById("save-server-url-btn");
+  const printerStatusIcon = document.getElementById("printer-status-icon");
+  const printerStatusText = document.getElementById("printer-status-text");
+  const connectBtn = document.getElementById("connect-printer-btn");
+  const printBtn = document.getElementById("print-btn");
+  const nextPageBtn = document.getElementById("next-page-btn");
+  const refreshStatusBtn = document.getElementById("refresh-status-btn");
+  const statusLog = document.getElementById("status-log");
+  const printProgress = document.getElementById("print-progress");
+  const progressBar = document.getElementById("progress-bar");
+  const progressText = document.getElementById("progress-text");
+  const transactionsTbody = document.getElementById("transactions-tbody");
+
+  function logMessage(msg, type = "info") {
+    const timestamp = new Date().toLocaleTimeString();
+    const colors = { info: "#cbd5e1", success: "#4ade80", warning: "#facc15", error: "#f87171" };
+    const p = document.createElement("p");
+    p.style.color = colors[type] || "#cbd5e1";
+    p.style.margin = "2px 0";
+    p.textContent = `[${timestamp}] ${msg}`;
+    statusLog.insertBefore(p, statusLog.firstChild);
+  }
+
+  function saveAndApplyServerUrl() {
+    const url = printerServerUrlInput.value.trim();
+    if (!url) {
+      logMessage("Please enter a valid printer server URL", "error");
+      return;
+    }
+    localStorage.setItem(PRINTER_SERVER_URL_KEY, url);
+    printerServerUrl = url;
+    if (printManager) printManager.setPrinterServerUrl(url);
+    logMessage(`Printer server URL updated to: ${url}`, "success");
+  }
+
+  async function checkCompatibility() {
+    if (!printManager) return false;
+    try {
+      const compat = await printManager.checkCompatibility();
+      if (!compat.supported) {
+        browserWarning.classList.remove("hidden");
+        browserWarningText.textContent = compat.message;
+        connectBtn.disabled = true;
+        return false;
+      }
+      browserWarning.classList.add("hidden");
+      return true;
+    } catch (e) {
+      browserWarning.classList.remove("hidden");
+      return false;
+    }
+  }
+
+  function updatePrinterStatus(connected) {
+    if (connected) {
+      printerStatusIcon.className = "status-dot green";
+      printerStatusText.textContent = "Connected to ESC-POS Printer";
+      connectBtn.textContent = "Disconnect";
+      printBtn.disabled = !printData || !printData.transactions || printData.transactions.length === 0;
+    } else {
+      printerStatusIcon.className = "status-dot gray";
+      printerStatusText.textContent = "Not connected";
+      connectBtn.textContent = "Connect Printer";
+      printBtn.disabled = true;
+    }
+  }
+
+  function updatePassbookStatus(status) {
+    document.getElementById("passbook-number").textContent = status.passbookNumber || "Not issued";
+    document.getElementById("current-page").textContent = status.currentPage || "-";
+    document.getElementById("last-printed-line").textContent = status.lastPrintedLine || "0";
+    document.getElementById("remaining-lines").textContent = status.remainingLines || "-";
+    document.getElementById("unprinted-count").textContent = `${status.unprintedTransactionCount} transaction(s) pending print`;
+  }
+
+  function formatAmount(val) {
+    if (val === null || val === undefined) return "";
+    return new Intl.NumberFormat("id-ID", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(val);
+  }
+
+  function formatDate(d) {
+    return new Date(d).toLocaleDateString("id-ID", { day: "2-digit", month: "2-digit", year: "numeric" });
+  }
+
+  async function loadPrintData() {
+    try {
+      logMessage("Fetching print data...");
+      const res = await fetch(`/api/passbook/${accountId}/print-data`);
+      if (!res.ok) throw new Error("Failed to load print data");
+      printData = await res.json();
+
+      if (printData.passbook) {
+        updatePassbookStatus({
+          passbookNumber: printData.passbook.passbookNumber,
+          currentPage: printData.passbook.currentPage,
+          lastPrintedLine: printData.passbook.lastPrintedLine,
+          remainingLines: printData.passbook.remainingLines,
+          unprintedTransactionCount: printData.transactions ? printData.transactions.length : 0
+        });
+      }
+
+      if (printData.transactions && printData.transactions.length > 0) {
+        transactionsTbody.innerHTML = printData.transactions.map(tx => `
+          <tr id="tx-row-${tx.id}">
+            <td style="font-weight: 600;">${tx.lineNumber}</td>
+            <td>${formatDate(tx.transactionDate)}</td>
+            <td>${tx.description || ""}</td>
+            <td style="text-align: right; color: #dc2626;">${tx.debit ? formatAmount(tx.debit) : ""}</td>
+            <td style="text-align: right; color: #16a34a;">${tx.credit ? formatAmount(tx.credit) : ""}</td>
+            <td style="text-align: right; font-weight: 700;">${formatAmount(tx.balance)}</td>
+          </tr>
+        `).join("");
+        logMessage(`Found ${printData.transactions.length} transactions to print`, "success");
+      } else {
+        transactionsTbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: #64748b; padding: 25px;">No transactions to print</td></tr>`;
+      }
+    } catch (e) {
+      logMessage("Error loading print data: " + e.message, "error");
+    }
+  }
+
+  async function advanceToNextPage() {
+    try {
+      logMessage("Advancing to next page...");
+      const res = await fetch(`/api/passbook/${accountId}/next-page`, { method: "POST" });
+      const result = await res.json();
+      if (result.success) {
+        logMessage(`Advanced to page ${result.currentPage}`, "success");
+        await loadPrintData();
+      } else {
+        logMessage("Failed to advance: " + result.error, "error");
+      }
+    } catch (e) {
+      logMessage("Failed to advance page: " + e.message, "error");
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", async function() {
+    printerServerUrlInput.value = printerServerUrl;
+    saveServerUrlBtn.addEventListener("click", saveAndApplyServerUrl);
+    nextPageBtn.addEventListener("click", advanceToNextPage);
+    refreshStatusBtn.addEventListener("click", loadPrintData);
+    nextPageBtn.disabled = false;
+
+    await checkCompatibility();
+    await loadPrintData();
+    logMessage("Ready for printing", "success");
+  });
+  /*]]>*/
+</script>
+</body>
+</html>
+

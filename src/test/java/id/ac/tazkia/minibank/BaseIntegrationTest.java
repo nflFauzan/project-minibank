@@ -49,9 +49,13 @@ public abstract class BaseIntegrationTest {
     @Autowired protected NasabahRepository nasabahRepository;
     @Autowired protected RekeningRepository rekeningRepository;
     @Autowired protected TransaksiRepository transaksiRepository;
+    @Autowired(required = false) protected id.ac.tazkia.minibank.repository.PassbookRepository passbookRepository;
 
     @org.junit.jupiter.api.BeforeEach
     void cleanupDatabase() {
+        if (passbookRepository != null) {
+            passbookRepository.deleteAllInBatch();
+        }
         transaksiRepository.deleteAllInBatch();
         rekeningRepository.deleteAllInBatch();
         nasabahRepository.deleteAllInBatch();

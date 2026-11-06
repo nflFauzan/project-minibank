@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Passbook Preview - Minibank</title>
+  
+  <link rel="stylesheet" th:href="@{/css/cs-shell.css}">
+  <link rel="stylesheet" th:href="@{/css/custom.css}">
+  <link rel="stylesheet" th:href="@{/css/minibank-ui.css}">
+  <link rel="stylesheet" th:href="@{/css/account.css}">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif !important;
+      background-color: #f8fafc;
+      color: #0f172a;
+    }
+
+    .page-title {
+      font-size: 24px;
+      font-weight: 800;
+      color: #1e3a8a;
+      margin-bottom: 0;
+    }
+
+    .content-card {
+      background: #fff;
+      border-radius: 20px;
+      border: 1px solid rgba(0,0,0,.05);
+      box-shadow: 0 10px 30px rgba(0,0,0,.04);
+      padding: 30px;
+      margin-top: 20px;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .btn-act {
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-gray {
+      background-color: #64748b;
+      color: #fff;
+    }
+    .btn-gray:hover { background-color: #475569; }
+
+    .btn-blue {
+      background-color: #2563eb;
+      color: #fff;
+    }
+    .btn-blue:hover { background-color: #1d4ed8; }
+
+    .btn-green {
+      background-color: #16a34a;
+      color: #fff;
+    }
+    .btn-green:hover { background-color: #15803d; }
+
+    .info-card {
+      background-color: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 14px;
+      padding: 20px 24px;
+      margin-bottom: 24px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .info-col h3 {
+      font-size: 14px;
+      font-weight: 700;
+      color: #1e40af;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .info-row {
+      font-size: 13px;
+      margin-bottom: 8px;
+      color: #1e293b;
+    }
+
+    .info-row strong {
+      color: #475569;
+      display: inline-block;
+      min-width: 130px;
+    }
+
+    .filter-card {
+      background-color: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin-bottom: 24px;
+    }
+
+    .filter-form {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      align-items: flex-end;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group label {
+      font-size: 12px;
+      font-weight: 600;
+      color: #475569;
+    }
+
+    .form-control {
+      padding: 8px 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 13px;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .note-box {
+      background-color: #fefce8;
+      border: 1px solid #fef08a;
+      border-radius: 10px;
+      padding: 14px 18px;
+      margin-bottom: 24px;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .note-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #854d0e;
+      margin-bottom: 4px;
+    }
+
+    .note-text {
+      font-size: 12px;
+      color: #a16207;
+      margin: 0;
+    }
+
+    .preview-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    .preview-table th {
+      background-color: #f1f5f9;
+      color: #334155;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 11px;
+      letter-spacing: 0.5px;
+      padding: 10px 14px;
+      border-bottom: 2px solid #e2e8f0;
+    }
+
+    .preview-table td {
+      padding: 12px 14px;
+      border-bottom: 1px solid #f1f5f9;
+      vertical-align: middle;
+    }
+
+    .badge-deposit {
+      background-color: #dcfce7;
+      color: #15803d;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .badge-withdraw {
+      background-color: #fee2e2;
+      color: #b91c1c;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .alert-banner {
+      padding: 12px 16px;
+      border-radius: 10px;
+      margin-bottom: 16px;
+      font-size: 13px;
+      font-weight: 500;
+    }
+    .alert-success { background-color: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
+    .alert-danger { background-color: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
+  </style>
+</head>
+
+<body>
+<div class="cs-shell">
+
+  <!-- Sidebar teller versi fragment CS -->
+  <div th:replace="~{cs/fragments :: tellerSidebar('passbook-printing')}"></div>
+
+  <div class="cs-content">
+    <div th:replace="~{cs/fragments :: topbar}"></div>
+
+    <main class="cs-page" style="padding: 30px;">
+
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h1 class="page-title" id="page-title">Passbook Preview</h1>
+        <div class="header-actions">
+          <a th:href="@{/teller/passbook/select-account}" id="back-to-selection-button" class="btn-act btn-gray">Back to Selection</a>
+          <a th:href="@{/teller/passbook/direct-print/{id}(id=${accountId})}" id="direct-print-button" class="btn-act btn-blue" title="Print directly to Epson PLQ-20 passbook printer">Direct Print (PLQ-20)</a>
+          <a th:href="@{/teller/passbook/print/{id}(id=${accountId})}" id="preview-print-button" class="btn-act btn-green" title="Print to browser/PDF">Browser Print</a>
+        </div>
+      </div>
+
+      <!-- Flash Messages -->
+      <div th:if="${success}" class="alert-banner alert-success" th:text="${success}"></div>
+      <div th:if="${error}" class="alert-banner alert-danger" th:text="${error}"></div>
+
+      <div class="content-card">
+        
+        <!-- Account & Customer Details -->
+        <div class="info-card">
+          <div class="info-col">
+            <h3>Account Details</h3>
+            <div class="info-row"><strong>Account Number:</strong> <span th:text="${account.nomorRekening}">A2000009</span></div>
+            <div class="info-row"><strong>Account Name:</strong> <span th:text="${account.namaNasabah}">Saniatun Nurhasanah</span></div>
+            <div class="info-row"><strong>Product:</strong> <span th:text="${account.produk != null ? account.produk : 'Tabungan Wadiah Basic'}">Tabungan Wadiah</span></div>
+          </div>
+          <div class="info-col">
+            <h3>Customer Details</h3>
+            <div class="info-row"><strong>Customer:</strong> <span th:text="${customer != null ? customer.namaLengkap : account.namaNasabah}">Saniatun Nurhasanah</span></div>
+            <div class="info-row"><strong>Customer Number:</strong> <span th:text="${account.cifNasabah}">C1000014</span></div>
+            <div class="info-row"><strong>Current Balance:</strong> 
+              <span style="font-weight: 700; color: #0f172a;">IDR <span th:text="${#numbers.formatDecimal(account.saldo, 1, 'COMMA', 2, 'POINT')}">3,500,000.00</span></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Date Filter Form -->
+        <div class="filter-card">
+          <form method="get" th:action="@{/teller/passbook/print/{id}(id=${accountId})}" class="filter-form">
+            <div class="form-group">
+              <label for="fromDate">From Date</label>
+              <input type="date" id="fromDate" name="fromDate" class="form-control" />
+            </div>
+            <div class="form-group">
+              <label for="toDate">To Date</label>
+              <input type="date" id="toDate" name="toDate" class="form-control" />
+            </div>
+            <button type="submit" class="btn-act btn-blue">Apply Filter &amp; Print</button>
+            <a th:href="@{/teller/passbook/print/{id}(id=${accountId})}" class="btn-act btn-gray">Print All</a>
+          </form>
+        </div>
+
+        <!-- Preview Info Note -->
+        <div class="note-box">
+          <div style="font-size: 18px; color: #ca8a04;">⚠️</div>
+          <div>
+            <div class="note-title">Preview Information</div>
+            <p class="note-text">This preview shows the most recent 10 transactions. The actual passbook printing will include all transactions within the selected date range.</p>
+          </div>
+        </div>
+
+        <!-- Recent Transactions Table -->
+        <h3 style="font-size: 16px; font-weight: 700; color: #1e293b; margin-bottom: 14px;">Recent Transactions Preview</h3>
+        <div style="overflow-x: auto;">
+          <table class="preview-table">
+            <thead>
+              <tr>
+                <th style="width: 15%;">Date</th>
+                <th style="width: 35%;">Description</th>
+                <th style="width: 15%; text-align: center;">Type</th>
+                <th style="width: 18%; text-align: right;">Amount</th>
+                <th style="width: 17%; text-align: right;">Balance</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:if="${recentTransactions == null or #lists.isEmpty(recentTransactions)}">
+                <td colspan="5" style="text-align: center; color: #64748b; padding: 25px;">No transactions found.</td>
+              </tr>
+              <tr th:each="tx : ${recentTransactions}">
+                <td>
+                  <span th:text="${#temporals.format(tx.processedAt, 'dd/MM/yyyy')}">28/11/2025</span><br>
+                  <small style="color: #64748b;" th:text="${#temporals.format(tx.processedAt, 'HH:mm')}">20:32</small>
+                </td>
+                <td>
+                  <div style="font-weight: 600; color: #1e293b;" th:text="${tx.keterangan}">Penarikan</div>
+                  <small style="color: #64748b;" th:text="${tx.nomorTransaksi}">T3000138</small>
+                </td>
+                <td style="text-align: center;">
+                  <span th:if="${tx.tipe.name() == 'WITHDRAWAL'}" class="badge-withdraw">WITHDRAWAL</span>
+                  <span th:if="${tx.tipe.name() == 'DEPOSIT'}" class="badge-deposit">DEPOSIT</span>
+                  <span th:if="${tx.tipe.name() != 'WITHDRAWAL' and tx.tipe.name() != 'DEPOSIT'}" class="badge-deposit" th:text="${tx.tipe}">TRANSFER</span>
+                </td>
+                <td style="text-align: right;">
+                  <span th:if="${tx.tipe.name() == 'WITHDRAWAL'}" style="color: #dc2626; font-weight: 600;">
+                    - IDR <span th:text="${#numbers.formatDecimal(tx.jumlah, 1, 'COMMA', 2, 'POINT')}">500,000.00</span>
+                  </span>
+                  <span th:if="${tx.tipe.name() != 'WITHDRAWAL'}" style="color: #16a34a; font-weight: 600;">
+                    + IDR <span th:text="${#numbers.formatDecimal(tx.jumlah, 1, 'COMMA', 2, 'POINT')}">500,000.00</span>
+                  </span>
+                </td>
+                <td style="text-align: right; font-weight: 700; color: #0f172a;">
+                  IDR <span th:text="${#numbers.formatDecimal(tx.saldoSesudah, 1, 'COMMA', 2, 'POINT')}">3,500,000.00</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+
+    </main>
+  </div>
+</div>
+</body>
+</html>
+

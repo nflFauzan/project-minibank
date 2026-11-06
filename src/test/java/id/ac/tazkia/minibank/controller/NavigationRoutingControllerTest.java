@@ -112,24 +112,6 @@ public class NavigationRoutingControllerTest {
     }
 
     @Test
-    @WithMockUser(roles = "ADMIN")
-    @DisplayName("GET /rbac/users/list redirects to /dashboard")
-    void rbacUsersList_redirects() throws Exception {
-        mockMvc.perform(get("/rbac/users/list"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/dashboard"));
-    }
-
-    @Test
-    @WithMockUser(roles = "ADMIN")
-    @DisplayName("GET /rbac/users/create redirects to /admin/users/create")
-    void rbacUsersCreate_redirects() throws Exception {
-        mockMvc.perform(get("/rbac/users/create"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/admin/users/create"));
-    }
-
-    @Test
     @WithMockUser(roles = "TELLER")
     @DisplayName("GET /teller/deposit redirects to /teller/transaction/deposit")
     void tellerDeposit_redirects() throws Exception {

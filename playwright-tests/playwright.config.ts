@@ -110,6 +110,7 @@ export default defineConfig({
       testMatch: [
         /teller-dashboard\.spec\.ts/,
         /teller-transaction\.spec\.ts/,
+        /passbook-reverse-engineering\.spec\.ts/,
       ],
     },
   ],

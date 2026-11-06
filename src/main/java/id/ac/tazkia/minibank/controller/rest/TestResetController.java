@@ -7,6 +7,7 @@ import id.ac.tazkia.minibank.entity.Role;
 import id.ac.tazkia.minibank.entity.User;
 import id.ac.tazkia.minibank.entity.Rekening;
 import id.ac.tazkia.minibank.repository.NasabahRepository;
+import id.ac.tazkia.minibank.repository.PassbookRepository;
 import id.ac.tazkia.minibank.repository.ProdukTabunganRepository;
 import id.ac.tazkia.minibank.repository.RekeningRepository;
 import id.ac.tazkia.minibank.repository.RoleRepository;
@@ -30,6 +31,7 @@ import java.util.Set;
 public class TestResetController {
 
     private final TransaksiRepository transaksiRepo;
+    private final PassbookRepository passbookRepo;
     private final RekeningRepository rekeningRepo;
     private final NasabahRepository nasabahRepo;
     private final ProdukTabunganRepository produkRepo;
@@ -42,6 +44,9 @@ public class TestResetController {
         try {
             // Hapus data transaksi dulu (karena foreign key)
             transaksiRepo.deleteAll();
+            
+            // Hapus passbook sebelum rekening (foreign key)
+            passbookRepo.deleteAll();
             
             // Hapus rekening
             rekeningRepo.deleteAll();

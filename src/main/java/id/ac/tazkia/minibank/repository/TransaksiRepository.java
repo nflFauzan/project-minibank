@@ -33,7 +33,22 @@ public interface TransaksiRepository extends JpaRepository<Transaksi, UUID> {
     List<Transaksi> findByGroupIdOrderByProcessedAtAsc(UUID groupId);
 
    @Query("select count(t) from Transaksi t where t.channel = :channel")
-long countByChannel(@Param("channel") String channel);
+   long countByChannel(@Param("channel") String channel);
 
+    List<id.ac.tazkia.minibank.entity.Transaksi> findByRekeningOrderByProcessedAtAsc(id.ac.tazkia.minibank.entity.Rekening rekening);
 
+    List<id.ac.tazkia.minibank.entity.Transaksi> findByRekeningOrderByProcessedAtDesc(id.ac.tazkia.minibank.entity.Rekening rekening);
+
+    List<id.ac.tazkia.minibank.entity.Transaksi> findByRekeningAndPrintedFalseOrderByProcessedAtAsc(id.ac.tazkia.minibank.entity.Rekening rekening);
+
+    long countByRekeningAndPrintedFalse(id.ac.tazkia.minibank.entity.Rekening rekening);
+
+    List<id.ac.tazkia.minibank.entity.Transaksi> findByRekeningAndProcessedAtBetweenOrderByProcessedAtAsc(
+            id.ac.tazkia.minibank.entity.Rekening rekening, java.time.LocalDateTime start, java.time.LocalDateTime end);
+
+    List<id.ac.tazkia.minibank.entity.Transaksi> findByRekeningAndProcessedAtGreaterThanEqualOrderByProcessedAtAsc(
+            id.ac.tazkia.minibank.entity.Rekening rekening, java.time.LocalDateTime start);
+
+    List<id.ac.tazkia.minibank.entity.Transaksi> findByRekeningAndProcessedAtLessThanEqualOrderByProcessedAtAsc(
+            id.ac.tazkia.minibank.entity.Rekening rekening, java.time.LocalDateTime end);
 }
