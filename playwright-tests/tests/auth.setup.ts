@@ -20,7 +20,7 @@ setup('authenticate as Admin', async ({ page }) => {
   setup.setTimeout(60_000); // Extra time for slowMo
   const loginPage = new LoginPage(page);
   await loginPage.navigate();
-  await loginPage.login('admin', 'admin123', 'ADMIN');
+  await loginPage.login('admin', 'minibank123', 'ADMIN');
   
   // Wait for navigation to dashboard
   await page.waitForURL('**/dashboard', { timeout: 30_000 }); 
