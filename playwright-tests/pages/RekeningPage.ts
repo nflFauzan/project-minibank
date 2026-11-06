@@ -23,23 +23,32 @@ export class RekeningPage {
     
     // Fill search input and submit
     await this.page.locator('input[name="search"]').fill(name);
-    await this.page.locator('button:has-text("Cari Nasabah")').click();
+    await this.page.locator('button:has-text("Search"), button:has-text("Cari Nasabah")').first().click();
     
-    // Select the nasabah from the list (clicking the "Pilih & Buka Rekening" button in the correct card)
+    // Select the nasabah from the list (clicking the "Open Account" / "Pilih & Buka Rekening" button in the correct card)
     const card = this.page.locator('.customer-card', { hasText: name }).first();
-    await card.locator('a:has-text("Pilih & Buka Rekening")').click();
+    await card.locator('a:has-text("Open Account"), a:has-text("Pilih & Buka Rekening")').first().click();
     
     // Should now be on the form page
     await expect(this.page).toHaveURL(/\/cs\/account\/open\/\d+/);
   }
 
   async fillAccountForm(data: any) {
-    // TODO: verify selector against actual HTML
     if (data.produk) {
       await this.page.locator('select[name="produkId"]').selectOption({ label: data.produk });
     }
-    await this.page.locator('input[name="nominalSetoranAwal"]').fill(data.setoran);
-    await this.page.locator('input[name="tujuanPembukaan"]').fill(data.tujuan);
+    const accName = this.page.locator('input[name="namaRekening"], input#accountName');
+    if (await accName.isVisible()) {
+      await accName.fill(data.namaRekening || `${data.nasabah || 'Customer'} - Personal Savings`);
+    }
+    const setoran = this.page.locator('input[name="nominalSetoranAwal"]');
+    if (await setoran.isVisible()) {
+      await setoran.fill(data.setoran);
+    }
+    const tujuan = this.page.locator('input[name="tujuanPembukaan"]');
+    if (await tujuan.isVisible()) {
+      await tujuan.fill(data.tujuan);
+    }
   }
 
   async submitForm() {

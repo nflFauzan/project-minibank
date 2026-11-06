@@ -36,6 +36,33 @@ public class NavigationRoutingController {
         return "redirect:/cs/account/open";
     }
 
+    @GetMapping("/account/open/{id}")
+    public String accountOpenWithId(@org.springframework.web.bind.annotation.PathVariable Long id) {
+        return "redirect:/cs/account/open/" + id;
+    }
+
+    @GetMapping("/account/view/{id}")
+    public String accountViewWithId(@org.springframework.web.bind.annotation.PathVariable Long id) {
+        return "redirect:/cs/account/" + id;
+    }
+
+    @GetMapping("/transaction/account/{id}")
+    public String transactionAccountWithId(@org.springframework.web.bind.annotation.PathVariable Long id) {
+        return "redirect:/cs/account/" + id + "/transactions";
+    }
+
+    @GetMapping("/account/{id}/close")
+    public String accountCloseGetWithId(@org.springframework.web.bind.annotation.PathVariable Long id) {
+        return "redirect:/cs/account/" + id + "/close";
+    }
+
+    @PostMapping("/account/{id}/close")
+    public String accountClosePostWithId(@org.springframework.web.bind.annotation.PathVariable Long id,
+                                         @org.springframework.web.bind.annotation.RequestParam(value = "reason", required = false) String reason,
+                                         org.springframework.web.servlet.mvc.support.RedirectAttributes ra) {
+        return "forward:/cs/account/" + id + "/close";
+    }
+
     @GetMapping("/transaction/list")
     public String transactionList() {
         return "redirect:/teller/transaction/list";

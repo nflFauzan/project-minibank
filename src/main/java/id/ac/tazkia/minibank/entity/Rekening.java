@@ -32,6 +32,9 @@ public class Rekening {
     @Column(name = "nama_nasabah", length = 200)
     private String namaNasabah;
 
+    @Column(name = "nama_rekening", length = 255)
+    private String namaRekening;
+
     @Column(name = "email", length = 255)
     private String email;
 
@@ -58,6 +61,9 @@ public class Rekening {
 
     @Column(name = "tujuan_pembukaan", length = 255)
     private String tujuanPembukaan;
+
+    @Column(name = "reason_for_closure", length = 500)
+    private String reasonForClosure;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
@@ -91,6 +97,14 @@ public class Rekening {
     public String getNamaNasabah() { return namaNasabah; }
     public void setNamaNasabah(String namaNasabah) { this.namaNasabah = namaNasabah; }
 
+    public String getNamaRekening() {
+        if (namaRekening != null && !namaRekening.isBlank()) {
+            return namaRekening;
+        }
+        return namaNasabah != null ? namaNasabah + " - Personal Savings" : "";
+    }
+    public void setNamaRekening(String namaRekening) { this.namaRekening = namaRekening; }
+
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
 
@@ -117,6 +131,9 @@ public class Rekening {
 
     public String getTujuanPembukaan() { return tujuanPembukaan; }
     public void setTujuanPembukaan(String tujuanPembukaan) { this.tujuanPembukaan = tujuanPembukaan; }
+
+    public String getReasonForClosure() { return reasonForClosure; }
+    public void setReasonForClosure(String reasonForClosure) { this.reasonForClosure = reasonForClosure; }
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }

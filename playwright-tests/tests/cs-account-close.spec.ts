@@ -7,8 +7,8 @@ test.describe('Tutup Rekening (CS)', () => {
     await page.goto('/cs/account?status=ACTIVE');
     await expect(page.locator('table')).toBeVisible();
 
-    // Cari tombol Close di baris pertama tabel (inline form)
-    const closeBtn = page.locator('table tr button.link-danger').first();
+    // Cari tombol Close di baris pertama tabel (link atau form)
+    const closeBtn = page.locator('table tr a.link-danger:has-text("Close"), table tr button.link-danger').first();
     
     if (await closeBtn.count() === 0) {
       console.log('Tidak ada rekening aktif yang bisa ditutup');
@@ -20,6 +20,11 @@ test.describe('Tutup Rekening (CS)', () => {
     page.on('dialog', dialog => dialog.accept());
 
     await closeBtn.click();
+
+    if (page.url().includes('/close')) {
+      await page.locator('#confirmCheckbox').check();
+      await page.locator('#submitCloseBtn, button[type="submit"]').click();
+    }
 
     // Setelah tutup, redirect ke /cs/account dengan flash success
     await expect(page).toHaveURL(/\/cs\/account/);
@@ -43,12 +48,17 @@ test.describe('Tutup Rekening (CS)', () => {
     
     // Di halaman detail, klik "Close Account"
     await expect(page).toHaveURL(/\/cs\/account\/\d+/);
-    const closeBtn = page.locator('button.btn-danger-custom:has-text("Close Account")');
+    const closeBtn = page.locator('.btn-danger-custom:has-text("Close Account")');
     await expect(closeBtn).toBeVisible();
     
     // Handle confirm dialog
     page.on('dialog', dialog => dialog.accept());
     await closeBtn.click();
+
+    if (page.url().includes('/close')) {
+      await page.locator('#confirmCheckbox').check();
+      await page.locator('#submitCloseBtn, button[type="submit"]').click();
+    }
 
     // Redirect ke list
     await expect(page).toHaveURL(/\/cs\/account/);

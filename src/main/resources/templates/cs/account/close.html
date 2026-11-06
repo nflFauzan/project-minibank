@@ -1,0 +1,336 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Close Account - Tazkia Minibank</title>
+
+  <link rel="stylesheet" th:href="@{/css/cs-shell.css}">
+  <link rel="stylesheet" th:href="@{/css/custom.css}">
+  <link rel="stylesheet" th:href="@{/css/minibank-ui.css}">
+  <link rel="stylesheet" th:href="@{/css/account.css}">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif !important;
+      background: radial-gradient(circle at top left, #f1f5f9 0%, #e2e8f0 100%);
+      color: #0f172a;
+      min-height: 100vh;
+    }
+
+    .page-title {
+      font-size: 26px;
+      font-weight: 800;
+      color: #1e3a8a;
+      letter-spacing: -0.02em;
+      margin: 0;
+    }
+
+    /* Glass Cards */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.85);
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(30, 58, 138, 0.04), 0 2px 6px rgba(0, 0, 0, 0.02);
+      padding: 30px 32px;
+      margin-top: 24px;
+    }
+
+    .card-heading {
+      font-size: 18px;
+      font-weight: 800;
+      color: #1e3a8a;
+      margin-top: 0;
+      margin-bottom: 20px;
+      letter-spacing: -0.01em;
+    }
+
+    /* Warning Card */
+    .warning-glass-card {
+      background: rgba(254, 242, 242, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1.5px solid rgba(254, 202, 202, 0.9);
+      border-radius: 18px;
+      padding: 24px 28px;
+      margin-top: 24px;
+      box-shadow: 0 8px 24px rgba(220, 38, 38, 0.06);
+    }
+
+    .warning-heading {
+      font-size: 16px;
+      font-weight: 800;
+      color: #991b1b;
+      margin: 0 0 12px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .warning-list {
+      margin: 10px 0 0 0;
+      padding-left: 20px;
+      color: #7f1d1d;
+      font-size: 13.5px;
+      line-height: 1.7;
+      font-weight: 500;
+    }
+
+    /* Info Grid */
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px 36px;
+    }
+
+    @media (max-width: 768px) {
+      .info-grid { grid-template-columns: 1fr; gap: 16px; }
+    }
+
+    .info-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #64748b;
+      margin-bottom: 4px;
+    }
+
+    .info-value {
+      font-size: 15px;
+      font-weight: 600;
+      color: #0f172a;
+    }
+
+    /* Buttons */
+    .btn-glass-ghost {
+      text-decoration: none;
+      padding: 10px 18px;
+      border-radius: 12px;
+      border: 1px solid rgba(226, 232, 240, 0.9);
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(8px);
+      font-weight: 600;
+      font-size: 13.5px;
+      color: #475569;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-glass-ghost:hover {
+      background: #ffffff;
+      color: #1e3a8a;
+      transform: translateY(-1px);
+    }
+
+    .btn-danger-glass {
+      background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+      color: #ffffff;
+      border: none;
+      padding: 12px 28px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      box-shadow: 0 6px 18px rgba(220, 38, 38, 0.25);
+      transition: all 0.2s;
+    }
+
+    .btn-danger-glass:hover:not(:disabled) {
+      background: linear-gradient(135deg, #b91c1c 0%, #991b1b 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 24px rgba(220, 38, 38, 0.35);
+    }
+
+    .btn-danger-glass:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* Form Inputs */
+    .form-group {
+      margin-bottom: 22px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 13.5px;
+      font-weight: 700;
+      color: #1e293b;
+      margin-bottom: 8px;
+    }
+
+    .form-control {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 12px 16px;
+      border-radius: 12px;
+      border: 1.5px solid #e2e8f0;
+      background: rgba(255, 255, 255, 0.95);
+      font-family: 'Poppins', sans-serif;
+      font-size: 14px;
+      outline: none;
+      color: #0f172a;
+      transition: all 0.2s;
+    }
+
+    .form-control:focus {
+      border-color: #dc2626;
+      background: #ffffff;
+      box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.12);
+    }
+
+    .form-helper {
+      font-size: 12px;
+      color: #64748b;
+      margin-top: 6px;
+    }
+
+    .checkbox-container {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 16px;
+      background: rgba(248, 250, 252, 0.8);
+      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+      margin-bottom: 24px;
+      cursor: pointer;
+    }
+
+    .checkbox-container input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      margin-top: 3px;
+      cursor: pointer;
+      accent-color: #dc2626;
+    }
+
+    .checkbox-text {
+      font-size: 13px;
+      line-height: 1.6;
+      font-weight: 500;
+      color: #334155;
+    }
+  </style>
+</head>
+
+<body>
+<div class="cs-shell">
+  <div th:replace="~{cs/fragments :: sidebar('account')}"></div>
+
+  <div class="cs-content">
+    <div th:replace="~{cs/fragments :: topbar}"></div>
+
+    <main class="cs-page" style="padding: 32px 36px; max-width: 900px; margin: 0 auto;">
+      
+      <!-- Header: 100% Reverse-Engineered from minibank.tazkia.ac.id -->
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+        <div>
+          <h1 class="page-title">Close Account</h1>
+        </div>
+        <a class="btn-glass-ghost" th:href="@{/cs/account}">&larr; Back to Account List</a>
+      </div>
+
+      <!-- Card 1: Account Information -->
+      <div class="glass-card">
+        <h2 class="card-heading">Account Information</h2>
+        
+        <div class="info-grid">
+          <div>
+            <div class="info-label">Account Number:</div>
+            <div class="info-value" style="font-weight: 800; color: #1e3a8a; font-size: 18px;" th:text="${account.nomorRekening}">A2000402</div>
+          </div>
+
+          <div>
+            <div class="info-label">Product:</div>
+            <div class="info-value" th:text="${account.produk}">Tabungan Mudharabah Premium</div>
+          </div>
+
+          <div>
+            <div class="info-label">Account Name:</div>
+            <div class="info-value" th:text="${account.namaRekening ?: account.namaNasabah}">Fadil Muhammad Ar - Rasyid - Business</div>
+          </div>
+
+          <div>
+            <div class="info-label">Current Balance:</div>
+            <div class="info-value" style="font-weight: 800; color: #047857;" 
+                 th:text="${'IDR ' + #numbers.formatDecimal(account.saldo ?: (account.nominalSetoranAwal ?: 0), 1, 'COMMA', 2, 'POINT')}">
+                 IDR 0.00
+            </div>
+          </div>
+
+          <div>
+            <div class="info-label">Customer:</div>
+            <div class="info-value" th:text="${account.namaNasabah}">Fadil Muhammad Ar - Rasyid</div>
+          </div>
+
+          <div>
+            <div class="info-label">Opened Date:</div>
+            <div class="info-value" 
+                 th:text="${#temporals.format(account.tanggalPembukaan != null ? account.tanggalPembukaan : (account.createdAt != null ? account.createdAt.toLocalDate() : null), 'dd/MM/yyyy')} ?: '02/01/2026'">
+                 02/01/2026
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 2: Account Closure Warning (Exact text & points from live) -->
+      <div class="warning-glass-card">
+        <h3 class="warning-heading">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+            <line x1="12" y1="9" x2="12" y2="13"></line>
+            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+          </svg>
+          Account Closure Warning
+        </h3>
+        <p style="margin: 0; color: #7f1d1d; font-size: 13.5px; font-weight: 600;">Please ensure the following before closing this account:</p>
+        <ul class="warning-list">
+          <li>The account balance must be exactly IDR 0.00 (zero)</li>
+          <li>All pending transactions must be completed</li>
+          <li>Any automatic payments or deposits should be redirected to another account</li>
+          <li>This action cannot be undone</li>
+        </ul>
+      </div>
+
+      <!-- Card 3: Closure Form (Reason + Confirmation Checkbox) -->
+      <div class="glass-card">
+        <form th:action="@{/cs/account/{id}/close(id=${account.id})}" method="post">
+          <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+
+          <div class="form-group">
+            <label class="form-label" for="reason">Reason for Closure (Optional)</label>
+            <textarea id="reason" name="reason" rows="3" class="form-control" 
+                      placeholder="Enter the reason for closing this account..."></textarea>
+            <div class="form-helper">Optional explanation for account closure</div>
+          </div>
+
+          <label class="checkbox-container">
+            <input type="checkbox" id="confirmCheckbox" required>
+            <span class="checkbox-text">
+              I confirm that I want to permanently close this account. I understand that this action cannot be undone and the account will no longer be accessible for any transactions.
+            </span>
+          </label>
+
+          <div style="display: flex; justify-content: flex-end; align-items: center; gap: 14px;">
+            <a th:href="@{/cs/account}" class="btn-glass-ghost">Cancel</a>
+            <button type="submit" id="submitCloseBtn" class="btn-danger-glass">Close Account</button>
+          </div>
+        </form>
+      </div>
+
+    </main>
+  </div>
+</div>
+</body>
+</html>
+

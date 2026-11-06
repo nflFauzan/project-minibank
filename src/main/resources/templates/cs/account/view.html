@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>CS - View Account</title>
+  <title>CS - View Account - Tazkia Minibank</title>
 
   <link rel="stylesheet" th:href="@{/css/cs-shell.css}">
   <link rel="stylesheet" th:href="@{/css/custom.css}">
@@ -15,39 +15,46 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
   <style>
-    /* Sinkronisasi Font Poppins */
     body {
       font-family: 'Poppins', sans-serif !important;
-      background-color: #f8fafc;
+      background: radial-gradient(circle at top left, #f1f5f9 0%, #e2e8f0 100%);
       color: #0f172a;
+      min-height: 100vh;
     }
 
     .page-title {
       font-size: 24px;
       font-weight: 800;
-      color: #0f172a;
+      color: #1e3a8a;
       margin: 0;
+      letter-spacing: -0.02em;
     }
 
-    /* Card Styling */
-    .detail-card {
-      margin-top: 20px;
-      background: #fff;
-      border: 1px solid rgba(0,0,0,.05);
+    /* Glass Detail Card */
+    .glass-detail-card {
+      margin-top: 24px;
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.85);
       border-radius: 20px;
-      box-shadow: 0 10px 30px rgba(0,0,0,.04);
-      padding: 30px;
+      box-shadow: 0 10px 30px rgba(30, 58, 138, 0.04), 0 2px 6px rgba(0, 0, 0, 0.02);
+      padding: 32px;
     }
 
     .grid2-custom {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 30px;
+      gap: 32px;
+    }
+
+    @media (max-width: 768px) {
+      .grid2-custom { grid-template-columns: 1fr; gap: 20px; }
     }
 
     /* Typography */
     .muted-label {
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 700;
       color: #64748b;
       text-transform: uppercase;
@@ -56,44 +63,53 @@
     }
 
     .value-text {
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 600;
       color: #0f172a;
     }
 
     .account-number {
       font-weight: 900;
-      font-size: 24px;
+      font-size: 26px;
       color: #1e3a8a;
+      letter-spacing: -0.02em;
     }
 
     /* Status Badge */
     .status-badge {
       padding: 4px 12px;
-      border-radius: 8px;
-      font-size: 12px;
+      border-radius: 999px;
+      font-size: 11px;
       font-weight: 700;
       display: inline-block;
       margin-top: 8px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
     }
-    .badge-active { background: #ecfdf5; color: #059669; }
-    .badge-closed { background: #fef2f2; color: #dc2626; }
+    .badge-active { background: rgba(236, 253, 245, 0.9); color: #047857; border: 1px solid rgba(167, 243, 208, 0.8); }
+    .badge-closed { background: rgba(254, 242, 242, 0.9); color: #b91c1c; border: 1px solid rgba(254, 202, 202, 0.8); }
 
     /* Buttons */
-    .btn-ghost-custom {
+    .btn-glass-ghost {
       text-decoration: none;
-      padding: 10px 20px;
+      padding: 10px 18px;
       border-radius: 12px;
-      border: 1px solid #e2e8f0;
-      background: #fff;
-      font-weight: 700;
-      color: #64748b;
-      transition: all 0.2s;
+      border: 1px solid rgba(226, 232, 240, 0.9);
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(8px);
+      font-weight: 600;
+      font-size: 13px;
+      color: #475569;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
     }
 
-    .btn-ghost-custom:hover {
-      background: #f1f5f9;
+    .btn-glass-ghost:hover {
+      background: #ffffff;
       color: #1e3a8a;
+      transform: translateY(-1px);
     }
 
     .btn-danger-custom {
@@ -104,22 +120,20 @@
       border-radius: 12px;
       font-weight: 700;
       cursor: pointer;
+      box-shadow: 0 4px 12px rgba(220, 38, 38, 0.2);
       transition: all 0.2s;
     }
 
     .btn-danger-custom:hover {
       background: #b91c1c;
       transform: translateY(-2px);
+      box-shadow: 0 8px 18px rgba(220, 38, 38, 0.3);
     }
 
     hr {
       border: none;
-      border-top: 1px solid #f1f5f9;
-      margin: 24px 0;
-    }
-
-    @media (max-width: 768px) {
-      .grid2-custom { grid-template-columns: 1fr; }
+      border-top: 1px solid rgba(226, 232, 240, 0.8);
+      margin: 28px 0;
     }
   </style>
 </head>
@@ -131,19 +145,27 @@
   <div class="cs-content">
     <div th:replace="~{cs/fragments :: topbar}"></div>
 
-    <main class="cs-page" style="padding: 32px;">
+    <main class="cs-page" style="padding: 32px 36px;">
       
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
-        <h1 class="page-title">Account Detail</h1>
-        <a class="btn-ghost-custom" th:href="@{/cs/account}">&larr; Kembali ke List</a>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px; flex-wrap:wrap; gap:16px;">
+        <div>
+          <h1 class="page-title">Account Detail</h1>
+          <p style="margin:4px 0 0; font-size:13px; color:#64748b; font-weight:500;">Detail informasi akun rekening nasabah.</p>
+        </div>
+        <a class="btn-glass-ghost" th:href="@{/cs/account}">&larr; Back to Account List</a>
       </div>
 
-      <div class="detail-card">
+      <div class="glass-detail-card">
         <div class="grid2-custom">
           <div>
             <div class="muted-label">Nomor Rekening</div>
             <div class="account-number" th:text="${account.nomorRekening}">54300000101</div>
             
+            <div style="margin-top: 12px;">
+              <div class="muted-label">Account Name</div>
+              <div class="value-text" style="font-weight: 700; color: #1e3a8a; font-size: 17px;" th:text="${account.namaRekening ?: account.namaNasabah}">Account Name</div>
+            </div>
+
             <div th:class="${account.statusActive ? 'status-badge badge-active' : 'status-badge badge-closed'}" 
                  th:text="${account.statusActive ? 'ACTIVE' : 'CLOSED'}">
                  ACTIVE
@@ -152,13 +174,23 @@
 
           <div>
             <div class="muted-label">Produk Tabungan</div>
-            <div class="value-text" th:text="${account.produk}">Tabungan Easy Wadiah</div>
+            <div class="value-text" style="font-size: 16px;" th:text="${account.produk}">Tabungan Easy Wadiah</div>
             
-            <div style="margin-top: 12px;">
-              <div class="muted-label">Setoran Awal</div>
-              <div class="value-text" style="color: #059669;" 
-                   th:text="${'Rp ' + #numbers.formatDecimal(account.nominalSetoranAwal, 0, 'POINT', 0, 'COMMA')}">
-                   Rp 0
+            <div style="margin-top: 14px; display: flex; gap: 24px;">
+              <div>
+                <div class="muted-label">Current Balance</div>
+                <div class="value-text" style="color: #047857; font-weight: 800; font-size: 18px;" 
+                     th:text="${'IDR ' + #numbers.formatDecimal(account.saldo ?: (account.nominalSetoranAwal ?: 0), 1, 'COMMA', 2, 'POINT')}">
+                     IDR 0.00
+                </div>
+              </div>
+
+              <div>
+                <div class="muted-label">Setoran Awal</div>
+                <div class="value-text" style="color: #64748b; font-weight: 700; font-size: 16px;" 
+                     th:text="${'IDR ' + #numbers.formatDecimal(account.nominalSetoranAwal ?: 0, 1, 'COMMA', 2, 'POINT')}">
+                     IDR 0.00
+                </div>
               </div>
             </div>
           </div>
@@ -171,7 +203,7 @@
             <div class="muted-label">Informasi Nasabah</div>
             <div class="value-text" style="font-size: 18px; margin-bottom: 8px;" th:text="${account.namaNasabah}">Nama Lengkap</div>
             
-            <div style="display: flex; flex-direction: column; gap: 4px;">
+            <div style="display: flex; flex-direction: column; gap: 6px;">
               <div style="font-size: 13px; color: #64748b;">CIF: <span class="fw-bold" style="color: #0f172a;" th:text="${account.cifNasabah}">CIF123</span></div>
               <div style="font-size: 13px; color: #64748b;">NIK: <span class="fw-bold" style="color: #0f172a;" th:text="${account.nik}">NIK123</span></div>
             </div>
@@ -179,27 +211,37 @@
 
           <div>
             <div class="muted-label">Kontak & Lokasi</div>
-            <div style="display: flex; flex-direction: column; gap: 4px;">
+            <div style="display: flex; flex-direction: column; gap: 6px;">
               <div style="font-size: 13px; color: #64748b;">Email: <span class="fw-bold" style="color: #0f172a;" th:text="${account.email}">email@contoh.com</span></div>
               <div style="font-size: 13px; color: #64748b;">Telepon: <span class="fw-bold" style="color: #0f172a;" th:text="${account.nomorTelepon}">0812345678</span></div>
-              <div style="font-size: 13px; color: #64748b;">Cabang: <span class="fw-bold" style="color: #0f172a;" th:text="${account.cabangPembukaan}">KC Tazkia</span></div>
+              <div style="font-size: 13px; color: #64748b;">Cabang: <span class="fw-bold" style="color: #0f172a;" th:text="${account.cabangPembukaan}">Cabang Bandung</span></div>
               <div style="font-size: 13px; color: #64748b;">Petugas CS: <span class="fw-bold" style="color: #0f172a;" th:text="${account.petugasCs}">Petugas</span></div>
             </div>
           </div>
         </div>
 
-        <div style="margin-top: 24px; padding: 16px; background: #f8fafc; border-radius: 12px; border: 1px solid #f1f5f9;">
-          <div class="muted-label">Tujuan Pembukaan Rekening</div>
+        <div style="margin-top: 24px; padding: 18px; background: rgba(248, 250, 252, 0.7); border-radius: 14px; border: 1px solid rgba(226, 232, 240, 0.8);">
+          <div class="muted-label">Account Purpose / Notes</div>
           <div class="value-text" style="font-weight: 500; font-style: italic;" th:text="${account.tujuanPembukaan}">-</div>
         </div>
 
-        <div class="actions-bar" style="margin-top: 32px; display: flex; justify-content: flex-end;">
-          <form th:if="${account.statusActive}" th:action="@{/cs/account/{id}/close(id=${account.id})}" method="post">
-            <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-            <button class="btn-danger-custom" type="submit" onclick="return confirm('Apakah Anda yakin ingin menutup (close) account ini?')">
-              Close Account
-            </button>
-          </form>
+        <div th:if="${!account.statusActive and account.reasonForClosure != null and !account.reasonForClosure.isBlank()}"
+             style="margin-top: 20px; padding: 18px; background: rgba(254, 242, 242, 0.8); border-radius: 14px; border: 1px solid rgba(254, 202, 202, 0.9);">
+          <div class="muted-label" style="color: #991b1b;">Reason for Closure</div>
+          <div class="value-text" style="color: #7f1d1d; font-weight: 500;" th:text="${account.reasonForClosure}">-</div>
+        </div>
+
+        <div class="actions-bar" style="margin-top: 32px; display: flex; justify-content: flex-end; align-items: center; gap: 14px;">
+          <a th:href="@{/cs/account/{id}/transactions(id=${account.id})}" class="btn-glass-ghost" style="font-weight: 700; color: #1e3a8a; border-color: #93c5fd; background: rgba(239, 246, 255, 0.9);">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+            </svg>
+            View Transactions (Mutasi)
+          </a>
+
+          <a th:if="${account.statusActive}" th:href="@{/cs/account/{id}/close(id=${account.id})}" class="btn-danger-custom" style="text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">
+            Close Account
+          </a>
         </div>
       </div>
     </main>

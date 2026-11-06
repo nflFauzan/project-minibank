@@ -13,12 +13,12 @@ import java.util.Optional;
 
 public interface RekeningRepository extends JpaRepository<Rekening, Long> {
 
-    // status: "ALL" | "ACTIVE" | "CLOSED"
+    // status: "ALL" | "ACTIVE" | "CLOSED" | "INACTIVE" | "FROZEN"
     @Query("""
         select r from Rekening r
-        where (:status = 'ALL')
+        where (:status is null or :status = '' or :status = 'ALL' or :status = 'All Statuses')
            or (:status = 'ACTIVE' and r.statusActive = true)
-           or (:status = 'CLOSED' and r.statusActive = false)
+           or ((:status = 'CLOSED' or :status = 'INACTIVE' or :status = 'FROZEN') and r.statusActive = false)
         order by r.id desc
     """)
     List<Rekening> findByStatus(@Param("status") String status);
@@ -28,11 +28,12 @@ public interface RekeningRepository extends JpaRepository<Rekening, Long> {
         where (
             lower(r.nomorRekening) like lower(concat('%', :q, '%'))
             or lower(r.namaNasabah) like lower(concat('%', :q, '%'))
+            or lower(coalesce(r.namaRekening, '')) like lower(concat('%', :q, '%'))
         )
         and (
-            (:status = 'ALL')
+            (:status is null or :status = '' or :status = 'ALL' or :status = 'All Statuses')
             or (:status = 'ACTIVE' and r.statusActive = true)
-            or (:status = 'CLOSED' and r.statusActive = false)
+            or ((:status = 'CLOSED' or :status = 'INACTIVE' or :status = 'FROZEN') and r.statusActive = false)
         )
         order by r.id desc
     """)

@@ -29,10 +29,12 @@ public class RekeningService {
     private final NasabahRepository nasabahRepository;
     private final ProdukTabunganRepository produkTabunganRepository;
     private final UserRepository userRepository;
+    private final id.ac.tazkia.minibank.repository.TransaksiRepository transaksiRepository;
 
     @Data
     public static class OpenAccountForm {
         private Long produkId;
+        private String namaRekening;
         private BigDecimal nominalSetoranAwal;
         private String tujuanPembukaan;
     }
@@ -75,8 +77,45 @@ public List<Nasabah> listEligibleCustomers(NasabahStatus status, String q) {
                 .orElseThrow(() -> new EntityNotFoundException("Rekening tidak ditemukan."));
     }
 
+    @Transactional(readOnly = true)
+    public Rekening getAccountByIdOrNumber(String idOrNumber) {
+        try {
+            Long id = Long.parseLong(idOrNumber);
+            return rekeningRepository.findById(id)
+                    .orElseGet(() -> rekeningRepository.findByNomorRekening(idOrNumber)
+                            .orElseThrow(() -> new EntityNotFoundException("Rekening tidak ditemukan: " + idOrNumber)));
+        } catch (NumberFormatException e) {
+            return rekeningRepository.findByNomorRekening(idOrNumber)
+                    .orElseThrow(() -> new EntityNotFoundException("Rekening tidak ditemukan: " + idOrNumber));
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public List<id.ac.tazkia.minibank.entity.Transaksi> getTransactions(Rekening rekening, LocalDate startDate, LocalDate endDate, String type) {
+        List<id.ac.tazkia.minibank.entity.Transaksi> list;
+        if (startDate != null && endDate != null) {
+            list = transaksiRepository.findByRekeningAndProcessedAtBetweenOrderByProcessedAtAsc(
+                    rekening, startDate.atStartOfDay(), endDate.atTime(23, 59, 59));
+        } else if (startDate != null) {
+            list = transaksiRepository.findByRekeningAndProcessedAtGreaterThanEqualOrderByProcessedAtAsc(
+                    rekening, startDate.atStartOfDay());
+        } else if (endDate != null) {
+            list = transaksiRepository.findByRekeningAndProcessedAtLessThanEqualOrderByProcessedAtAsc(
+                    rekening, endDate.atTime(23, 59, 59));
+        } else {
+            list = transaksiRepository.findByRekeningOrderByProcessedAtAsc(rekening);
+        }
+
+        if (type != null && !type.isBlank() && !type.equalsIgnoreCase("ALL")) {
+            list = list.stream()
+                    .filter(t -> t.getTipe() != null && t.getTipe().name().equalsIgnoreCase(type))
+                    .toList();
+        }
+        return list;
+    }
+
     @Transactional
-    public Rekening openAccount(Long nasabahId, Long produkId, BigDecimal setoranAwal, String tujuan) {
+    public Rekening openAccount(Long nasabahId, Long produkId, String namaRekening, BigDecimal setoranAwal, String tujuan) {
 
         Nasabah n = getNasabahActiveById(nasabahId);
 
@@ -106,26 +145,45 @@ public List<Nasabah> listEligibleCustomers(NasabahStatus status, String q) {
         r.setCifNasabah(n.getCif());
         r.setNik(n.getNik());
         r.setNamaNasabah(n.getNamaSesuaiIdentitas());
+
+        String accountName = (namaRekening != null && !namaRekening.isBlank())
+                ? namaRekening
+                : n.getNamaSesuaiIdentitas() + " - Personal Savings";
+        r.setNamaRekening(accountName);
+
         r.setEmail(n.getEmail());
         r.setNomorTelepon(n.getNoHp());
         r.setAlamatDomisili(n.getAlamatDomisili());
 
         r.setProduk(produk.getNamaProduk());
-        r.setNominalSetoranAwal(setoranAwal);
-        r.setTujuanPembukaan(tujuan);
+        r.setNominalSetoranAwal(setoranAwal != null ? setoranAwal : BigDecimal.ZERO);
+        r.setTujuanPembukaan((tujuan != null && !tujuan.isBlank()) ? tujuan : accountName);
         r.setTanggalPembukaan(LocalDate.now());
 
-        r.setCabangPembukaan("543");
+        r.setCabangPembukaan("Cabang Bandung");
         r.setPetugasCs(currentUserFullNameOrUsername());
 
         return rekeningRepository.save(r);
     }
 
     @Transactional
-    public void closeAccount(Long rekeningId) {
+    public Rekening openAccount(Long nasabahId, Long produkId, BigDecimal setoranAwal, String tujuan) {
+        return openAccount(nasabahId, produkId, null, setoranAwal, tujuan);
+    }
+
+    @Transactional
+    public void closeAccount(Long rekeningId, String reason) {
         Rekening r = getAccountById(rekeningId);
         r.setStatusActive(false);
+        if (reason != null && !reason.isBlank()) {
+            r.setReasonForClosure(reason);
+        }
         rekeningRepository.save(r);
+    }
+
+    @Transactional
+    public void closeAccount(Long rekeningId) {
+        closeAccount(rekeningId, null);
     }
 
     private String currentUserFullNameOrUsername() {

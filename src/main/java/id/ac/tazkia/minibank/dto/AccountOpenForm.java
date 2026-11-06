@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 @Setter
 public class AccountOpenForm {
     private Long produkId;
+    private String namaRekening;
     private BigDecimal nominalSetoranAwal;
     private String tujuanPembukaan;
 }

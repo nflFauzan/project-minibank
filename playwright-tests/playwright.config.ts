@@ -74,6 +74,8 @@ export default defineConfig({
         /product\.spec\.ts/,
         /cs-dashboard\.spec\.ts/,
         /cs-account-close\.spec\.ts/,
+        /cs-account-opening-reverse-engineering\.spec\.ts/,
+        /cs-account-list-actions-reverse-engineering\.spec\.ts/,
       ],
     },
 

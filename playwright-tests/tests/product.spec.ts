@@ -71,7 +71,14 @@ test.describe('Manajemen Produk Tabungan', () => {
     // Verifikasi sukses
     await productPage.navigateToList();
     await productPage.expectListTableVisible();
-    // Flash message mungkin sudah hilang jika redirect, cukup verifikasi tabel masih ada
+
+    // Toggle kembali agar status produk dipulihkan untuk test lain
+    const toggleBackForm = page.locator('form[action*="/toggle"]').first();
+    if (await toggleBackForm.count() > 0) {
+      await toggleBackForm.locator('button[type="submit"]').click();
+      await productPage.navigateToList();
+      await productPage.expectListTableVisible();
+    }
   });
 
   test('Tambah produk dengan kode yang sudah ada (Negative Test)', async ({ page }) => {

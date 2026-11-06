@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>CS - Account</title>
+  <title>Account Management - Tazkia Minibank</title>
   
   <link rel="stylesheet" th:href="@{/css/cs-shell.css}">
   <link rel="stylesheet" th:href="@{/css/custom.css}">
@@ -17,67 +17,87 @@
   <style>
     body {
       font-family: 'Poppins', sans-serif !important;
-      background-color: #f8fafc;
+      background: radial-gradient(circle at top left, #f1f5f9 0%, #e2e8f0 100%);
       color: #0f172a;
+      min-height: 100vh;
     }
 
     .page-title {
-      font-size: 24px;
+      font-size: 26px;
       font-weight: 800;
-      color: #0f172a;
+      color: #1e3a8a;
+      letter-spacing: -0.02em;
     }
 
-    .btn-primary-custom {
+    .btn-glass-primary {
       text-decoration: none;
-      padding: 10px 20px;
+      padding: 11px 22px;
       border-radius: 12px;
-      border: 1px solid #e2e8f0;
-      background: #fff;
+      background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
       font-weight: 700;
-      color: #1e3a8a;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
-      transition: all 0.2s;
+      color: #ffffff;
+      box-shadow: 0 6px 18px rgba(37, 99, 235, 0.25);
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
       display: inline-flex;
       align-items: center;
+      gap: 8px;
       cursor: pointer;
+      border: none;
+      font-size: 14px;
     }
 
-    .btn-primary-custom:hover {
-      background: #f1f5f9;
+    .btn-glass-primary:hover {
       transform: translateY(-2px);
-      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.05);
+      box-shadow: 0 10px 24px rgba(37, 99, 235, 0.35);
+      color: #ffffff;
     }
 
-    /* Toolbar / Search Section */
-    .toolbar {
+    /* Glass Toolbar */
+    .glass-toolbar {
       display: flex;
       gap: 12px;
-      background: #fff;
-      padding: 16px;
-      border-radius: 16px;
-      border: 1px solid #f1f5f9;
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      padding: 16px 20px;
+      border-radius: 18px;
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      box-shadow: 0 10px 30px rgba(30, 58, 138, 0.05), 0 1px 3px rgba(0, 0, 0, 0.02);
       margin-top: 20px;
       align-items: center;
+      flex-wrap: wrap;
     }
 
-    .toolbar input, .toolbar select {
-      padding: 10px 16px;
+    .glass-toolbar input, .glass-toolbar select {
+      padding: 11px 16px;
       border-radius: 10px;
-      border: 1px solid #e2e8f0;
+      border: 1.5px solid #e2e8f0;
+      background: rgba(255, 255, 255, 0.95);
       font-family: 'Poppins', sans-serif;
       font-size: 14px;
       outline: none;
+      color: #0f172a;
+      transition: all 0.2s;
     }
 
-    .toolbar input { flex: 1; }
+    .glass-toolbar input:focus, .glass-toolbar select:focus {
+      border-color: #2563eb;
+      background: #ffffff;
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+    }
 
-    /* Table Styling */
-    .table-container {
+    .glass-toolbar input { flex: 1; min-width: 280px; }
+    .glass-toolbar select { min-width: 170px; }
+
+    /* Glass Table Styling */
+    .glass-table-container {
       margin-top: 24px;
-      background: #fff;
-      border: 1px solid #f1f5f9;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.85);
       border-radius: 20px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+      box-shadow: 0 10px 30px rgba(30, 58, 138, 0.04), 0 2px 6px rgba(0, 0, 0, 0.02);
       padding: 12px;
       overflow: auto;
     }
@@ -85,67 +105,72 @@
     table {
       width: 100%;
       border-collapse: collapse;
-      min-width: 1000px;
-      font-size: 14px;
+      min-width: 1050px;
+      font-size: 13.5px;
     }
 
     thead tr {
       text-align: left;
       color: #64748b;
       font-weight: 700;
-      border-bottom: 2px solid #f8fafc;
+      border-bottom: 2px solid rgba(226, 232, 240, 0.8);
     }
 
     th {
-      padding: 16px 12px;
+      padding: 16px 14px;
       text-transform: uppercase;
       font-size: 11px;
       letter-spacing: 0.05em;
+      white-space: nowrap;
     }
 
     td {
-      padding: 16px 12px;
+      padding: 16px 14px;
       vertical-align: middle;
-      color: #475569;
+      color: #334155;
     }
 
     tbody tr {
-      border-bottom: 1px solid #f8fafc;
-      transition: background 0.2s;
+      border-bottom: 1px solid rgba(241, 245, 249, 0.9);
+      transition: background 0.15s ease;
     }
 
     tbody tr:hover {
-      background-color: #fcfdfe;
+      background-color: rgba(248, 250, 252, 0.8);
     }
 
     /* Badges */
     .badge {
-      padding: 4px 12px;
-      border-radius: 8px;
-      font-size: 12px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 11px;
       font-weight: 700;
       display: inline-block;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
     }
-    .badge-active { background: #ecfdf5; color: #059669; }
-    .badge-closed { background: #fef2f2; color: #dc2626; }
+    .badge-active { background: rgba(236, 253, 245, 0.95); color: #047857; border: 1px solid rgba(167, 243, 208, 0.8); }
+    .badge-closed { background: rgba(254, 242, 242, 0.95); color: #b91c1c; border: 1px solid rgba(254, 202, 202, 0.8); }
+    .badge-inactive { background: rgba(254, 243, 199, 0.95); color: #b45309; border: 1px solid rgba(253, 230, 138, 0.8); }
+    .badge-frozen { background: rgba(241, 245, 249, 0.95); color: #475569; border: 1px solid rgba(203, 213, 225, 0.8); }
 
     .action-link {
       text-decoration: none;
       font-weight: 700;
       color: #2563eb;
+      font-size: 13px;
+      transition: color 0.15s;
     }
+
+    .action-link:hover { color: #1e3a8a; text-decoration: underline; }
 
     .link-danger {
-      color: #dc2626;
-      background: none;
-      border: none;
-      font-family: 'Poppins', sans-serif;
-      font-weight: 700;
-      cursor: pointer;
-      padding: 0;
+      color: #dc2626 !important;
     }
 
-    .muted { color: #94a3b8; font-size: 12px; }
+    .link-danger:hover { color: #991b1b !important; }
+
+    .muted { color: #64748b; }
   </style>
 </head>
 
@@ -156,80 +181,122 @@
   <div class="cs-content">
     <div th:replace="~{cs/fragments :: topbar}"></div>
 
-    <main class="cs-page" style="padding: 32px;">
+    <main class="cs-page" style="padding: 32px 36px;">
       
-      <div style="display:flex; align-items:center; justify-content:space-between;">
-        <div class="page-title">Account</div>
+      <!-- Page Header: 100% Matching minibank.tazkia.ac.id -->
+      <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px;">
+        <div>
+          <h1 class="page-title" style="margin:0;">Account Management</h1>
+          <p style="margin:4px 0 0; font-size:13px; color:#64748b; font-weight:500;">Daftar rekening dan manajemen akun nasabah.</p>
+        </div>
 
-        <a th:href="@{/cs/account/open}" class="btn-primary-custom">
-          + Create New Account
+        <a th:href="@{/cs/account/open}" class="btn-glass-primary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+          Open New Account
         </a>
       </div>
 
-      <div th:if="${success}" style="margin-top:20px; padding:12px; background:#f0fdf4; color:#166534; border-radius:10px; font-weight:600;" th:text="${success}"></div>
-      <div th:if="${error}" style="margin-top:20px; padding:12px; background:#fef2f2; color:#991b1b; border-radius:10px; font-weight:600;" th:text="${error}"></div>
+      <!-- Flash Messages -->
+      <div th:if="${success}" class="alert-success" style="margin-top:20px; padding:14px 18px; background:rgba(236,253,245,0.85); backdrop-filter:blur(10px); color:#047857; border:1px solid rgba(167,243,208,0.8); border-radius:12px; font-weight:600;" th:text="${success}"></div>
+      <div th:if="${error}" class="alert-danger" style="margin-top:20px; padding:14px 18px; background:rgba(254,242,242,0.85); backdrop-filter:blur(10px); color:#991b1b; border:1px solid rgba(254,202,202,0.8); border-radius:12px; font-weight:600;" th:text="${error}"></div>
 
-      <form method="get" th:action="@{/cs/account}" class="toolbar">
+      <!-- Filter Toolbar: Matching minibank.tazkia.ac.id -->
+      <form method="get" th:action="@{/cs/account}" class="glass-toolbar">
         <input type="text" name="search" 
-               placeholder="Search by account number or customer name..." 
+               placeholder="Search by account number or account name..." 
                th:value="${search}">
         
         <select name="status">
-          <option value="ALL" th:selected="${status == 'ALL'}">ALL STATUS</option>
-          <option value="ACTIVE" th:selected="${status == 'ACTIVE'}">ACTIVE ONLY</option>
-          <option value="CLOSED" th:selected="${status == 'CLOSED'}">CLOSED ONLY</option>
+          <option value="ALL" th:selected="${status == 'ALL' or status == null or status == ''}">All Statuses</option>
+          <option value="ACTIVE" th:selected="${status == 'ACTIVE'}">ACTIVE</option>
+          <option value="INACTIVE" th:selected="${status == 'INACTIVE'}">INACTIVE</option>
+          <option value="CLOSED" th:selected="${status == 'CLOSED'}">CLOSED</option>
+          <option value="FROZEN" th:selected="${status == 'FROZEN'}">FROZEN</option>
         </select>
 
-        <button type="submit" class="btn-primary-custom" style="padding: 10px 24px; background: #1e3a8a; color: #fff;">Search</button>
-        <a th:href="@{/cs/account(status='ACTIVE')}" class="action-link" style="font-size:14px; margin-left:8px;">Clear</a>
+        <button type="submit" class="btn-glass-primary" style="padding: 11px 22px;">Search</button>
+        <a th:href="@{/cs/account}" class="action-link" style="font-size:13px; margin-left:8px;">Clear</a>
       </form>
 
-      <div class="table-container">
+      <!-- Accounts Table: 100% Reverse-Engineered from minibank.tazkia.ac.id -->
+      <div class="glass-table-container">
         <table>
           <thead>
             <tr>
-              <th>Nomor Rekening</th>
-              <th>Nasabah</th>
-              <th>Produk</th>
-              <th>Setoran Awal</th>
+              <th>Account Number</th>
+              <th>Account Name</th>
+              <th>Customer</th>
+              <th>Product</th>
+              <th>Balance</th>
               <th>Status</th>
-              <th style="width:140px;">Actions</th>
+              <th>Opened Date</th>
+              <th style="width:210px;">Actions</th>
             </tr>
           </thead>
           <tbody>
             <tr th:each="a : ${accounts}">
-              <td style="font-weight:700; color:#1e3a8a;" th:text="${a.nomorRekening}">54300000101</td>
-              <td>
-                <div style="font-weight:700; color:#0f172a;" th:text="${a.namaNasabah}">Nama</div>
-                <div class="muted" th:text="${a.cifNasabah}">CIF</div>
+              <!-- 1. Account Number -->
+              <td style="font-weight:800; color:#1e3a8a; white-space:nowrap;">
+                <a th:href="@{/cs/account/{id}(id=${a.id})}" style="color:#1e3a8a; text-decoration:none;" th:text="${a.nomorRekening}">A2000402</a>
               </td>
-              <td th:text="${a.produk}">Produk</td>
-              <td style="font-weight:600;" th:text="${a.nominalSetoranAwal}">0</td>
-              <td>
-                <span th:class="${a.statusActive ? 'badge badge-active' : 'badge badge-closed'}" 
-                      th:text="${a.statusActive ? 'ACTIVE' : 'CLOSED'}">ACTIVE</span>
+
+              <!-- 2. Account Name -->
+              <td style="font-weight:600; color:#1e293b;" th:text="${a.namaRekening ?: a.namaNasabah}">
+                Fadil Muhammad Ar - Rasyid - Business
               </td>
+
+              <!-- 3. Customer (Name + Number Stacked) -->
               <td>
+                <div style="font-weight:700; color:#0f172a;" th:text="${a.namaNasabah}">Fadil Muhammad Ar - Rasyid</div>
+                <div class="muted" style="font-size:12px; margin-top:2px;" th:text="${a.cifNasabah ?: 'C1000' + a.id}">C1000017</div>
+              </td>
+
+              <!-- 4. Product (Name + Code Stacked) -->
+              <td>
+                <div style="font-weight:600; color:#0f172a;" th:text="${a.produk}">Tabungan Mudharabah Premium</div>
+                <div class="muted" style="font-size:11px; text-transform:uppercase; letter-spacing:0.5px; margin-top:2px;" 
+                     th:text="${a.produk != null ? (a.produk.contains('Wadiah') or a.produk.contains('WADIAH') ? 'TABUNGAN_WADIAH' : (a.produk.contains('Mudharabah') or a.produk.contains('MUDHARABAH') ? 'TABUNGAN_MUDHARABAH' : 'TABUNGAN_BISNIS')) : 'TABUNGAN'}">
+                     TABUNGAN_MUDHARABAH
+                </div>
+              </td>
+
+              <!-- 5. Balance (IDR format matching live) -->
+              <td style="font-weight:700; color:#0f172a; white-space:nowrap;"
+                  th:text="${'IDR ' + #numbers.formatDecimal(a.saldo ?: (a.nominalSetoranAwal ?: 0), 1, 'COMMA', 2, 'POINT')}">
+                  IDR 0.00
+              </td>
+
+              <!-- 6. Status Badge -->
+              <td>
+                <span th:if="${a.statusActive}" class="badge badge-active">ACTIVE</span>
+                <span th:if="${!a.statusActive}" class="badge badge-closed">CLOSED</span>
+              </td>
+
+              <!-- 7. Opened Date (DD/MM/YYYY) -->
+              <td style="white-space:nowrap; color:#475569;"
+                  th:text="${#temporals.format(a.tanggalPembukaan != null ? a.tanggalPembukaan : (a.createdAt != null ? a.createdAt.toLocalDate() : null), 'dd/MM/yyyy')} ?: '02/01/2026'">
+                  02/01/2026
+              </td>
+
+              <!-- 8. Actions (View | Transactions | Close) -->
+              <td style="white-space:nowrap;">
                 <a th:href="@{/cs/account/{id}(id=${a.id})}" class="action-link">View</a>
-                
-                <span th:if="${a.statusActive}">
-                  <span style="color:#e2e8f0; margin: 0 8px;">|</span>
-                  <form th:action="@{/cs/account/{id}/close(id=${a.id})}" 
-                        method="post" style="display:inline;">
-                    <input type="hidden" th:if="${_csrf != null}" 
-                           th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-                    <button class="link-danger" type="submit" 
-                            onclick="return confirm('Close account ini?')">Close</button>
-                  </form>
-                </span>
-                
-                <span th:if="${!a.statusActive}" class="muted" style="margin-left:8px;">(Inactive)</span>
+                <span style="color:#cbd5e1; margin: 0 6px;">|</span>
+                <a th:href="@{/cs/account/{id}/transactions(id=${a.id})}" class="action-link">Transactions</a>
+                <span style="color:#cbd5e1; margin: 0 6px;">|</span>
+                <a th:if="${a.statusActive}" th:href="@{/cs/account/{id}/close(id=${a.id})}" class="action-link link-danger">Close</a>
+                <span th:if="${!a.statusActive}" class="muted" style="font-size:12px;">Closed</span>
               </td>
             </tr>
 
+            <!-- Empty State -->
             <tr th:if="${#lists.isEmpty(accounts)}">
-              <td colspan="6" style="padding:40px; text-align:center; color:#94a3b8;">
-                Tidak ada data rekening ditemukan.
+              <td colspan="8" style="padding:48px; text-align:center; color:#94a3b8; font-weight:500;">
+                <div style="font-size: 16px; font-weight: 700; color: #1e3a8a; margin-bottom: 6px;">No Accounts Found</div>
+                <div>Tidak ada data rekening ditemukan yang sesuai kriteria pencarian.</div>
               </td>
             </tr>
           </tbody>

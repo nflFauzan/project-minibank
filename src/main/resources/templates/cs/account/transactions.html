@@ -1,0 +1,443 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Account Transactions - Tazkia Minibank</title>
+
+  <link rel="stylesheet" th:href="@{/css/cs-shell.css}">
+  <link rel="stylesheet" th:href="@{/css/custom.css}">
+  <link rel="stylesheet" th:href="@{/css/minibank-ui.css}">
+  <link rel="stylesheet" th:href="@{/css/account.css}">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif !important;
+      background: radial-gradient(circle at top left, #f1f5f9 0%, #e2e8f0 100%);
+      color: #0f172a;
+      min-height: 100vh;
+    }
+
+    .page-title {
+      font-size: 24px;
+      font-weight: 800;
+      color: #1e3a8a;
+      letter-spacing: -0.02em;
+      margin: 0;
+    }
+
+    /* Glass Cards */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.85);
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(30, 58, 138, 0.04), 0 2px 6px rgba(0, 0, 0, 0.02);
+      padding: 24px 28px;
+      margin-top: 20px;
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    .stat-box {
+      background: rgba(248, 250, 252, 0.7);
+      border: 1px solid rgba(226, 232, 240, 0.9);
+      border-radius: 14px;
+      padding: 16px 20px;
+    }
+
+    .stat-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #64748b;
+      margin-bottom: 4px;
+    }
+
+    .stat-value {
+      font-size: 18px;
+      font-weight: 800;
+      color: #0f172a;
+    }
+
+    /* Glass Toolbar */
+    .glass-toolbar {
+      display: flex;
+      gap: 12px;
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      padding: 16px 20px;
+      border-radius: 18px;
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      box-shadow: 0 10px 30px rgba(30, 58, 138, 0.05), 0 1px 3px rgba(0, 0, 0, 0.02);
+      margin-top: 20px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .glass-toolbar input, .glass-toolbar select {
+      padding: 10px 14px;
+      border-radius: 10px;
+      border: 1.5px solid #e2e8f0;
+      background: rgba(255, 255, 255, 0.95);
+      font-family: 'Poppins', sans-serif;
+      font-size: 13.5px;
+      outline: none;
+      color: #0f172a;
+      transition: all 0.2s;
+    }
+
+    .glass-toolbar input:focus, .glass-toolbar select:focus {
+      border-color: #2563eb;
+      background: #ffffff;
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+    }
+
+    /* Table */
+    .glass-table-container {
+      margin-top: 20px;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.85);
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(30, 58, 138, 0.04), 0 2px 6px rgba(0, 0, 0, 0.02);
+      padding: 12px;
+      overflow: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 1000px;
+      font-size: 13.5px;
+    }
+
+    thead tr {
+      text-align: left;
+      color: #64748b;
+      font-weight: 700;
+      border-bottom: 2px solid rgba(226, 232, 240, 0.8);
+    }
+
+    th {
+      padding: 16px 14px;
+      text-transform: uppercase;
+      font-size: 11px;
+      letter-spacing: 0.05em;
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 15px 14px;
+      vertical-align: middle;
+      color: #334155;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid rgba(241, 245, 249, 0.9);
+      transition: background 0.15s ease;
+    }
+
+    tbody tr:hover {
+      background-color: rgba(248, 250, 252, 0.8);
+    }
+
+    /* Badges */
+    .badge {
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      display: inline-block;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    .badge-deposit { background: rgba(236, 253, 245, 0.95); color: #047857; border: 1px solid rgba(167, 243, 208, 0.8); }
+    .badge-withdrawal { background: rgba(254, 242, 242, 0.95); color: #b91c1c; border: 1px solid rgba(254, 202, 202, 0.8); }
+    .badge-transfer { background: rgba(239, 246, 255, 0.95); color: #1d4ed8; border: 1px solid rgba(191, 219, 254, 0.8); }
+
+    /* Buttons */
+    .btn-glass-primary {
+      text-decoration: none;
+      padding: 10px 20px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+      font-weight: 700;
+      color: #ffffff;
+      box-shadow: 0 6px 18px rgba(37, 99, 235, 0.25);
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      border: none;
+      font-size: 13.5px;
+    }
+
+    .btn-glass-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 24px rgba(37, 99, 235, 0.35);
+      color: #ffffff;
+    }
+
+    .btn-glass-ghost {
+      text-decoration: none;
+      padding: 9px 16px;
+      border-radius: 12px;
+      border: 1px solid rgba(226, 232, 240, 0.9);
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(8px);
+      font-weight: 600;
+      font-size: 13.5px;
+      color: #475569;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+    }
+
+    .btn-glass-ghost:hover {
+      background: #ffffff;
+      color: #1e3a8a;
+      transform: translateY(-1px);
+    }
+
+    /* Print Styles */
+    @media print {
+      body { background: #ffffff !important; }
+      .cs-shell .cs-sidebar, .cs-topbar, .glass-toolbar, .no-print { display: none !important; }
+      .cs-content { margin-left: 0 !important; width: 100% !important; }
+      .cs-page { padding: 0 !important; }
+      .glass-card, .glass-table-container { box-shadow: none !important; border: 1px solid #cbd5e1 !important; }
+      .print-header { display: block !important; margin-bottom: 20px; }
+    }
+
+    .print-header { display: none; }
+  </style>
+</head>
+
+<body>
+<div class="cs-shell">
+  <div th:replace="~{cs/fragments :: sidebar('account')}"></div>
+
+  <div class="cs-content">
+    <div th:replace="~{cs/fragments :: topbar}"></div>
+
+    <main class="cs-page" style="padding: 32px 36px;">
+      
+      <!-- Print Header (Visible only when printed) -->
+      <div class="print-header">
+        <div style="border-bottom: 2px solid #1e3a8a; padding-bottom: 12px; margin-bottom: 16px;">
+          <h2 style="margin: 0; color: #1e3a8a;">TAZKIA MINIBANK - REKENING KORAN / MUTASI</h2>
+          <p style="margin: 4px 0 0; font-size: 12px; color: #64748b;">Institut Agama Islam Tazkia • Cabang Operasional Perbankan Syariah</p>
+        </div>
+      </div>
+
+      <!-- Top Header & Navigation -->
+      <div class="no-print" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+        <div>
+          <h1 class="page-title">Account Transactions (Mutasi Rekening)</h1>
+          <p style="margin:4px 0 0; font-size:13px; color:#64748b; font-weight:500;">
+            Riwayat transaksi dan mutasi rekening nasabah secara lengkap.
+          </p>
+        </div>
+        <div style="display: flex; gap: 10px; align-items: center;">
+          <button onclick="window.print()" class="btn-glass-ghost">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 6 2 18 2 18 9"></polyline>
+              <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+              <rect x="6" y="14" width="12" height="8"></rect>
+            </svg>
+            Print Statement
+          </button>
+          <a class="btn-glass-ghost" th:href="@{/cs/account/{id}(id=${account.id})}">View Details</a>
+          <a class="btn-glass-ghost" th:href="@{/cs/account}">&larr; Back to Accounts</a>
+        </div>
+      </div>
+
+      <!-- Account Summary Bar (Frosted Glass Card) -->
+      <div class="glass-card">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+          <div>
+            <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #64748b;">Account Information</div>
+            <div style="font-size: 22px; font-weight: 800; color: #1e3a8a; margin-top: 2px;" th:text="${account.nomorRekening}">A2000402</div>
+            <div style="font-weight: 600; color: #1e293b; margin-top: 2px;" th:text="${account.namaRekening ?: account.namaNasabah}">Account Name</div>
+            <div style="font-size: 13px; color: #64748b; margin-top: 2px;">
+              <span th:text="${account.namaNasabah}">Customer Name</span> • 
+              <span th:text="${account.cifNasabah ?: 'C1000' + account.id}">C1000017</span> • 
+              <span th:text="${account.produk}">Tabungan Wadiah</span>
+            </div>
+          </div>
+
+          <div style="text-align: right;">
+            <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #64748b;">Current Balance</div>
+            <div style="font-size: 24px; font-weight: 900; color: #047857; margin-top: 2px;"
+                 th:text="${'IDR ' + #numbers.formatDecimal(account.saldo ?: (account.nominalSetoranAwal ?: 0), 1, 'COMMA', 2, 'POINT')}">
+              IDR 0.00
+            </div>
+          </div>
+        </div>
+
+        <!-- Inflow & Outflow Stats -->
+        <div class="stats-grid">
+          <div class="stat-box">
+            <div class="stat-label">Total Credit / Masuk (+)</div>
+            <div class="stat-value" style="color: #047857;"
+                 th:text="${'+ IDR ' + #numbers.formatDecimal(totalCredit ?: 0, 1, 'COMMA', 2, 'POINT')}">
+              + IDR 0.00
+            </div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">Total Debit / Keluar (-)</div>
+            <div class="stat-value" style="color: #b91c1c;"
+                 th:text="${'- IDR ' + #numbers.formatDecimal(totalDebit ?: 0, 1, 'COMMA', 2, 'POINT')}">
+              - IDR 0.00
+            </div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">Total Transactions</div>
+            <div class="stat-value" style="color: #1e3a8a;" th:text="${#lists.size(transactions)}">
+              0
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filter Toolbar -->
+      <form method="get" th:action="@{/cs/account/{id}/transactions(id=${account.id})}" class="glass-toolbar no-print">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <label style="font-size: 12px; font-weight: 700; color: #64748b;">From:</label>
+          <input type="date" name="startDate" th:value="${startDate}">
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <label style="font-size: 12px; font-weight: 700; color: #64748b;">To:</label>
+          <input type="date" name="endDate" th:value="${endDate}">
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <label style="font-size: 12px; font-weight: 700; color: #64748b;">Type:</label>
+          <select name="type">
+            <option value="ALL" th:selected="${type == 'ALL'}">All Types</option>
+            <option value="DEPOSIT" th:selected="${type == 'DEPOSIT'}">DEPOSIT</option>
+            <option value="WITHDRAWAL" th:selected="${type == 'WITHDRAWAL'}">WITHDRAWAL</option>
+            <option value="TRANSFER" th:selected="${type == 'TRANSFER'}">TRANSFER</option>
+          </select>
+        </div>
+
+        <button type="submit" class="btn-glass-primary" style="padding: 10px 18px;">Filter</button>
+        <a th:href="@{/cs/account/{id}/transactions(id=${account.id})}" class="btn-glass-ghost" style="padding: 9px 14px;">Reset</a>
+      </form>
+
+      <!-- Mutasi Transactions Table -->
+      <div class="glass-table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Date & Time</th>
+              <th>Reference No</th>
+              <th>Type</th>
+              <th>Description</th>
+              <th style="text-align: right;">Debit (-)</th>
+              <th style="text-align: right;">Credit (+)</th>
+              <th style="text-align: right;">Balance</th>
+              <th>Officer / Channel</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="t : ${transactions}">
+              <!-- Date & Time -->
+              <td style="white-space: nowrap; font-size: 13px; color: #475569;"
+                  th:text="${#temporals.format(t.processedAt, 'dd/MM/yyyy HH:mm')}">
+                02/01/2026 14:30
+              </td>
+
+              <!-- Reference No -->
+              <td style="white-space: nowrap; font-weight: 700; color: #1e3a8a; font-size: 12.5px;"
+                  th:text="${t.nomorTransaksi ?: t.noReferensi}">
+                TRX-202601020001
+              </td>
+
+              <!-- Type Badge -->
+              <td>
+                <span th:if="${t.tipe?.name() == 'DEPOSIT'}" class="badge badge-deposit">DEPOSIT</span>
+                <span th:if="${t.tipe?.name() == 'WITHDRAWAL'}" class="badge badge-withdrawal">WITHDRAWAL</span>
+                <span th:if="${t.tipe?.name() == 'TRANSFER'}" class="badge badge-transfer">TRANSFER</span>
+              </td>
+
+              <!-- Description -->
+              <td style="font-weight: 500; color: #1e293b; max-width: 250px;" th:text="${t.keterangan}">
+                Setoran Awal Tabungan
+              </td>
+
+              <!-- Debit (-) -->
+              <td style="text-align: right; white-space: nowrap; font-weight: 700; color: #b91c1c;">
+                <span th:if="${t.saldoSesudah != null and t.saldoSebelum != null and t.saldoSesudah.compareTo(t.saldoSebelum) < 0}"
+                      th:text="${'- IDR ' + #numbers.formatDecimal(t.jumlah, 1, 'COMMA', 2, 'POINT')}">
+                  - IDR 100,000.00
+                </span>
+                <span th:if="${t.tipe?.name() == 'WITHDRAWAL' and (t.saldoSesudah == null or t.saldoSebelum == null)}"
+                      th:text="${'- IDR ' + #numbers.formatDecimal(t.jumlah, 1, 'COMMA', 2, 'POINT')}">
+                  - IDR 100,000.00
+                </span>
+                <span th:if="${!(t.saldoSesudah != null and t.saldoSebelum != null and t.saldoSesudah.compareTo(t.saldoSebelum) < 0) and t.tipe?.name() != 'WITHDRAWAL'}">-</span>
+              </td>
+
+              <!-- Credit (+) -->
+              <td style="text-align: right; white-space: nowrap; font-weight: 700; color: #047857;">
+                <span th:if="${t.saldoSesudah != null and t.saldoSebelum != null and t.saldoSesudah.compareTo(t.saldoSebelum) >= 0}"
+                      th:text="${'+ IDR ' + #numbers.formatDecimal(t.jumlah, 1, 'COMMA', 2, 'POINT')}">
+                  + IDR 500,000.00
+                </span>
+                <span th:if="${t.tipe?.name() == 'DEPOSIT' and (t.saldoSesudah == null or t.saldoSebelum == null)}"
+                      th:text="${'+ IDR ' + #numbers.formatDecimal(t.jumlah, 1, 'COMMA', 2, 'POINT')}">
+                  + IDR 500,000.00
+                </span>
+                <span th:if="${!(t.saldoSesudah != null and t.saldoSebelum != null and t.saldoSesudah.compareTo(t.saldoSebelum) >= 0) and t.tipe?.name() != 'DEPOSIT'}">-</span>
+              </td>
+
+              <!-- Running Balance -->
+              <td style="text-align: right; white-space: nowrap; font-weight: 800; color: #0f172a;"
+                  th:text="${'IDR ' + #numbers.formatDecimal(t.saldoSesudah ?: 0, 1, 'COMMA', 2, 'POINT')}">
+                IDR 500,000.00
+              </td>
+
+              <!-- Processed By / Channel -->
+              <td style="font-size: 12.5px; color: #64748b; white-space: nowrap;">
+                <span style="font-weight: 600; color: #334155;" th:text="${t.processedByFullName ?: t.processedByUsername}">teller1</span>
+                <span class="muted" th:text="${' (' + (t.channel ?: 'TELLER') + ')'}"> (TELLER)</span>
+              </td>
+            </tr>
+
+            <!-- Empty State -->
+            <tr th:if="${#lists.isEmpty(transactions)}">
+              <td colspan="8" style="padding: 48px; text-align: center; color: #94a3b8; font-weight: 500;">
+                <div style="font-size: 16px; font-weight: 700; color: #1e3a8a; margin-bottom: 6px;">No Transactions Found</div>
+                <div>Belum ada catatan mutasi transaksi pada rekening ini untuk periode yang dipilih.</div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </main>
+  </div>
+</div>
+</body>
+</html>
+

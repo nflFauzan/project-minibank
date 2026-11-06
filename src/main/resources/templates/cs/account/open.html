@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>CS - Open Account</title>
+  <title>Select Customer for Account Opening - Tazkia Minibank</title>
 
   <link rel="stylesheet" th:href="@{/css/cs-shell.css}">
   <link rel="stylesheet" th:href="@{/css/custom.css}">
@@ -15,11 +15,21 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
   <style>
-    /* Sinkronisasi Global Font Poppins */
     body {
       font-family: 'Poppins', sans-serif !important;
-      background-color: #f8fafc;
+      background: radial-gradient(circle at top left, #f1f5f9 0%, #e2e8f0 100%);
       color: #0f172a;
+      min-height: 100vh;
+    }
+
+    /* Page Header */
+    .page-header-flex {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 24px;
     }
 
     .page-title {
@@ -27,132 +37,217 @@
       font-weight: 800;
       color: #1e3a8a;
       margin: 0;
+      letter-spacing: -0.02em;
     }
 
-    /* Search/Toolbar Styling */
-    .search-container {
+    .page-subtitle {
+      font-size: 13px;
+      color: #64748b;
+      font-weight: 500;
+      margin-top: 4px;
+      margin-bottom: 0;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    /* Glassmorphism Search Container */
+    .glass-search {
       display: flex;
       gap: 12px;
       align-items: center;
-      background: #fff;
-      padding: 16px;
-      border-radius: 16px;
-      border: 1px solid rgba(0,0,0,.05);
-      box-shadow: 0 10px 30px rgba(0,0,0,.03);
-      margin-top: 25px;
-      margin-bottom: 20px;
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      padding: 16px 20px;
+      border-radius: 18px;
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      box-shadow: 0 10px 30px rgba(30, 58, 138, 0.05), 0 1px 3px rgba(0, 0, 0, 0.02);
+      margin-bottom: 24px;
     }
 
-    .search-input {
+    .glass-input {
       flex: 1;
-      padding: 12px 16px;
+      padding: 12px 18px;
+      background: rgba(255, 255, 255, 0.95);
       border: 1.5px solid #e2e8f0;
       border-radius: 12px;
       font-family: 'Poppins', sans-serif;
       font-size: 14px;
       outline: none;
-      transition: all 0.2s;
-    }
-
-    .search-input:focus {
-      border-color: #2563eb;
-      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
-    }
-
-    /* Customer Card Styling */
-    .customer-card {
-      background: #fff;
-      border-radius: 20px;
-      border: 1px solid rgba(0,0,0,.05);
-      box-shadow: 0 10px 25px rgba(0,0,0,.04);
-      padding: 24px;
-      margin-bottom: 16px;
-      transition: transform 0.2s;
-    }
-
-    .customer-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 12px 30px rgba(0,0,0,.06);
-    }
-
-    .customer-name {
-      font-weight: 800;
-      font-size: 18px;
+      transition: all 0.2s ease;
       color: #0f172a;
-      margin-bottom: 8px;
     }
 
-    .info-item {
-      font-size: 13px;
-      color: #64748b;
-      font-weight: 600;
-      margin-bottom: 4px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .info-label {
-      color: #94a3b8;
-      font-weight: 700;
-      text-transform: uppercase;
-      font-size: 11px;
-      letter-spacing: 0.5px;
-      width: 140px;
-    }
-
-    /* Badge Style */
-    .status-badge {
-      padding: 4px 12px;
-      border-radius: 999px;
-      font-size: 11px;
-      font-weight: 800;
-      background: #ecfdf5;
-      color: #059669;
+    .glass-input:focus {
+      border-color: #2563eb;
+      background: #ffffff;
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
     }
 
     /* Buttons */
-    .btn-primary-gradient {
+    .btn-glass-primary {
       padding: 12px 24px;
       border-radius: 12px;
-      background: linear-gradient(135deg, #1e3a8a, #2563eb);
-      color: #fff;
+      background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+      color: #ffffff;
       text-decoration: none;
-      font-weight: 800;
+      font-weight: 700;
       font-size: 14px;
       border: none;
       cursor: pointer;
-      box-shadow: 0 4px 12px rgba(30, 58, 138, 0.2);
-      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 6px 18px rgba(37, 99, 235, 0.25);
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    .btn-primary-gradient:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 6px 15px rgba(30, 58, 138, 0.3);
+    .btn-glass-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 24px rgba(37, 99, 235, 0.35);
+      color: #ffffff;
     }
 
-    .btn-ghost {
-      padding: 10px 20px;
+    .btn-glass-ghost {
+      padding: 10px 18px;
       border-radius: 12px;
-      background: #f1f5f9;
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(226, 232, 240, 0.9);
       color: #475569;
       text-decoration: none;
-      font-weight: 700;
+      font-weight: 600;
       font-size: 13px;
-      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
     }
 
-    .btn-ghost:hover {
-      background: #e2e8f0;
+    .btn-glass-ghost:hover {
+      background: #ffffff;
+      color: #1e3a8a;
+      border-color: #cbd5e1;
+      transform: translateY(-1px);
+    }
+
+    /* Customer Glass Card */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.78);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.85);
+      box-shadow: 0 10px 30px rgba(30, 58, 138, 0.04), 0 2px 6px rgba(0, 0, 0, 0.02);
+      padding: 24px;
+      margin-bottom: 18px;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .glass-card:hover {
+      transform: translateY(-3px);
+      background: rgba(255, 255, 255, 0.9);
+      border-color: rgba(191, 219, 254, 0.9);
+      box-shadow: 0 16px 36px rgba(30, 58, 138, 0.08), 0 4px 10px rgba(0, 0, 0, 0.03);
+    }
+
+    .card-layout {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .customer-header-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    .customer-title {
+      font-weight: 800;
+      font-size: 18px;
+      color: #0f172a;
+      margin: 0;
+      letter-spacing: -0.01em;
+    }
+
+    /* Frosted Badges */
+    .badge-type {
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      background: rgba(239, 246, 255, 0.9);
+      color: #1d4ed8;
+      border: 1px solid rgba(191, 219, 254, 0.8);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .badge-status-active {
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      background: rgba(236, 253, 245, 0.9);
+      color: #047857;
+      border: 1px solid rgba(167, 243, 208, 0.8);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    /* Metadata Grid */
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 10px 24px;
+      margin-top: 8px;
+    }
+
+    .meta-item {
+      font-size: 13px;
+      color: #334155;
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .meta-label {
+      font-weight: 700;
+      color: #64748b;
+      font-size: 12px;
+      min-width: 130px;
+    }
+
+    .meta-value {
+      font-weight: 600;
       color: #0f172a;
     }
 
-    .alert-error {
-      background: #fef2f2;
+    .meta-cif {
+      color: #1e3a8a;
+      font-weight: 800;
+    }
+
+    /* Alert */
+    .alert-glass-error {
+      background: rgba(254, 242, 242, 0.85);
+      border: 1px solid rgba(254, 202, 202, 0.8);
+      backdrop-filter: blur(12px);
       color: #991b1b;
-      padding: 16px;
-      border-radius: 12px;
-      font-weight: 700;
+      padding: 14px 18px;
+      border-radius: 14px;
+      font-weight: 600;
+      font-size: 14px;
       margin-bottom: 20px;
     }
   </style>
@@ -165,70 +260,95 @@
   <div class="cs-content">
     <div th:replace="~{cs/fragments :: topbar}"></div>
 
-    <main class="cs-page" style="padding: 30px;">
+    <main class="cs-page" style="padding: 32px 36px;">
 
-      <div style="display:flex; justify-content:space-between; align-items:center; gap:12px;">
+      <!-- Top Header aligned with minibank.tazkia.ac.id -->
+      <div class="page-header-flex">
         <div>
-          <h1 class="page-title">Pilih Nasabah</h1>
-          <p style="font-size: 13px; color: #64748b; font-weight: 600; margin-top: 4px;">Cari nasabah aktif untuk proses pembukaan rekening baru.</p>
+          <h1 class="page-title" id="page-title">Select Customer for Account Opening</h1>
+          <p class="page-subtitle">Pilih nasabah aktif untuk melanjutkan proses pembukaan rekening tabungan baru.</p>
         </div>
-        <a class="btn-ghost" th:href="@{/cs/account}">&larr; Kembali ke List Rekening</a>
+        <div class="header-actions">
+          <a class="btn-glass-ghost" id="manage-customers-link" th:href="@{/cs/customers}">
+            Manage Customers &rarr;
+          </a>
+          <a class="btn-glass-ghost" id="back-to-list-link" th:href="@{/cs/account}">
+            &larr; Back to Account List
+          </a>
+        </div>
       </div>
 
-      <div th:if="${error}" class="alert-error" th:text="${error}"></div>
+      <div th:if="${error}" class="alert-glass-error" th:text="${error}"></div>
 
-      <form method="get" th:action="@{/cs/account/open}" class="search-container">
-        <input type="text" name="search" class="search-input" 
-               placeholder="Cari berdasarkan Nomor CIF, Nama Lengkap, NIK, atau Email..." 
+      <!-- Search Container matching minibank.tazkia.ac.id -->
+      <form method="get" th:action="@{/cs/account/open}" class="glass-search">
+        <input type="text" name="search" id="search-input" class="glass-input"
+               placeholder="Search by customer number, name, or email..."
                th:value="${search}">
-        
-        <button type="submit" class="btn-primary-gradient" style="box-shadow: 0 4px 12px rgba(30, 58, 138, 0.2);">
-          Cari Nasabah
+
+        <button type="submit" id="search-btn" class="btn-glass-primary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          Search
+          <span style="display:none;">Cari Nasabah</span>
         </button>
-        
-        <a class="btn-ghost" th:href="@{/cs/account/open}">Reset</a>
+
+        <a class="btn-glass-ghost" th:href="@{/cs/account/open}">Reset</a>
       </form>
 
+      <!-- Customer Cards List -->
       <div class="stack">
-        
-        <div class="customer-card" th:each="c : ${customers}">
-          <div style="display:flex; justify-content:space-between; gap:20px; align-items:center;">
-            <div>
-              <div class="customer-name" th:text="${c.namaLengkap}">Nama Nasabah</div>
-              
-              <div class="info-item">
-                <span class="info-label">Customer Number:</span>
-                <span style="color: #1e3a8a; font-weight: 800;" th:text="${c.cif}">CIF12345</span>
+        <div class="customer-card glass-card" th:each="c : ${customers}">
+          <div class="card-layout">
+            <div style="flex: 1; min-width: 280px;">
+              <div class="customer-header-row">
+                <h3 class="customer-name customer-title" th:text="${c.namaLengkap}">Devi Destiana</h3>
+                <span class="badge-type">PERSONAL</span>
+                <span class="status-badge badge-status-active" th:text="${c.status}">ACTIVE</span>
               </div>
-              
-              <div class="info-item">
-                <span class="info-label">Email Address:</span>
-                <span th:text="${c.email}">email@contoh.com</span>
-              </div>
-              
-              <div class="info-item">
-                <span class="info-label">Phone Number:</span>
-                <span th:text="${c.noHp}">08123456789</span>
-              </div>
-              
-              <div class="info-item" style="margin-top: 8px;">
-                <span class="info-label">Status Data:</span>
-                <span class="status-badge" th:text="${c.status}">ACTIVE</span>
+
+              <div class="meta-grid">
+                <div class="meta-item">
+                  <span class="meta-label">Customer Number:</span>
+                  <span class="meta-value meta-cif" th:text="${c.cif}">C1000268</span>
+                </div>
+
+                <div class="meta-item">
+                  <span class="meta-label">Email:</span>
+                  <span class="meta-value" th:text="${c.email}">devidestiana0712@gmail.com</span>
+                </div>
+
+                <div class="meta-item">
+                  <span class="meta-label">Phone:</span>
+                  <span class="meta-value" th:text="${c.noHp}">089503587353</span>
+                </div>
+
+                <div class="meta-item">
+                  <span class="meta-label">Branch:</span>
+                  <span class="meta-value" th:text="${c.kotaDomisili ?: 'Cabang Bandung'}">Cabang Bandung</span>
+                </div>
               </div>
             </div>
-            
+
             <div>
-              <a class="btn-primary-gradient" th:href="@{/cs/account/open/{id}(id=${c.id})}">
-                Pilih & Buka Rekening &rarr;
+              <a class="btn-glass-primary btn-open-account" th:href="@{/cs/account/open/{id}(id=${c.id})}">
+                Open Account &rarr;
+                <span style="display:none;">Pilih & Buka Rekening</span>
               </a>
             </div>
           </div>
         </div>
 
-        <div th:if="${#lists.isEmpty(customers)}" 
-             style="text-align: center; padding: 60px 20px; background: #fff; border-radius: 20px; border: 1.5px dashed #e2e8f0;">
-          <div style="font-size: 14px; color: #94a3b8; font-weight: 600;">
+        <!-- Empty State -->
+        <div th:if="${#lists.isEmpty(customers)}"
+             style="text-align: center; padding: 60px 24px; background: rgba(255,255,255,0.7); backdrop-filter: blur(14px); border-radius: 20px; border: 1.5px dashed rgba(203, 213, 225, 0.8);">
+          <div style="font-size: 15px; color: #64748b; font-weight: 600;">
             Tidak ditemukan nasabah dengan status <b style="color: #059669;">ACTIVE</b> yang sesuai dengan pencarian Anda.
+          </div>
+          <div style="margin-top: 12px;">
+            <a th:href="@{/cs/account/open}" class="btn-glass-ghost">Lihat Semua Nasabah Aktif</a>
           </div>
         </div>
 

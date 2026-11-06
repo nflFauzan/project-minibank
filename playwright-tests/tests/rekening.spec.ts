@@ -34,7 +34,7 @@ test.describe('Manajemen Rekening', () => {
     
     // Verifikasi sukses (usually redirects to list or detail)
     // TODO: verify behavior after submit
-    await expect(page.locator('.alert-success, body')).toContainText(/berhasil|Success/i);
+    await expect(page.locator('.alert-success, body').first()).toContainText(/berhasil|Success/i);
   });
 
   test('Lihat detail rekening', async ({ page }) => {

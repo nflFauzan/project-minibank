@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>CS - Open New Account</title>
+  <title>Open New Account - Tazkia Minibank</title>
 
   <link rel="stylesheet" th:href="@{/css/cs-shell.css}">
   <link rel="stylesheet" th:href="@{/css/custom.css}">
@@ -15,130 +15,295 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
   <style>
-    /* Sinkronisasi Global Font Poppins */
     body {
       font-family: 'Poppins', sans-serif !important;
-      background-color: #f8fafc;
+      background: radial-gradient(circle at top left, #f1f5f9 0%, #e2e8f0 100%);
       color: #0f172a;
+      min-height: 100vh;
     }
 
-    /* Page Header Styling */
+    /* Page Header */
+    .page-header-flex {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
     .page-title {
       font-size: 24px;
       font-weight: 800;
       color: #1e3a8a;
       margin: 0;
+      letter-spacing: -0.02em;
     }
 
     .page-subtitle {
       font-size: 13px;
       color: #64748b;
-      font-weight: 600;
+      font-weight: 500;
       margin-top: 4px;
+      margin-bottom: 0;
     }
 
-    /* Floating Card Style - Identik dengan Dashboard */
-    .card-custom {
-      background: #fff;
+    /* Glassmorphism Card Style */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.78);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       border-radius: 20px;
-      border: 1px solid rgba(0,0,0,.05);
-      box-shadow: 0 10px 30px rgba(0,0,0,.04);
-      padding: 24px;
-      margin-top: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.85);
+      box-shadow: 0 10px 30px rgba(30, 58, 138, 0.04), 0 2px 6px rgba(0, 0, 0, 0.02);
+      padding: 28px;
+      margin-bottom: 24px;
+      transition: all 0.25s ease;
     }
 
-    .card-heading {
-      font-size: 16px;
+    .glass-card-title {
+      font-size: 18px;
       font-weight: 800;
-      color: #0f172a;
+      color: #1e3a8a;
+      margin-top: 0;
       margin-bottom: 20px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: -0.01em;
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
 
-    /* Info Display Styling */
-    .label-muted {
+    /* Info Grid Layout */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px 32px;
+    }
+
+    @media (max-width: 768px) {
+      .grid-2 { grid-template-columns: 1fr; gap: 16px; }
+    }
+
+    .info-row {
+      margin-bottom: 14px;
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+    }
+
+    .info-label {
+      font-weight: 700;
+      color: #64748b;
+      font-size: 13px;
+      min-width: 140px;
+    }
+
+    .info-value {
+      font-weight: 600;
+      color: #0f172a;
+      font-size: 14px;
+    }
+
+    /* Badges */
+    .badge-type {
+      padding: 3px 10px;
+      border-radius: 999px;
       font-size: 11px;
       font-weight: 700;
-      color: #94a3b8;
-      text-transform: uppercase;
+      background: rgba(239, 246, 255, 0.9);
+      color: #1d4ed8;
+      border: 1px solid rgba(191, 219, 254, 0.8);
       letter-spacing: 0.5px;
-      margin-bottom: 4px;
+      text-transform: uppercase;
+      margin-left: 8px;
     }
 
-    .value-highlight {
-      font-size: 15px;
+    .badge-status-active {
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 11px;
       font-weight: 700;
-      color: #0f172a;
+      background: rgba(236, 253, 245, 0.9);
+      color: #047857;
+      border: 1px solid rgba(167, 243, 208, 0.8);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
     }
 
-    /* Form Input Styling */
-    .form-label-custom {
+    /* Form Fields */
+    .form-group {
+      margin-bottom: 22px;
+    }
+
+    .form-label {
+      display: block;
       font-weight: 700;
       font-size: 14px;
-      color: #334155;
+      color: #1e293b;
       margin-bottom: 8px;
-      display: block;
     }
 
-    .form-control-custom {
+    .glass-input, .glass-select {
       width: 100%;
-      padding: 12px 16px;
+      padding: 12px 18px;
+      background: rgba(255, 255, 255, 0.95);
       border: 1.5px solid #e2e8f0;
       border-radius: 12px;
       font-family: 'Poppins', sans-serif;
       font-size: 14px;
       outline: none;
-      transition: all 0.2s;
+      transition: all 0.2s ease;
+      color: #0f172a;
+      box-sizing: border-box;
     }
 
-    .form-control-custom:focus {
+    .glass-input:focus, .glass-select:focus {
       border-color: #2563eb;
-      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+      background: #ffffff;
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+    }
+
+    .form-helper {
+      font-size: 12px;
+      color: #64748b;
+      margin-top: 6px;
+      margin-bottom: 0;
+      font-weight: 500;
+    }
+
+    /* Product Details Glass Box (matching minibank.tazkia.ac.id) */
+    .product-details-box {
+      background: linear-gradient(135deg, rgba(248, 250, 252, 0.85) 0%, rgba(241, 245, 249, 0.7) 100%);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(226, 232, 240, 0.9);
+      border-radius: 16px;
+      padding: 22px;
+      margin-top: 10px;
+      margin-bottom: 24px;
+    }
+
+    .details-box-header {
+      font-size: 14px;
+      font-weight: 800;
+      color: #1e3a8a;
+      margin-top: 0;
+      margin-bottom: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .details-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px 24px;
+    }
+
+    @media (max-width: 640px) {
+      .details-grid { grid-template-columns: 1fr; }
+    }
+
+    .detail-item {
+      font-size: 13px;
+      color: #334155;
+      display: flex;
+      gap: 8px;
+    }
+
+    .detail-item strong {
+      color: #64748b;
+      font-weight: 700;
+      min-width: 140px;
+    }
+
+    .detail-full {
+      grid-column: 1 / -1;
+      margin-top: 4px;
+      font-size: 13px;
+      color: #334155;
+      display: flex;
+      gap: 8px;
+    }
+
+    .detail-full strong {
+      color: #64748b;
+      font-weight: 700;
+      min-width: 140px;
+    }
+
+    /* Form Actions Bar */
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 14px;
+      margin-top: 32px;
+      padding-top: 24px;
+      border-top: 1px solid rgba(226, 232, 240, 0.8);
     }
 
     /* Buttons */
-    .btn-primary-gradient {
+    .btn-glass-primary {
       padding: 12px 28px;
       border-radius: 12px;
-      background: linear-gradient(135deg, #1e3a8a, #2563eb);
-      color: #fff;
-      text-decoration: none;
-      font-weight: 800;
-      font-size: 14px;
-      border: none;
-      cursor: pointer;
-      box-shadow: 0 8px 15px rgba(30, 58, 138, 0.2);
-      transition: all 0.2s;
-    }
-
-    .btn-primary-gradient:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 12px 20px rgba(30, 58, 138, 0.3);
-    }
-
-    .btn-ghost {
-      padding: 10px 20px;
-      border-radius: 10px;
-      background: #fff;
-      border: 1px solid #e2e8f0;
-      color: #64748b;
+      background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+      color: #ffffff;
       text-decoration: none;
       font-weight: 700;
       font-size: 14px;
-      transition: all 0.2s;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 6px 18px rgba(37, 99, 235, 0.25);
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    .btn-ghost:hover {
-      background: #f1f5f9;
+    .btn-glass-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 24px rgba(37, 99, 235, 0.35);
+      color: #ffffff;
+    }
+
+    .btn-glass-ghost {
+      padding: 11px 22px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(226, 232, 240, 0.9);
+      color: #475569;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 13px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-glass-ghost:hover {
+      background: #ffffff;
       color: #1e3a8a;
+      border-color: #cbd5e1;
+      transform: translateY(-1px);
     }
 
-    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
-    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
-
-    @media (max-width: 900px) {
-      .grid-3 { grid-template-columns: 1fr; }
+    /* Alerts */
+    .alert-glass-error {
+      background: rgba(254, 242, 242, 0.85);
+      border: 1px solid rgba(254, 202, 202, 0.8);
+      backdrop-filter: blur(12px);
+      color: #991b1b;
+      padding: 14px 18px;
+      border-radius: 14px;
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 20px;
     }
   </style>
 </head>
@@ -150,74 +315,187 @@
   <div class="cs-content">
     <div th:replace="~{cs/fragments :: topbar}"></div>
 
-    <main class="cs-page" style="padding: 30px;">
-      
-      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom: 25px;">
+    <main class="cs-page" style="padding: 32px 36px;">
+
+      <!-- Top Header aligned with minibank.tazkia.ac.id -->
+      <div class="page-header-flex">
         <div>
-          <h1 class="page-title">Open New Account</h1>
-          <p class="page-subtitle">Lengkapi data pembukaan rekening nasabah di bawah ini.</p>
+          <h1 class="page-title" id="page-title">Open New Account</h1>
+          <p class="page-subtitle">Lengkapi konfigurasi produk dan nama rekening nasabah di bawah ini.</p>
         </div>
-        <a class="btn-ghost" th:href="@{/cs/account/open}">&larr; Kembali</a>
+        <a class="btn-glass-ghost" id="back-to-customer-selection" th:href="@{/cs/account/open}">
+          &larr; Back to Customer Selection
+        </a>
       </div>
 
-      <div th:if="${error}" style="background:#fef2f2; color:#991b1b; padding:16px; border-radius:12px; font-weight:700; margin-bottom:20px;" th:text="${error}"></div>
-      <div th:if="${success}" style="background:#ecfdf5; color:#059669; padding:16px; border-radius:12px; font-weight:700; margin-bottom:20px;" th:text="${success}"></div>
+      <div th:if="${error}" class="alert-glass-error" th:text="${error}"></div>
+      <div th:if="${success}" style="background: rgba(236,253,245,0.85); border: 1px solid rgba(167,243,208,0.8); backdrop-filter: blur(12px); color: #047857; padding: 14px 18px; border-radius: 14px; font-weight: 600; font-size: 14px; margin-bottom: 20px;" th:text="${success}"></div>
 
-      <div class="card-custom">
-        <h3 class="card-heading">Customer Information</h3>
+      <!-- Card 1: Customer Information (100% matched with minibank.tazkia.ac.id) -->
+      <div class="glass-card">
+        <h2 class="glass-card-title">Customer Information</h2>
+
         <div class="grid-2">
           <div>
-            <div class="label-muted">Customer Name</div>
-            <div class="value-highlight" th:text="${nasabah.namaSesuaiIdentitas}">Nama Nasabah</div>
+            <div class="info-row">
+              <span class="info-label">Customer Name:</span>
+              <span class="info-value">
+                <span th:text="${nasabah.namaLengkap ?: nasabah.namaSesuaiIdentitas}">Devi Destiana</span>
+                <span class="badge-type">PERSONAL</span>
+              </span>
+            </div>
 
-            <div class="label-muted" style="margin-top:16px;">Nomor CIF</div>
-            <div class="value-highlight" style="color: #1e3a8a;" th:text="${nasabah.cif}">C0000001</div>
+            <div class="info-row">
+              <span class="info-label">Customer Number:</span>
+              <span class="info-value" style="color: #1e3a8a; font-weight: 800;" th:text="${nasabah.cif}">C1000268</span>
+            </div>
+
+            <div class="info-row">
+              <span class="info-label">Email:</span>
+              <span class="info-value" th:text="${nasabah.email}">devidestiana0712@gmail.com</span>
+            </div>
           </div>
 
           <div>
-            <div class="label-muted">Email Address</div>
-            <div class="value-highlight" th:text="${nasabah.email}">email@contoh.com</div>
+            <div class="info-row">
+              <span class="info-label">Phone:</span>
+              <span class="info-value" th:text="${nasabah.noHp}">089503587353</span>
+            </div>
 
-            <div class="label-muted" style="margin-top:16px;">Phone Number</div>
-            <div class="value-highlight" th:text="${nasabah.noHp}">08123456789</div>
+            <div class="info-row">
+              <span class="info-label">Branch:</span>
+              <span class="info-value" th:text="${nasabah.kotaDomisili ?: 'Cabang Bandung'}">Cabang Bandung</span>
+            </div>
+
+            <div class="info-row">
+              <span class="info-label">Status:</span>
+              <span class="info-value">
+                <span class="status-badge badge-status-active" th:text="${nasabah.status}">ACTIVE</span>
+              </span>
+            </div>
           </div>
         </div>
       </div>
 
-      <form method="post" th:action="@{/cs/account/open/{id}(id=${nasabah.id})}" th:object="${form}" class="card-custom">
-        <h3 class="card-heading">Account Configuration</h3>
-        
-        <div class="grid-3">
-          <div class="form-group">
-            <label class="form-label-custom">Pilih Produk *</label>
-            <select th:field="*{produkId}" class="form-control-custom" required>
-              <option value="" disabled selected>-- Pilih Produk Bank --</option>
-              <option th:each="p : ${products}"
-                      th:value="${p.id}"
-                      th:text="${p.namaProduk + ' (' + p.kodeProduk + ')'}">
-              </option>
-            </select>
-          </div>
+      <!-- Card 2: Account Opening Form (Matching minibank.tazkia.ac.id) -->
+      <form method="post" th:action="@{/cs/account/open/{id}(id=${nasabah.id})}" th:object="${form}" class="glass-card">
 
-          <div class="form-group">
-            <label class="form-label-custom">Nominal Setoran Awal (IDR) *</label>
-            <input type="number" step="0.01" min="0" th:field="*{nominalSetoranAwal}" class="form-control-custom" placeholder="0.00" required>
-          </div>
+        <!-- 1. Select Product * -->
+        <div class="form-group">
+          <label class="form-label" for="produkId">Select Product *</label>
+          <select th:field="*{produkId}" id="produkId" class="glass-select" required>
+            <option value="" disabled th:selected="*{produkId == null}">-- Select a Product --</option>
+            <option th:each="p : ${products}"
+                    th:value="${p.id}"
+                    th:text="${p.namaProduk + ' (' + p.kodeProduk + ')'}"
+                    th:data-type="${p.jenisAkad ?: 'TABUNGAN_WADIAH'}"
+                    th:data-category="'SAVINGS'"
+                    th:data-min="${p.setoranAwalMinimum != null ? 'Rp ' + #numbers.formatDecimal(p.setoranAwalMinimum, 0, 'POINT', 0, 'COMMA') : 'Rp 0'}"
+                    th:data-desc="${p.deskripsiSingkat ?: 'Tabungan syariah aman dan menguntungkan'}">
+            </option>
+          </select>
+          <p class="form-helper">Choose an Islamic banking product for saving or checking</p>
+        </div>
 
-          <div class="form-group">
-            <label class="form-label-custom">Tujuan Pembukaan Rekening *</label>
-            <input type="text" th:field="*{tujuanPembukaan}" class="form-control-custom" placeholder="Contoh: Tabungan Haji" required>
+        <!-- 2. Product Details Panel (Live Interactive Glass Panel) -->
+        <div class="product-details-box" id="product-details-box">
+          <h3 class="details-box-header">Product Details</h3>
+          <div class="details-grid">
+            <div class="detail-item">
+              <strong>Product Type:</strong>
+              <span id="detail-product-type">-</span>
+            </div>
+            <div class="detail-item">
+              <strong>Category:</strong>
+              <span id="detail-category">-</span>
+            </div>
+            <div class="detail-item">
+              <strong>Minimum Opening Balance:</strong>
+              <span id="detail-minimum-balance" style="color: #047857; font-weight: 700;">-</span>
+            </div>
+            <div class="detail-full">
+              <strong>Description:</strong>
+              <span id="detail-description">-</span>
+            </div>
           </div>
         </div>
 
-        <div style="display:flex; justify-content:flex-end; gap:12px; margin-top: 30px; padding-top: 25px; border-top: 1px solid #f1f5f9;">
-          <a class="btn-ghost" th:href="@{/cs/account/open}">Cancel</a>
-          <button class="btn-primary-gradient" type="submit">Open Account Now &rarr;</button>
+        <!-- 3. Account Name * -->
+        <div class="form-group">
+          <label class="form-label" for="accountName">Account Name *</label>
+          <input type="text" th:field="*{namaRekening}" id="accountName" class="glass-input"
+                 placeholder="e.g., John Doe - Personal Savings"
+                 maxlength="200" required>
+          <p class="form-helper">Descriptive name for this account (max 200 characters)</p>
+        </div>
+
+        <!-- Hidden inputs for backward compatibility with database models and existing workflows -->
+        <input type="hidden" th:field="*{nominalSetoranAwal}" id="nominalSetoranAwal">
+        <input type="hidden" th:field="*{tujuanPembukaan}" id="tujuanPembukaan">
+
+        <!-- Form Actions aligned with minibank.tazkia.ac.id -->
+        <div class="form-actions">
+          <a class="btn-glass-ghost" id="cancel-btn" th:href="@{/cs/account/open}">Cancel</a>
+          <button class="btn-glass-primary" type="submit" id="open-account-btn">
+            Open Account &rarr;
+          </button>
         </div>
       </form>
 
     </main>
   </div>
 </div>
+
+<script>
+  (function() {
+    const productSelect = document.getElementById('produkId');
+    const detailType = document.getElementById('detail-product-type');
+    const detailCat = document.getElementById('detail-category');
+    const detailMin = document.getElementById('detail-minimum-balance');
+    const detailDesc = document.getElementById('detail-description');
+    const accountNameInput = document.getElementById('accountName');
+    const nominalInput = document.getElementById('nominalSetoranAwal');
+    const tujuanInput = document.getElementById('tujuanPembukaan');
+
+    function updateProductDetails() {
+      if (!productSelect) return;
+      const selectedOption = productSelect.options[productSelect.selectedIndex];
+      if (selectedOption && selectedOption.value) {
+        const type = selectedOption.getAttribute('data-type') || 'TABUNGAN_WADIAH';
+        const cat = selectedOption.getAttribute('data-category') || 'SAVINGS';
+        const min = selectedOption.getAttribute('data-min') || 'Rp 0';
+        const desc = selectedOption.getAttribute('data-desc') || '-';
+
+        detailType.textContent = type;
+        detailCat.textContent = cat;
+        detailMin.textContent = min;
+        detailDesc.textContent = desc;
+
+        // Auto-update nominal hidden value if needed
+        if (nominalInput && (!nominalInput.value || nominalInput.value === '0.00')) {
+          nominalInput.value = '0.00';
+        }
+      } else {
+        detailType.textContent = '-';
+        detailCat.textContent = '-';
+        detailMin.textContent = '-';
+        detailDesc.textContent = '-';
+      }
+    }
+
+    if (productSelect) {
+      productSelect.addEventListener('change', updateProductDetails);
+      // Run once on initial render
+      updateProductDetails();
+    }
+
+    // Keep hidden tujuan in sync with Account Name
+    if (accountNameInput && tujuanInput) {
+      accountNameInput.addEventListener('input', function() {
+        tujuanInput.value = accountNameInput.value;
+      });
+    }
+  })();
+</script>
 </body>
 </html>
