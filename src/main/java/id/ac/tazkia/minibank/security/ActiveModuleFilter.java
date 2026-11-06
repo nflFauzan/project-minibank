@@ -57,6 +57,17 @@ public class ActiveModuleFilter extends OncePerRequestFilter {
             return;
         }
 
+        // Superuser (ROLE_ADMIN) has global cross-module traversal access
+        org.springframework.security.core.Authentication auth = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null && request.getUserPrincipal() instanceof org.springframework.security.core.Authentication userAuth) {
+            auth = userAuth;
+        }
+        if (auth != null && auth.getAuthorities() != null &&
+                auth.getAuthorities().stream().anyMatch(a -> "ROLE_ADMIN".equals(a.getAuthority()))) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         String activeModule = (String) session.getAttribute(LoginSuccessHandler.SESSION_ACTIVE_MODULE);
         String prefix = modulePrefix(activeModule);
 

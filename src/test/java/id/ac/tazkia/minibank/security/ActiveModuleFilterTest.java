@@ -73,4 +73,30 @@ class ActiveModuleFilterTest extends BaseIntegrationTest {
         verify(res).sendRedirect("/dashboard");
         verify(chain, never()).doFilter(req, res);
     }
+
+    @Test
+    @DisplayName("ROLE_ADMIN user accessing cross-module paths (/teller/) - langsung lewat")
+    void adminUser_crossModule_shouldPassThrough() throws Exception {
+        HttpServletRequest req = mock(HttpServletRequest.class);
+        HttpServletResponse res = mock(HttpServletResponse.class);
+        FilterChain chain = mock(FilterChain.class);
+        HttpSession session = mock(HttpSession.class);
+        org.springframework.security.core.Authentication auth = mock(org.springframework.security.core.Authentication.class);
+        org.springframework.security.core.GrantedAuthority authority = new org.springframework.security.core.authority.SimpleGrantedAuthority("ROLE_ADMIN");
+
+        doReturn(java.util.List.of(authority)).when(auth).getAuthorities();
+        org.springframework.security.core.context.SecurityContextHolder.getContext().setAuthentication(auth);
+
+        try {
+            when(req.getRequestURI()).thenReturn("/teller/transaction");
+            when(req.getSession(false)).thenReturn(session);
+            when(session.getAttribute(LoginSuccessHandler.SESSION_ACTIVE_MODULE)).thenReturn("ADMIN");
+
+            filter.doFilter(req, res, chain);
+            verify(chain).doFilter(req, res);
+            verify(res, never()).sendRedirect(anyString());
+        } finally {
+            org.springframework.security.core.context.SecurityContextHolder.clearContext();
+        }
+    }
 }
