@@ -3,12 +3,14 @@ package id.ac.tazkia.minibank.controller;
 import id.ac.tazkia.minibank.dto.DashboardSummaryDto;
 import id.ac.tazkia.minibank.entity.NasabahStatus;
 import id.ac.tazkia.minibank.entity.ProdukTabungan;
+import id.ac.tazkia.minibank.entity.RekeningStatus;
 import id.ac.tazkia.minibank.repository.NasabahRepository;
 import id.ac.tazkia.minibank.repository.ProdukTabunganRepository;
 import id.ac.tazkia.minibank.repository.RekeningRepository;
 import id.ac.tazkia.minibank.repository.TransaksiRepository;
 import id.ac.tazkia.minibank.service.AdminUserService;
 import id.ac.tazkia.minibank.service.DashboardService;
+import id.ac.tazkia.minibank.service.SupervisorRekeningApprovalService;
 import id.ac.tazkia.minibank.service.TellerDashboardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -36,6 +38,7 @@ public class DashboardController {
     private final AdminUserService adminService;
     private final DashboardService dashboardService;
     private final TellerDashboardService tellerDashboardService;
+    private final SupervisorRekeningApprovalService supervisorRekeningApprovalService;
 
     @GetMapping("/dashboard")
     public String dashboard(Authentication auth, Model model) {
@@ -161,7 +164,7 @@ public class DashboardController {
         // Supervisor-specific data
         if (isBranchManager) {
             try {
-                long pendingCount = nasabahRepository.countByStatus(NasabahStatus.INACTIVE);
+                long pendingCount = supervisorRekeningApprovalService.pendingCount();
                 model.addAttribute("pendingCount", pendingCount);
             } catch (Exception ignored) {}
         }

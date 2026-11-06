@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Supervisor - Detail Rekening (Approval)</title>
+  
+  <link rel="stylesheet" th:href="@{/css/cs-shell.css}">
+  <link rel="stylesheet" th:href="@{/css/custom.css}">
+  <link rel="stylesheet" th:href="@{/css/minibank-ui.css}">
+  <link rel="stylesheet" th:href="@{/css/account.css}">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif !important;
+      background-color: #f8fafc;
+      color: #0f172a;
+    }
+
+    .page-title {
+      font-size: 24px;
+      font-weight: 800;
+      color: #1e3a8a;
+    }
+
+    .detail-card {
+      margin-top: 20px;
+      background: #fff;
+      border-radius: 20px;
+      border: 1px solid rgba(0,0,0,.05);
+      box-shadow: 0 10px 30px rgba(0,0,0,.04);
+      padding: 30px;
+    }
+
+    .section-header-bar {
+      background: #f1f5f9;
+      padding: 12px 18px;
+      border-radius: 10px;
+      font-weight: 700;
+      color: #1e3a8a;
+      margin-top: 30px;
+      margin-bottom: 15px;
+      font-size: 14px;
+      border-left: 4px solid #2563eb;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .section-header-bar:first-child { margin-top: 0; }
+
+    .detail-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    .detail-table td {
+      padding: 12px 8px;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .label-col {
+      width: 250px;
+      color: #64748b;
+      font-weight: 700;
+    }
+
+    .value-col {
+      color: #0f172a;
+      font-weight: 500;
+    }
+
+    .status-badge {
+      padding: 4px 12px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 800;
+      display: inline-block;
+    }
+    .badge-pending { background: #fef3c7; color: #92400e; }
+    .badge-active { background: #ecfdf5; color: #059669; }
+    .badge-rejected { background: #fef2f2; color: #dc2626; }
+    .badge-closed { background: #f1f5f9; color: #64748b; }
+
+    .btn-approve {
+      background: linear-gradient(135deg, #16a34a, #15803d);
+      color: #fff;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(22, 163, 74, 0.2);
+      transition: all 0.2s;
+    }
+
+    .btn-approve:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(22, 163, 74, 0.3); }
+
+    .btn-reject {
+      background: #fff;
+      color: #dc2626;
+      border: 1.5px solid #dc2626;
+      padding: 11px 24px;
+      border-radius: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-reject:hover { background: #fef2f2; }
+
+    .btn-back {
+      text-decoration: none;
+      padding: 10px 20px;
+      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+      background: #fff;
+      color: #64748b;
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    .modal-card {
+      width: min(560px, 100%);
+      background: #fff;
+      border-radius: 24px;
+      padding: 30px;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.2);
+    }
+
+    .modal-input {
+      width: 100%;
+      padding: 12px;
+      border-radius: 12px;
+      border: 1.5px solid #e2e8f0;
+      font-family: 'Poppins', sans-serif;
+      margin-top: 8px;
+    }
+
+    .modal-input:focus { border-color: #2563eb; outline: none; }
+  </style>
+</head>
+
+<body>
+<div class="cs-shell">
+  <div th:replace="~{cs/fragments :: supervisorSidebar('supervisor-account')}"></div>
+
+  <div class="cs-content">
+    <div th:replace="~{cs/fragments :: topbar}"></div>
+
+    <main class="cs-page" style="padding: 30px;">
+      
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom: 20px;">
+        <h1 class="page-title">Detail Rekening (Approval)</h1>
+        <a th:href="@{/supervisor/account}" class="btn-back">
+          &larr; Kembali ke List
+        </a>
+      </div>
+
+      <div th:if="${success}" style="background:#ecfdf5; color:#059669; padding:16px; border-radius:12px; font-weight:700; margin-bottom:15px; border:none;" th:text="${success}"></div>
+      <div th:if="${error}" style="background:#fef2f2; color:#dc2626; padding:16px; border-radius:12px; font-weight:700; margin-bottom:15px; border:none;" th:text="${error}"></div>
+
+      <div class="detail-card">
+        
+        <table class="detail-table">
+          <tbody>
+            <tr><td colspan="2" class="section-header-bar">Informasi Rekening & Status</td></tr>
+            <tr><td class="label-col">Nomor Rekening</td><td class="value-col" style="font-weight: 800; color: #1e3a8a; font-size: 16px;" th:text="${account.nomorRekening}">54300000101</td></tr>
+            <tr><td class="label-col">Nama Rekening</td><td class="value-col" th:text="${account.namaRekening}">Tabungan Wadiah</td></tr>
+            <tr><td class="label-col">Produk Tabungan</td><td class="value-col" style="font-weight: 700;" th:text="${account.produk}">Tabungan Utama</td></tr>
+            <tr><td class="label-col">Cabang Pembukaan</td><td class="value-col" th:text="${account.cabangPembukaan ?: 'Cabang Bandung'}">Cabang Bandung</td></tr>
+            <tr>
+              <td class="label-col">Status Saat Ini</td>
+              <td class="value-col">
+                <span th:class="'status-badge ' + (${account.status != null && account.status.name() == 'ACTIVE'} ? 'badge-active' : (${account.status != null && account.status.name() == 'REJECTED'} ? 'badge-rejected' : (${account.status != null && account.status.name() == 'CLOSED'} ? 'badge-closed' : 'badge-pending')))"
+                      th:text="${account.status != null ? account.status.name() : 'PENDING'}">PENDING</span>
+              </td>
+            </tr>
+            <tr><td class="label-col">Tanggal Pengajuan</td><td class="value-col" th:text="${account.tanggalPembukaan != null ? account.tanggalPembukaan : (account.createdAt != null ? #temporals.format(account.createdAt, 'dd-MM-yyyy HH:mm') : '-')}">-</td></tr>
+            <tr><td class="label-col">Petugas CS Pengaju</td><td class="value-col" th:text="${account.petugasCs ?: '-'}">-</td></tr>
+            
+            <tr th:if="${account.status != null && account.status.name() != 'PENDING'}">
+              <td class="label-col">Diproses Oleh (SPV)</td>
+              <td class="value-col" th:text="${account.approvedBy}">-</td>
+            </tr>
+            <tr th:if="${account.approvedAt != null}">
+              <td class="label-col">Waktu Diproses</td>
+              <td class="value-col" th:text="${#temporals.format(account.approvedAt, 'dd-MM-yyyy HH:mm')}">-</td>
+            </tr>
+            <tr th:if="${account.approvalNotes != null && !account.approvalNotes.isBlank()}">
+              <td class="label-col">Catatan Supervisor</td>
+              <td class="value-col" th:text="${account.approvalNotes}">-</td>
+            </tr>
+            <tr th:if="${account.status != null && account.status.name() == 'REJECTED'}">
+              <td class="label-col">Alasan Penolakan</td>
+              <td class="value-col" style="color: #dc2626; font-weight: 700;" th:text="${account.rejectionReason}">-</td>
+            </tr>
+
+            <tr><td colspan="2" class="section-header-bar">Informasi Nasabah Pemilik</td></tr>
+            <tr><td class="label-col">Nomor CIF</td><td class="value-col" style="font-weight: 800; color: #1e3a8a;" th:text="${account.cifNasabah}">C0000001</td></tr>
+            <tr><td class="label-col">Nama Sesuai Identitas</td><td class="value-col" style="font-weight: 700;" th:text="${account.namaNasabah}">Nama Nasabah</td></tr>
+            <tr><td class="label-col">NIK</td><td class="value-col" th:text="${account.nik}">-</td></tr>
+            <tr><td class="label-col">Email</td><td class="value-col" th:text="${account.email ?: '-'}">-</td></tr>
+            <tr><td class="label-col">Nomor Telepon/HP</td><td class="value-col" th:text="${account.nomorTelepon ?: '-'}">-</td></tr>
+            <tr><td class="label-col">Alamat Domisili</td><td class="value-col" th:text="${account.alamatDomisili ?: '-'}">-</td></tr>
+          </tbody>
+        </table>
+
+        <!-- Action Box for PENDING status -->
+        <div th:if="${account.status == null || account.status.name() == 'PENDING'}" style="margin-top: 35px; padding-top: 25px; border-top: 2px dashed #e2e8f0;">
+          <h3 style="font-size: 16px; font-weight: 800; color: #1e3a8a; margin-bottom: 15px;">Tindakan Persetujuan Supervisor</h3>
+
+          <form method="post" th:action="@{|/supervisor/account/${account.id}/approve|}" style="margin-bottom: 15px;">
+            <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
+            <div style="margin-bottom: 15px;">
+              <label style="display:block; font-weight:700; color:#334155; font-size: 13px; margin-bottom: 6px;">Catatan Persetujuan (Opsional)</label>
+              <input type="text" name="notes" placeholder="Tambahkan catatan approval..." class="modal-input" style="margin-top:0; max-width: 600px;"/>
+            </div>
+
+            <div style="display:flex; gap:14px; align-items:center;">
+              <button type="submit" class="btn-approve" onclick="return confirm('Apakah Anda yakin ingin MENYETUJUI pembukaan rekening ini?')">
+                &check; Setujui Pembukaan Rekening
+              </button>
+              <button type="button" class="btn-reject" onclick="openRejectModal()">
+                &times; Tolak Rekening
+              </button>
+            </div>
+          </form>
+        </div>
+
+      </div>
+
+      <!-- Reject Modal -->
+      <div id="rejectModal" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.6); backdrop-filter:blur(4px); align-items:center; justify-content:center; z-index:9999; padding:20px;">
+        <div class="modal-card">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
+            <h2 style="font-weight:900; color:#dc2626; font-size: 20px; margin: 0;">Penolakan Pembukaan Rekening</h2>
+            <button type="button" onclick="closeRejectModal()" style="border:none; background:none; font-size: 24px; cursor:pointer; color: #94a3b8;">&times;</button>
+          </div>
+
+          <form method="post" th:action="@{|/supervisor/account/${account.id}/reject|}">
+            <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
+            <div style="margin-bottom: 16px;">
+              <label style="display:block; font-weight:700; color:#334155; font-size: 14px;">Alasan Penolakan <span style="color:#dc2626;">*</span></label>
+              <textarea name="reason" class="modal-input" rows="3" required placeholder="Jelaskan alasan mengapa permohonan rekening ini ditolak..."></textarea>
+            </div>
+
+            <div style="margin-bottom: 16px;">
+              <label style="display:block; font-weight:700; color:#334155; font-size: 14px;">Catatan Tambahan (Opsional)</label>
+              <textarea name="notes" class="modal-input" rows="2" placeholder="Catatan untuk petugas CS..."></textarea>
+            </div>
+
+            <div style="display:flex; gap:12px; justify-content:flex-end;">
+              <button type="button" onclick="closeRejectModal()" class="btn-back">Batalkan</button>
+              <button type="submit" class="btn-approve" style="background: #dc2626; box-shadow: 0 4px 12px rgba(220, 38, 38, 0.2);">
+                Kirim Penolakan
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <script>
+        function openRejectModal() { document.getElementById('rejectModal').style.display = 'flex'; }
+        function closeRejectModal() { document.getElementById('rejectModal').style.display = 'none'; }
+      </script>
+
+    </main>
+  </div>
+</div>
+</body>
+</html>
+

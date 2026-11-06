@@ -32,7 +32,7 @@
 
       <!-- Supervisor / Branch Manager Links -->
       <th:block th:if="${(isBranchManager ?: false) or (isAdmin ?: false)}">
-        <a id="approval-queue-link" th:href="@{/supervisor/nasabah}" th:classappend="${active == 'nasabah'} ? ' active' : ''">Approval Nasabah</a>
+        <a id="approval-queue-link" th:href="@{/supervisor/account}" th:classappend="${active == 'supervisor-account' or active == 'nasabah'} ? ' active' : ''">Approval Rekening</a>
       </th:block>
 
       <!-- Administration (Admin only) -->
