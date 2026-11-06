@@ -189,19 +189,19 @@ public class SecurityConfigTest {
 
         @Test
         @WithMockUser(username = "adminUser", roles = {"ADMIN"})
-        @DisplayName("ROLE_ADMIN - can access admin pages but not others")
+        @DisplayName("ROLE_ADMIN - has superuser access to admin, cs, teller, and supervisor modules")
         void adminAccessControl() throws Exception {
             mockMvc.perform(get("/admin/users/create"))
                     .andExpect(status().isOk());
 
             mockMvc.perform(get("/cs/customers"))
-                    .andExpect(status().isForbidden());
+                    .andExpect(status().isOk());
 
             mockMvc.perform(get("/teller/transaction"))
-                    .andExpect(status().isForbidden());
+                    .andExpect(status().isOk());
 
             mockMvc.perform(get("/supervisor/nasabah"))
-                    .andExpect(status().isForbidden());
+                    .andExpect(status().isOk());
         }
 
         @Test
