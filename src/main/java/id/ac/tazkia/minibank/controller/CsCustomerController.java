@@ -36,7 +36,7 @@ public class CsCustomerController {
                          RedirectAttributes ra) {
         try {
             nasabahService.createNasabah(form);
-            ra.addFlashAttribute("success", "Nasabah berhasil didaftarkan.");
+            ra.addFlashAttribute("success", "Nasabah berhasil didaftarkan dan dapat langsung dibuatkan rekening.");
             return "redirect:/cs/customers";
         } catch (Exception e) {
             ra.addFlashAttribute("error", "Gagal mendaftarkan nasabah: " + e.getMessage());

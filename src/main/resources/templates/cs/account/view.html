@@ -166,9 +166,11 @@
               <div class="value-text" style="font-weight: 700; color: #1e3a8a; font-size: 17px;" th:text="${account.namaRekening ?: account.namaNasabah}">Account Name</div>
             </div>
 
-            <div th:class="${account.statusActive ? 'status-badge badge-active' : 'status-badge badge-closed'}" 
-                 th:text="${account.statusActive ? 'ACTIVE' : 'CLOSED'}">
-                 ACTIVE
+            <div style="margin-top: 8px;">
+              <span th:if="${account.status != null and account.status.name() == 'PENDING'}" class="status-badge" style="background:#fef3c7; color:#92400e; border: 1px solid #fde68a;">PENDING APPROVAL</span>
+              <span th:if="${account.status != null and account.status.name() == 'REJECTED'}" class="status-badge" style="background:#fef2f2; color:#dc2626; border: 1px solid #fecaca;">REJECTED</span>
+              <span th:if="${(account.status == null or account.status.name() == 'ACTIVE') and account.statusActive}" class="status-badge badge-active">ACTIVE</span>
+              <span th:if="${account.status != null and account.status.name() == 'CLOSED' or (!account.statusActive and (account.status == null or account.status.name() != 'PENDING' and account.status.name() != 'REJECTED'))}" class="status-badge badge-closed">CLOSED</span>
             </div>
           </div>
 
@@ -223,6 +225,19 @@
         <div style="margin-top: 24px; padding: 18px; background: rgba(248, 250, 252, 0.7); border-radius: 14px; border: 1px solid rgba(226, 232, 240, 0.8);">
           <div class="muted-label">Account Purpose / Notes</div>
           <div class="value-text" style="font-weight: 500; font-style: italic;" th:text="${account.tujuanPembukaan}">-</div>
+        </div>
+
+        <div th:if="${account.status != null and account.status.name() == 'REJECTED' and account.rejectionReason != null and !account.rejectionReason.isBlank()}"
+             style="margin-top: 20px; padding: 18px; background: rgba(254, 242, 242, 0.85); border-radius: 14px; border: 1px solid rgba(254, 202, 202, 0.9);">
+          <div class="muted-label" style="color: #991b1b; font-weight:700;">Alasan Penolakan oleh Supervisor</div>
+          <div class="value-text" style="color: #7f1d1d; font-weight: 600;" th:text="${account.rejectionReason}">-</div>
+          <div th:if="${account.approvedBy != null}" style="font-size:12px; color:#b91c1c; margin-top:4px;">Oleh: <span th:text="${account.approvedBy}">SPV</span> (<span th:text="${#temporals.format(account.approvedAt, 'dd-MM-yyyy HH:mm')}"></span>)</div>
+        </div>
+
+        <div th:if="${account.status != null and account.status.name() == 'ACTIVE' and account.approvedBy != null}"
+             style="margin-top: 20px; padding: 14px 18px; background: rgba(236, 253, 245, 0.85); border-radius: 14px; border: 1px solid rgba(167, 243, 208, 0.9);">
+          <div class="muted-label" style="color: #047857; font-weight:700;">Status Verifikasi Supervisor</div>
+          <div class="value-text" style="color: #065f46; font-size: 13px;">Disetujui oleh <strong th:text="${account.approvedBy}">Supervisor</strong> pada <span th:text="${#temporals.format(account.approvedAt, 'dd-MM-yyyy HH:mm')}"></span> <span th:if="${account.approvalNotes != null and !account.approvalNotes.isBlank()}" th:text="'— Catatan: ' + ${account.approvalNotes}"></span></div>
         </div>
 
         <div th:if="${!account.statusActive and account.reasonForClosure != null and !account.reasonForClosure.isBlank()}"

@@ -271,8 +271,10 @@
 
               <!-- 6. Status Badge -->
               <td>
-                <span th:if="${a.statusActive}" class="badge badge-active">ACTIVE</span>
-                <span th:if="${!a.statusActive}" class="badge badge-closed">CLOSED</span>
+                <span th:if="${a.status != null and a.status.name() == 'PENDING'}" class="badge" style="background:#fef3c7; color:#92400e; font-weight:800;">PENDING</span>
+                <span th:if="${a.status != null and a.status.name() == 'REJECTED'}" class="badge" style="background:#fef2f2; color:#dc2626; font-weight:800;">REJECTED</span>
+                <span th:if="${(a.status == null or a.status.name() == 'ACTIVE') and a.statusActive}" class="badge badge-active">ACTIVE</span>
+                <span th:if="${a.status != null and a.status.name() == 'CLOSED' or (!a.statusActive and (a.status == null or a.status.name() != 'PENDING' and a.status.name() != 'REJECTED'))}" class="badge badge-closed">CLOSED</span>
               </td>
 
               <!-- 7. Opened Date (DD/MM/YYYY) -->

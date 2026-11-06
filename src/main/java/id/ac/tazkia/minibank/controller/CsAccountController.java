@@ -74,7 +74,7 @@ public class CsAccountController {
         try {
             rekeningService.openAccount(id, form.getProdukId(), form.getNamaRekening(),
                     form.getNominalSetoranAwal(), form.getTujuanPembukaan());
-            ra.addFlashAttribute("success", "Rekening berhasil dibuka.");
+            ra.addFlashAttribute("success", "Permohonan pembukaan rekening berhasil diajukan. Menunggu persetujuan Supervisor.");
             return "redirect:/cs/account";
         } catch (Exception e) {
             ra.addFlashAttribute("error", e.getMessage());
