@@ -24,6 +24,14 @@ export class SupervisorPage {
     await this.page.goto(url);
   }
 
+  /** Navigasi ke daftar rekening dengan filter opsional: PENDING | APPROVED | REJECTED | ALL */
+  async navigateToAccountList(filter?: 'PENDING' | 'APPROVED' | 'REJECTED' | 'ALL') {
+    const url = filter
+      ? `/supervisor/account?filter=${filter}`
+      : '/supervisor/account';
+    await this.page.goto(url);
+  }
+
   async expectNasabahListVisible() {
     await expect(this.page.locator('table, .nasabah-list, ul')).toBeVisible();
   }

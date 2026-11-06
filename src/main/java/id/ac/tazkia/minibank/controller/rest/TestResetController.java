@@ -6,6 +6,7 @@ import id.ac.tazkia.minibank.entity.ProdukTabungan;
 import id.ac.tazkia.minibank.entity.Role;
 import id.ac.tazkia.minibank.entity.User;
 import id.ac.tazkia.minibank.entity.Rekening;
+import id.ac.tazkia.minibank.entity.RekeningStatus;
 import id.ac.tazkia.minibank.repository.NasabahRepository;
 import id.ac.tazkia.minibank.repository.PassbookRepository;
 import id.ac.tazkia.minibank.repository.ProdukTabunganRepository;
@@ -131,6 +132,7 @@ public class TestResetController {
         Rekening r3 = new Rekening();
         r3.setNasabah(n);
         r3.setNomorRekening("54300000301");
+        r3.setStatus(RekeningStatus.ACTIVE);
         r3.setStatusActive(true);
         r3.setCifNasabah(n.getCif());
         r3.setNik(n.getNik());
@@ -147,6 +149,7 @@ public class TestResetController {
         Rekening r4 = new Rekening();
         r4.setNasabah(n5);
         r4.setNomorRekening("54300000401");
+        r4.setStatus(RekeningStatus.ACTIVE);
         r4.setStatusActive(true);
         r4.setCifNasabah(n5.getCif());
         r4.setNik(n5.getNik());
@@ -163,6 +166,7 @@ public class TestResetController {
         Rekening r1 = new Rekening();
         r1.setNasabah(n5);
         r1.setNomorRekening("54300000101");
+        r1.setStatus(RekeningStatus.ACTIVE);
         r1.setStatusActive(true);
         r1.setCifNasabah(n5.getCif());
         r1.setNik(n5.getNik());
@@ -179,6 +183,7 @@ public class TestResetController {
         Rekening r2 = new Rekening();
         r2.setNasabah(n5);
         r2.setNomorRekening("54300000201");
+        r2.setStatus(RekeningStatus.ACTIVE);
         r2.setStatusActive(true);
         r2.setCifNasabah(n5.getCif());
         r2.setNik(n5.getNik());
@@ -190,6 +195,33 @@ public class TestResetController {
         r2.setCabangPembukaan("543");
         r2.setPetugasCs("CS");
         rekeningRepo.save(r2);
+
+        // Rekening PENDING untuk Supervisor approval test
+        Rekening rPending1 = new Rekening();
+        rPending1.setNasabah(n);
+        rPending1.setNomorRekening("54300000501");
+        rPending1.setStatus(RekeningStatus.PENDING);
+        rPending1.setStatusActive(false);
+        rPending1.setCifNasabah(n.getCif());
+        rPending1.setNik(n.getNik());
+        rPending1.setNamaNasabah(n.getNamaSesuaiIdentitas());
+        rPending1.setProduk(p.getNamaProduk());
+        rPending1.setTanggalPembukaan(LocalDate.now());
+        rPending1.setPetugasCs("CS");
+        rekeningRepo.save(rPending1);
+
+        Rekening rPending2 = new Rekening();
+        rPending2.setNasabah(n5);
+        rPending2.setNomorRekening("54300000601");
+        rPending2.setStatus(RekeningStatus.PENDING);
+        rPending2.setStatusActive(false);
+        rPending2.setCifNasabah(n5.getCif());
+        rPending2.setNik(n5.getNik());
+        rPending2.setNamaNasabah(n5.getNamaSesuaiIdentitas());
+        rPending2.setProduk(p.getNamaProduk());
+        rPending2.setTanggalPembukaan(LocalDate.now());
+        rPending2.setPetugasCs("CS");
+        rekeningRepo.save(rPending2);
 
         // ─── Ensure admin user exists with correct password ──────────────────
         ensureAdminUser();

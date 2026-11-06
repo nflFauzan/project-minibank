@@ -21,7 +21,7 @@ public class Rekening {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", length = 20)
-    private RekeningStatus status = RekeningStatus.PENDING;
+    private RekeningStatus status = RekeningStatus.ACTIVE;
 
     @Column(name = "approved_by", length = 255)
     private String approvedBy;
@@ -90,7 +90,7 @@ public class Rekening {
     @PrePersist
     public void onPrePersist() {
         if (createdAt == null) createdAt = LocalDateTime.now();
-        if (status == null) status = RekeningStatus.PENDING;
+        if (status == null) status = RekeningStatus.ACTIVE;
     }
 
     // getters & setters

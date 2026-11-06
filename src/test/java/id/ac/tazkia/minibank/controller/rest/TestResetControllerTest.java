@@ -109,7 +109,7 @@ class TestResetControllerTest extends BaseIntegrationTest {
 
             // Verify dirty data is deleted
             assertEquals(0, transaksiRepositorySpy.count());
-            assertEquals(4, rekeningRepository.count());
+            assertEquals(6, rekeningRepository.count());
 
             // Verify default data is seeded
             assertEquals(5, nasabahRepository.count());
@@ -140,7 +140,7 @@ class TestResetControllerTest extends BaseIntegrationTest {
 
             // Verify counts
             assertEquals(0, transaksiRepositorySpy.count());
-            assertEquals(4, rekeningRepository.count());
+            assertEquals(6, rekeningRepository.count());
             assertEquals(5, nasabahRepository.count());
             assertEquals(1, produkTabunganRepository.count());
         }

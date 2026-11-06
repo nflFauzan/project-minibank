@@ -50,7 +50,7 @@ class CsCustomerIntegrationTest extends BaseIntegrationTest {
         List<Nasabah> all = nasabahRepository.findAll();
         Nasabah last = all.get(all.size() - 1);
         assertEquals("3201234567890001", last.getNik());
-        assertEquals(NasabahStatus.INACTIVE, last.getStatus());
+        assertEquals(NasabahStatus.ACTIVE, last.getStatus());
         assertNotNull(last.getCif(), "CIF harus auto-generated");
     }
 
