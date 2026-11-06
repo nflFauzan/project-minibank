@@ -55,12 +55,8 @@ public class AdminUserController {
     }
 
     @GetMapping("/users/create")
-    public String showCreateUserForm(Model model) {
-        if (!model.containsAttribute("userDto")) {
-            model.addAttribute("userDto", new AdminCreateUserDto());
-        }
-        model.addAttribute("availableRoles", AVAILABLE_ROLES);
-        return "admin/user_create";
+    public String showCreateUserForm() {
+        return "redirect:/rbac/users/create";
     }
 
     @PostMapping("/users/create")

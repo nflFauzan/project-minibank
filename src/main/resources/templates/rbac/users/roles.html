@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Manage User Roles - Minibank</title>
+
+  <link rel="stylesheet" th:href="@{/css/cs-shell.css}">
+  <link rel="stylesheet" th:href="@{/css/custom.css}">
+  <link rel="stylesheet" th:href="@{/css/minibank-ui.css}">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif !important;
+      background-color: #f8fafc;
+      color: #0f172a;
+      margin: 0;
+    }
+    .page-title {
+      font-size: 24px;
+      font-weight: 800;
+      color: #113C8D;
+      margin: 0;
+    }
+    .content-card {
+      margin-top: 20px;
+      background: #fff;
+      border-radius: 16px;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 4px 20px rgba(0,0,0,.04);
+      padding: 26px 30px;
+    }
+    .card-heading {
+      font-size: 16px;
+      font-weight: 800;
+      color: #113C8D;
+      margin: 0 0 16px;
+      padding-bottom: 8px;
+      border-bottom: 1.5px solid #f1f5f9;
+    }
+    .user-info-row {
+      display: flex;
+      gap: 32px;
+      flex-wrap: wrap;
+    }
+    .user-info-item dt {
+      font-size: 11px;
+      font-weight: 700;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+    .user-info-item dd {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 600;
+      color: #1e293b;
+    }
+    .assign-bar {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      max-width: 550px;
+    }
+    .form-control {
+      flex: 1;
+      padding: 10px 14px;
+      border: 1.5px solid #d0d7de;
+      border-radius: 10px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 14px;
+      outline: none;
+    }
+    .btn-submit {
+      background: #113C8D;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 11px 22px;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-submit:hover {
+      background: #0c2d6e;
+    }
+    .btn-cancel {
+      text-decoration: none;
+      color: #64748b;
+      font-weight: 600;
+      font-size: 14px;
+      padding: 8px 16px;
+    }
+    .role-list-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 14px;
+    }
+    .role-item-card {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #f8fafc;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 16px 20px;
+    }
+    .role-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #113C8D;
+      margin: 0 0 4px;
+    }
+    .role-code {
+      font-size: 12px;
+      font-weight: 700;
+      color: #475569;
+      background: #e2e8f0;
+      padding: 2px 8px;
+      border-radius: 4px;
+      display: inline-block;
+      margin-bottom: 4px;
+    }
+    .role-desc {
+      font-size: 13px;
+      color: #64748b;
+      margin: 0;
+    }
+    .btn-remove-role {
+      background: #fee2e2;
+      color: #b91c1c;
+      border: none;
+      border-radius: 8px;
+      padding: 7px 14px;
+      font-weight: 700;
+      font-size: 12px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-remove-role:hover {
+      background: #fca5a5;
+    }
+    .alert-banner {
+      padding: 12px 18px;
+      border-radius: 10px;
+      margin-bottom: 16px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .alert-success { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+    .alert-error { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+  </style>
+</head>
+
+<body>
+<div class="cs-shell">
+  <div th:replace="~{cs/fragments :: sidebar('rbac-users')}"></div>
+
+  <div class="cs-content">
+    <div th:replace="~{cs/fragments :: topbar}"></div>
+
+    <main class="cs-page" style="padding: 30px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <div>
+          <h1 class="page-title">Manage User Roles</h1>
+          <p style="margin: 4px 0 0; color: #64748b; font-size: 14px;">Tugaskan atau lepas hak akses peran untuk pengguna ini</p>
+        </div>
+        <div style="display: flex; gap: 8px;">
+          <a th:href="@{'/rbac/users/view/' + ${user.id}}" class="btn-cancel">&larr; Back to User</a>
+          <a th:href="@{/rbac/users/list}" class="btn-cancel">Back to Users</a>
+        </div>
+      </div>
+
+      <div th:if="${successMessage}" class="alert-banner alert-success" th:text="${successMessage}"></div>
+      <div th:if="${errorMessage}" class="alert-banner alert-error" th:text="${errorMessage}"></div>
+
+      <!-- User Information -->
+      <div class="content-card">
+        <div class="card-heading">User Information</div>
+        <dl class="user-info-row">
+          <div class="user-info-item">
+            <dt>Username</dt>
+            <dd style="color: #113C8D;" th:text="${user.username}">admin</dd>
+          </div>
+          <div class="user-info-item">
+            <dt>Full Name</dt>
+            <dd th:text="${user.fullName}">System Administrator</dd>
+          </div>
+          <div class="user-info-item">
+            <dt>Email</dt>
+            <dd th:text="${user.email}">admin@tazkia.ac.id</dd>
+          </div>
+          <div class="user-info-item">
+            <dt>Branch</dt>
+            <dd th:text="${user.branch != null ? user.branch.name : '-'}">Kantor Pusat</dd>
+          </div>
+        </dl>
+      </div>
+
+      <!-- Assign Role Card -->
+      <div class="content-card" style="margin-top: 20px;">
+        <div class="card-heading">Assign Role</div>
+        <form th:action="@{'/rbac/users/' + ${user.id} + '/roles/assign'}" method="post" class="assign-bar">
+          <select name="roleId" class="form-control" required>
+            <option value="">-- Select a Role --</option>
+            <option th:each="r : ${allRoles}"
+                    th:value="${r.id}"
+                    th:disabled="${#sets.contains(user.roles, r)}"
+                    th:text="${(r.displayName != null ? r.displayName : r.name) + ' (' + (r.roleCode != null ? r.roleCode : r.name) + ')' + (#sets.contains(user.roles, r) ? ' [Assigned]' : '')}">
+              Customer Service (CUSTOMER_SERVICE)
+            </option>
+          </select>
+          <button type="submit" class="btn-submit">Assign Role</button>
+        </form>
+      </div>
+
+      <!-- Current Roles Card -->
+      <div class="content-card" style="margin-top: 20px;">
+        <div class="card-heading">Current Roles</div>
+
+        <div th:if="${#sets.isEmpty(user.roles)}" style="padding: 20px; text-align: center; color: #94a3b8;">
+          Belum ada role yang ditugaskan ke pengguna ini.
+        </div>
+
+        <div th:unless="${#sets.isEmpty(user.roles)}" class="role-list-grid">
+          <div th:each="r : ${user.roles}" class="role-item-card">
+            <div>
+              <h4 class="role-title" th:text="${r.displayName != null ? r.displayName : r.name}">Branch Manager</h4>
+              <span class="role-code" th:text="${r.roleCode != null ? r.roleCode : r.name}">BRANCH_MANAGER</span>
+              <p class="role-desc" th:text="${r.description != null ? r.description : 'Akses operasional'}">Monitor operations and provide approvals</p>
+            </div>
+            <form th:action="@{'/rbac/users/' + ${user.id} + '/roles/remove'}" method="post" onsubmit="return confirm('Lepas role ini dari pengguna?');">
+              <input type="hidden" name="roleId" th:value="${r.id}" />
+              <button type="submit" class="btn-remove-role">Remove</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+</body>
+</html>
+

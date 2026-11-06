@@ -1,9 +1,11 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
+
 :root{
     --sidebar-w: 260px;
     --sidebar-bg: #2f6f8b;
     --sidebar-bg2: #2b6380;
     --sidebar-text: #ffffff;
-    --content-bg: #eaf4ff;
+    --content-bg: #f8fafc;
     --card: #ffffff;
     --border: rgba(0,0,0,.08);
     --shadow: 0 10px 25px rgba(0,0,0,.08);
@@ -18,9 +20,13 @@
   
   body{
     margin: 0;
-    font-family: Poppins;
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     background: var(--content-bg);
     color: #0f172a;
+  }
+
+  button, input, select, textarea {
+    font-family: inherit;
   }
   
   /* SHELL */

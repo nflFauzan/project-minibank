@@ -69,13 +69,13 @@ test.describe('Minibank Unified Dashboard - Native UI & Flow Verification', () =
     await expect(page.locator('#header-username')).toHaveText('teller');
     await expect(page.locator('#header-role')).toHaveText('Teller');
 
-    // Sidebar navigation for Teller
+    // Sidebar navigation for Teller (cleaned up: deposit, withdrawal, transfer removed)
     await expect(page.locator('#dashboard-link')).toBeVisible();
     await expect(page.locator('#transaction-link')).toBeVisible();
-    await expect(page.locator('#deposit-link')).toBeVisible();
-    await expect(page.locator('#withdrawal-link')).toBeVisible();
-    await expect(page.locator('#transfer-link')).toBeVisible();
     await expect(page.locator('#passbook-link')).toBeVisible();
+    await expect(page.locator('#deposit-link')).toHaveCount(0);
+    await expect(page.locator('#withdrawal-link')).toHaveCount(0);
+    await expect(page.locator('#transfer-link')).toHaveCount(0);
 
     // Quick Actions for Teller
     await expect(page.locator('#process-transaction-button')).toBeVisible();

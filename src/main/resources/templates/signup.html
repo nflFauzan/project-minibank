@@ -2,7 +2,13 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sign Up</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
   <style>
     body {
@@ -138,10 +144,12 @@
           <input th:field="*{username}" placeholder="Username" required>
 
           <select th:field="*{prodi}" required>
-            <option value="" disabled selected>Select Study Program</option>
-            <option value="Informatics">Informatics</option>
-            <option value="Accounting">Accounting</option>
-            <option value="Sharia Business Management">Sharia Business Management</option>
+            <option value="" disabled selected>Pilih Program Studi</option>
+            <option value="Ekonomi Syariah">Ekonomi Syariah</option>
+            <option value="Manajemen Bisnis Syariah">Manajemen Bisnis Syariah</option>
+            <option value="Akuntansi Syariah">Akuntansi Syariah</option>
+            <option value="Hukum Ekonomi Syariah">Hukum Ekonomi Syariah</option>
+            <option value="Komunikasi dan Penyiaran Islam">Komunikasi dan Penyiaran Islam</option>
           </select>
 
           <div class="password-wrapper">

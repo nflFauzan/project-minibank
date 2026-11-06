@@ -84,13 +84,11 @@ class AdminUserControllerTest extends BaseIntegrationTest {
     }
 
     @Test
-    @DisplayName("GET /admin/users/create - menampilkan form create user langsung")
+    @DisplayName("GET /admin/users/create - redirect ke form terpadu /rbac/users/create")
     void showCreateUserForm() throws Exception {
         mockMvc.perform(get("/admin/users/create"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("admin/user_create"))
-                .andExpect(model().attributeExists("userDto"))
-                .andExpect(model().attributeExists("availableRoles"));
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/rbac/users/create"));
     }
 
     @Test

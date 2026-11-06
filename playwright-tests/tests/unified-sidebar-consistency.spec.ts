@@ -16,15 +16,12 @@ test.describe('Unified Sidebar Consistency across All Modules', () => {
     await expect(page.locator('#header-username')).toHaveText('fauzan');
     await expect(page.locator('#header-role')).toHaveText('Branch Manager');
 
-    // All links must be visible on Dashboard
+    // Links must be visible on Dashboard
     const dashboardLink = page.locator('#dashboard-link');
     const customerLink = page.locator('#customer-link');
     const accountLink = page.locator('#account-link');
     const productLink = page.locator('#product-link');
     const transactionLink = page.locator('#transaction-link');
-    const depositLink = page.locator('#deposit-link');
-    const withdrawalLink = page.locator('#withdrawal-link');
-    const transferLink = page.locator('#transfer-link');
     const passbookLink = page.locator('#passbook-link');
     const approvalQueueLink = page.locator('#approval-queue-link');
 
@@ -33,25 +30,24 @@ test.describe('Unified Sidebar Consistency across All Modules', () => {
     await expect(accountLink).toBeVisible();
     await expect(productLink).toBeVisible();
     await expect(transactionLink).toBeVisible();
-    await expect(depositLink).toBeVisible();
-    await expect(withdrawalLink).toBeVisible();
-    await expect(transferLink).toBeVisible();
     await expect(passbookLink).toBeVisible();
     await expect(approvalQueueLink).toBeVisible();
+
+    // Removed from sidebar to keep it clean: deposit, withdrawal, transfer
+    await expect(page.locator('#deposit-link')).toHaveCount(0);
+    await expect(page.locator('#withdrawal-link')).toHaveCount(0);
+    await expect(page.locator('#transfer-link')).toHaveCount(0);
 
     // 2. Click Customers -> Navigate to /cs/customers
     await customerLink.click();
     await page.waitForURL('**/cs/customers');
 
-    // All 10 links MUST remain visible on CS page!
+    // Links MUST remain visible on CS page!
     await expect(dashboardLink).toBeVisible();
     await expect(customerLink).toBeVisible();
     await expect(accountLink).toBeVisible();
     await expect(productLink).toBeVisible();
     await expect(transactionLink).toBeVisible();
-    await expect(depositLink).toBeVisible();
-    await expect(withdrawalLink).toBeVisible();
-    await expect(transferLink).toBeVisible();
     await expect(passbookLink).toBeVisible();
     await expect(approvalQueueLink).toBeVisible();
 
@@ -67,15 +63,12 @@ test.describe('Unified Sidebar Consistency across All Modules', () => {
     await transactionLink.click();
     await page.waitForURL('**/teller/transaction/list');
 
-    // All 10 links MUST remain visible on Teller page!
+    // Links MUST remain visible on Teller page!
     await expect(dashboardLink).toBeVisible();
     await expect(customerLink).toBeVisible();
     await expect(accountLink).toBeVisible();
     await expect(productLink).toBeVisible();
     await expect(transactionLink).toBeVisible();
-    await expect(depositLink).toBeVisible();
-    await expect(withdrawalLink).toBeVisible();
-    await expect(transferLink).toBeVisible();
     await expect(passbookLink).toBeVisible();
     await expect(approvalQueueLink).toBeVisible();
 
@@ -89,15 +82,12 @@ test.describe('Unified Sidebar Consistency across All Modules', () => {
     await approvalQueueLink.click();
     await page.waitForURL('**/supervisor/nasabah');
 
-    // All 10 links MUST remain visible on Supervisor page!
+    // Links MUST remain visible on Supervisor page!
     await expect(dashboardLink).toBeVisible();
     await expect(customerLink).toBeVisible();
     await expect(accountLink).toBeVisible();
     await expect(productLink).toBeVisible();
     await expect(transactionLink).toBeVisible();
-    await expect(depositLink).toBeVisible();
-    await expect(withdrawalLink).toBeVisible();
-    await expect(transferLink).toBeVisible();
     await expect(passbookLink).toBeVisible();
     await expect(approvalQueueLink).toBeVisible();
 
@@ -119,10 +109,12 @@ test.describe('Unified Sidebar Consistency across All Modules', () => {
     // Teller links must be visible
     await expect(page.locator('#dashboard-link')).toBeVisible();
     await expect(page.locator('#transaction-link')).toBeVisible();
-    await expect(page.locator('#deposit-link')).toBeVisible();
-    await expect(page.locator('#withdrawal-link')).toBeVisible();
-    await expect(page.locator('#transfer-link')).toBeVisible();
     await expect(page.locator('#passbook-link')).toBeVisible();
+
+    // Clean sidebar: deposit, withdrawal, transfer removed
+    await expect(page.locator('#deposit-link')).toHaveCount(0);
+    await expect(page.locator('#withdrawal-link')).toHaveCount(0);
+    await expect(page.locator('#transfer-link')).toHaveCount(0);
 
     // CS, Supervisor, Admin links must NOT be visible
     await expect(page.locator('#customer-link')).toHaveCount(0);

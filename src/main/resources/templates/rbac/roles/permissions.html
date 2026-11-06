@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Manage Role Permissions - Minibank</title>
+
+  <link rel="stylesheet" th:href="@{/css/cs-shell.css}">
+  <link rel="stylesheet" th:href="@{/css/custom.css}">
+  <link rel="stylesheet" th:href="@{/css/minibank-ui.css}">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif !important;
+      background-color: #f8fafc;
+      color: #0f172a;
+      margin: 0;
+    }
+    .page-title {
+      font-size: 24px;
+      font-weight: 800;
+      color: #113C8D;
+      margin: 0;
+    }
+    .content-card {
+      margin-top: 20px;
+      background: #fff;
+      border-radius: 16px;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 4px 20px rgba(0,0,0,.04);
+      padding: 26px 30px;
+    }
+    .card-heading {
+      font-size: 16px;
+      font-weight: 800;
+      color: #113C8D;
+      margin: 0 0 16px;
+      padding-bottom: 8px;
+      border-bottom: 1.5px solid #f1f5f9;
+    }
+    .role-info-row {
+      display: flex;
+      gap: 32px;
+      flex-wrap: wrap;
+    }
+    .role-info-item dt {
+      font-size: 11px;
+      font-weight: 700;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+    .role-info-item dd {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 600;
+      color: #1e293b;
+    }
+    .assign-bar {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      max-width: 650px;
+    }
+    .form-control {
+      flex: 1;
+      padding: 10px 14px;
+      border: 1.5px solid #d0d7de;
+      border-radius: 10px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 14px;
+      outline: none;
+    }
+    .btn-submit {
+      background: #113C8D;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 11px 22px;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-submit:hover {
+      background: #0c2d6e;
+    }
+    .btn-cancel {
+      text-decoration: none;
+      color: #64748b;
+      font-weight: 600;
+      font-size: 14px;
+      padding: 8px 16px;
+    }
+    .perm-list-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 14px;
+      margin-top: 14px;
+    }
+    .perm-item-card {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      background: #f8fafc;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 16px;
+      gap: 12px;
+    }
+    .perm-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #113C8D;
+      margin: 0 0 4px;
+    }
+    .perm-code {
+      font-size: 11px;
+      font-weight: 700;
+      color: #475569;
+      background: #e2e8f0;
+      padding: 2px 8px;
+      border-radius: 4px;
+      display: inline-block;
+      margin-bottom: 4px;
+    }
+    .perm-cat {
+      font-size: 11px;
+      font-weight: 700;
+      color: #047857;
+      background: #dcfce7;
+      padding: 2px 8px;
+      border-radius: 4px;
+      display: inline-block;
+      margin-left: 4px;
+    }
+    .perm-desc {
+      font-size: 12px;
+      color: #64748b;
+      margin: 0;
+    }
+    .btn-remove-perm {
+      background: #fee2e2;
+      color: #b91c1c;
+      border: none;
+      border-radius: 8px;
+      padding: 6px 12px;
+      font-weight: 700;
+      font-size: 12px;
+      cursor: pointer;
+      transition: background 0.2s;
+      white-space: nowrap;
+    }
+    .btn-remove-perm:hover {
+      background: #fca5a5;
+    }
+    .alert-banner {
+      padding: 12px 18px;
+      border-radius: 10px;
+      margin-bottom: 16px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .alert-success { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+    .alert-error { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+  </style>
+</head>
+
+<body>
+<div class="cs-shell">
+  <div th:replace="~{cs/fragments :: sidebar('rbac-roles')}"></div>
+
+  <div class="cs-content">
+    <div th:replace="~{cs/fragments :: topbar}"></div>
+
+    <main class="cs-page" style="padding: 30px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <div>
+          <h1 class="page-title">Manage Role Permissions</h1>
+          <p style="margin: 4px 0 0; color: #64748b; font-size: 14px;">Tugaskan atau hapus izin akses dari peran ini</p>
+        </div>
+        <div style="display: flex; gap: 8px;">
+          <a th:href="@{'/rbac/roles/view/' + ${role.id}}" class="btn-cancel">&larr; Back to Role</a>
+          <a th:href="@{/rbac/roles/list}" class="btn-cancel">Back to Roles</a>
+        </div>
+      </div>
+
+      <div th:if="${successMessage}" class="alert-banner alert-success" th:text="${successMessage}"></div>
+      <div th:if="${errorMessage}" class="alert-banner alert-error" th:text="${errorMessage}"></div>
+
+      <!-- Role Information -->
+      <div class="content-card">
+        <div class="card-heading">Role Information</div>
+        <dl class="role-info-row">
+          <div class="role-info-item">
+            <dt>Role Code</dt>
+            <dd style="color: #113C8D;" th:text="${role.roleCode != null ? role.roleCode : role.name}">CUSTOMER_SERVICE</dd>
+          </div>
+          <div class="role-info-item">
+            <dt>Role Name</dt>
+            <dd th:text="${role.displayName != null ? role.displayName : role.name}">Customer Service</dd>
+          </div>
+          <div class="role-info-item">
+            <dt>Description</dt>
+            <dd th:text="${role.description != null ? role.description : '-'}">Handle customer registration</dd>
+          </div>
+        </dl>
+      </div>
+
+      <!-- Assign Permission Card -->
+      <div class="content-card" style="margin-top: 20px;">
+        <div class="card-heading">Assign Permission</div>
+        <form th:action="@{'/rbac/roles/' + ${role.id} + '/permissions/assign'}" method="post" class="assign-bar">
+          <select name="permissionId" class="form-control" required>
+            <option value="">-- Select a Permission --</option>
+            <option th:each="p : ${allPermissions}"
+                    th:value="${p.id}"
+                    th:disabled="${#sets.contains(role.permissions, p)}"
+                    th:text="${p.permissionName + ' (' + p.permissionCode + ') [' + p.category + ']' + (#sets.contains(role.permissions, p) ? ' [Assigned]' : '')}">
+              View Customer (CUSTOMER_VIEW)
+            </option>
+          </select>
+          <button type="submit" class="btn-submit">Assign Permission</button>
+        </form>
+      </div>
+
+      <!-- Current Permissions Card -->
+      <div class="content-card" style="margin-top: 20px;">
+        <div class="card-heading">Current Permissions (<span th:text="${#sets.size(role.permissions)}">0</span>)</div>
+
+        <div th:if="${#sets.isEmpty(role.permissions)}" style="padding: 20px; text-align: center; color: #94a3b8;">
+          Belum ada permissions yang ditugaskan ke role ini.
+        </div>
+
+        <div th:unless="${#sets.isEmpty(role.permissions)}" class="perm-list-grid">
+          <div th:each="p : ${role.permissions}" class="perm-item-card">
+            <div>
+              <h4 class="perm-title" th:text="${p.permissionName}">View Customer</h4>
+              <span class="perm-code" th:text="${p.permissionCode}">CUSTOMER_VIEW</span>
+              <span class="perm-cat" th:text="${p.category}">CUSTOMER</span>
+              <p class="perm-desc" th:text="${p.description}">View customer information</p>
+            </div>
+            <form th:action="@{'/rbac/roles/' + ${role.id} + '/permissions/remove'}" method="post" onsubmit="return confirm('Lepas permission ini dari role?');">
+              <input type="hidden" name="permissionId" th:value="${p.id}" />
+              <button type="submit" class="btn-remove-perm">Remove</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+</body>
+</html>
+

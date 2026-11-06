@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Create Permission - Minibank</title>
+
+  <link rel="stylesheet" th:href="@{/css/cs-shell.css}">
+  <link rel="stylesheet" th:href="@{/css/custom.css}">
+  <link rel="stylesheet" th:href="@{/css/minibank-ui.css}">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif !important;
+      background-color: #f8fafc;
+      color: #0f172a;
+      margin: 0;
+    }
+    .page-title {
+      font-size: 24px;
+      font-weight: 800;
+      color: #113C8D;
+      margin: 0;
+    }
+    .content-card {
+      margin-top: 20px;
+      background: #fff;
+      border-radius: 16px;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 4px 20px rgba(0,0,0,.04);
+      padding: 30px;
+      max-width: 650px;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      font-weight: 700;
+      color: #334155;
+      font-size: 14px;
+      margin-bottom: 6px;
+    }
+    .form-control {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 11px 14px;
+      border: 1.5px solid #d0d7de;
+      border-radius: 10px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .form-control:focus {
+      border-color: #113C8D;
+    }
+    .field-hint {
+      font-size: 12px;
+      color: #64748b;
+      margin-top: 4px;
+    }
+    .field-error {
+      color: #dc2626;
+      font-size: 13px;
+      font-weight: 600;
+      margin-top: 4px;
+    }
+    .btn-submit {
+      background: #113C8D;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 12px 26px;
+      font-weight: 700;
+      font-size: 15px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-submit:hover {
+      background: #0c2d6e;
+    }
+    .btn-cancel {
+      text-decoration: none;
+      color: #64748b;
+      font-weight: 600;
+      font-size: 15px;
+      padding: 12px 20px;
+      margin-right: 8px;
+    }
+    .btn-cancel:hover {
+      color: #0f172a;
+    }
+  </style>
+</head>
+
+<body>
+<div class="cs-shell">
+  <div th:replace="~{cs/fragments :: sidebar('rbac-permissions')}"></div>
+
+  <div class="cs-content">
+    <div th:replace="~{cs/fragments :: topbar}"></div>
+
+    <main class="cs-page" style="padding: 30px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; max-width: 650px;">
+        <div>
+          <h1 class="page-title">Create Permission</h1>
+          <p style="margin: 4px 0 0; color: #64748b; font-size: 14px;">Tambah entri izin akses fitur baru ke dalam katalog sistem</p>
+        </div>
+        <a th:href="@{/rbac/permissions/list}" class="btn-cancel">&larr; Back to List</a>
+      </div>
+
+      <div class="content-card">
+        <form th:action="@{/rbac/permissions/create}" th:object="${form}" method="post">
+          <div th:if="${#fields.hasGlobalErrors()}" class="field-error" style="margin-bottom: 16px; padding: 10px 14px; background: #fee2e2; border-radius: 8px;">
+            <p th:each="err : ${#fields.globalErrors()}" th:text="${err}" style="margin:0;"></p>
+          </div>
+
+          <div class="form-group">
+            <label for="permissionCode">Permission Code *</label>
+            <input type="text" id="permissionCode" th:field="*{permissionCode}" class="form-control" placeholder="e.g. USER_VIEW, ACCOUNT_CREATE" required />
+            <p class="field-hint">Gunakan huruf kapital dan underscore tanpa spasi</p>
+            <div class="field-error" th:if="${#fields.hasErrors('permissionCode')}" th:errors="*{permissionCode}"></div>
+          </div>
+
+          <div class="form-group">
+            <label for="permissionName">Permission Name *</label>
+            <input type="text" id="permissionName" th:field="*{permissionName}" class="form-control" placeholder="e.g. View Customer, Process Deposit" required />
+            <div class="field-error" th:if="${#fields.hasErrors('permissionName')}" th:errors="*{permissionName}"></div>
+          </div>
+
+          <div class="form-group">
+            <label for="category">Category *</label>
+            <select id="category" th:field="*{category}" class="form-control" required>
+              <option value="">-- Select Category --</option>
+              <option th:each="cat : ${categories}" th:value="${cat}" th:text="${cat}">ACCOUNT</option>
+            </select>
+            <div class="field-error" th:if="${#fields.hasErrors('category')}" th:errors="*{category}"></div>
+          </div>
+
+          <div class="form-group">
+            <label for="description">Description</label>
+            <textarea id="description" th:field="*{description}" class="form-control" rows="3" placeholder="Deskripsikan wewenang yang diberikan oleh izin ini..."></textarea>
+            <div class="field-error" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></div>
+          </div>
+
+          <div style="margin-top: 30px; display: flex; align-items: center;">
+            <a th:href="@{/rbac/permissions/list}" class="btn-cancel">Cancel</a>
+            <button type="submit" class="btn-submit">Create Permission</button>
+          </div>
+        </form>
+      </div>
+    </main>
+  </div>
+</div>
+</body>
+</html>
+

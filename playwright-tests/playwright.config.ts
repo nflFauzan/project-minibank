@@ -57,7 +57,7 @@ export default defineConfig({
     {
       name: 'chromium-no-auth',
       use: { ...devices['Desktop Chrome'] },
-      testMatch: [/auth\.spec\.ts/, /signup\.spec\.ts/, /minibank-unified-dashboard\.spec\.ts/, /unified-sidebar-consistency\.spec\.ts/, /admin-highest-role-permission\.spec\.ts/],
+      testMatch: [/auth\.spec\.ts/, /signup\.spec\.ts/, /minibank-unified-dashboard\.spec\.ts/, /unified-sidebar-consistency\.spec\.ts/, /admin-highest-role-permission\.spec\.ts/, /font-style-consistency\.spec\.ts/, /rbac-administration-module\.spec\.ts/],
     },
 
     // ─── CS tests ──────────────────────────────────────────────────────────────

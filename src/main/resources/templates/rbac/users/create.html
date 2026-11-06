@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Create User - Minibank Tazkia</title>
+
+  <link rel="stylesheet" th:href="@{/css/cs-shell.css}">
+  <link rel="stylesheet" th:href="@{/css/custom.css}">
+  <link rel="stylesheet" th:href="@{/css/minibank-ui.css}">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif !important;
+      background-color: #f8fafc;
+      color: #0f172a;
+      margin: 0;
+    }
+    .page-header-wrap {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      max-width: 920px;
+    }
+    .page-title {
+      font-size: 26px;
+      font-weight: 800;
+      color: #113C8D;
+      margin: 0;
+    }
+    .page-subtitle {
+      margin: 4px 0 0;
+      color: #64748b;
+      font-size: 14px;
+    }
+    .content-card-signup {
+      background: #ffffff;
+      border-radius: 24px;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+      padding: 40px 45px;
+      max-width: 920px;
+      box-sizing: border-box;
+    }
+    .section-legend {
+      font-size: 16px;
+      font-weight: 700;
+      color: #113C8D;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 2px solid #f1f5f9;
+      padding-bottom: 10px;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      column-gap: 28px;
+      row-gap: 20px;
+      margin-bottom: 28px;
+    }
+    @media (max-width: 768px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+        column-gap: 0;
+      }
+      .content-card-signup {
+        padding: 24px 20px;
+      }
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+    .form-group label {
+      font-weight: 700;
+      color: #334155;
+      font-size: 13.5px;
+      margin-bottom: 6px;
+    }
+    .input-signup {
+      width: 100%;
+      height: 48px;
+      border-radius: 20px;
+      border: 1.5px solid #d0d7de;
+      padding: 0 18px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 14px;
+      outline: none;
+      background: #fbfcfe;
+      box-sizing: border-box;
+      transition: all 0.2s ease;
+    }
+    .input-signup:focus {
+      border-color: #113C8D;
+      background: #ffffff;
+      box-shadow: 0 0 0 3px rgba(17, 60, 141, 0.12);
+    }
+    select.input-signup {
+      cursor: pointer;
+    }
+    .password-wrapper {
+      position: relative;
+      width: 100%;
+    }
+    .password-wrapper .input-signup {
+      padding-right: 48px;
+    }
+    .password-toggle-btn {
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #64748b;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .password-toggle-btn:hover {
+      color: #113C8D;
+    }
+    .field-hint {
+      font-size: 12px;
+      color: #64748b;
+      margin-top: 4px;
+      margin-bottom: 0;
+    }
+    .field-error {
+      color: #dc2626;
+      font-size: 12.5px;
+      font-weight: 600;
+      margin-top: 4px;
+    }
+    /* Roles Selection Cards */
+    .roles-section {
+      margin-top: 10px;
+      margin-bottom: 30px;
+      background: #f8fafc;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 20px;
+      padding: 22px 26px;
+    }
+    .roles-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 14px;
+      margin-top: 12px;
+    }
+    .role-card-label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #ffffff;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 14px;
+      padding: 12px 16px;
+      cursor: pointer;
+      font-size: 13.5px;
+      font-weight: 600;
+      color: #1e293b;
+      transition: all 0.15s ease;
+    }
+    .role-card-label:hover {
+      border-color: #113C8D;
+      background: #f0f7ff;
+    }
+    .role-card-label input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: #113C8D;
+      cursor: pointer;
+    }
+    /* Action Buttons */
+    .btn-actions-row {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 16px;
+      margin-top: 24px;
+    }
+    .btn-submit-signup {
+      background: #113C8D;
+      color: #ffffff;
+      border: none;
+      border-radius: 24px;
+      padding: 13px 36px;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(17, 60, 141, 0.25);
+      transition: all 0.2s;
+    }
+    .btn-submit-signup:hover {
+      background: #0c2d6e;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(17, 60, 141, 0.35);
+    }
+    .btn-back-link {
+      text-decoration: none;
+      color: #64748b;
+      font-weight: 600;
+      font-size: 14px;
+      padding: 12px 20px;
+      border-radius: 20px;
+      transition: all 0.15s;
+    }
+    .btn-back-link:hover {
+      color: #0f172a;
+      background: #f1f5f9;
+    }
+  </style>
+</head>
+
+<body>
+<div class="cs-shell">
+  <div th:replace="~{cs/fragments :: sidebar('rbac-users')}"></div>
+
+  <div class="cs-content">
+    <div th:replace="~{cs/fragments :: topbar}"></div>
+
+    <main class="cs-page" style="padding: 30px;">
+      <div class="page-header-wrap">
+        <div>
+          <h1 class="page-title">Create User</h1>
+          <p class="page-subtitle">Daftarkan akun mahasiswa atau staf langsung tanpa melalui proses self-signup.</p>
+        </div>
+        <a th:href="@{/rbac/users/list}" class="btn-back-link">&larr; Back to List</a>
+      </div>
+
+      <div class="content-card-signup">
+        <form th:action="@{/rbac/users/create}" th:object="${form}" method="post">
+          <div th:if="${#fields.hasGlobalErrors()}" class="field-error" style="margin-bottom: 20px; padding: 12px 16px; background: #fee2e2; border-radius: 12px;">
+            <p th:each="err : ${#fields.globalErrors()}" th:text="${err}" style="margin:0;"></p>
+          </div>
+
+          <!-- Section 1: Profil Akun -->
+          <div class="section-legend">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            <span>Informasi Akun Utama</span>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="fullName">Nama Lengkap *</label>
+              <input type="text" id="fullName" th:field="*{fullName}" class="input-signup" placeholder="Contoh: Muhammad Ihsan" required />
+              <div class="field-error" th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}"></div>
+            </div>
+
+            <div class="form-group">
+              <label for="username">Username *</label>
+              <input type="text" id="username" th:field="*{username}" class="input-signup" placeholder="Contoh: ihsan_tazkia" required />
+              <div class="field-error" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></div>
+            </div>
+
+            <div class="form-group">
+              <label for="email">Alamat Email *</label>
+              <input type="email" id="email" th:field="*{email}" class="input-signup" placeholder="Contoh: ihsan@tazkia.ac.id" required />
+              <div class="field-error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+            </div>
+
+            <div class="form-group">
+              <label for="password">Password Awal</label>
+              <div class="password-wrapper">
+                <input type="password" id="password" th:field="*{password}" class="input-signup" placeholder="Default: minibank123 jika dikosongkan" />
+                <button type="button" class="password-toggle-btn" id="togglePasswordBtn" title="Tampilkan / Sembunyikan Password">
+                  <svg id="eyeIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                </button>
+              </div>
+              <p class="field-hint">Kosongkan jika ingin menggunakan password default <code>minibank123</code></p>
+            </div>
+          </div>
+
+          <!-- Section 2: Data Akademik & Kantor Cabang -->
+          <div class="section-legend">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg>
+            <span>Data Akademik & Penempatan Cabang</span>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="nim">NIM / Nomor Induk Mahasiswa</label>
+              <input type="text" id="nim" th:field="*{nim}" class="input-signup" placeholder="Contoh: 211011001 (Opsional)" />
+            </div>
+
+            <div class="form-group">
+              <label for="prodi">Program Studi (Bisa Pilih atau Ketik Manual)</label>
+              <input type="text" id="prodi" th:field="*{prodi}" list="prodi-list" class="input-signup" placeholder="Pilih atau ketik jurusan..." />
+              <datalist id="prodi-list">
+                <option th:each="p : ${studyPrograms}" th:value="${p}" th:text="${p}"></option>
+                <option value="Ekonomi Syariah"></option>
+                <option value="Manajemen Bisnis Syariah"></option>
+                <option value="Akuntansi Syariah"></option>
+                <option value="Hukum Ekonomi Syariah"></option>
+                <option value="Komunikasi dan Penyiaran Islam"></option>
+              </datalist>
+              <p class="field-hint">Ketik untuk memfilter jurusan resmi atau masukkan program studi khusus</p>
+            </div>
+
+            <div class="form-group">
+              <label for="dosenPembimbing">Dosen Pembimbing</label>
+              <input type="text" id="dosenPembimbing" th:field="*{dosenPembimbing}" class="input-signup" placeholder="Contoh: Dr. M. Syafii Antonio (Opsional)" />
+            </div>
+
+            <div class="form-group">
+              <label for="branch">Kantor Cabang Bank</label>
+              <select id="branch" th:field="*{branchId}" class="input-signup">
+                <option value="">-- Pilih Kantor Cabang (Default: Kantor Pusat) --</option>
+                <option th:each="b : ${branches}" th:value="${b.id}" th:text="${b.name + ' (' + b.code + ')'}">Kantor Pusat Jakarta (HO001)</option>
+              </select>
+              <p class="field-hint">Unit kantor cabang operasional akun pengguna</p>
+            </div>
+          </div>
+
+          <!-- Section 3: Tugaskan Peran / Role Akses -->
+          <div class="section-legend">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+            <span>Tugaskan Hak Akses (Role)</span>
+          </div>
+
+          <div class="roles-section">
+            <p style="margin: 0 0 8px; font-size: 13.5px; color: #475569;">Pilih satu atau beberapa peran yang dapat dijalankan oleh akun ini:</p>
+            <div class="roles-grid">
+              <label class="role-card-label">
+                <input type="checkbox" name="roles" value="ROLE_CS" th:checked="${form.roles != null and form.roles.contains('ROLE_CS')}" />
+                <span>Customer Service (ROLE_CS)</span>
+              </label>
+
+              <label class="role-card-label">
+                <input type="checkbox" name="roles" value="ROLE_TELLER" th:checked="${form.roles != null and form.roles.contains('ROLE_TELLER')}" />
+                <span>Teller (ROLE_TELLER)</span>
+              </label>
+
+              <label class="role-card-label">
+                <input type="checkbox" name="roles" value="ROLE_BRANCH_MANAGER" th:checked="${form.roles != null and form.roles.contains('ROLE_BRANCH_MANAGER')}" />
+                <span>Branch Manager (ROLE_BRANCH_MANAGER)</span>
+              </label>
+
+              <label class="role-card-label">
+                <input type="checkbox" name="roles" value="ROLE_ADMIN" th:checked="${form.roles != null and form.roles.contains('ROLE_ADMIN')}" />
+                <span>Administrator (ROLE_ADMIN)</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="btn-actions-row">
+            <button type="submit" class="btn-submit-signup" id="btn-submit-user">Simpan & Buat Akun</button>
+            <a th:href="@{/rbac/users/list}" class="btn-back-link">Batal</a>
+          </div>
+        </form>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script>
+  // Toggle password visibility
+  const toggleBtn = document.getElementById('togglePasswordBtn');
+  const passwordInput = document.getElementById('password');
+
+  if (toggleBtn && passwordInput) {
+    toggleBtn.addEventListener('click', function () {
+      const isPassword = passwordInput.getAttribute('type') === 'password';
+      passwordInput.setAttribute('type', isPassword ? 'text' : 'password');
+      toggleBtn.style.color = isPassword ? '#113C8D' : '#64748b';
+    });
+  }
+</script>
+</body>
+</html>

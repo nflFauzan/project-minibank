@@ -39,8 +39,21 @@ public class User {
     @Column(nullable = false)
     private boolean enabled = false;
 
+    @Column(nullable = false)
+    private boolean locked = false;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "branch_id")
+    private Branch branch;
+
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
+    @Column(name = "last_login_at")
+    private LocalDateTime lastLoginAt;
 
     @Column(name = "dosen_pembimbing")
     private String dosenPembimbing;
@@ -62,11 +75,16 @@ public class User {
         this.fullName = fullName;
     }
 
- @PrePersist
-public void onPrePersist() {
-    if (createdAt == null) createdAt = LocalDateTime.now();
-}
+    @PrePersist
+    public void onPrePersist() {
+        if (createdAt == null) createdAt = LocalDateTime.now();
+        if (updatedAt == null) updatedAt = LocalDateTime.now();
+    }
 
+    @PreUpdate
+    public void onPreUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
 
     // ======== getter & setter =========
 
@@ -91,14 +109,25 @@ public void onPrePersist() {
     public String getProdi() { return prodi; }
     public void setProdi(String prodi) { this.prodi = prodi; }
 
-public void setApproved(boolean approved) { this.approved = approved; }
-public void setEnabled(boolean enabled) { this.enabled = enabled; }
-public boolean isApproved() { return approved; }
-public boolean isEnabled() { return enabled; }
+    public void setApproved(boolean approved) { this.approved = approved; }
+    public void setEnabled(boolean enabled) { this.enabled = enabled; }
+    public boolean isApproved() { return approved; }
+    public boolean isEnabled() { return enabled; }
 
+    public boolean isLocked() { return locked; }
+    public void setLocked(boolean locked) { this.locked = locked; }
+
+    public Branch getBranch() { return branch; }
+    public void setBranch(Branch branch) { this.branch = branch; }
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+
+    public LocalDateTime getUpdatedAt() { return updatedAt; }
+    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
+
+    public LocalDateTime getLastLoginAt() { return lastLoginAt; }
+    public void setLastLoginAt(LocalDateTime lastLoginAt) { this.lastLoginAt = lastLoginAt; }
 
     public String getDosenPembimbing() { return dosenPembimbing; }
     public void setDosenPembimbing(String dosenPembimbing) { this.dosenPembimbing = dosenPembimbing; }

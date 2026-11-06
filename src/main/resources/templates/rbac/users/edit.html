@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Edit User - Minibank</title>
+
+  <link rel="stylesheet" th:href="@{/css/cs-shell.css}">
+  <link rel="stylesheet" th:href="@{/css/custom.css}">
+  <link rel="stylesheet" th:href="@{/css/minibank-ui.css}">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif !important;
+      background-color: #f8fafc;
+      color: #0f172a;
+      margin: 0;
+    }
+    .page-title {
+      font-size: 24px;
+      font-weight: 800;
+      color: #113C8D;
+      margin: 0;
+    }
+    .content-card {
+      margin-top: 20px;
+      background: #fff;
+      border-radius: 16px;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 4px 20px rgba(0,0,0,.04);
+      padding: 30px;
+      max-width: 700px;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      font-weight: 700;
+      color: #334155;
+      font-size: 14px;
+      margin-bottom: 6px;
+    }
+    .form-control {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 11px 14px;
+      border: 1.5px solid #d0d7de;
+      border-radius: 10px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .form-control:focus {
+      border-color: #113C8D;
+    }
+    .field-hint {
+      font-size: 12px;
+      color: #64748b;
+      margin-top: 4px;
+    }
+    .field-error {
+      color: #dc2626;
+      font-size: 13px;
+      font-weight: 600;
+      margin-top: 4px;
+    }
+    .btn-submit {
+      background: #113C8D;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 12px 26px;
+      font-weight: 700;
+      font-size: 15px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-submit:hover {
+      background: #0c2d6e;
+    }
+    .btn-cancel {
+      text-decoration: none;
+      color: #64748b;
+      font-weight: 600;
+      font-size: 15px;
+      padding: 12px 20px;
+      margin-right: 8px;
+    }
+    .btn-cancel:hover {
+      color: #0f172a;
+    }
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      color: #334155;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+
+<body>
+<div class="cs-shell">
+  <div th:replace="~{cs/fragments :: sidebar('rbac-users')}"></div>
+
+  <div class="cs-content">
+    <div th:replace="~{cs/fragments :: topbar}"></div>
+
+    <main class="cs-page" style="padding: 30px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; max-width: 700px;">
+        <div>
+          <h1 class="page-title">Edit User</h1>
+          <p style="margin: 4px 0 0; color: #64748b; font-size: 14px;">Perbarui data profil dan status akun pengguna</p>
+        </div>
+        <a th:href="@{'/rbac/users/view/' + ${user.id}}" class="btn-cancel">&larr; Back to User</a>
+      </div>
+
+      <div class="content-card">
+        <form th:action="@{'/rbac/users/edit/' + ${user.id}}" th:object="${form}" method="post">
+          <input type="hidden" th:field="*{id}" />
+
+          <div th:if="${#fields.hasGlobalErrors()}" class="field-error" style="margin-bottom: 16px; padding: 10px 14px; background: #fee2e2; border-radius: 8px;">
+            <p th:each="err : ${#fields.globalErrors()}" th:text="${err}" style="margin:0;"></p>
+          </div>
+
+          <div class="form-group">
+            <label for="username">Username *</label>
+            <input type="text" id="username" th:field="*{username}" class="form-control" required />
+            <div class="field-error" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></div>
+          </div>
+
+          <div class="form-group">
+            <label for="fullName">Full Name *</label>
+            <input type="text" id="fullName" th:field="*{fullName}" class="form-control" required />
+            <div class="field-error" th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}"></div>
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email *</label>
+            <input type="email" id="email" th:field="*{email}" class="form-control" required />
+            <div class="field-error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+          </div>
+
+          <div class="form-group">
+            <label for="branch">Branch *</label>
+            <select id="branch" th:field="*{branchId}" class="form-control" required>
+              <option value="">Select Branch</option>
+              <option th:each="b : ${branches}" th:value="${b.id}" th:text="${b.name + ' (' + b.code + ')'}">Kantor Pusat</option>
+            </select>
+            <div class="field-error" th:if="${#fields.hasErrors('branchId')}" th:errors="*{branchId}"></div>
+          </div>
+
+          <div class="form-group" style="margin-top: 24px; padding-top: 16px; border-top: 1px solid #f1f5f9;">
+            <label style="margin-bottom: 12px;">Status Akun</label>
+            <label class="checkbox-label">
+              <input type="checkbox" th:field="*{enabled}" />
+              <span>Akun Aktif (Enabled)</span>
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" th:field="*{locked}" />
+              <span>Terkunci (Locked)</span>
+            </label>
+          </div>
+
+          <div style="margin-top: 30px; display: flex; align-items: center;">
+            <a th:href="@{'/rbac/users/view/' + ${user.id}}" class="btn-cancel">Cancel</a>
+            <button type="submit" class="btn-submit">Save Changes</button>
+          </div>
+        </form>
+      </div>
+    </main>
+  </div>
+</div>
+</body>
+</html>
+

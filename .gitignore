@@ -35,5 +35,6 @@ build/
 ### Playwright & Transient Tools ###
 .playwright-mcp/
 .superpowers/
+docs/superpowers/
 playwright-tests/test-results/
 playwright-tests/playwright-report/

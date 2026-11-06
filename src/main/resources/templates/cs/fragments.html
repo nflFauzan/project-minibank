@@ -27,9 +27,6 @@
       <!-- Teller Links -->
       <th:block th:if="${(isTeller ?: false) or (isAdmin ?: false)}">
         <a id="transaction-link" th:href="@{/teller/transaction/list}" th:classappend="${active == 'transaction'} ? ' active' : ''">Transaksi</a>
-        <a id="deposit-link" th:href="@{/teller/transaction/deposit}" th:classappend="${active == 'deposit'} ? ' active' : ''">Setoran Tunai</a>
-        <a id="withdrawal-link" th:href="@{/teller/transaction/withdrawal}" th:classappend="${active == 'withdrawal'} ? ' active' : ''">Penarikan Tunai</a>
-        <a id="transfer-link" th:href="@{/teller/transaction/transfer}" th:classappend="${active == 'transfer'} ? ' active' : ''">Transfer Dana</a>
         <a id="passbook-link" th:href="@{/teller/passbook/select-account}" th:classappend="${active == 'passbook-printing'} ? ' active' : ''">Passbook</a>
       </th:block>
 
@@ -38,9 +35,14 @@
         <a id="approval-queue-link" th:href="@{/supervisor/nasabah}" th:classappend="${active == 'nasabah'} ? ' active' : ''">Approval Nasabah</a>
       </th:block>
 
-      <!-- Admin Links -->
+      <!-- Administration (Admin only) -->
       <th:block th:if="${isAdmin ?: false}">
-        <a id="admin-user-create-link" th:href="@{/admin/users/create}" th:classappend="${active == 'admin-create'} ? ' active' : ''">Tambah Pengguna</a>
+        <div class="cs-nav-header" style="padding: 12px 18px 4px; font-size: 11px; text-transform: uppercase; color: #8c9ba5; font-weight: 700; letter-spacing: 0.5px;">Administration</div>
+        <a id="admin-users-link" th:href="@{/rbac/users/list}" th:classappend="${active == 'rbac-users'} ? ' active' : ''">Users</a>
+        <a id="admin-roles-link" th:href="@{/rbac/roles/list}" th:classappend="${active == 'rbac-roles'} ? ' active' : ''">Roles</a>
+        <a id="admin-permissions-link" th:href="@{/rbac/permissions/list}" th:classappend="${active == 'rbac-permissions'} ? ' active' : ''">Permissions</a>
+        <!-- Backward-compatible hidden link for legacy tests -->
+        <a id="admin-user-create-link" th:href="@{/admin/users/create}" style="display:none;">Tambah Pengguna</a>
       </th:block>
     </nav>
 

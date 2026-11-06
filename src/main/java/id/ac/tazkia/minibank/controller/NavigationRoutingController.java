@@ -65,14 +65,9 @@ public class NavigationRoutingController {
         return "redirect:/dashboard";
     }
 
-    @GetMapping({"/rbac/users/list", "/rbac/roles/list", "/rbac/permissions/list"})
-    public String rbacUsersList() {
-        return "redirect:/dashboard";
-    }
-
-    @GetMapping("/rbac/users/create")
-    public String rbacUsersCreate() {
-        return "redirect:/admin/users/create";
+    @GetMapping("/settings")
+    public String settings() {
+        return "redirect:/teller/settings";
     }
 }
 

@@ -22,7 +22,7 @@ test.describe('Registrasi Akun (Signup)', () => {
       dosenPembimbing: 'Dr. Dosen Test',
       email: `testuser_${unique}@example.com`,
       username: `testuser_${unique}`,
-      prodi: 'Informatics',
+      prodi: 'Akuntansi Syariah',
       password: 'password123',
       nim: `NIM${unique}`,
       confirmPassword: 'password123',
