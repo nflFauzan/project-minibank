@@ -25,9 +25,9 @@ public class GlobalLayoutAdvice {
                 .collect(Collectors.toSet()) : Set.of();
 
         boolean isAdmin = roles.contains("ROLE_ADMIN");
-        boolean isBranchManager = roles.contains("ROLE_BRANCH_MANAGER") || roles.contains("ROLE_SUPERVISOR");
-        boolean isCs = roles.contains("ROLE_CS");
-        boolean isTeller = roles.contains("ROLE_TELLER");
+        boolean isBranchManager = isAdmin || roles.contains("ROLE_BRANCH_MANAGER") || roles.contains("ROLE_SUPERVISOR");
+        boolean isCs = isAdmin || roles.contains("ROLE_CS");
+        boolean isTeller = isAdmin || roles.contains("ROLE_TELLER");
 
         String roleLabel = "Staff";
         if (isBranchManager || isAdmin) {

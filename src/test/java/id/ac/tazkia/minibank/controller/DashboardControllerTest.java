@@ -31,6 +31,9 @@ public class DashboardControllerTest {
                 .andExpect(model().attribute("roleLabel", "Branch Manager"))
                 .andExpect(model().attribute("userInitial", "A"))
                 .andExpect(model().attribute("isAdmin", true))
+                .andExpect(model().attribute("isCs", true))
+                .andExpect(model().attribute("isTeller", true))
+                .andExpect(model().attribute("isBranchManager", true))
                 .andExpect(model().attributeExists("totalCustomers", "activeAccounts", "totalDeposits", "todayTransactions"));
     }
 

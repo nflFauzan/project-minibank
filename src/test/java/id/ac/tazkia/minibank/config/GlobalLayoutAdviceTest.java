@@ -60,4 +60,18 @@ public class GlobalLayoutAdviceTest {
                 .andExpect(model().attribute("roleLabel", "Teller"))
                 .andExpect(model().attribute("username", "teller_only"));
     }
+
+    @Test
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
+    @DisplayName("GlobalLayoutAdvice injects superuser role flags for ROLE_ADMIN")
+    void adminUser_hasAllRoleFlags() throws Exception {
+        mockMvc.perform(get("/dashboard"))
+                .andExpect(status().isOk())
+                .andExpect(model().attribute("isAdmin", true))
+                .andExpect(model().attribute("isCs", true))
+                .andExpect(model().attribute("isTeller", true))
+                .andExpect(model().attribute("isBranchManager", true))
+                .andExpect(model().attribute("roleLabel", "Branch Manager"))
+                .andExpect(model().attribute("username", "admin"));
+    }
 }

@@ -49,10 +49,10 @@ public class DashboardController {
                 : "U";
 
         boolean isAdmin = auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
-        boolean isBranchManager = auth.getAuthorities().stream().anyMatch(a ->
+        boolean isBranchManager = isAdmin || auth.getAuthorities().stream().anyMatch(a ->
                 a.getAuthority().equals("ROLE_BRANCH_MANAGER") || a.getAuthority().equals("ROLE_SUPERVISOR"));
-        boolean isCs = auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_CS"));
-        boolean isTeller = auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_TELLER"));
+        boolean isCs = isAdmin || auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_CS"));
+        boolean isTeller = isAdmin || auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_TELLER"));
 
         String roleLabel = "Staff";
         if (isBranchManager || isAdmin) {

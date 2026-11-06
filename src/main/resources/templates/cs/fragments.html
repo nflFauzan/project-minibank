@@ -25,7 +25,7 @@
       </th:block>
 
       <!-- Teller Links -->
-      <th:block th:if="${isTeller ?: false}">
+      <th:block th:if="${(isTeller ?: false) or (isAdmin ?: false)}">
         <a id="transaction-link" th:href="@{/teller/transaction/list}" th:classappend="${active == 'transaction'} ? ' active' : ''">Transaksi</a>
         <a id="deposit-link" th:href="@{/teller/transaction/deposit}" th:classappend="${active == 'deposit'} ? ' active' : ''">Setoran Tunai</a>
         <a id="withdrawal-link" th:href="@{/teller/transaction/withdrawal}" th:classappend="${active == 'withdrawal'} ? ' active' : ''">Penarikan Tunai</a>
@@ -34,7 +34,7 @@
       </th:block>
 
       <!-- Supervisor / Branch Manager Links -->
-      <th:block th:if="${isBranchManager ?: false}">
+      <th:block th:if="${(isBranchManager ?: false) or (isAdmin ?: false)}">
         <a id="approval-queue-link" th:href="@{/supervisor/nasabah}" th:classappend="${active == 'nasabah'} ? ' active' : ''">Approval Nasabah</a>
       </th:block>
 
