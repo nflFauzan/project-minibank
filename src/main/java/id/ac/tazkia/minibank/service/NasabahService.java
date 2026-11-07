@@ -5,6 +5,8 @@ import id.ac.tazkia.minibank.entity.NasabahStatus;
 import id.ac.tazkia.minibank.repository.NasabahRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -65,6 +67,11 @@ public class NasabahService {
     @Transactional(readOnly = true)
     public List<Nasabah> listAllCustomers() {
         return nasabahRepository.findAll();
+    }
+
+    @Transactional(readOnly = true)
+    public Page<Nasabah> searchCustomers(String keyword, Pageable pageable) {
+        return nasabahRepository.searchCustomers(keyword, pageable);
     }
 
     @Transactional(readOnly = true)

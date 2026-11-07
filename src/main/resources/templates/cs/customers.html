@@ -145,6 +145,22 @@
         </a>
       </div>
 
+      <div style="margin-top: 18px; background: #fff; border: 1px solid #f1f5f9; border-radius: 16px; padding: 16px 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.02);">
+        <form method="get" th:action="@{/cs/customers}" style="display: flex; gap: 12px; align-items: center;">
+          <input type="text" name="q" th:value="${q}" placeholder="Cari berdasarkan nama, CIF, NIK, atau no HP..." 
+                 class="no-uppercase"
+                 style="flex: 1; padding: 10px 16px; border: 1.5px solid #e2e8f0; border-radius: 12px; font-size: 14px; outline: none;" />
+          <button type="submit" 
+                  style="background: #1e3a8a; color: #fff; border: none; padding: 10px 22px; border-radius: 12px; font-weight: 700; cursor: pointer;">
+            Cari
+          </button>
+          <a th:if="${q != null and !q.isEmpty()}" th:href="@{/cs/customers}" 
+             style="background: #f1f5f9; color: #475569; padding: 10px 18px; border-radius: 12px; text-decoration: none; font-weight: 600; font-size: 14px;">
+            Reset
+          </a>
+        </form>
+      </div>
+
       <div class="table-container">
         <table>
           <thead>
@@ -184,6 +200,20 @@
             </tr>
           </tbody>
         </table>
+      </div>
+
+      <div th:if="${page != null and page.totalPages > 1}" 
+           style="display: flex; justify-content: space-between; align-items: center; margin-top: 16px; padding: 12px 16px; background: #fff; border-radius: 12px; border: 1px solid #f1f5f9;">
+        <span style="font-size: 13px; color: #64748b;">
+          Menampilkan <strong th:text="${page.numberOfElements}"></strong> dari <strong th:text="${page.totalElements}"></strong> nasabah
+        </span>
+        <div style="display: flex; gap: 8px;">
+          <a th:if="${page.hasPrevious()}" th:href="@{/cs/customers(q=${q}, page=${page.number - 1})}" 
+             style="padding: 6px 14px; background: #f1f5f9; border-radius: 8px; text-decoration: none; font-weight: 700; color: #1e3a8a; font-size: 13px;">&larr; Prev</a>
+          <span style="padding: 6px 14px; font-size: 13px; font-weight: 600; color: #334155;" th:text="${'Halaman ' + (page.number + 1) + ' dari ' + page.totalPages}"></span>
+          <a th:if="${page.hasNext()}" th:href="@{/cs/customers(q=${q}, page=${page.number + 1})}" 
+             style="padding: 6px 14px; background: #f1f5f9; border-radius: 8px; text-decoration: none; font-weight: 700; color: #1e3a8a; font-size: 13px;">Next &rarr;</a>
+        </div>
       </div>
 
     </main>

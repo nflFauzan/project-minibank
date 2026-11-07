@@ -2,6 +2,8 @@ package id.ac.tazkia.minibank.repository;
 
 import id.ac.tazkia.minibank.entity.Nasabah;
 import id.ac.tazkia.minibank.entity.NasabahStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -12,6 +14,18 @@ import java.util.Optional;
 public interface NasabahRepository extends JpaRepository<Nasabah, Long> {
 
     Optional<Nasabah> findByCif(String cif);
+
+    @Query("""
+        select n from Nasabah n
+        where (:q is null or :q = '' or
+              lower(n.namaLengkap) like lower(concat('%', :q, '%'))
+           or lower(n.cif) like lower(concat('%', :q, '%'))
+           or lower(n.nik) like lower(concat('%', :q, '%'))
+           or lower(n.email) like lower(concat('%', :q, '%'))
+           or lower(n.noHp) like lower(concat('%', :q, '%')))
+        order by n.createdAt desc
+    """)
+    Page<Nasabah> searchCustomers(@Param("q") String q, Pageable pageable);
 
     List<Nasabah> findTop5ByOrderByCreatedAtDesc();
 

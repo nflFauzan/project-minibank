@@ -4,6 +4,9 @@ import id.ac.tazkia.minibank.entity.Nasabah;
 import id.ac.tazkia.minibank.service.NasabahService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -18,8 +21,14 @@ public class CsCustomerController {
 
     // LIST: GET /cs/customers
     @GetMapping
-    public String customers(Model model) {
-        model.addAttribute("customers", nasabahService.listAllCustomers());
+    public String customers(@RequestParam(value = "q", required = false) String q,
+                            @RequestParam(value = "page", defaultValue = "0") int page,
+                            Model model) {
+        Pageable pageable = PageRequest.of(page, 10);
+        Page<Nasabah> customerPage = nasabahService.searchCustomers(q, pageable);
+        model.addAttribute("customers", customerPage.getContent());
+        model.addAttribute("page", customerPage);
+        model.addAttribute("q", q != null ? q : "");
         return "cs/customers";
     }
 
