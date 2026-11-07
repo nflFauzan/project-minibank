@@ -1,6 +1,7 @@
 package id.ac.tazkia.minibank.service;
 
 import id.ac.tazkia.minibank.entity.Rekening;
+import id.ac.tazkia.minibank.entity.StatusTransaksi;
 import id.ac.tazkia.minibank.entity.TipeTransaksi;
 import id.ac.tazkia.minibank.entity.Transaksi;
 import id.ac.tazkia.minibank.repository.RekeningRepository;
@@ -23,7 +24,13 @@ public class TellerDepositService {
     private final TransaksiRepository transaksiRepository;
     private final UserRepository userRepository;
 
-    public record DepositResult(String nomorTransaksi, BigDecimal saldoBaru) {}
+    public static final BigDecimal TELLER_LIMIT = new BigDecimal("5000000");
+
+    public record DepositResult(String nomorTransaksi, BigDecimal saldoBaru, boolean pendingApproval) {
+        public DepositResult(String nomorTransaksi, BigDecimal saldoBaru) {
+            this(nomorTransaksi, saldoBaru, false);
+        }
+    }
 
   @Transactional
 public DepositResult deposit(String nomorRekening,
@@ -54,10 +61,13 @@ public DepositResult deposit(String nomorRekening,
     }
 
     BigDecimal saldoSebelum = (r.getSaldo() == null) ? BigDecimal.ZERO : r.getSaldo();
-    BigDecimal saldoSesudah = saldoSebelum.add(jumlah);
+    boolean pending = jumlah.compareTo(TELLER_LIMIT) > 0;
+    BigDecimal saldoSesudah = pending ? saldoSebelum : saldoSebelum.add(jumlah);
 
-    r.setSaldo(saldoSesudah);
-    rekeningRepository.save(r);
+    if (!pending) {
+        r.setSaldo(saldoSesudah);
+        rekeningRepository.save(r);
+    }
 
     long seq = transaksiRepository.nextSeq();
     String nomorTransaksi = "T1" + String.format("%06d", seq);
@@ -103,11 +113,12 @@ t.setProcessedBy(usernameLogin);
 // ini sudah ada di entity kamu
 t.setProcessedByUsername(usernameLogin);
 t.setProcessedByFullName(fullName);
+t.setStatus(pending ? StatusTransaksi.PENDING_APPROVAL : StatusTransaksi.SUCCESS);
 
 transaksiRepository.save(t);
 
 
-    return new DepositResult(nomorTransaksi, saldoSesudah);
+    return new DepositResult(nomorTransaksi, saldoSesudah, pending);
 }
 
     @Transactional(readOnly = true)

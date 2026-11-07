@@ -5,6 +5,7 @@ import id.ac.tazkia.minibank.entity.RekeningStatus;
 import id.ac.tazkia.minibank.repository.UserRepository;
 import id.ac.tazkia.minibank.service.SupervisorNasabahApprovalService;
 import id.ac.tazkia.minibank.service.SupervisorRekeningApprovalService;
+import id.ac.tazkia.minibank.service.SupervisorTransactionApprovalService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -33,6 +34,9 @@ class SupervisorAccountControllerTest {
 
     @MockBean
     private SupervisorNasabahApprovalService nasabahApprovalService;
+
+    @MockBean
+    private SupervisorTransactionApprovalService transactionApprovalService;
 
     @MockBean
     private UserRepository userRepository;

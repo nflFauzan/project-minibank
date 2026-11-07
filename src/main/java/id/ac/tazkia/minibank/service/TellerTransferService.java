@@ -1,6 +1,7 @@
 package id.ac.tazkia.minibank.service;
 
 import id.ac.tazkia.minibank.entity.Rekening;
+import id.ac.tazkia.minibank.entity.StatusTransaksi;
 import id.ac.tazkia.minibank.entity.TipeTransaksi;
 import id.ac.tazkia.minibank.entity.Transaksi;
 import id.ac.tazkia.minibank.repository.RekeningRepository;
@@ -18,6 +19,8 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class TellerTransferService {
+
+    public static final BigDecimal TELLER_LIMIT = new BigDecimal("5000000");
 
     private final RekeningRepository rekeningRepository;
     private final TransaksiRepository transaksiRepository;
@@ -79,14 +82,16 @@ public class TellerTransferService {
             throw new IllegalStateException("Saldo tidak mencukupi.");
         }
 
-        BigDecimal saldoSumberAkhir = saldoSumberAwal.subtract(jumlah);
-        BigDecimal saldoTujuanAkhir = saldoTujuanAwal.add(jumlah);
+        boolean pending = jumlah.compareTo(TELLER_LIMIT) > 0;
+        BigDecimal saldoSumberAkhir = pending ? saldoSumberAwal : saldoSumberAwal.subtract(jumlah);
+        BigDecimal saldoTujuanAkhir = pending ? saldoTujuanAwal : saldoTujuanAwal.add(jumlah);
 
-        sumber.setSaldo(saldoSumberAkhir);
-        tujuan.setSaldo(saldoTujuanAkhir);
-
-        rekeningRepository.save(sumber);
-        rekeningRepository.save(tujuan);
+        if (!pending) {
+            sumber.setSaldo(saldoSumberAkhir);
+            tujuan.setSaldo(saldoTujuanAkhir);
+            rekeningRepository.save(sumber);
+            rekeningRepository.save(tujuan);
+        }
 
         UUID groupId = UUID.randomUUID();
         LocalDateTime now = LocalDateTime.now();
@@ -131,6 +136,7 @@ public class TellerTransferService {
         out.setProcessedBy(processedBy);
         out.setProcessedByUsername(processedByUsername);
         out.setProcessedByFullName(processedByFullName);
+        out.setStatus(pending ? StatusTransaksi.PENDING_APPROVAL : StatusTransaksi.SUCCESS);
 
         // ===== TRANSFER IN =====
         Transaksi in = new Transaksi();
@@ -157,6 +163,7 @@ public class TellerTransferService {
         in.setProcessedBy(processedBy);
         in.setProcessedByUsername(processedByUsername);
         in.setProcessedByFullName(processedByFullName);
+        in.setStatus(pending ? StatusTransaksi.PENDING_APPROVAL : StatusTransaksi.SUCCESS);
 
         transaksiRepository.save(out);
         transaksiRepository.save(in);

@@ -6,6 +6,7 @@ import id.ac.tazkia.minibank.entity.User;
 import id.ac.tazkia.minibank.repository.UserRepository;
 import id.ac.tazkia.minibank.service.SupervisorNasabahApprovalService;
 import id.ac.tazkia.minibank.service.SupervisorRekeningApprovalService;
+import id.ac.tazkia.minibank.service.SupervisorTransactionApprovalService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -23,6 +24,7 @@ public class SupervisorNasabahController {
 
     private final SupervisorNasabahApprovalService approvalService;
     private final SupervisorRekeningApprovalService rekeningApprovalService;
+    private final SupervisorTransactionApprovalService transactionApprovalService;
     private final UserRepository userRepository;
 
     public enum Filter {
@@ -54,6 +56,7 @@ public class SupervisorNasabahController {
 
         long pendingNasabah = approvalService.pendingCount();
         long pendingRekening = rekeningApprovalService.pendingCount();
+        long pendingTransactions = transactionApprovalService != null ? transactionApprovalService.pendingCount() : 0;
 
         model.addAttribute("active", "nasabah");
         model.addAttribute("activeTab", "nasabah");
@@ -63,6 +66,7 @@ public class SupervisorNasabahController {
         model.addAttribute("pendingCount", pendingNasabah);
         model.addAttribute("pendingNasabahCount", pendingNasabah);
         model.addAttribute("pendingRekeningCount", pendingRekening);
+        model.addAttribute("pendingTransactionCount", pendingTransactions);
         model.addAttribute("list", data);
 
         return "supervisor/nasabah/list";

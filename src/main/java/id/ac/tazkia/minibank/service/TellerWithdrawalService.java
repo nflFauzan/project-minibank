@@ -1,6 +1,7 @@
 package id.ac.tazkia.minibank.service;
 
 import id.ac.tazkia.minibank.entity.Rekening;
+import id.ac.tazkia.minibank.entity.StatusTransaksi;
 import id.ac.tazkia.minibank.entity.TipeTransaksi;
 import id.ac.tazkia.minibank.entity.Transaksi;
 import id.ac.tazkia.minibank.repository.RekeningRepository;
@@ -23,7 +24,13 @@ public class TellerWithdrawalService {
     private final TransaksiRepository transaksiRepository;
     private final UserRepository userRepository;
 
-    public record WithdrawalResult(String nomorTransaksi, BigDecimal saldoBaru) {}
+    public static final BigDecimal TELLER_LIMIT = new BigDecimal("5000000");
+
+    public record WithdrawalResult(String nomorTransaksi, BigDecimal saldoBaru, boolean pendingApproval) {
+        public WithdrawalResult(String nomorTransaksi, BigDecimal saldoBaru) {
+            this(nomorTransaksi, saldoBaru, false);
+        }
+    }
 
     @Transactional
     public WithdrawalResult withdraw(String nomorRekening,
@@ -60,9 +67,13 @@ public class TellerWithdrawalService {
             throw new IllegalStateException("Saldo tidak cukup.");
         }
 
-        BigDecimal saldoSesudah = saldoSebelum.subtract(jumlah);
+        boolean pending = jumlah.compareTo(TELLER_LIMIT) > 0;
+        BigDecimal saldoSesudah = pending ? saldoSebelum : saldoSebelum.subtract(jumlah);
 
-        r.setSaldo(saldoSesudah);
+        if (!pending) {
+            r.setSaldo(saldoSesudah);
+            rekeningRepository.save(r);
+        }
         rekeningRepository.save(r);
 
         long seq = transaksiRepository.nextSeq();
@@ -106,10 +117,11 @@ t.setProcessedBy(usernameLogin);
 // ini sudah ada di entity kamu
 t.setProcessedByUsername(usernameLogin);
 t.setProcessedByFullName(fullName);
+t.setStatus(pending ? StatusTransaksi.PENDING_APPROVAL : StatusTransaksi.SUCCESS);
 
 transaksiRepository.save(t);
 
-        return new WithdrawalResult(nomorTransaksi, saldoSesudah);
+        return new WithdrawalResult(nomorTransaksi, saldoSesudah, pending);
     }
 
     @Transactional(readOnly = true)

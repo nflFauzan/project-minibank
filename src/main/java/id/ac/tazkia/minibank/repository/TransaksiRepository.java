@@ -1,5 +1,6 @@
 package id.ac.tazkia.minibank.repository;
 
+import id.ac.tazkia.minibank.entity.StatusTransaksi;
 import id.ac.tazkia.minibank.entity.TipeTransaksi;
 import id.ac.tazkia.minibank.entity.Transaksi;
 import org.springframework.data.domain.Page;
@@ -30,6 +31,10 @@ public interface TransaksiRepository extends JpaRepository<Transaksi, UUID> {
                            Pageable pageable);
 
     List<Transaksi> findByGroupIdOrderByProcessedAtAsc(UUID groupId);
+
+    List<Transaksi> findByStatusOrderByProcessedAtDesc(StatusTransaksi status);
+
+    long countByStatus(StatusTransaksi status);
 
    @Query("select count(t) from Transaksi t where t.channel = :channel")
    long countByChannel(@Param("channel") String channel);

@@ -111,7 +111,11 @@ public class TellerTransactionController {
                     form.getNoReferensi(),
                     username
             );
-            ra.addFlashAttribute("success", "Deposit berhasil: " + result.nomorTransaksi());
+            if (result.pendingApproval()) {
+                ra.addFlashAttribute("warning", "Transaksi melebihi limit Rp5.000.000. Transaksi tersimpan dengan status PENDING APPROVAL: " + result.nomorTransaksi());
+            } else {
+                ra.addFlashAttribute("success", "Deposit berhasil: " + result.nomorTransaksi());
+            }
             return "redirect:/teller/transaction/list";
         } catch (Exception e) {
             ra.addFlashAttribute("error", e.getMessage());
@@ -164,7 +168,11 @@ public class TellerTransactionController {
                     form.getNoReferensi(),
                     username
             );
-            ra.addFlashAttribute("success", "Withdrawal berhasil: " + result.nomorTransaksi());
+            if (result.pendingApproval()) {
+                ra.addFlashAttribute("warning", "Transaksi melebihi limit Rp5.000.000. Transaksi tersimpan dengan status PENDING APPROVAL: " + result.nomorTransaksi());
+            } else {
+                ra.addFlashAttribute("success", "Withdrawal berhasil: " + result.nomorTransaksi());
+            }
             return "redirect:/teller/transaction/list";
         } catch (Exception e) {
             ra.addFlashAttribute("error", e.getMessage());
@@ -245,7 +253,11 @@ public class TellerTransactionController {
                     form.getNoReferensi(),
                     username
             );
-            ra.addFlashAttribute("success", "Transfer berhasil. Group ID: " + groupId);
+            if (form.getJumlah() != null && form.getJumlah().compareTo(new BigDecimal("5000000")) > 0) {
+                ra.addFlashAttribute("warning", "Transfer melebihi limit Rp5.000.000. Transaksi tersimpan dengan status PENDING APPROVAL. Group ID: " + groupId);
+            } else {
+                ra.addFlashAttribute("success", "Transfer berhasil. Group ID: " + groupId);
+            }
             return "redirect:/teller/transaction/list";
         } catch (Exception e) {
             ra.addFlashAttribute("error", e.getMessage());

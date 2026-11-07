@@ -90,6 +90,22 @@ public class Transaksi {
     @Column(name = "sandi_code", length = 10)
     private String sandiCode;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", length = 30)
+    private StatusTransaksi status = StatusTransaksi.SUCCESS;
+
+    @Column(name = "approved_by", length = 200)
+    private String approvedBy;
+
+    @Column(name = "approved_at")
+    private LocalDateTime approvedAt;
+
+    @Column(name = "approval_notes", columnDefinition = "text")
+    private String approvalNotes;
+
+    @Column(name = "rejection_reason", columnDefinition = "text")
+    private String rejectionReason;
+
     public Transaksi() {}
 
     public UUID getId() { return id; }
@@ -163,4 +179,19 @@ public class Transaksi {
 
     public String getSandiCode() { return sandiCode; }
     public void setSandiCode(String sandiCode) { this.sandiCode = sandiCode; }
+
+    public StatusTransaksi getStatus() { return status; }
+    public void setStatus(StatusTransaksi status) { this.status = status; }
+
+    public String getApprovedBy() { return approvedBy; }
+    public void setApprovedBy(String approvedBy) { this.approvedBy = approvedBy; }
+
+    public LocalDateTime getApprovedAt() { return approvedAt; }
+    public void setApprovedAt(LocalDateTime approvedAt) { this.approvedAt = approvedAt; }
+
+    public String getApprovalNotes() { return approvalNotes; }
+    public void setApprovalNotes(String approvalNotes) { this.approvalNotes = approvalNotes; }
+
+    public String getRejectionReason() { return rejectionReason; }
+    public void setRejectionReason(String rejectionReason) { this.rejectionReason = rejectionReason; }
 }
