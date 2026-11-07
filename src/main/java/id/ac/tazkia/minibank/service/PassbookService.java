@@ -153,7 +153,7 @@ public class PassbookService {
                 } else if (t.getTipe() == TipeTransaksi.WITHDRAWAL) {
                     sandi = "26";
                 } else if (t.getTipe() == TipeTransaksi.TRANSFER) {
-                    sandi = "53";
+                    sandi = "213";
                 } else {
                     sandi = "99";
                 }
