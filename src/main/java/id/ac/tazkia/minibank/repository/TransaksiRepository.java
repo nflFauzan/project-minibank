@@ -55,4 +55,6 @@ public interface TransaksiRepository extends JpaRepository<Transaksi, UUID> {
 
     List<id.ac.tazkia.minibank.entity.Transaksi> findByRekeningAndProcessedAtLessThanEqualOrderByProcessedAtAsc(
             id.ac.tazkia.minibank.entity.Rekening rekening, java.time.LocalDateTime end);
+
+    List<Transaksi> findByProcessedAtBetweenOrderByProcessedAtAsc(java.time.LocalDateTime start, java.time.LocalDateTime end);
 }

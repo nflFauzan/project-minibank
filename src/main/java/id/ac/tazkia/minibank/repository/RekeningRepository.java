@@ -101,4 +101,6 @@ public interface RekeningRepository extends JpaRepository<Rekening, Long> {
     Page<Rekening> searchActiveForTellerExclude(@Param("excludeNo") String excludeNo,
                                                  @Param("q") String q,
                                                  Pageable pageable);
+
+    long countByCreatedAtBetween(java.time.LocalDateTime start, java.time.LocalDateTime end);
 }

@@ -126,11 +126,6 @@ public class NavigationRoutingController {
         return "redirect:/dashboard";
     }
 
-    @GetMapping("/reports")
-    public String reports() {
-        return "redirect:/teller/transaction/list";
-    }
-
     @GetMapping("/settings")
     public String settings() {
         return "redirect:/teller/settings";

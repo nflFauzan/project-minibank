@@ -63,7 +63,9 @@ public interface NasabahRepository extends JpaRepository<Nasabah, Long> {
     }
 
     // ===== KOMPATIBILITAS METHOD LAMA (JANGAN DIHAPUS) =====
-default List<Nasabah> findByStatusActiveTrue() {
-    return findByStatus(NasabahStatus.ACTIVE);
-}
+    default List<Nasabah> findByStatusActiveTrue() {
+        return findByStatus(NasabahStatus.ACTIVE);
+    }
+
+    long countByCreatedAtBetween(java.time.LocalDateTime start, java.time.LocalDateTime end);
 }

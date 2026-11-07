@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Laporan Operasional Berkala - Tazkia Mini Bank</title>
+
+  <link rel="stylesheet" th:href="@{/css/cs-shell.css}">
+  <link rel="stylesheet" th:href="@{/css/custom.css}">
+  <link rel="stylesheet" th:href="@{/css/minibank-ui.css}">
+  <link rel="stylesheet" th:href="@{/css/account.css}">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif !important;
+      background-color: #f8fafc;
+      color: #0f172a;
+    }
+
+    .page-title {
+      font-size: 24px;
+      font-weight: 800;
+      color: #1e3a8a;
+      margin: 0;
+    }
+
+    .content-card {
+      background: #fff;
+      border-radius: 20px;
+      border: 1px solid rgba(0,0,0,.05);
+      box-shadow: 0 10px 30px rgba(0,0,0,.04);
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+
+    .filter-card {
+      background: #fff;
+      border-radius: 16px;
+      border: 1px solid #e2e8f0;
+      padding: 20px 24px;
+      margin-bottom: 24px;
+    }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .metric-card {
+      background: #fff;
+      border-radius: 16px;
+      border: 1px solid #e2e8f0;
+      padding: 18px 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+    }
+
+    .metric-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+
+    .metric-value {
+      font-size: 20px;
+      font-weight: 800;
+      color: #0f172a;
+    }
+
+    .metric-value.kredit {
+      color: #059669;
+    }
+
+    .metric-value.debit {
+      color: #dc2626;
+    }
+
+    .metric-value.blue {
+      color: #1e3a8a;
+    }
+
+    table.report-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    table.report-table thead tr {
+      text-align: left;
+      color: #64748b;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+
+    table.report-table th {
+      padding: 14px 12px;
+      font-weight: 700;
+      border-bottom: 2px solid #f1f5f9;
+    }
+
+    table.report-table td {
+      padding: 14px 12px;
+      vertical-align: middle;
+      border-bottom: 1px solid #f8fafc;
+      font-size: 13.5px;
+      color: #475569;
+    }
+
+    table.report-table tbody tr:hover {
+      background-color: #f8fafc;
+    }
+
+    .btn-print {
+      padding: 11px 22px;
+      border-radius: 12px;
+      background: #1e3a8a;
+      color: #fff;
+      font-weight: 700;
+      font-size: 14px;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+    .btn-print:hover {
+      background: #2563eb;
+      transform: translateY(-1px);
+    }
+
+    .tab-period {
+      padding: 8px 18px;
+      border-radius: 10px;
+      border: 1.5px solid #cbd5e1;
+      background: #fff;
+      color: #475569;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      transition: all 0.2s;
+    }
+
+    .tab-period.active {
+      background: #1e3a8a;
+      color: #fff;
+      border-color: #1e3a8a;
+    }
+
+    .form-control-custom {
+      padding: 8px 12px;
+      border-radius: 10px;
+      border: 1.5px solid #cbd5e1;
+      font-family: inherit;
+      font-size: 13.5px;
+      outline: none;
+    }
+
+    /* Print Header Hidden on Screen */
+    .print-only {
+      display: none;
+    }
+
+    @media print {
+      body {
+        background: #fff !important;
+        color: #000 !important;
+        font-family: 'Times New Roman', serif !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+
+      .cs-sidebar,
+      .cs-topbar,
+      .filter-card,
+      .no-print {
+        display: none !important;
+      }
+
+      .cs-shell {
+        display: block !important;
+      }
+
+      .cs-content {
+        margin-left: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+      }
+
+      .cs-page {
+        padding: 0 !important;
+      }
+
+      .content-card {
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+      }
+
+      .print-only {
+        display: block !important;
+      }
+
+      .metrics-grid {
+        grid-template-columns: repeat(3, 1fr) !important;
+        border: 1px solid #000;
+        margin-bottom: 20px;
+      }
+
+      .metric-card {
+        border: 1px solid #ccc !important;
+        box-shadow: none !important;
+        padding: 10px !important;
+      }
+
+      table.report-table {
+        border: 1px solid #000 !important;
+      }
+
+      table.report-table th,
+      table.report-table td {
+        border: 1px solid #999 !important;
+        padding: 6px 8px !important;
+        font-size: 11px !important;
+        color: #000 !important;
+      }
+
+      table.report-table thead tr {
+        background-color: #f1f5f9 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+    }
+  </style>
+</head>
+
+<body>
+<div class="cs-shell">
+  <div th:replace="~{cs/fragments :: sidebar('reports')}"></div>
+
+  <div class="cs-content">
+    <div th:replace="~{cs/fragments :: topbar}"></div>
+
+    <main class="cs-page" style="padding: 30px;">
+
+      <!-- Screen Header -->
+      <div class="no-print" style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 24px; flex-wrap:wrap; gap:16px;">
+        <div>
+          <h1 class="page-title">Laporan Operasional & Transaksi</h1>
+          <p style="margin:4px 0 0; color:#64748b; font-size:14px;" th:text="'Periode: ' + ${report.periodLabel}">Periode: 08 November 2026</p>
+        </div>
+        <button type="button" class="btn-print" onclick="window.print()">
+          <svg style="width:18px; height:18px; fill:none; stroke:currentColor;" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
+          </svg>
+          <span>Cetak Laporan</span>
+        </button>
+      </div>
+
+      <!-- Print Only Header -->
+      <div class="print-only" style="text-align: center; margin-bottom: 24px; border-bottom: 2px solid #000; padding-bottom: 12px;">
+        <h2 style="margin: 0; font-size: 18px; text-transform: uppercase;">INSTITUT TAZKIA - LABORATORIUM MINI BANK SYARIAH</h2>
+        <h3 style="margin: 4px 0 0; font-size: 15px;">LAPORAN OPERASIONAL & TRANSAKSI BERKALA</h3>
+        <p style="margin: 4px 0 0; font-size: 13px;" th:text="'Periode: ' + ${report.periodLabel}">Periode: 08 November 2026</p>
+        <p style="margin: 2px 0 0; font-size: 11px; color: #555;" th:text="'Dicetak oleh: ' + ${employeeId} + ' | Tanggal Cetak: ' + ${currentDate ?: nowText}">Dicetak oleh: admin | Tanggal Cetak: 08-11-2026</p>
+      </div>
+
+      <!-- Filter Card -->
+      <div class="filter-card no-print">
+        <form method="get" th:action="@{/reports}" id="filterForm">
+          <div style="display:flex; align-items:center; gap:12px; margin-bottom:16px; flex-wrap:wrap;">
+            <span style="font-weight:700; font-size:13px; color:#475569;">PILIH PERIODE:</span>
+            <a th:href="@{/reports(period='DAILY', date=${report.selectedDate})}"
+               class="tab-period" th:classappend="${periodType == 'DAILY'} ? ' active' : ''">Harian</a>
+            <a th:href="@{/reports(period='MONTHLY', month=${report.selectedMonth}, year=${report.selectedYear})}"
+               class="tab-period" th:classappend="${periodType == 'MONTHLY'} ? ' active' : ''">Bulanan</a>
+            <a th:href="@{/reports(period='YEARLY', year=${report.selectedYear})}"
+               class="tab-period" th:classappend="${periodType == 'YEARLY'} ? ' active' : ''">Tahunan</a>
+          </div>
+
+          <input type="hidden" name="period" th:value="${periodType}"/>
+
+          <!-- Daily Input -->
+          <div th:if="${periodType == 'DAILY'}" style="display:flex; align-items:center; gap:12px;">
+            <label style="font-weight:600; font-size:13px; color:#334155;">Tanggal:</label>
+            <input type="date" name="date" th:value="${report.selectedDate}" class="form-control-custom" />
+            <button type="submit" class="btn-print" style="padding:8px 16px; font-size:13px;">Tampilkan</button>
+          </div>
+
+          <!-- Monthly Input -->
+          <div th:if="${periodType == 'MONTHLY'}" style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+            <label style="font-weight:600; font-size:13px; color:#334155;">Bulan:</label>
+            <select name="month" class="form-control-custom">
+              <option value="1" th:selected="${report.selectedMonth == 1}">Januari</option>
+              <option value="2" th:selected="${report.selectedMonth == 2}">Februari</option>
+              <option value="3" th:selected="${report.selectedMonth == 3}">Maret</option>
+              <option value="4" th:selected="${report.selectedMonth == 4}">April</option>
+              <option value="5" th:selected="${report.selectedMonth == 5}">Mei</option>
+              <option value="6" th:selected="${report.selectedMonth == 6}">Juni</option>
+              <option value="7" th:selected="${report.selectedMonth == 7}">Juli</option>
+              <option value="8" th:selected="${report.selectedMonth == 8}">Agustus</option>
+              <option value="9" th:selected="${report.selectedMonth == 9}">September</option>
+              <option value="10" th:selected="${report.selectedMonth == 10}">Oktober</option>
+              <option value="11" th:selected="${report.selectedMonth == 11}">November</option>
+              <option value="12" th:selected="${report.selectedMonth == 12}">Desember</option>
+            </select>
+
+            <label style="font-weight:600; font-size:13px; color:#334155;">Tahun:</label>
+            <input type="number" name="year" min="2000" max="2100" th:value="${report.selectedYear}" class="form-control-custom" style="width:100px;" />
+
+            <button type="submit" class="btn-print" style="padding:8px 16px; font-size:13px;">Tampilkan</button>
+          </div>
+
+          <!-- Yearly Input -->
+          <div th:if="${periodType == 'YEARLY'}" style="display:flex; align-items:center; gap:12px;">
+            <label style="font-weight:600; font-size:13px; color:#334155;">Tahun:</label>
+            <input type="number" name="year" min="2000" max="2100" th:value="${report.selectedYear}" class="form-control-custom" style="width:120px;" />
+            <button type="submit" class="btn-print" style="padding:8px 16px; font-size:13px;">Tampilkan</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Metric Cards Summary -->
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-label">Total Transaksi</div>
+          <div class="metric-value blue" th:text="${report.totalTransactions}">0</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Dana Masuk (Kredit)</div>
+          <div class="metric-value kredit" th:text="'Rp ' + ${#numbers.formatDecimal(report.totalKredit, 1, 'POINT', 0, 'COMMA')}">Rp 0</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Dana Keluar (Debit)</div>
+          <div class="metric-value debit" th:text="'Rp ' + ${#numbers.formatDecimal(report.totalDebit, 1, 'POINT', 0, 'COMMA')}">Rp 0</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Arus Kas Bersih (Net)</div>
+          <div class="metric-value" th:classappend="${report.netFlow >= 0} ? ' kredit' : ' debit'" th:text="'Rp ' + ${#numbers.formatDecimal(report.netFlow, 1, 'POINT', 0, 'COMMA')}">Rp 0</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Rekening Baru</div>
+          <div class="metric-value blue" th:text="${report.newAccountsCount}">0</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Nasabah Baru</div>
+          <div class="metric-value blue" th:text="${report.newCustomersCount}">0</div>
+        </div>
+      </div>
+
+      <!-- Detailed Transaction Table -->
+      <div class="content-card">
+        <div style="margin-bottom: 16px; display:flex; justify-content:space-between; align-items:center;">
+          <h2 style="font-size: 16px; font-weight: 800; color: #1e3a8a; margin: 0;">Rincian Transaksi</h2>
+          <span style="font-size: 12px; color: #64748b;" th:text="${#lists.size(report.transactions)} + ' baris data'">0 baris data</span>
+        </div>
+
+        <div style="overflow-x: auto;">
+          <table class="report-table">
+            <thead>
+              <tr>
+                <th>No. Trx</th>
+                <th>Waktu</th>
+                <th>Rekening</th>
+                <th>Tipe</th>
+                <th style="text-align:right;">Debit (Keluar)</th>
+                <th style="text-align:right;">Kredit (Masuk)</th>
+                <th>Petugas</th>
+                <th>Keterangan</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:if="${#lists.isEmpty(report.transactions)}">
+                <td colspan="8" style="text-align:center; padding:36px; color:#94a3b8;">
+                  Tidak ada transaksi pada periode yang dipilih.
+                </td>
+              </tr>
+              <tr th:each="tx : ${report.transactions}">
+                <td style="font-weight:700; color:#1e3a8a;" th:text="${tx.nomorTransaksi}">T1000001</td>
+                <td>
+                  <div style="font-weight:600;" th:text="${#temporals.format(tx.processedAt, 'dd/MM/yyyy')}">08/11/2026</div>
+                  <div style="font-size:11px; color:#94a3b8;" th:text="${#temporals.format(tx.processedAt, 'HH:mm')}">14:00</div>
+                </td>
+                <td>
+                  <div style="font-weight:700; color:#0f172a;" th:text="${tx.nomorRekening}">54300000101</div>
+                  <div style="font-size:11px; color:#64748b;" th:text="${tx.namaRekening}">Nama Nasabah</div>
+                </td>
+                <td>
+                  <span style="font-weight:700;" th:text="${tx.tipe}">DEPOSIT</span>
+                </td>
+                <td style="text-align:right; font-weight:700; color:#dc2626;">
+                  <span th:if="${tx.debit != null}" th:text="${#numbers.formatDecimal(tx.debit, 1, 'POINT', 0, 'COMMA')}">0</span>
+                  <span th:unless="${tx.debit != null}" style="color:#cbd5e1;">-</span>
+                </td>
+                <td style="text-align:right; font-weight:700; color:#059669;">
+                  <span th:if="${tx.kredit != null}" th:text="${#numbers.formatDecimal(tx.kredit, 1, 'POINT', 0, 'COMMA')}">0</span>
+                  <span th:unless="${tx.kredit != null}" style="color:#cbd5e1;">-</span>
+                </td>
+                <td th:text="${tx.processedBy}">teller1</td>
+                <td style="max-width:240px; font-size:12px;" th:text="${tx.keterangan ?: '-'}">-</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Signature Box (Print Only) -->
+      <div class="print-only" style="margin-top: 40px; page-break-inside: avoid;">
+        <table style="width: 100%; border: none;">
+          <tr>
+            <td style="width: 50%; text-align: center; border: none;">
+              <p style="margin-bottom: 60px;">Petugas Operasional,</p>
+              <p style="font-weight: bold; text-decoration: underline;" th:text="${employeeId}">Petugas</p>
+            </td>
+            <td style="width: 50%; text-align: center; border: none;">
+              <p style="margin-bottom: 60px;">Supervisor / Dosen Pembimbing,</p>
+              <p style="font-weight: bold; text-decoration: underline;">( .................................................... )</p>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+    </main>
+  </div>
+</div>
+</body>
+</html>
+
