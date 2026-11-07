@@ -161,7 +161,7 @@
           <p style="margin: 4px 0 0; color: #64748b; font-size: 14px;">Informasi profil dan penugasan peran (roles) pengguna</p>
         </div>
         <div style="display: flex; gap: 10px;">
-          <a th:href="@{'/rbac/users/edit/' + ${user.id}}" class="btn-action-outline">Edit User</a>
+          <a th:if="${isAdmin ?: false}" th:href="@{'/rbac/users/edit/' + ${user.id}}" class="btn-action-outline">Edit User</a>
           <a th:href="@{'/rbac/users/' + ${user.id} + '/password'}" class="btn-action-outline">Set Password</a>
           <a th:href="@{/rbac/users/list}" class="btn-action-primary">&larr; Back to List</a>
         </div>

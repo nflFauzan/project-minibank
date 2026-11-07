@@ -367,7 +367,7 @@
           <h1 class="page-title">User Management</h1>
           <p style="margin: 4px 0 0; color: #64748b; font-size: 14px;">Antrean Approval Registrasi Pengguna Baru, Penugasan Role, dan Pengelolaan Akses Akun</p>
         </div>
-        <a id="btn-create-user" th:href="@{/rbac/users/create}" class="btn-primary-blue">+ Tambah Pengguna Baru</a>
+        <a th:if="${isAdmin ?: false}" id="btn-create-user" th:href="@{/rbac/users/create}" class="btn-primary-blue">+ Tambah Pengguna Baru</a>
       </div>
 
       <!-- Feedback Notifications -->
@@ -498,20 +498,23 @@
                   <!-- AKSI UNTUK USER SUDAH TERVERIFIKASI / BIASA -->
                   <div th:if="${u.approved}" class="action-links">
                     <a th:href="@{'/rbac/users/view/' + ${u.id}}" class="action-link action-view">View</a>
-                    <a th:href="@{'/rbac/users/edit/' + ${u.id}}" class="action-link action-edit">Edit</a>
-                    <a th:href="@{'/rbac/users/' + ${u.id} + '/password'}" class="action-link action-pass">Password</a>
-                    <a th:href="@{'/rbac/users/' + ${u.id} + '/roles'}" class="action-link action-roles">Roles</a>
+                    <a th:if="${isAdmin ?: false}" th:href="@{'/rbac/users/edit/' + ${u.id}}" class="action-link action-edit">Edit</a>
+                    <a th:href="@{'/rbac/users/' + ${u.id} + '/password'}" class="action-link action-pass" title="Reset Password">Password</a>
 
-                    <form th:if="${u.enabled}" th:action="@{'/rbac/users/' + ${u.id} + '/deactivate'}" method="post" style="display:inline;" onsubmit="return confirm('Nonaktifkan pengguna ini?');">
-                      <button type="submit" class="action-link action-deact">Deactivate</button>
-                    </form>
-                    <form th:unless="${u.enabled}" th:action="@{'/rbac/users/' + ${u.id} + '/activate'}" method="post" style="display:inline;">
-                      <button type="submit" class="action-link action-roles" style="border:none; cursor:pointer;">Activate</button>
-                    </form>
+                    <th:block th:if="${isAdmin ?: false}">
+                      <a th:href="@{'/rbac/users/' + ${u.id} + '/roles'}" class="action-link action-roles">Roles</a>
 
-                    <form th:action="@{'/rbac/users/delete/' + ${u.id}}" method="post" style="display:inline;" onsubmit="return confirm('Hapus permanen akun pengguna ini?');">
-                      <button type="submit" class="action-link action-delete">Delete</button>
-                    </form>
+                      <form th:if="${u.enabled}" th:action="@{'/rbac/users/' + ${u.id} + '/deactivate'}" method="post" style="display:inline;" onsubmit="return confirm('Nonaktifkan pengguna ini?');">
+                        <button type="submit" class="action-link action-deact">Deactivate</button>
+                      </form>
+                      <form th:unless="${u.enabled}" th:action="@{'/rbac/users/' + ${u.id} + '/activate'}" method="post" style="display:inline;">
+                        <button type="submit" class="action-link action-roles" style="border:none; cursor:pointer;">Activate</button>
+                      </form>
+
+                      <form th:action="@{'/rbac/users/delete/' + ${u.id}}" method="post" style="display:inline;" onsubmit="return confirm('Hapus permanen akun pengguna ini?');">
+                        <button type="submit" class="action-link action-delete">Delete</button>
+                      </form>
+                    </th:block>
                   </div>
                 </td>
               </tr>

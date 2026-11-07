@@ -25,13 +25,18 @@ public class GlobalLayoutAdvice {
                 .collect(Collectors.toSet()) : Set.of();
 
         boolean isAdmin = roles.contains("ROLE_ADMIN");
-        boolean isBranchManager = isAdmin || roles.contains("ROLE_BRANCH_MANAGER") || roles.contains("ROLE_SUPERVISOR");
+        boolean isSupervisor = roles.contains("ROLE_SUPERVISOR");
+        boolean isBranchManager = isAdmin || roles.contains("ROLE_BRANCH_MANAGER") || isSupervisor;
         boolean isCs = isAdmin || roles.contains("ROLE_CS");
         boolean isTeller = isAdmin || roles.contains("ROLE_TELLER");
 
         String roleLabel = "Staff";
-        if (isBranchManager || isAdmin) {
+        if (isAdmin) {
+            roleLabel = "Administrator";
+        } else if (roles.contains("ROLE_BRANCH_MANAGER")) {
             roleLabel = "Branch Manager";
+        } else if (isSupervisor) {
+            roleLabel = "Supervisor";
         } else if (isCs) {
             roleLabel = "Customer Service";
         } else if (isTeller) {
@@ -39,6 +44,7 @@ public class GlobalLayoutAdvice {
         }
 
         model.addAttribute("isAdmin", isAdmin);
+        model.addAttribute("isSupervisor", isSupervisor);
         model.addAttribute("isBranchManager", isBranchManager);
         model.addAttribute("isCs", isCs);
         model.addAttribute("isTeller", isTeller);

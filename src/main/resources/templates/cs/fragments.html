@@ -95,8 +95,8 @@
         </a>
       </th:block>
 
-      <!-- Administration Sub-menu (Admin only) - keeping backward compatible link IDs for automated test suites -->
-      <th:block th:if="${isAdmin ?: false}">
+      <!-- Administration Sub-menu (Admin & Supervisor) - keeping backward compatible link IDs for automated test suites -->
+      <th:block th:if="${(isAdmin ?: false) or (isSupervisor ?: false) or (isBranchManager ?: false)}">
         <div class="cs-nav-header" id="administration-section" style="padding: 14px 16px 4px; font-size: 11px; text-transform: uppercase; color: #8c9ba5; font-weight: 700; letter-spacing: 0.6px;">Administration</div>
         <a id="admin-users-link" data-id="users-link" th:href="@{/rbac/users/list}" class="nav-item" th:classappend="${active == 'rbac-users'} ? ' active' : ''">
           <svg class="h-5 w-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -104,22 +104,24 @@
           </svg>
           <span>Users</span>
         </a>
-        <a id="admin-roles-link" data-id="roles-link" th:href="@{/rbac/roles/list}" class="nav-item" th:classappend="${active == 'rbac-roles'} ? ' active' : ''">
-          <svg class="h-5 w-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
-          </svg>
-          <span>Roles</span>
-        </a>
-        <a id="admin-permissions-link" data-id="permissions-link" th:href="@{/rbac/permissions/list}" class="nav-item" th:classappend="${active == 'rbac-permissions'} ? ' active' : ''">
-          <svg class="h-5 w-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
-          </svg>
-          <span>Permissions</span>
-        </a>
+        <th:block th:if="${isAdmin ?: false}">
+          <a id="admin-roles-link" data-id="roles-link" th:href="@{/rbac/roles/list}" class="nav-item" th:classappend="${active == 'rbac-roles'} ? ' active' : ''">
+            <svg class="h-5 w-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+            </svg>
+            <span>Roles</span>
+          </a>
+          <a id="admin-permissions-link" data-id="permissions-link" th:href="@{/rbac/permissions/list}" class="nav-item" th:classappend="${active == 'rbac-permissions'} ? ' active' : ''">
+            <svg class="h-5 w-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+            </svg>
+            <span>Permissions</span>
+          </a>
+          <a id="roles-link" th:href="@{/rbac/roles/list}" style="display:none;" aria-hidden="true"></a>
+          <a id="permissions-link" th:href="@{/rbac/permissions/list}" style="display:none;" aria-hidden="true"></a>
+          <a id="admin-user-create-link" th:href="@{/rbac/users/create}" style="display:none;" aria-hidden="true"></a>
+        </th:block>
         <a id="users-link" th:href="@{/rbac/users/list}" style="display:none;" aria-hidden="true"></a>
-        <a id="roles-link" th:href="@{/rbac/roles/list}" style="display:none;" aria-hidden="true"></a>
-        <a id="permissions-link" th:href="@{/rbac/permissions/list}" style="display:none;" aria-hidden="true"></a>
-        <a id="admin-user-create-link" th:href="@{/rbac/users/create}" style="display:none;" aria-hidden="true"></a>
       </th:block>
     </nav>
 

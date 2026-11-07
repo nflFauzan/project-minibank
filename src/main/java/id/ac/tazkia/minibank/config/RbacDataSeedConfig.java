@@ -106,6 +106,7 @@ public class RbacDataSeedConfig {
                 new PermissionRecord("USER_CREATE", "Create User", "USER", "Create staff user accounts"),
                 new PermissionRecord("USER_UPDATE", "Update User", "USER", "Update staff user information"),
                 new PermissionRecord("USER_DEACTIVATE", "Deactivate User", "USER", "Deactivate staff user accounts"),
+                new PermissionRecord("USER_PASSWORD_RESET", "Reset User Password", "USER", "Reset user password for students and staff"),
 
                 // BRANCH
                 new PermissionRecord("BRANCH_VIEW", "View Branch", "BRANCH", "View branch offices"),
@@ -180,6 +181,22 @@ public class RbacDataSeedConfig {
                     "TRANSACTION_TRANSFER", "BALANCE_VIEW", "ACCOUNT_VIEW"
             ));
             roleRepository.save(tellerRole);
+        });
+
+        // ROLE_SUPERVISOR
+        roleRepository.findByName("ROLE_SUPERVISOR").ifPresent(spvRole -> {
+            spvRole.setRoleCode("SUPERVISOR");
+            spvRole.setDisplayName("Supervisor");
+            spvRole.setDescription("Dosen/Instruktur Lab Mini Bank & Transaksi Approval");
+            spvRole.setActive(true);
+            assignPermissions(spvRole, permMap, List.of(
+                    "CUSTOMER_VIEW", "CUSTOMER_APPROVE", "CUSTOMER_ACTIVATE",
+                    "ACCOUNT_VIEW", "ACCOUNT_APPROVE",
+                    "TRANSACTION_VIEW", "TRANSACTION_APPROVE",
+                    "APPROVAL_VIEW", "REPORT_VIEW", "AUDIT_VIEW",
+                    "PRODUCT_VIEW", "BRANCH_VIEW", "USER_VIEW", "USER_PASSWORD_RESET"
+            ));
+            roleRepository.save(spvRole);
         });
     }
 
