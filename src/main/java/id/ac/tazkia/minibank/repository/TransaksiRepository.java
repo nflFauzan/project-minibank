@@ -24,7 +24,6 @@ public interface TransaksiRepository extends JpaRepository<Transaksi, UUID> {
                or lower(t.nomorTransaksi) like lower(concat('%', :q, '%'))
                or lower(t.keterangan) like lower(concat('%', :q, '%'))
           )
-        order by t.processedAt desc
     """)
     Page<Transaksi> search(@Param("q") String q,
                            @Param("type") TipeTransaksi type,

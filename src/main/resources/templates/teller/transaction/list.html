@@ -222,7 +222,9 @@
               <th>Tanggal & Waktu</th>
               <th>Tipe</th>
               <th>Rekening</th>
-              <th style="text-align:right;">Jumlah (IDR)</th>
+              <th style="text-align:right;">Debit (Keluar)</th>
+              <th style="text-align:right;">Kredit (Masuk)</th>
+              <th style="text-align:right;">Saldo Sekarang</th>
               <th>Keterangan</th>
               <th>Aksi</th>
             </tr>
@@ -230,7 +232,7 @@
 
           <tbody>
             <tr th:if="${page.totalElements == 0}">
-              <td colspan="7" style="padding:40px; text-align:center; color:#94a3b8;">Belum ada transaksi tersimpan.</td>
+              <td colspan="9" style="padding:40px; text-align:center; color:#94a3b8;">Belum ada transaksi tersimpan.</td>
             </tr>
 
             <tr th:each="t : ${page.content}">
@@ -258,12 +260,35 @@
               </td>
 
               <td style="text-align:right;">
-                <div th:class="${t.tipe.name() == 'WITHDRAWAL' 
-                                or (t.tipe.name() == 'TRANSFER' and t.keterangan != null and #strings.startsWith(#strings.toLowerCase(t.keterangan),'transfer ke'))
-                                or (t.saldoSesudah != null and t.saldoSebelum != null and t.saldoSesudah < t.saldoSebelum)} ? 'amt-minus' : 'amt-plus'">
-                  <span th:text="${t.tipe.name() == 'WITHDRAWAL' or (t.tipe.name() == 'TRANSFER' and t.keterangan != null and #strings.startsWith(#strings.toLowerCase(t.keterangan),'transfer ke')) ? '-' : '+'}"></span>
-                  <span th:text="${#numbers.formatDecimal(t.jumlah,1,'COMMA',2,'POINT')}">0.00</span>
-                </div>
+                <span th:if="${t.tipe.name() == 'WITHDRAWAL' 
+                              or (t.tipe.name() == 'TRANSFER' and t.keterangan != null and #strings.startsWith(#strings.toLowerCase(t.keterangan),'transfer ke'))
+                              or (t.saldoSesudah != null and t.saldoSebelum != null and t.saldoSesudah < t.saldoSebelum)}" 
+                      class="amt-minus"
+                      th:text="${#numbers.formatDecimal(t.jumlah, 1, 'POINT', 0, 'COMMA')}">
+                  0
+                </span>
+                <span th:unless="${t.tipe.name() == 'WITHDRAWAL' 
+                                  or (t.tipe.name() == 'TRANSFER' and t.keterangan != null and #strings.startsWith(#strings.toLowerCase(t.keterangan),'transfer ke'))
+                                  or (t.saldoSesudah != null and t.saldoSebelum != null and t.saldoSesudah < t.saldoSebelum)}" 
+                      style="color: #cbd5e1;">-</span>
+              </td>
+
+              <td style="text-align:right;">
+                <span th:if="${t.tipe.name() == 'DEPOSIT' 
+                              or (t.tipe.name() == 'TRANSFER' and t.keterangan != null and !#strings.startsWith(#strings.toLowerCase(t.keterangan),'transfer ke'))
+                              or (t.saldoSesudah != null and t.saldoSebelum != null and t.saldoSesudah >= t.saldoSebelum)}" 
+                      class="amt-plus"
+                      th:text="${#numbers.formatDecimal(t.jumlah, 1, 'POINT', 0, 'COMMA')}">
+                  0
+                </span>
+                <span th:unless="${t.tipe.name() == 'DEPOSIT' 
+                                  or (t.tipe.name() == 'TRANSFER' and t.keterangan != null and !#strings.startsWith(#strings.toLowerCase(t.keterangan),'transfer ke'))
+                                  or (t.saldoSesudah != null and t.saldoSebelum != null and t.saldoSesudah >= t.saldoSebelum)}" 
+                      style="color: #cbd5e1;">-</span>
+              </td>
+
+              <td style="text-align:right; font-weight:800; color:#1e3a8a;">
+                <span th:text="${t.saldoSesudah != null ? #numbers.formatDecimal(t.saldoSesudah, 1, 'POINT', 0, 'COMMA') : '-'}">0</span>
               </td>
 
               <td>

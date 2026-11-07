@@ -37,16 +37,19 @@ public class TellerTransactionController {
     @GetMapping("/list")
     public String list(@RequestParam(required = false) String q,
                        @RequestParam(required = false) TipeTransaksi type,
+                       @RequestParam(defaultValue = "asc") String sort,
                        @RequestParam(defaultValue = "0") int page,
                        Model model) {
 
-        Pageable pageable = PageRequest.of(page, 10, Sort.by("processedAt").descending());
+        Sort.Direction dir = "desc".equalsIgnoreCase(sort) ? Sort.Direction.DESC : Sort.Direction.ASC;
+        Pageable pageable = PageRequest.of(page, 10, Sort.by(dir, "processedAt"));
         Page<Transaksi> result = transaksiRepository.search(q, type, pageable);
 
         model.addAttribute("active", "transaction");
         model.addAttribute("page", result);
         model.addAttribute("q", q);
         model.addAttribute("type", type);
+        model.addAttribute("sort", sort);
         return "teller/transaction/list";
     }
 
