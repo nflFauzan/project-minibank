@@ -19,6 +19,9 @@
       background-color: #f8fafc;
       color: #0f172a;
     }
+    input[type="text"], textarea {
+      text-transform: uppercase;
+    }
   </style>
 </head>
 <body>
@@ -97,25 +100,43 @@
 
             <div>
               <label style="font-weight:800; color:#334155;">Penduduk</label>
-              <input type="text" th:field="*{penduduk}"
-                     style="width:100%; padding:10px; border-radius:10px; border:1px solid rgba(0,0,0,.12);"/>
+              <select th:field="*{penduduk}" id="pendudukSelect" onchange="handlePendudukChange(this.value)"
+                      style="width:100%; padding:10px; border-radius:10px; border:1px solid rgba(0,0,0,.12);">
+                <option value="WNI">WNI</option>
+                <option value="WNA">WNA</option>
+              </select>
             </div>
 
             <div>
               <label style="font-weight:800; color:#334155;">Status Pernikahan</label>
-              <input type="text" th:field="*{statusPernikahan}"
-                     style="width:100%; padding:10px; border-radius:10px; border:1px solid rgba(0,0,0,.12);"/>
+              <select th:field="*{statusPernikahan}"
+                      style="width:100%; padding:10px; border-radius:10px; border:1px solid rgba(0,0,0,.12);">
+                <option value="">-- PILIH STATUS PERNIKAHAN --</option>
+                <option value="BELUM MENIKAH">BELUM MENIKAH</option>
+                <option value="MENIKAH">MENIKAH</option>
+                <option value="CERAI HIDUP">CERAI HIDUP</option>
+                <option value="CERAI MATI">CERAI MATI</option>
+              </select>
             </div>
 
             <div>
               <label style="font-weight:800; color:#334155;">Agama</label>
-              <input type="text" th:field="*{agama}"
-                     style="width:100%; padding:10px; border-radius:10px; border:1px solid rgba(0,0,0,.12);"/>
+              <select th:field="*{agama}"
+                      style="width:100%; padding:10px; border-radius:10px; border:1px solid rgba(0,0,0,.12);">
+                <option value="">-- PILIH AGAMA --</option>
+                <option value="ISLAM">ISLAM</option>
+                <option value="KRISTEN PROTESTAN">KRISTEN PROTESTAN</option>
+                <option value="KATOLIK">KATOLIK</option>
+                <option value="HINDU">HINDU</option>
+                <option value="BUDDHA">BUDDHA</option>
+                <option value="KHONGHUCU">KHONGHUCU</option>
+                <option value="LAINNYA">LAINNYA</option>
+              </select>
             </div>
 
             <div>
               <label style="font-weight:800; color:#334155;">Negara</label>
-              <input type="text" th:field="*{negara}"
+              <input type="text" th:field="*{negara}" id="inputNegara"
                      style="width:100%; padding:10px; border-radius:10px; border:1px solid rgba(0,0,0,.12);"/>
             </div>
 
@@ -193,5 +214,27 @@
     </main>
   </div>
 </div>
+<script>
+  function handlePendudukChange(val) {
+    const inputNegara = document.getElementById('inputNegara');
+    if (inputNegara && val === 'WNI') {
+      inputNegara.value = 'INDONESIA';
+    }
+  }
+
+  document.addEventListener('input', function(e) {
+    const el = e.target;
+    if (el && (el.tagName === 'INPUT' && (el.type === 'text' || !el.type) || el.tagName === 'TEXTAREA')) {
+      if (el.type !== 'password' && el.type !== 'email') {
+        const start = el.selectionStart;
+        const end = el.selectionEnd;
+        el.value = el.value.toUpperCase();
+        if (start !== null && end !== null) {
+          el.setSelectionRange(start, end);
+        }
+      }
+    }
+  });
+</script>
 </body>
 </html>

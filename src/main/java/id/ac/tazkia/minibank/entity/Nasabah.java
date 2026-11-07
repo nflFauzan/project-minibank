@@ -87,9 +87,43 @@ public class Nasabah {
     private String penghasilanPerBulan;
 
     @PrePersist
+    @PreUpdate
     public void onPrePersist() {
         if (this.createdAt == null) this.createdAt = LocalDateTime.now();
         if (this.status == null) this.status = NasabahStatus.ACTIVE;
+        normalizeUppercase();
+    }
+
+    public void normalizeUppercase() {
+        if (namaLengkap != null) namaLengkap = namaLengkap.trim().toUpperCase();
+        if (tempatLahir != null) tempatLahir = tempatLahir.trim().toUpperCase();
+        if (namaIbuKandung != null) namaIbuKandung = namaIbuKandung.trim().toUpperCase();
+        if (jenisKelamin != null) jenisKelamin = jenisKelamin.trim().toUpperCase();
+        if (penduduk != null) {
+            penduduk = penduduk.trim().toUpperCase();
+            if ("WNI".equalsIgnoreCase(penduduk) && (negara == null || negara.isBlank())) {
+                negara = "INDONESIA";
+            }
+        }
+        if (statusPernikahan != null) statusPernikahan = statusPernikahan.trim().toUpperCase();
+        if (agama != null) agama = agama.trim().toUpperCase();
+        if (negara != null) negara = negara.trim().toUpperCase();
+
+        if (alamatIdentitas != null) alamatIdentitas = alamatIdentitas.trim().toUpperCase();
+        if (provinsiIdentitas != null) provinsiIdentitas = provinsiIdentitas.trim().toUpperCase();
+        if (kotaIdentitas != null) kotaIdentitas = kotaIdentitas.trim().toUpperCase();
+        if (kecamatanIdentitas != null) kecamatanIdentitas = kecamatanIdentitas.trim().toUpperCase();
+        if (kelurahanIdentitas != null) kelurahanIdentitas = kelurahanIdentitas.trim().toUpperCase();
+
+        if (alamatDomisili != null) alamatDomisili = alamatDomisili.trim().toUpperCase();
+        if (provinsiDomisili != null) provinsiDomisili = provinsiDomisili.trim().toUpperCase();
+        if (kotaDomisili != null) kotaDomisili = kotaDomisili.trim().toUpperCase();
+        if (kecamatanDomisili != null) kecamatanDomisili = kecamatanDomisili.trim().toUpperCase();
+        if (kelurahanDomisili != null) kelurahanDomisili = kelurahanDomisili.trim().toUpperCase();
+
+        if (pekerjaan != null) pekerjaan = pekerjaan.trim().toUpperCase();
+        if (namaPerusahaan != null) namaPerusahaan = namaPerusahaan.trim().toUpperCase();
+        if (jabatan != null) jabatan = jabatan.trim().toUpperCase();
     }
 
     // ====== getter / setter ======

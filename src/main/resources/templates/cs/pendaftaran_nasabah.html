@@ -63,6 +63,10 @@
             font-size: 14px;
         }
 
+        input[type="text"], textarea {
+            text-transform: uppercase;
+        }
+
         .badge-required {
             color: #ef4444;
             margin-left: 3px;
@@ -184,11 +188,11 @@
                                 <div class="col-md-5">
                                     <div class="d-flex gap-3">
                                         <div class="form-check">
-                                            <input class="form-check-input" type="radio" th:field="*{penduduk}" value="WNI" id="pendudukWni" />
+                                            <input class="form-check-input" type="radio" th:field="*{penduduk}" value="WNI" id="pendudukWni" onchange="handlePendudukChange(this.value)" />
                                             <label class="form-check-label" for="pendudukWni">WNI</label>
                                         </div>
                                         <div class="form-check">
-                                            <input class="form-check-input" type="radio" th:field="*{penduduk}" value="WNA" id="pendudukWna" />
+                                            <input class="form-check-input" type="radio" th:field="*{penduduk}" value="WNA" id="pendudukWna" onchange="handlePendudukChange(this.value)" />
                                             <label class="form-check-label" for="pendudukWna">WNA</label>
                                         </div>
                                     </div>
@@ -198,15 +202,30 @@
                             <div class="row mb-3">
                                 <div class="col-md-4">
                                     <label class="form-label">Status Pernikahan</label>
-                                    <input type="text" class="form-control" th:field="*{statusPernikahan}" />
+                                    <select class="form-select" th:field="*{statusPernikahan}">
+                                        <option value="">-- PILIH STATUS PERNIKAHAN --</option>
+                                        <option value="BELUM MENIKAH">BELUM MENIKAH</option>
+                                        <option value="MENIKAH">MENIKAH</option>
+                                        <option value="CERAI HIDUP">CERAI HIDUP</option>
+                                        <option value="CERAI MATI">CERAI MATI</option>
+                                    </select>
                                 </div>
                                 <div class="col-md-4">
                                     <label class="form-label">Agama</label>
-                                    <input type="text" class="form-control" th:field="*{agama}" />
+                                    <select class="form-select" th:field="*{agama}">
+                                        <option value="">-- PILIH AGAMA --</option>
+                                        <option value="ISLAM">ISLAM</option>
+                                        <option value="KRISTEN PROTESTAN">KRISTEN PROTESTAN</option>
+                                        <option value="KATOLIK">KATOLIK</option>
+                                        <option value="HINDU">HINDU</option>
+                                        <option value="BUDDHA">BUDDHA</option>
+                                        <option value="KHONGHUCU">KHONGHUCU</option>
+                                        <option value="LAINNYA">LAINNYA</option>
+                                    </select>
                                 </div>
                                 <div class="col-md-4">
                                     <label class="form-label">Negara</label>
-                                    <input type="text" class="form-control" th:field="*{negara}" />
+                                    <input type="text" class="form-control" id="inputNegara" th:field="*{negara}" />
                                 </div>
                             </div>
                         </section>
@@ -365,6 +384,29 @@
     <script th:src="@{/js/location-cascade.js}"></script>
     <script th:src="@{/js/postal-autofill.js}"></script>
     <script th:src="@{/js/dashboard.js}"></script>
+    <script>
+        function handlePendudukChange(val) {
+            const inputNegara = document.getElementById('inputNegara');
+            if (inputNegara && val === 'WNI') {
+                inputNegara.value = 'INDONESIA';
+            }
+        }
+
+        // Auto uppercase for all text inputs except password and email
+        document.addEventListener('input', function(e) {
+            const el = e.target;
+            if (el && (el.tagName === 'INPUT' && (el.type === 'text' || !el.type) || el.tagName === 'TEXTAREA')) {
+                if (el.type !== 'password' && el.type !== 'email') {
+                    const start = el.selectionStart;
+                    const end = el.selectionEnd;
+                    el.value = el.value.toUpperCase();
+                    if (start !== null && end !== null) {
+                        el.setSelectionRange(start, end);
+                    }
+                }
+            }
+        });
+    </script>
 </body>
 
 </html>
