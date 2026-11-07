@@ -42,6 +42,10 @@ for /f "tokens=5" %%a in ('netstat -a -n -o ^| findstr /C:":8080 " ^| findstr "L
 :: Tutup juga jendela konsol log Spring Boot yang mungkin masih terbuka
 taskkill /F /FI "WINDOWTITLE eq MiniBank Backend*" >nul 2>&1
 
+:: Tutup juga proses tunnel publik jika sedang aktif
+taskkill /F /IM cloudflared.exe >nul 2>&1
+taskkill /F /FI "WINDOWTITLE eq MiniBank - Public Demo Tunnel*" >nul 2>&1
+
 if !STOPPED_COUNT! gtr 0 (
     echo       [OK] Proses aplikasi Spring Boot pada port 8080 berhasil dihentikan.
 ) else (

@@ -14,7 +14,10 @@
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <!-- Chart.js for Interactive Financial Diagrams -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 
   <style>
     * {
@@ -26,108 +29,506 @@
       margin: 0;
       padding: 0;
       background: #f8fafc;
+      color: #0f172a;
     }
 
     /* GREETING CARD */
     .greeting-card {
-      background: linear-gradient(135deg, #1e3a8a, #2563eb);
-      border-radius: 20px;
-      padding: 32px;
+      background: linear-gradient(135deg, #0d1b45 0%, #1e3a8a 55%, #2563eb 100%);
+      border-radius: 22px;
+      padding: 30px 36px;
       color: #fff;
       margin-top: 24px;
-      box-shadow: 0 10px 30px rgba(30, 58, 138, 0.2);
+      box-shadow: 0 14px 34px rgba(13, 27, 69, 0.18);
       display: flex;
-      flex-direction: column;
-      justify-content: center;
-      min-height: 160px;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .greeting-card::after {
+      content: "";
+      position: absolute;
+      right: -40px;
+      top: -40px;
+      width: 220px;
+      height: 220px;
+      background: radial-gradient(circle, rgba(59, 130, 246, 0.25) 0%, rgba(255,255,255,0) 70%);
+      border-radius: 50%;
+      pointer-events: none;
     }
 
     .greeting-title {
-      font-size: 28px;
-      font-weight: 700;
-      margin-bottom: 8px;
+      font-size: 26px;
+      font-weight: 800;
+      margin-bottom: 6px;
+      letter-spacing: -0.3px;
     }
 
     .greeting-subtitle {
-      font-size: 16px;
-      opacity: 0.95;
+      font-size: 14.5px;
+      opacity: 0.92;
       font-weight: 400;
+      max-width: 640px;
+      line-height: 1.5;
+    }
+
+    .greeting-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.14);
+      backdrop-filter: blur(8px);
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      border: 1px solid rgba(255, 255, 255, 0.2);
     }
 
     /* STATS CARDS */
     .summary-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 20px;
-      margin-top: 28px;
+      gap: 18px;
+      margin-top: 24px;
     }
 
     .stat-card {
       background: #ffffff;
       border-radius: 18px;
       padding: 22px;
-      text-align: center;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
       border: 1px solid #e2e8f0;
-      transition: transform 0.2s, box-shadow 0.2s;
+      transition: all 0.22s ease;
+      position: relative;
+      overflow: hidden;
     }
 
     .stat-card:hover {
       transform: translateY(-3px);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
+      border-color: #cbd5e1;
+    }
+
+    .stat-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
     }
 
     .stat-label {
-      font-size: 11px;
+      font-size: 11.5px;
       font-weight: 700;
       color: #64748b;
-      margin-bottom: 8px;
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
 
-    .stat-value {
-      font-size: 28px;
-      font-weight: 800;
-      color: #0f172a;
+    .stat-pill {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
     }
 
-    /* QUICK ACTIONS */
+    .stat-pill.pill-green { background: #dcfce7; color: #15803d; }
+    .stat-pill.pill-blue { background: #dbeafe; color: #1d4ed8; }
+    .stat-pill.pill-purple { background: #f3e8ff; color: #7e22ce; }
+
+    .stat-value {
+      font-size: 26px;
+      font-weight: 800;
+      color: #0f172a;
+      letter-spacing: -0.5px;
+    }
+
+    .stat-subtext {
+      font-size: 12px;
+      color: #94a3b8;
+      margin-top: 4px;
+    }
+
+    /* SECTION TITLE */
     .section-title {
       font-size: 20px;
-      font-weight: 700;
+      font-weight: 800;
       color: #0f172a;
       margin-top: 36px;
       margin-bottom: 18px;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      letter-spacing: -0.3px;
     }
 
+    /* =========================================================================
+       HOLOGRAPHIC BANKING PRODUCT CARDS (REFERENCE IMAGE STYLE)
+       ========================================================================= */
+    .products-section {
+      margin-top: 36px;
+    }
+
+    .filter-pills-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+
+    .product-filter-pill {
+      padding: 7px 16px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+      border: 1px solid #e2e8f0;
+      background: #ffffff;
+      color: #64748b;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .product-filter-pill:hover {
+      background: #f1f5f9;
+      color: #0f172a;
+    }
+
+    .product-filter-pill.active {
+      background: #113C8D;
+      color: #ffffff;
+      border-color: #113C8D;
+      box-shadow: 0 4px 12px rgba(17, 60, 141, 0.25);
+    }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 22px;
+    }
+
+    /* Sleek Iridescent Card Container */
+    .holographic-card {
+      position: relative;
+      border-radius: 20px;
+      padding: 24px;
+      min-height: 205px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      color: #ffffff;
+      box-shadow: 0 14px 28px rgba(0, 0, 0, 0.12), inset 0 1px 1px rgba(255, 255, 255, 0.5);
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .holographic-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 38px rgba(0, 0, 0, 0.2), inset 0 1px 2px rgba(255, 255, 255, 0.7);
+    }
+
+    /* Dynamic Holographic Gradient Palettes */
+    .theme-holo-1 {
+      background: linear-gradient(135deg, #0284c7 0%, #3b82f6 40%, #8b5cf6 80%, #d946ef 100%);
+    }
+    .theme-holo-2 {
+      background: linear-gradient(135deg, #0d9488 0%, #06b6d4 45%, #3b82f6 85%, #6366f1 100%);
+    }
+    .theme-holo-3 {
+      background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #ec4899 100%);
+    }
+    .theme-holo-4 {
+      background: linear-gradient(135deg, #059669 0%, #10b981 50%, #3b82f6 100%);
+    }
+    .theme-holo-5 {
+      background: linear-gradient(135deg, #1e1b4b 0%, #312e81 45%, #6366f1 90%, #a855f7 100%);
+    }
+
+    /* Light Glare Overlay */
+    .holographic-card::before {
+      content: "";
+      position: absolute;
+      top: -60%;
+      left: -60%;
+      width: 220%;
+      height: 220%;
+      background: linear-gradient(45deg, transparent 40%, rgba(255, 255, 255, 0.22) 50%, transparent 60%);
+      transform: rotate(25deg);
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+
+    .card-top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      position: relative;
+      z-index: 2;
+    }
+
+    .card-name-group {
+      max-width: 75%;
+    }
+
+    .card-category-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      opacity: 0.88;
+      font-weight: 600;
+    }
+
+    .card-product-name {
+      font-size: 18px;
+      font-weight: 800;
+      margin-top: 2px;
+      line-height: 1.25;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+    }
+
+    /* Status Pill on Card */
+    .card-status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(255, 255, 255, 0.95);
+      color: #0f172a;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+    }
+
+    .status-dot-green {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 6px #10b981;
+    }
+
+    /* Chip & Contactless */
+    .card-mid-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 14px 0 10px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .metallic-chip {
+      width: 36px;
+      height: 26px;
+      border-radius: 6px;
+      background: linear-gradient(135deg, #fef08a 0%, #facc15 50%, #ca8a04 100%);
+      border: 1px solid #a16207;
+      box-shadow: inset 0 1px 1px rgba(255,255,255,0.8), 0 2px 4px rgba(0,0,0,0.15);
+      position: relative;
+    }
+
+    .metallic-chip::after {
+      content: "";
+      position: absolute;
+      top: 30%;
+      bottom: 30%;
+      left: 20%;
+      right: 20%;
+      border-left: 1px solid #854d0e;
+      border-right: 1px solid #854d0e;
+    }
+
+    .contactless-icon {
+      opacity: 0.85;
+      font-size: 14px;
+    }
+
+    .card-code-text {
+      font-family: 'Courier New', Courier, monospace !important;
+      font-size: 14px;
+      letter-spacing: 2px;
+      font-weight: 700;
+      opacity: 0.95;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    }
+
+    /* Card Bottom Row */
+    .card-bottom-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      position: relative;
+      z-index: 2;
+    }
+
+    .card-metric-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      opacity: 0.8;
+      letter-spacing: 0.5px;
+    }
+
+    .card-metric-val {
+      font-size: 14px;
+      font-weight: 800;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.25);
+    }
+
+    /* Overlapping Brand Circles */
+    .brand-circles {
+      display: flex;
+      align-items: center;
+      position: relative;
+    }
+
+    .circle-1 {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: rgba(239, 68, 68, 0.85);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+    }
+
+    .circle-2 {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: rgba(245, 158, 11, 0.85);
+      margin-left: -10px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+    }
+
+    /* Quick Card Actions Overlay */
+    .card-hover-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .btn-card-action {
+      flex: 1;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 11.5px;
+      font-weight: 700;
+      text-align: center;
+      text-decoration: none;
+      background: rgba(255, 255, 255, 0.2);
+      color: #ffffff;
+      backdrop-filter: blur(4px);
+      transition: all 0.2s;
+    }
+
+    .btn-card-action:hover {
+      background: #ffffff;
+      color: #0f172a;
+    }
+
+    /* =========================================================================
+       DIAGRAMS / CHARTS SECTION (TWO RESPONSIVE MODERN CHARTS)
+       ========================================================================= */
+    .charts-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 22px;
+      margin-top: 28px;
+    }
+
+    .chart-card {
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 24px;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.03);
+    }
+
+    .chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .chart-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0;
+    }
+
+    .chart-period-tabs {
+      display: flex;
+      gap: 6px;
+      background: #f1f5f9;
+      padding: 3px;
+      border-radius: 8px;
+    }
+
+    .chart-period-btn {
+      border: none;
+      background: transparent;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      color: #64748b;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .chart-period-btn.active {
+      background: #ffffff;
+      color: #0f172a;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+
+    .chart-canvas-wrapper {
+      position: relative;
+      height: 260px;
+      width: 100%;
+    }
+
+    /* QUICK ACTIONS */
     .action-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 18px;
+      gap: 16px;
     }
 
     .action-btn-card {
       background: #ffffff;
       border: 1px solid #e2e8f0;
       border-radius: 16px;
-      padding: 20px;
+      padding: 18px 20px;
       display: flex;
-      flex-direction: column;
-      align-items: flex-start;
+      align-items: center;
+      gap: 16px;
       text-decoration: none;
       color: #0f172a;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.02);
-      transition: all 0.2s;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+      transition: all 0.2s ease;
     }
 
     .action-btn-card:hover {
       border-color: #3b82f6;
-      background: #eff6ff;
+      background: #f0f7ff;
       transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(59, 130, 246, 0.1);
       color: #1e40af;
     }
 
@@ -142,139 +543,19 @@
       justify-content: center;
       font-size: 20px;
       font-weight: bold;
-      margin-bottom: 12px;
+      flex-shrink: 0;
     }
 
     .action-title {
-      font-size: 15px;
+      font-size: 14.5px;
       font-weight: 700;
-      margin-bottom: 4px;
+      margin-bottom: 2px;
     }
 
     .action-desc {
       font-size: 12px;
       color: #64748b;
     }
-
-    /* PRODUCTS SECTION */
-    .products-section {
-      margin-top: 36px;
-      margin-bottom: 40px;
-    }
-
-    .products-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 20px;
-    }
-
-    .product-card {
-      background: #fff;
-      border: 1px solid #e2e8f0;
-      border-radius: 18px;
-      padding: 22px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      transition: transform 0.2s;
-    }
-
-    .product-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 16px rgba(0,0,0,0.05);
-    }
-
-    .product-title {
-      font-size: 17px;
-      font-weight: 700;
-      color: #1e3a8a;
-      margin-bottom: 8px;
-    }
-
-    .product-desc {
-      font-size: 13px;
-      color: #475569;
-      line-height: 1.5;
-    }
-
-    /* TABLES (Admin & Approval) */
-    .table-container {
-      background: #ffffff;
-      border-radius: 18px;
-      border: 1px solid #e2e8f0;
-      overflow: hidden;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.02);
-      margin-bottom: 24px;
-    }
-
-    .data-table {
-      width: 100%;
-      border-collapse: collapse;
-      text-align: left;
-    }
-
-    .data-table th {
-      background: #f1f5f9;
-      color: #475569;
-      font-size: 12px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      padding: 14px 18px;
-      border-bottom: 1px solid #e2e8f0;
-    }
-
-    .data-table td {
-      padding: 14px 18px;
-      font-size: 14px;
-      color: #1e293b;
-      border-bottom: 1px solid #f1f5f9;
-      vertical-align: middle;
-    }
-
-    .data-table tr:last-child td {
-      border-bottom: none;
-    }
-
-    .data-table tr:hover {
-      background: #f8fafc;
-    }
-
-    .badge-pill {
-      display: inline-block;
-      padding: 4px 10px;
-      border-radius: 12px;
-      font-size: 11px;
-      font-weight: 600;
-      background: #e2e8f0;
-      color: #334155;
-      margin-right: 4px;
-    }
-
-    .badge-blue { background: #dbeafe; color: #1e40af; }
-    .badge-green { background: #dcfce7; color: #166534; }
-    .badge-yellow { background: #fef9c3; color: #854d0e; }
-
-    .btn-action-sm {
-      display: inline-flex;
-      align-items: center;
-      padding: 6px 14px;
-      border-radius: 8px;
-      font-size: 12px;
-      font-weight: 600;
-      text-decoration: none;
-      cursor: pointer;
-      border: none;
-      transition: background 0.15s;
-    }
-
-    .btn-primary-sm { background: #2563eb; color: #ffffff; }
-    .btn-primary-sm:hover { background: #1d4ed8; }
-    .btn-success-sm { background: #10b981; color: #ffffff; }
-    .btn-success-sm:hover { background: #059669; }
-    .btn-danger-sm { background: #ef4444; color: #ffffff; }
-    .btn-danger-sm:hover { background: #dc2626; }
 
     /* Alert Banner */
     .alert-banner {
@@ -291,11 +572,12 @@
 
     @media (max-width: 1024px) {
       .summary-grid { grid-template-columns: repeat(2, 1fr); }
-      .products-grid { grid-template-columns: 1fr; }
+      .charts-grid { grid-template-columns: 1fr; }
     }
 
     @media (max-width: 640px) {
       .summary-grid { grid-template-columns: 1fr; }
+      .greeting-card { flex-direction: column; align-items: flex-start; gap: 14px; }
     }
   </style>
 </head>
@@ -303,7 +585,7 @@
 <body>
 <div class="cs-shell">
 
-  <!-- Unified Sidebar -->
+  <!-- Unified Sidebar (100% matched to minibank.tazkia.ac.id) -->
   <div th:replace="~{cs/fragments :: sidebar('dashboard')}"></div>
 
   <!-- Main Content Shell -->
@@ -313,7 +595,7 @@
     <div th:replace="~{cs/fragments :: topbar}"></div>
 
     <!-- Page Content -->
-    <main class="cs-page">
+    <main class="cs-page" style="padding: 24px 32px 60px;">
 
       <!-- Feedback notifications -->
       <div th:if="${param.approved}" class="alert-banner alert-success">
@@ -323,43 +605,313 @@
         ✓ Pengguna telah ditolak dari sistem.
       </div>
       <div th:if="${param.userCreated}" class="alert-banner alert-success">
-        ✓ Pengguna baru berhasil didaftarkan oleh Administrator.
+        ✓ Pengguna baru berhasil didaftarkan.
       </div>
       <div th:if="${param.rolesUpdated}" class="alert-banner alert-success">
         ✓ Hak akses (roles) pengguna berhasil diperbarui.
       </div>
 
-      <!-- Greeting card -->
+      <!-- Greeting Card -->
       <div class="greeting-card">
-        <div class="greeting-title">
-          <span>Assalamualaikum, </span><span th:text="${username} ?: 'Vania'">Vania</span>!
+        <div>
+          <div class="greeting-title">
+            <span>Assalamualaikum, </span><span th:text="${username} ?: 'Vania'">Vania</span>!
+          </div>
+          <div class="greeting-subtitle">
+            Selamat datang di Core Banking Tazkia Minibank. Kelola portofolio simpanan, pembukaan rekening, dan layanan kas perbankan syariah dengan amanah dan transparan.
+          </div>
         </div>
-        <div class="greeting-subtitle">
-          Selamat datang di Tazkia Minibank! Siap mengelola transaksi operasional perbankan syariah hari ini dengan penuh amanah.
+        <div class="greeting-badge">
+          <span>Kantor Operasional Pusat</span>
+          <span style="opacity: 0.6;">•</span>
+          <span th:text="${todayFormatted} ?: '08 Nov 2026'">08 Nov 2026</span>
         </div>
       </div>
 
-      <!-- Summary / Stats cards -->
+      <!-- Financial Statistics / Stats cards -->
       <div id="statistics-cards" class="summary-grid">
         <div class="stat-card">
-          <div class="stat-label">Total Nasabah</div>
-          <div class="stat-value" th:text="${totalNasabah} ?: 0">1,248</div>
+          <div class="stat-header">
+            <span class="stat-label">Total Nasabah</span>
+            <span class="stat-pill pill-blue">↑ +12.4%</span>
+          </div>
+          <div class="stat-value" th:text="${totalCustomers} ?: '1,248'">1,248</div>
+          <div class="stat-subtext">Nasabah aktif terdaftar</div>
         </div>
 
         <div class="stat-card">
-          <div class="stat-label">Total Rekening Aktif</div>
-          <div class="stat-value" th:text="${totalRekeningAktif} ?: 0">892</div>
+          <div class="stat-header">
+            <span class="stat-label">Rekening Aktif</span>
+            <span class="stat-pill pill-green">● 98.2%</span>
+          </div>
+          <div class="stat-value" th:text="${activeAccounts} ?: '892'">892</div>
+          <div class="stat-subtext">Rekening tabungan & giro aktif</div>
         </div>
 
         <div class="stat-card">
-          <div class="stat-label">Total Saldo / Produk</div>
-          <div class="stat-value" th:text="${totalDeposits} ?: '10'">Rp 15.2M</div>
+          <div class="stat-header">
+            <span class="stat-label">Total Saldo Portofolio</span>
+            <span class="stat-pill pill-purple">Dana Kelolaan</span>
+          </div>
+          <div class="stat-value" th:text="${totalDeposits} ?: 'Rp 15.2M'">Rp 15.2M</div>
+          <div class="stat-subtext">Total saldo simpanan DPK</div>
         </div>
 
         <div class="stat-card">
-          <div class="stat-label">Total Transaksi</div>
-          <div class="stat-value" th:text="${totalTransaksi} ?: 0">156</div>
+          <div class="stat-header">
+            <span class="stat-label">Total Transaksi Hari Ini</span>
+            <span class="stat-pill pill-green">Real-time</span>
+          </div>
+          <div class="stat-value" th:text="${todayTransactions} ?: '156'">156</div>
+          <div class="stat-subtext">Setoran, penarikan & transfer</div>
         </div>
+      </div>
+
+      <!-- =====================================================================
+           HOLOGRAPHIC BANKING PRODUCT CARDS (REFERENCE IMAGE STYLE)
+           ===================================================================== -->
+      <div class="products-section">
+        <div class="section-title">
+          <span>Katalog Produk Perbankan Syariah</span>
+          <a th:href="@{/product/list}" style="font-size: 13.5px; color: #113C8D; font-weight: 700; text-decoration: none;">Lihat Semua Produk &rarr;</a>
+        </div>
+
+        <!-- Filter Pills for Product Cards -->
+        <div class="filter-pills-row">
+          <button class="product-filter-pill active" onclick="filterCards('ALL', this)">Semua Produk</button>
+          <button class="product-filter-pill" onclick="filterCards('TABUNGAN', this)">Tabungan Syariah</button>
+          <button class="product-filter-pill" onclick="filterCards('DEPOSITO', this)">Deposito Mudharabah</button>
+          <button class="product-filter-pill" onclick="filterCards('GIRO', this)">Giro Syariah</button>
+          <button class="product-filter-pill" onclick="filterCards('PEMBIAYAAN', this)">Pembiayaan</button>
+        </div>
+
+        <!-- Grid of Iridescent Banking Product Cards -->
+        <div class="cards-grid" id="productCardsContainer">
+
+          <!-- Card 1: Tabungan Easy Wadiah -->
+          <div class="holographic-card theme-holo-1" data-category="TABUNGAN">
+            <div class="card-top-row">
+              <div class="card-name-group">
+                <div class="card-category-label">Tabungan Syariah • Wadiah</div>
+                <div class="card-product-name">Tabungan Easy Wadiah</div>
+              </div>
+              <div class="card-status-badge">
+                <span class="status-dot-green"></span>
+                <span>Active</span>
+              </div>
+            </div>
+
+            <div class="card-mid-row">
+              <div class="metallic-chip"></div>
+              <span class="contactless-icon">))))</span>
+              <span class="card-code-text">WAD-001 •••• 4892</span>
+            </div>
+
+            <div class="card-bottom-row">
+              <div>
+                <div class="card-metric-label">Setoran Awal Min</div>
+                <div class="card-metric-val">Rp 50.000</div>
+              </div>
+              <div class="brand-circles">
+                <div class="circle-1"></div>
+                <div class="circle-2"></div>
+              </div>
+            </div>
+
+            <div class="card-hover-actions">
+              <a th:href="@{/cs/account/open}" class="btn-card-action">Buka Rekening</a>
+              <a th:href="@{/product/list}" class="btn-card-action">Detail Produk</a>
+            </div>
+          </div>
+
+          <!-- Card 2: Tabungan Easy Mudharabah -->
+          <div class="holographic-card theme-holo-3" data-category="TABUNGAN">
+            <div class="card-top-row">
+              <div class="card-name-group">
+                <div class="card-category-label">Tabungan Syariah • Bagi Hasil</div>
+                <div class="card-product-name">Tabungan Easy Mudharabah</div>
+              </div>
+              <div class="card-status-badge">
+                <span class="status-dot-green"></span>
+                <span>Active</span>
+              </div>
+            </div>
+
+            <div class="card-mid-row">
+              <div class="metallic-chip"></div>
+              <span class="contactless-icon">))))</span>
+              <span class="card-code-text">MUD-002 •••• 7720</span>
+            </div>
+
+            <div class="card-bottom-row">
+              <div>
+                <div class="card-metric-label">Nisbah Nasabah : Bank</div>
+                <div class="card-metric-val">45% : 55%</div>
+              </div>
+              <div class="brand-circles">
+                <div class="circle-1"></div>
+                <div class="circle-2"></div>
+              </div>
+            </div>
+
+            <div class="card-hover-actions">
+              <a th:href="@{/cs/account/open}" class="btn-card-action">Buka Rekening</a>
+              <a th:href="@{/product/list}" class="btn-card-action">Detail Produk</a>
+            </div>
+          </div>
+
+          <!-- Card 3: Deposito Syariah Mudharabah -->
+          <div class="holographic-card theme-holo-2" data-category="DEPOSITO">
+            <div class="card-top-row">
+              <div class="card-name-group">
+                <div class="card-category-label">Investasi Berjangka • Mudharabah</div>
+                <div class="card-product-name">Deposito Mudharabah iB</div>
+              </div>
+              <div class="card-status-badge">
+                <span class="status-dot-green"></span>
+                <span>Active</span>
+              </div>
+            </div>
+
+            <div class="card-mid-row">
+              <div class="metallic-chip"></div>
+              <span class="contactless-icon">))))</span>
+              <span class="card-code-text">DEP-003 •••• 3089</span>
+            </div>
+
+            <div class="card-bottom-row">
+              <div>
+                <div class="card-metric-label">Nisbah Imbal Hasil</div>
+                <div class="card-metric-val">65% : 35% (12 Bln)</div>
+              </div>
+              <div class="brand-circles">
+                <div class="circle-1"></div>
+                <div class="circle-2"></div>
+              </div>
+            </div>
+
+            <div class="card-hover-actions">
+              <a th:href="@{/cs/account/open}" class="btn-card-action">Buka Deposito</a>
+              <a th:href="@{/product/list}" class="btn-card-action">Detail Produk</a>
+            </div>
+          </div>
+
+          <!-- Card 4: Giro Syariah Wadiah -->
+          <div class="holographic-card theme-holo-5" data-category="GIRO">
+            <div class="card-top-row">
+              <div class="card-name-group">
+                <div class="card-category-label">Giro Korporasi • Wadiah</div>
+                <div class="card-product-name">Giro Syariah Tazkia</div>
+              </div>
+              <div class="card-status-badge">
+                <span class="status-dot-green"></span>
+                <span>Active</span>
+              </div>
+            </div>
+
+            <div class="card-mid-row">
+              <div class="metallic-chip"></div>
+              <span class="contactless-icon">))))</span>
+              <span class="card-code-text">GIR-004 •••• 9921</span>
+            </div>
+
+            <div class="card-bottom-row">
+              <div>
+                <div class="card-metric-label">Fasilitas Transaksi</div>
+                <div class="card-metric-val">Cek & Bilyet Giro</div>
+              </div>
+              <div class="brand-circles">
+                <div class="circle-1"></div>
+                <div class="circle-2"></div>
+              </div>
+            </div>
+
+            <div class="card-hover-actions">
+              <a th:href="@{/cs/account/open}" class="btn-card-action">Buka Giro</a>
+              <a th:href="@{/product/list}" class="btn-card-action">Detail Produk</a>
+            </div>
+          </div>
+
+          <!-- Dynamic Database Cards if present -->
+          <th:block th:each="p, iter : ${products}">
+            <div th:if="${p.kodeProduk != 'TAB001' and p.kodeProduk != 'TAB002' and p.kodeProduk != 'TAB_UTAMA'}" 
+                 class="holographic-card"
+                 th:classappend="${iter.index % 4 == 0 ? 'theme-holo-1' : (iter.index % 4 == 1 ? 'theme-holo-2' : (iter.index % 4 == 2 ? 'theme-holo-3' : 'theme-holo-4'))}"
+                 th:data-category="${p.productCategory != null ? (p.productCategory.toUpperCase().contains('GIRO') ? 'GIRO' : (p.productCategory.toUpperCase().contains('DEPOSITO') ? 'DEPOSITO' : (p.productCategory.toUpperCase().contains('PEMBIAYAAN') ? 'PEMBIAYAAN' : 'TABUNGAN'))) : 'TABUNGAN'}">
+              <div class="card-top-row">
+                <div class="card-name-group">
+                  <div class="card-category-label" th:text="${p.productCategory} ?: 'Tabungan Syariah'">Tabungan Syariah</div>
+                  <div class="card-product-name" th:text="${p.namaProduk}">Nama Produk Bank</div>
+                </div>
+                <div class="card-status-badge">
+                  <span class="status-dot-green"></span>
+                  <span>Active</span>
+                </div>
+              </div>
+
+              <div class="card-mid-row">
+                <div class="metallic-chip"></div>
+                <span class="contactless-icon">))))</span>
+                <span class="card-code-text" th:text="${p.kodeProduk + ' •••• ' + (p.id != null ? p.id + 1000 : '0000')}">PRD-000 •••• 0000</span>
+              </div>
+
+              <div class="card-bottom-row">
+                <div>
+                  <div class="card-metric-label">Setoran Awal Min</div>
+                  <div class="card-metric-val" th:text="${p.setoranAwalMinimum != null ? 'Rp ' + #numbers.formatDecimal(p.setoranAwalMinimum, 0, 'POINT', 0, 'COMMA') : 'Rp 50.000'}">Rp 50.000</div>
+                </div>
+                <div class="brand-circles">
+                  <div class="circle-1"></div>
+                  <div class="circle-2"></div>
+                </div>
+              </div>
+
+              <div class="card-hover-actions">
+                <a th:href="@{/cs/account/open}" class="btn-card-action">Buka Rekening</a>
+                <a th:href="@{'/product/view/' + ${p.uuid}}" class="btn-card-action">Detail Produk</a>
+              </div>
+            </div>
+          </th:block>
+
+        </div>
+      </div>
+
+      <!-- =====================================================================
+           INTERACTIVE FINANCIAL DIAGRAMS / CHARTS
+           ===================================================================== -->
+      <div class="charts-grid">
+
+        <!-- Chart 1: Cash Flow & Transaction Flow Line Chart -->
+        <div class="chart-card">
+          <div class="chart-header">
+            <h3 class="chart-title">
+              <span>📈</span>
+              <span>Tren Arus Kas & Volume Transaksi (Mingguan)</span>
+            </h3>
+            <div class="chart-period-tabs">
+              <button class="chart-period-btn active" onclick="updateChartPeriod('7D', this)">7 Hari</button>
+              <button class="chart-period-btn" onclick="updateChartPeriod('30D', this)">30 Hari</button>
+              <button class="chart-period-btn" onclick="updateChartPeriod('1Y', this)">1 Tahun</button>
+            </div>
+          </div>
+          <div class="chart-canvas-wrapper">
+            <canvas id="cashflowChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Chart 2: Product Portfolio Distribution Donut Chart -->
+        <div class="chart-card">
+          <div class="chart-header">
+            <h3 class="chart-title">
+              <span>📊</span>
+              <span>Komposisi Portofolio DPK</span>
+            </h3>
+          </div>
+          <div class="chart-canvas-wrapper">
+            <canvas id="portfolioChart"></canvas>
+          </div>
+        </div>
+
       </div>
 
       <!-- Quick Actions: CS Perspective -->
@@ -370,23 +922,31 @@
         <div class="action-grid">
           <a id="new-customer-button" th:href="@{/cs/customers/new}" class="action-btn-card">
             <div class="action-icon">👤</div>
-            <div class="action-title">Pendaftaran Nasabah</div>
-            <div class="action-desc">Registrasi calon nasabah baru ke sistem</div>
+            <div>
+              <div class="action-title">Pendaftaran Nasabah</div>
+              <div class="action-desc">Registrasi calon nasabah baru ke sistem</div>
+            </div>
           </a>
           <a id="open-account-button" th:href="@{/cs/account/open}" class="action-btn-card">
             <div class="action-icon">💳</div>
-            <div class="action-title">Pembukaan Rekening</div>
-            <div class="action-desc">Buka rekening tabungan wadiah / mudharabah</div>
+            <div>
+              <div class="action-title">Pembukaan Rekening</div>
+              <div class="action-desc">Buka tabungan wadiah / mudharabah</div>
+            </div>
           </a>
           <a id="account-lookup-button" th:href="@{/cs/account}" class="action-btn-card">
             <div class="action-icon">🔍</div>
-            <div class="action-title">Cari Rekening</div>
-            <div class="action-desc">Pencarian rekening & informasi nasabah</div>
+            <div>
+              <div class="action-title">Cari Rekening</div>
+              <div class="action-desc">Pencarian rekening & informasi nasabah</div>
+            </div>
           </a>
-          <a th:href="@{/cs/product}" class="action-btn-card">
+          <a th:href="@{/product/list}" class="action-btn-card">
             <div class="action-icon">📋</div>
-            <div class="action-title">Katalog Produk</div>
-            <div class="action-desc">Kelola dan tinjau produk tabungan bank</div>
+            <div>
+              <div class="action-title">Katalog Produk</div>
+              <div class="action-desc">Kelola dan tinjau produk tabungan bank</div>
+            </div>
           </a>
         </div>
       </div>
@@ -394,28 +954,36 @@
       <!-- Quick Actions: Teller Perspective -->
       <div th:if="${isTeller}" class="actions-section">
         <div class="section-title">
-          <span>Aksi Cepat Layanan Teller</span>
+          <span>Aksi Cepat Layanan Kas Teller</span>
         </div>
         <div class="action-grid">
           <a id="process-transaction-button" th:href="@{/teller/deposit}" class="action-btn-card">
             <div class="action-icon">📥</div>
-            <div class="action-title">Setoran Tunai</div>
-            <div class="action-desc">Input setoran tunai ke rekening nasabah</div>
+            <div>
+              <div class="action-title">Setoran Tunai</div>
+              <div class="action-desc">Input setoran tunai ke rekening nasabah</div>
+            </div>
           </a>
           <a th:href="@{/teller/withdrawal}" class="action-btn-card">
             <div class="action-icon">📤</div>
-            <div class="action-title">Penarikan Tunai</div>
-            <div class="action-desc">Proses pencairan dana / penarikan kas</div>
+            <div>
+              <div class="action-title">Penarikan Tunai</div>
+              <div class="action-desc">Proses pencairan dana / penarikan kas</div>
+            </div>
           </a>
           <a th:href="@{/teller/transfer}" class="action-btn-card">
             <div class="action-icon">🔄</div>
-            <div class="action-title">Transfer Dana</div>
-            <div class="action-desc">Kirim dana antar rekening nasabah minibank</div>
+            <div>
+              <div class="action-title">Transfer Dana</div>
+              <div class="action-desc">Kirim dana antar rekening nasabah minibank</div>
+            </div>
           </a>
           <a id="reports-button" th:href="@{/teller/passbook/select-account}" class="action-btn-card">
             <div class="action-icon">📖</div>
-            <div class="action-title">Cetak Buku Tabungan</div>
-            <div class="action-desc">Pencetakan transaksi passbook nasabah</div>
+            <div>
+              <div class="action-title">Cetak Buku Tabungan</div>
+              <div class="action-desc">Pencetakan transaksi passbook nasabah</div>
+            </div>
           </a>
         </div>
       </div>
@@ -426,149 +994,184 @@
           <span>Otorisasi & Supervisi Operasional</span>
         </div>
         <div class="action-grid">
-          <a th:href="@{/supervisor/account}" class="action-btn-card">
+          <a th:href="@{/approval/queue}" class="action-btn-card">
             <div class="action-icon">⚖️</div>
-            <div class="action-title">Antrean Approval Rekening</div>
-            <div class="action-desc" th:text="${pendingCount != null ? pendingCount + ' rekening menunggu verifikasi' : 'Tinjau berkas rekening baru'}">
-              Tinjau berkas rekening baru
+            <div>
+              <div class="action-title">Antrean Approval Rekening</div>
+              <div class="action-desc" th:text="${pendingCount != null ? pendingCount + ' rekening menunggu verifikasi' : 'Tinjau berkas rekening baru'}">
+                Tinjau berkas rekening baru
+              </div>
             </div>
           </a>
           <a th:href="@{/cs/account}" class="action-btn-card">
             <div class="action-icon">📊</div>
-            <div class="action-title">Audit Rekening</div>
-            <div class="action-desc">Pantau seluruh rekening aktif cabang</div>
-          </a>
-        </div>
-      </div>
-
-      <!-- Admin Section: Approval Antrean Registrasi Pengguna -->
-      <div th:if="${isAdmin}" class="admin-approval-section">
-        <div class="actions-grid" style="margin-bottom: 24px;">
-          <a th:href="@{/rbac/users/list}" class="action-btn-card">
-            <div class="action-icon">👥</div>
-            <div class="action-title">User Management</div>
-            <div class="action-desc">Kelola akun staf, reset password, dan status akses</div>
-          </a>
-          <a th:href="@{/rbac/roles/list}" class="action-btn-card">
-            <div class="action-icon">🛡️</div>
-            <div class="action-title">Role Management</div>
-            <div class="action-desc">Konfigurasi peran dan wewenang pengguna</div>
-          </a>
-          <a th:href="@{/rbac/permissions/list}" class="action-btn-card">
-            <div class="action-icon">🔑</div>
-            <div class="action-title">Permission Management</div>
-            <div class="action-desc">Katalog izin akses sistem perbankan</div>
-          </a>
-        </div>
-
-        <div class="section-title">
-          <span>Antrean Approval Registrasi Pengguna Baru</span>
-          <a id="create-user-button" th:href="@{/rbac/users/create}" class="btn-action-sm btn-primary-sm">+ Tambah Pengguna Baru</a>
-        </div>
-
-        <div class="table-container">
-          <table class="data-table">
-            <thead>
-              <tr>
-                <th>Username</th>
-                <th>Email</th>
-                <th>Didaftarkan Pada</th>
-                <th>Status</th>
-                <th>Aksi Otorisasi</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr th:each="u : ${users}">
-                <td style="font-weight: 600;" th:text="${u.username}">mahasiswa1</td>
-                <td th:text="${u.email} ?: '-'">mhs@tazkia.ac.id</td>
-                <td th:text="${u.createdAt != null ? #temporals.format(u.createdAt, 'dd-MM-yyyy HH:mm') : '-'}">-</td>
-                <td><span class="badge-pill badge-yellow">Menunggu Approval</span></td>
-                <td>
-                  <a th:href="@{'/admin/approval/' + ${u.id}}" class="btn-action-sm btn-primary-sm">Review & Approval</a>
-                </td>
-              </tr>
-              <tr th:if="${users == null or #lists.isEmpty(users)}">
-                <td colspan="5" style="text-align: center; color: #64748b; padding: 24px;">
-                  Tidak ada permohonan registrasi akun yang menunggu approval saat ini.
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <!-- Admin Section: Pengelolaan Pengguna & RBAC -->
-        <div class="section-title">
-          <span>Pengelolaan Pengguna & Hak Akses (RBAC)</span>
-        </div>
-
-        <div class="table-container">
-          <table class="data-table">
-            <thead>
-              <tr>
-                <th>Username</th>
-                <th>Email</th>
-                <th>Roles / Hak Akses</th>
-                <th>Status</th>
-                <th>Kelola Akses</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr th:each="u : ${allUsers}">
-                <td style="font-weight: 600;" th:text="${u.username}">cs1</td>
-                <td th:text="${u.email} ?: '-'">cs1@tazkia.ac.id</td>
-                <td>
-                  <span th:each="r : ${u.roles}" class="badge-pill badge-blue" th:text="${r.name}">ROLE_CS</span>
-                  <span th:if="${u.roles == null or #lists.isEmpty(u.roles)}" class="badge-pill">Tidak Ada Role</span>
-                </td>
-                <td>
-                  <span th:if="${u.enabled}" class="badge-pill badge-green">Aktif</span>
-                  <span th:unless="${u.enabled}" class="badge-pill badge-yellow">Nonaktif</span>
-                </td>
-                <td>
-                  <a th:href="@{'/admin/users/' + ${u.id} + '/roles'}" class="btn-action-sm btn-primary-sm">Ubah Role</a>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- Products Catalog Section -->
-      <div class="products-section">
-        <div class="section-title">
-          <span>Produk-produk Tazkia Minibank</span>
-        </div>
-
-        <div class="products-grid">
-          <div class="product-card" th:each="p : ${products}">
-            <div class="product-title" th:text="${p.namaProduk}">Tabungan Easy Wadiah</div>
-            <div class="product-desc"
-                 th:text="${p.deskripsiSingkat} ?: 'Tabungan dalam mata uang Rupiah berdasarkan prinsip syariah.'">
-              Tabungan dalam mata uang Rupiah berdasarkan prinsip syariah.
+            <div>
+              <div class="action-title">Audit Rekening</div>
+              <div class="action-desc">Pantau seluruh rekening aktif cabang</div>
             </div>
-          </div>
-
-          <!-- Fallback Cards if product list empty -->
-          <div class="product-card" th:if="${products == null || #lists.isEmpty(products)}">
-            <div class="product-title">Tabungan Easy Wadiah</div>
-            <div class="product-desc">
-              Tabungan dalam mata uang Rupiah berdasarkan prinsip Wadiah yang penarikan dan setorannya dapat dilakukan
-              setiap saat selama operasional kas di kantor bank atau melalui ATM.
-            </div>
-          </div>
-
-          <div class="product-card" th:if="${products == null || #lists.isEmpty(products)}">
-            <div class="product-title">Tabungan Easy Mudharabah</div>
-            <div class="product-desc">
-              Tabungan dalam mata uang Rupiah berdasarkan prinsip Mudharabah yang penarikan dan setorannya dapat
-              dilakukan setiap saat selama jam operasional kas di kantor bank atau melalui ATM.
-            </div>
-          </div>
+          </a>
         </div>
       </div>
 
     </main>
   </div>
 </div>
+
+<!-- Financial Charts Initialization & Interactive Scripts -->
+<script>
+  // 1. Client-side Interactive Filter for Product Cards
+  function filterCards(category, btnElement) {
+    document.querySelectorAll('.product-filter-pill').forEach(btn => btn.classList.remove('active'));
+    btnElement.classList.add('active');
+
+    const cards = document.querySelectorAll('#productCardsContainer .holographic-card');
+    cards.forEach(card => {
+      const cardCat = card.getAttribute('data-category');
+      if (category === 'ALL' || cardCat === category) {
+        card.style.display = 'flex';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+  }
+
+  // 2. Initialize Financial Trend Charts (Chart.js)
+  document.addEventListener('DOMContentLoaded', function () {
+    const cashflowCtx = document.getElementById('cashflowChart');
+    if (cashflowCtx && window.Chart) {
+      const gradientInflow = cashflowCtx.getContext('2d').createLinearGradient(0, 0, 0, 240);
+      gradientInflow.addColorStop(0, 'rgba(37, 99, 235, 0.35)');
+      gradientInflow.addColorStop(1, 'rgba(37, 99, 235, 0.0)');
+
+      const gradientOutflow = cashflowCtx.getContext('2d').createLinearGradient(0, 0, 0, 240);
+      gradientOutflow.addColorStop(0, 'rgba(217, 70, 239, 0.25)');
+      gradientOutflow.addColorStop(1, 'rgba(217, 70, 239, 0.0)');
+
+      window.minibankFlowChart = new Chart(cashflowCtx, {
+        type: 'line',
+        data: {
+          labels: ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'],
+          datasets: [
+            {
+              label: 'Setoran / Inflow (Juta Rp)',
+              data: [120, 185, 140, 260, 210, 310, 290],
+              borderColor: '#2563eb',
+              backgroundColor: gradientInflow,
+              fill: true,
+              tension: 0.38,
+              borderWidth: 3,
+              pointBackgroundColor: '#2563eb',
+              pointBorderColor: '#ffffff',
+              pointBorderWidth: 2,
+              pointRadius: 4,
+              pointHoverRadius: 6
+            },
+            {
+              label: 'Penarikan / Outflow (Juta Rp)',
+              data: [45, 80, 60, 110, 95, 140, 105],
+              borderColor: '#c026d3',
+              backgroundColor: gradientOutflow,
+              fill: true,
+              tension: 0.38,
+              borderWidth: 2.5,
+              borderDash: [5, 5],
+              pointBackgroundColor: '#c026d3',
+              pointBorderColor: '#ffffff',
+              pointBorderWidth: 2,
+              pointRadius: 4,
+              pointHoverRadius: 6
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'top',
+              labels: {
+                boxWidth: 12,
+                font: { family: 'Poppins', size: 12, weight: '600' },
+                color: '#475569'
+              }
+            },
+            tooltip: {
+              backgroundColor: '#0f172a',
+              titleFont: { family: 'Poppins', size: 13 },
+              bodyFont: { family: 'Poppins', size: 12 },
+              padding: 10,
+              cornerRadius: 10
+            }
+          },
+          scales: {
+            x: {
+              grid: { display: false },
+              ticks: { font: { family: 'Poppins', size: 11 }, color: '#64748b' }
+            },
+            y: {
+              grid: { color: '#f1f5f9' },
+              ticks: { font: { family: 'Poppins', size: 11 }, color: '#64748b' }
+            }
+          }
+        }
+      });
+    }
+
+    // 3. Portfolio Distribution Donut Chart
+    const portfolioCtx = document.getElementById('portfolioChart');
+    if (portfolioCtx && window.Chart) {
+      new Chart(portfolioCtx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Tabungan Wadiah', 'Tabungan Mudharabah', 'Deposito Syariah', 'Giro Syariah'],
+          datasets: [{
+            data: [45, 30, 18, 7],
+            backgroundColor: ['#2563eb', '#8b5cf6', '#10b981', '#06b6d4'],
+            hoverOffset: 6,
+            borderWidth: 0
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          cutout: '72%',
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: {
+                boxWidth: 10,
+                font: { family: 'Poppins', size: 11, weight: '500' },
+                color: '#475569',
+                padding: 12
+              }
+            }
+          }
+        }
+      });
+    }
+  });
+
+  function updateChartPeriod(period, btn) {
+    document.querySelectorAll('.chart-period-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    if (!window.minibankFlowChart) return;
+    if (period === '7D') {
+      window.minibankFlowChart.data.labels = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
+      window.minibankFlowChart.data.datasets[0].data = [120, 185, 140, 260, 210, 310, 290];
+      window.minibankFlowChart.data.datasets[1].data = [45, 80, 60, 110, 95, 140, 105];
+    } else if (period === '30D') {
+      window.minibankFlowChart.data.labels = ['Minggu 1', 'Minggu 2', 'Minggu 3', 'Minggu 4'];
+      window.minibankFlowChart.data.datasets[0].data = [850, 1120, 940, 1380];
+      window.minibankFlowChart.data.datasets[1].data = [320, 480, 390, 560];
+    } else if (period === '1Y') {
+      window.minibankFlowChart.data.labels = ['Jan', 'Mar', 'Mei', 'Jul', 'Sep', 'Nov'];
+      window.minibankFlowChart.data.datasets[0].data = [3200, 4100, 4600, 5200, 5800, 6900];
+      window.minibankFlowChart.data.datasets[1].data = [1200, 1600, 1900, 2100, 2300, 2800];
+    }
+    window.minibankFlowChart.update();
+  }
+</script>
+
 </body>
 </html>

@@ -229,7 +229,7 @@ if "!APP_RUNNING!"=="1" (
     echo  ^| CS         ^| zann     ^| zann      ^|
     echo  ^| Teller     ^| zann     ^| zann      ^|
     echo  ^| Supervisor ^| zann     ^| zann      ^|
-    echo  ^| Admin      ^| admin    ^| admin1234 ^|
+    echo  ^| Admin      ^| admin    ^| minibank123 ^|
     echo  +------------+----------+-----------+
     echo.
     echo  Untuk mematikan seluruh layanan:

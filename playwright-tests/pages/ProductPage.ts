@@ -22,18 +22,35 @@ export class ProductPage {
     jenisAkad: string;   // e.g. 'WADIAH', 'MUDHARABAH'
     setoranAwalMinimum: string; // e.g. '100000'
   }) {
-    await this.page.locator('#kodeProduk').fill(data.kodeProduk);
-    await this.page.locator('#namaProduk').fill(data.namaProduk);
+    const code = this.page.locator('#productCode, #kodeProduk').first();
+    await code.fill(data.kodeProduk);
+
+    const name = this.page.locator('#productName, #namaProduk').first();
+    await name.fill(data.namaProduk);
+
     if (data.deskripsiSingkat) {
-      const desc = this.page.locator('#deskripsiSingkat');
+      const desc = this.page.locator('#description, #deskripsiSingkat').first();
       if (await desc.count() > 0) await desc.fill(data.deskripsiSingkat);
     }
-    // Akad select
-    const akadSelect = this.page.locator('select[name="jenisAkad"], #jenisAkad');
-    if (await akadSelect.count() > 0) {
-      await akadSelect.selectOption(data.jenisAkad);
+
+    const typeSelect = this.page.locator('#productType').first();
+    if (await typeSelect.count() > 0) {
+      const val = data.jenisAkad.toUpperCase().startsWith('TABUNGAN_')
+        ? data.jenisAkad.toUpperCase()
+        : ('TABUNGAN_' + data.jenisAkad.toUpperCase());
+      await typeSelect.selectOption(val).catch(async () => {
+        await typeSelect.selectOption({ index: 4 });
+      });
     }
-    await this.page.locator('#setoranAwalMinimum').fill(data.setoranAwalMinimum);
+
+    // Akad select
+    const akadSelect = this.page.locator('select[name="jenisAkad"], #profitSharingType, #jenisAkad').first();
+    if (await akadSelect.count() > 0) {
+      await akadSelect.selectOption(data.jenisAkad).catch(() => {});
+    }
+
+    const setoran = this.page.locator('#minimumOpeningBalance, #setoranAwalMinimum').first();
+    await setoran.fill(data.setoranAwalMinimum);
   }
 
   async submitForm() {
@@ -53,13 +70,13 @@ export class ProductPage {
 
   async clickToggleStatus(namaProduk: string) {
     const row = this.page.locator('tr', { hasText: namaProduk }).first();
-    const toggleBtn = row.locator('button[type="submit"], form[action*="/toggle"] button');
+    const toggleBtn = row.locator('button[type="submit"], form[action*="/toggle"] button, form[action*="/delete"] button');
     await toggleBtn.click();
   }
 
   async clickDetailProduct(namaProduk: string) {
     const row = this.page.locator('tr', { hasText: namaProduk }).first();
-    const detailLink = row.locator('a:has-text("Detail"), a:has-text("View"), a[href*="/cs/product/"]').first();
+    const detailLink = row.locator('a:has-text("Detail"), a:has-text("View"), a[href*="/cs/product/"], a[href*="/product/view/"]').first();
     await detailLink.click();
   }
 

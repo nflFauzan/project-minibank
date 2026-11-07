@@ -36,116 +36,250 @@
   }
   
   /* SIDEBAR */
-  /* SIDEBAR */
   .cs-sidebar{
     width: var(--sidebar-w);
-    background: #0d1b45; /* Deep Blue from reference */
+    background: #0d1b45; /* Deep Navy from Tazkia */
     color: var(--sidebar-text);
-    padding: 24px 18px;
+    padding: 20px 14px;
     position: sticky;
     top: 0;
     height: 100vh;
-    overflow: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
     display: flex;
     flex-direction: column;
+    box-shadow: 2px 0 16px rgba(0, 0, 0, 0.12);
   }
   
-  .cs-sidebar__top {
-      margin-bottom: 20px;
+  /* Sleek Scrollbar for Sidebar */
+  .cs-sidebar::-webkit-scrollbar {
+    width: 4px;
+  }
+  .cs-sidebar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 4px;
   }
 
-  .cs-mini-icon {
-    width: auto;
-    height: auto;
-    border-radius: 0;
+  /* BRAND LOCKUP */
+  .cs-sidebar__top {
+    margin-bottom: 10px;
+    padding: 2px 4px 16px 4px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .cs-brand-lockup {
     display: flex;
     align-items: center;
     gap: 12px;
-    flex-shrink: 0;
-    background: transparent;
+    text-decoration: none;
   }
 
-  /* Logo styling override */
-  .cs-mini-icon_img {
+  /* Dedicated crisp white badge so the Tazkia navy+orange emblem is 100% visible and sharp */
+  .cs-brand-logo-badge {
     width: 40px;
     height: 40px;
-    object-fit: contain;
-  }
-  
-  /* Text next to logo */
-  .cs-brand-text {
-      font-size: 18px;
-      font-weight: 700;
-      color: #fff;
-      background: #1e3a8a; /* Blue pill background for logo text matches reference */
-      padding: 8px 16px;
-      border-radius: 99px;
-      display: inline-block;
+    min-width: 40px;
+    background: #ffffff;
+    border-radius: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22);
+    flex-shrink: 0;
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
 
-  /* Navigation Centered */
+  .cs-brand-lockup:hover .cs-brand-logo-badge {
+    transform: scale(1.04);
+  }
+
+  .cs-brand-logo-img {
+    width: 25px;
+    height: 25px;
+    object-fit: contain;
+    display: block;
+  }
+
+  /* Typography stack next to emblem */
+  .cs-brand-text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background: transparent;
+    padding: 0;
+    border-radius: 0;
+  }
+
+  .cs-brand-name {
+    font-size: 15px;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: -0.2px;
+    line-height: 1.2;
+    white-space: nowrap;
+  }
+
+  .cs-brand-tagline {
+    font-size: 10px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.45);
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    margin-top: 2px;
+    white-space: nowrap;
+  }
+
+  /* NAVIGATION */
   .cs-nav {
     display: flex;
     flex-direction: column;
-    gap: 16px; /* Spacing between items */
-    margin-top: auto;
+    gap: 4px;
+    margin-top: 8px;
     margin-bottom: auto;
     width: 100%;
   }
 
   .cs-nav a{
-    display: block;
-    padding: 12px 20px;
-    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 14px; /* Generous 14px breathing room between icon and text */
+    padding: 10px 14px;
+    border-radius: 10px;
     text-decoration: none;
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 14px;
+    color: rgba(255, 255, 255, 0.72);
+    font-size: 13.5px;
     font-weight: 500;
-    transition: .2s ease;
-    background: transparent; /* Default transparent */
+    transition: all .18s cubic-bezier(0.4, 0, 0.2, 1);
+    background: transparent;
   }
   
+  .cs-nav a svg {
+    width: 20px;
+    height: 20px;
+    min-width: 20px;
+    flex-shrink: 0;
+    stroke: currentColor;
+    opacity: 0.75;
+    margin: 0 !important; /* Neutralize any Tailwind margin-right utilities */
+    transition: opacity .18s ease, transform .18s ease;
+  }
+
+  .cs-nav a span {
+    line-height: 1.25;
+    white-space: nowrap;
+  }
+
   .cs-nav a:hover{
-    color: #fff;
-    background: rgba(255,255,255,0.05);
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .cs-nav a:hover svg {
+    opacity: 1;
+    transform: scale(1.06);
   }
   
   .cs-nav a.active{
-    background: linear-gradient(90deg, #1e3a8a, #2563eb); /* Gradient Blue for active */
-    color: #fff;
+    background: linear-gradient(90deg, #1d4ed8 0%, #2563eb 100%);
+    color: #ffffff;
     font-weight: 600;
-    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
   }
-  
-  /* Bottom Section pinned */
+
+  .cs-nav a.active svg {
+    opacity: 1;
+    stroke: #ffffff;
+    transform: scale(1.03);
+  }
+
+  .cs-nav-header {
+    margin-top: 14px;
+    margin-bottom: 4px;
+    padding: 0 14px;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.9px;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.42);
+  }
+
+  /* BOTTOM SECTION */
   .cs-sidebar__bottom{
-    margin-top: auto; /* Push to bottom if nav doesn't take full space */
-    padding-top: 20px;
+    margin-top: auto;
+    padding-top: 14px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
     display: flex;
     flex-direction: column;
-    gap: 10px;
-  }
-  
-  .cs-settings, .cs-logout{
-    display: block;
-    margin: 0;
-    padding: 12px 20px;
-    border-radius: 12px;
-    text-decoration: none;
-    font-weight: 600;
-    text-align: center;
-    font-size: 14px;
-    transition: .2s;
+    gap: 8px;
   }
   
   .cs-settings{
-    background: rgba(255,255,255,0.1);
-    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 0;
+    padding: 10px 14px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 13.5px;
+    background: rgba(255, 255, 255, 0.06);
+    color: rgba(255, 255, 255, 0.82);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    transition: all .18s ease;
+  }
+  
+  .cs-settings:hover{
+    background: rgba(255, 255, 255, 0.12);
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.18);
+  }
+
+  .cs-settings svg {
+    width: 20px;
+    height: 20px;
+    min-width: 20px;
+    flex-shrink: 0;
+    opacity: 0.8;
+    margin: 0 !important;
+  }
+
+  .cs-settings.active {
+    background: linear-gradient(90deg, #1d4ed8 0%, #2563eb 100%);
+    color: #ffffff;
+    font-weight: 600;
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+    border-color: transparent;
   }
   
   .cs-logout{
-    background: #fff;
-    color: #0d1b45;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 0;
+    padding: 10px 14px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 13.5px;
+    background: rgba(239, 68, 68, 0.12);
+    color: #fca5a5;
+    border: 1px solid rgba(239, 68, 68, 0.22);
+    transition: all .18s ease;
+  }
+  
+  .cs-logout:hover{
+    background: rgba(239, 68, 68, 0.24);
+    color: #ffffff;
+    border-color: rgba(239, 68, 68, 0.45);
+  }
+
+  .cs-logout svg {
+    width: 20px;
+    height: 20px;
+    min-width: 20px;
+    flex-shrink: 0;
+    margin: 0 !important;
   }
   
   /* CONTENT */

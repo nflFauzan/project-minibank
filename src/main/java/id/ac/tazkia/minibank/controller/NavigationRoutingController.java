@@ -3,6 +3,10 @@ package id.ac.tazkia.minibank.controller;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
  * Maps standard Minibank route paths (matching minibank.tazkia.ac.id)
@@ -14,6 +18,36 @@ public class NavigationRoutingController {
     @GetMapping("/product/list")
     public String productList() {
         return "redirect:/cs/product";
+    }
+
+    @GetMapping("/product/create")
+    public String productCreate() {
+        return "redirect:/cs/product/new";
+    }
+
+    @PostMapping("/product/create")
+    public String productCreatePost() {
+        return "forward:/cs/product/new";
+    }
+
+    @GetMapping("/product/view/{id}")
+    public String productViewWithId(@PathVariable String id) {
+        return "redirect:/cs/product/" + id;
+    }
+
+    @GetMapping("/product/edit/{id}")
+    public String productEditWithId(@PathVariable String id) {
+        return "redirect:/cs/product/" + id + "/edit";
+    }
+
+    @PostMapping("/product/edit/{id}")
+    public String productEditPostWithId(@PathVariable String id) {
+        return "forward:/cs/product/" + id + "/edit";
+    }
+
+    @PostMapping("/product/delete/{id}")
+    public String productDeleteWithId(@PathVariable String id) {
+        return "forward:/cs/product/" + id + "/delete";
     }
 
     @GetMapping("/customer/list")
@@ -37,29 +71,29 @@ public class NavigationRoutingController {
     }
 
     @GetMapping("/account/open/{id}")
-    public String accountOpenWithId(@org.springframework.web.bind.annotation.PathVariable Long id) {
+    public String accountOpenWithId(@PathVariable Long id) {
         return "redirect:/cs/account/open/" + id;
     }
 
     @GetMapping("/account/view/{id}")
-    public String accountViewWithId(@org.springframework.web.bind.annotation.PathVariable Long id) {
+    public String accountViewWithId(@PathVariable Long id) {
         return "redirect:/cs/account/" + id;
     }
 
     @GetMapping("/transaction/account/{id}")
-    public String transactionAccountWithId(@org.springframework.web.bind.annotation.PathVariable Long id) {
+    public String transactionAccountWithId(@PathVariable Long id) {
         return "redirect:/cs/account/" + id + "/transactions";
     }
 
     @GetMapping("/account/{id}/close")
-    public String accountCloseGetWithId(@org.springframework.web.bind.annotation.PathVariable Long id) {
+    public String accountCloseGetWithId(@PathVariable Long id) {
         return "redirect:/cs/account/" + id + "/close";
     }
 
     @PostMapping("/account/{id}/close")
-    public String accountClosePostWithId(@org.springframework.web.bind.annotation.PathVariable Long id,
-                                         @org.springframework.web.bind.annotation.RequestParam(value = "reason", required = false) String reason,
-                                         org.springframework.web.servlet.mvc.support.RedirectAttributes ra) {
+    public String accountClosePostWithId(@PathVariable Long id,
+                                         @RequestParam(value = "reason", required = false) String reason,
+                                         RedirectAttributes ra) {
         return "forward:/cs/account/" + id + "/close";
     }
 
@@ -86,10 +120,15 @@ public class NavigationRoutingController {
     @GetMapping("/approval/queue")
     public String approvalQueue(Authentication auth) {
         if (auth != null && auth.getAuthorities().stream().anyMatch(a ->
-                a.getAuthority().equals("ROLE_SUPERVISOR") || a.getAuthority().equals("ROLE_BRANCH_MANAGER"))) {
+                a.getAuthority().equals("ROLE_SUPERVISOR") || a.getAuthority().equals("ROLE_BRANCH_MANAGER") || a.getAuthority().equals("ROLE_ADMIN"))) {
             return "redirect:/supervisor/nasabah";
         }
         return "redirect:/dashboard";
+    }
+
+    @GetMapping("/reports")
+    public String reports() {
+        return "redirect:/teller/transaction/list";
     }
 
     @GetMapping("/settings")
@@ -97,4 +136,3 @@ public class NavigationRoutingController {
         return "redirect:/teller/settings";
     }
 }
-

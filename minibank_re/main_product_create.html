@@ -1,0 +1,614 @@
+
+            <div>
+        <!-- Page Header -->
+        <div class="bg-white shadow rounded-lg mb-6">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h1 id="page-title" class="text-3xl font-bold text-gray-900">Create Product</h1>
+                        <p class="mt-1 text-base font-semibold text-gray-700">Configure banking product settings and parameters</p>
+                    </div>
+                    <a href="/product/list" 
+                       class="btn-enhanced inline-flex items-center px-6 py-3 border-2 border-gray-400 text-sm font-semibold rounded-md text-gray-800 bg-white hover:bg-gray-100 hover:border-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors shadow-md">
+                        <svg class="-ml-1 mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                        </svg>
+                        Back to List
+                    </a>
+                </div>
+            </div>
+            <!-- Progress Bar -->
+            <div class="px-6 py-3 border-t-2 border-gray-200">
+                <div class="flex items-center justify-between text-sm font-semibold text-gray-700 mb-3">
+                    <span>Form Progress</span>
+                    <span id="progress-text">1 of 6 sections</span>
+                </div>
+                <div class="w-full bg-gray-300 rounded-full h-3 border border-gray-400">
+                    <div id="progress-bar" class="bg-indigo-600 h-3 rounded-full progress-bar shadow-sm" style="width: 16.67%"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Success/Error Messages -->
+        
+        
+        <!-- Form Validation Alert -->
+        <div id="validation-alert" class="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-md shadow-sm hidden">
+            <div class="flex">
+                <div class="flex-shrink-0">
+                    <svg class="h-5 w-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                    </svg>
+                </div>
+                <div class="ml-3 flex-1">
+                    <h3 class="text-sm font-bold text-yellow-900">Please review the following:</h3>
+                    <ul id="validation-list" class="mt-2 text-sm font-semibold text-yellow-800 list-disc list-inside"></ul>
+                </div>
+                <div class="ml-auto pl-3">
+                    <button type="button" onclick="document.getElementById('validation-alert').classList.add('hidden')" class="text-yellow-400 hover:text-yellow-600">
+                        <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step Navigation -->
+        <div class="bg-white shadow rounded-lg mb-6 p-6">
+            <div class="flex items-center justify-between">
+                <div class="flex space-x-8">
+                    <div class="step-nav-item flex items-center space-x-2 cursor-pointer" data-step="1">
+                        <div class="step-indicator w-8 h-8 rounded-full bg-indigo-600 text-white flex items-center justify-center text-sm font-medium active">1</div>
+                        <span class="step-nav-enhanced text-sm active">Basic Info</span>
+                    </div>
+                    <div class="step-nav-item flex items-center space-x-2 cursor-pointer" data-step="2">
+                        <div class="step-indicator w-8 h-8 rounded-full bg-gray-400 text-white flex items-center justify-center text-sm font-medium border-2 border-gray-400">2</div>
+                        <span class="step-nav-enhanced text-sm text-gray-600">Islamic Banking</span>
+                    </div>
+                    <div class="step-nav-item flex items-center space-x-2 cursor-pointer" data-step="3">
+                        <div class="step-indicator w-8 h-8 rounded-full bg-gray-400 text-white flex items-center justify-center text-sm font-medium border-2 border-gray-400">3</div>
+                        <span class="step-nav-enhanced text-sm text-gray-600">Limits & Fees</span>
+                    </div>
+                    <div class="step-nav-item flex items-center space-x-2 cursor-pointer" data-step="4">
+                        <div class="step-indicator w-8 h-8 rounded-full bg-gray-400 text-white flex items-center justify-center text-sm font-medium border-2 border-gray-400">4</div>
+                        <span class="step-nav-enhanced text-sm text-gray-600">Transactions</span>
+                    </div>
+                    <div class="step-nav-item flex items-center space-x-2 cursor-pointer" data-step="5">
+                        <div class="step-indicator w-8 h-8 rounded-full bg-gray-400 text-white flex items-center justify-center text-sm font-medium border-2 border-gray-400">5</div>
+                        <span class="step-nav-enhanced text-sm text-gray-600">Eligibility</span>
+                    </div>
+                    <div class="step-nav-item flex items-center space-x-2 cursor-pointer" data-step="6">
+                        <div class="step-indicator w-8 h-8 rounded-full bg-gray-400 text-white flex items-center justify-center text-sm font-medium border-2 border-gray-400">6</div>
+                        <span class="step-nav-enhanced text-sm text-gray-600">Lifecycle</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Product Form -->
+        <div class="bg-white shadow rounded-lg">
+            <form action="/product/create" 
+                  method="post" class="p-6" id="product-form" novalidate><input type="hidden" name="_csrf" value="-P2x4u-g7kF8onSIdtvFiBsbBPtbDzmB2uUL5wz-huC_n21yz56Cg4mQ2XFRx0frQfbx63ojKcNibgms691q1jWb49fcqV8T"/>
+                
+                <!-- Step 1: Basic Information -->
+                <div class="form-step active" id="step-1">
+                    <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+                        <div class="sm:col-span-6">
+                            <div class="flex items-center justify-between">
+                                <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Basic Information</h3>
+                                <span class="text-sm text-gray-600">Fields marked with <span class="required-asterisk">*</span> are required</span>
+                            </div>
+                        </div>
+
+                        <div class="sm:col-span-2">
+                            <label for="productCode" class="block text-sm font-medium text-gray-700">Product Code <span class="required-asterisk">*</span></label>
+                            <input type="text" id="productCode" class="mt-1 block w-full px-3 py-2.5 shadow-sm sm:text-sm border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                                   required placeholder="e.g., SAV001" name="productCode" value="">
+                            
+                        </div>
+
+                        <div class="sm:col-span-4">
+                            <label for="productName" class="block text-sm font-medium text-gray-700">Product Name <span class="required-asterisk">*</span></label>
+                            <input type="text" id="productName" class="mt-1 block w-full px-3 py-2.5 shadow-sm sm:text-sm border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                                   required placeholder="e.g., Premium Savings Account" name="productName" value="">
+                            
+                        </div>
+
+                        <div class="sm:col-span-2">
+                            <label for="productType" class="block text-sm font-medium text-gray-700">Product Type <span class="required-asterisk">*</span></label>
+                            <select id="productType" required
+                                    class="mt-1 block w-full px-3 py-2.5 shadow-sm sm:text-sm border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 transition-colors" name="productType">
+                                <option value="">Select Type</option>
+                                <option value="SAVINGS">SAVINGS</option>
+                                <option value="CHECKING">CHECKING</option>
+                                <option value="DEPOSIT">DEPOSIT</option>
+                                <option value="TABUNGAN_WADIAH">TABUNGAN_WADIAH</option>
+                                <option value="TABUNGAN_MUDHARABAH">TABUNGAN_MUDHARABAH</option>
+                                <option value="DEPOSITO_MUDHARABAH">DEPOSITO_MUDHARABAH</option>
+                                <option value="PEMBIAYAAN_MURABAHAH">PEMBIAYAAN_MURABAHAH</option>
+                                <option value="PEMBIAYAAN_MUDHARABAH">PEMBIAYAAN_MUDHARABAH</option>
+                                <option value="PEMBIAYAAN_MUSHARAKAH">PEMBIAYAAN_MUSHARAKAH</option>
+                                <option value="PEMBIAYAAN_IJARAH">PEMBIAYAAN_IJARAH</option>
+                                <option value="PEMBIAYAAN_SALAM">PEMBIAYAAN_SALAM</option>
+                                <option value="PEMBIAYAAN_ISTISNA">PEMBIAYAAN_ISTISNA</option>
+                            </select>
+                            
+                        </div>
+
+                        <div class="sm:col-span-2">
+                            <label for="productCategory" class="block text-sm font-medium text-gray-700">Category <span class="required-asterisk">*</span></label>
+                            <input type="text" id="productCategory" class="mt-1 block w-full px-3 py-2.5 shadow-sm sm:text-sm border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                                   required placeholder="e.g., Retail Banking" name="productCategory" value="">
+                            
+                        </div>
+
+                        <div class="sm:col-span-2">
+                            <label for="currency" class="block text-sm font-medium text-gray-700">Currency</label>
+                            <input type="text" id="currency" class="mt-1 block w-full px-3 py-2.5 shadow-sm sm:text-sm border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                                   placeholder="IDR" list="currency-list" name="currency" value="IDR">
+                            <datalist id="currency-list">
+                                <option value="IDR">IDR (Indonesian Rupiah)</option>
+                                <option value="USD">USD (US Dollar)</option>
+                                <option value="EUR">EUR (Euro)</option>
+                                <option value="SGD">SGD (Singapore Dollar)</option>
+                            </datalist>
+                        </div>
+
+                        <div class="sm:col-span-6">
+                            <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
+                            <textarea id="description" rows="3"
+                                      class="mt-1 block w-full px-3 py-2.5 shadow-sm sm:text-sm border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                                      placeholder="Provide a detailed description of this banking product..." name="description"></textarea>
+                        </div>
+
+                        <!-- Status and Settings -->
+                        <div class="sm:col-span-6 mt-8">
+                            <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Settings</h3>
+                        </div>
+
+                        <div class="sm:col-span-6">
+                            <div class="settings-card rounded-lg p-4">
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div class="settings-item flex items-center p-4 rounded-md shadow-sm transition-all">
+                                        <input id="isActive" type="checkbox" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded" name="isActive" value="true" checked="checked"><input type="hidden" name="_isActive" value="on"/>
+                                        <div class="ml-3">
+                                            <label for="isActive" class="block text-sm font-medium text-gray-900">Active</label>
+                                            <p class="text-xs text-gray-500">Enable this product for new accounts</p>
+                                        </div>
+                                    </div>
+                                    <div class="settings-item flex items-center p-4 rounded-md shadow-sm transition-all">
+                                        <input id="isDefault" type="checkbox" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded" name="isDefault" value="true"><input type="hidden" name="_isDefault" value="on"/>
+                                        <div class="ml-3">
+                                            <label for="isDefault" class="block text-sm font-medium text-gray-900">Default Product</label>
+                                            <p class="text-xs text-gray-500">Set as default option for this category</p>
+                                        </div>
+                                    </div>
+                                    <div class="settings-item flex items-center p-4 rounded-md shadow-sm transition-all">
+                                        <input id="allowOverdraft" type="checkbox" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded" name="allowOverdraft" value="true"><input type="hidden" name="_allowOverdraft" value="on"/>
+                                        <div class="ml-3">
+                                            <label for="allowOverdraft" class="block text-sm font-medium text-gray-900">Allow Overdraft</label>
+                                            <p class="text-xs text-gray-500">Permit negative balance with fees</p>
+                                        </div>
+                                    </div>
+                                    <div class="settings-item flex items-center p-4 rounded-md shadow-sm transition-all">
+                                        <input id="requireMaintainingBalance" type="checkbox" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded" name="requireMaintainingBalance" value="true" checked="checked"><input type="hidden" name="_requireMaintainingBalance" value="on"/>
+                                        <div class="ml-3">
+                                            <label for="requireMaintainingBalance" class="block text-sm font-medium text-gray-900">Require Maintaining Balance</label>
+                                            <p class="text-xs text-gray-500">Enforce minimum balance requirements</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Navigation Buttons -->
+                    <div class="flex justify-between mt-8">
+                        <div></div>
+                        <button type="button" id="next-step-1" class="btn-enhanced inline-flex items-center px-6 py-3 border border-transparent text-sm font-semibold rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors shadow-md hover:shadow-lg">
+                            Next: Islamic Banking
+                            <svg class="ml-2 -mr-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 2: Islamic Banking Configuration -->
+                <div class="form-step" id="step-2">
+                    <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+                        <div class="sm:col-span-6">
+                            <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Islamic Banking Configuration</h3>
+                            <p class="text-sm text-gray-600 mb-4">Configure Shariah-compliant banking features and profit-sharing mechanisms</p>
+                        </div>
+
+                        <div class="sm:col-span-2">
+                            <label for="minimumOpeningBalance" class="block text-sm font-medium text-gray-700">Minimum Opening Balance</label>
+                            <div class="mt-1 relative rounded-md shadow-sm">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <span class="text-gray-500 sm:text-sm">Rp</span>
+                                </div>
+                                <input type="number" step="0.01" id="minimumOpeningBalance" class="pl-10 pr-3 py-2.5 block w-full shadow-sm sm:text-sm border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 transition-colors" placeholder="0.00" name="minimumOpeningBalance" value="0">
+                            </div>
+                        </div>
+
+                        <div class="sm:col-span-2">
+                            <label for="minimumBalance" class="block text-sm font-medium text-gray-700">Minimum Balance</label>
+                            <div class="mt-1 relative rounded-md shadow-sm">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <span class="text-gray-500 sm:text-sm">Rp</span>
+                                </div>
+                                <input type="number" step="0.01" id="minimumBalance" class="pl-10 pr-3 py-2.5 block w-full shadow-sm sm:text-sm border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 transition-colors" placeholder="0.00" name="minimumBalance" value="0">
+                            </div>
+                        </div>
+
+                        <div class="sm:col-span-2">
+                            <label for="maximumBalance" class="block text-sm font-medium text-gray-700">Maximum Balance</label>
+                            <div class="mt-1 relative rounded-md shadow-sm">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <span class="text-gray-500 sm:text-sm">Rp</span>
+                                </div>
+                                <input type="number" step="0.01" id="maximumBalance" class="pl-10 pr-3 py-2.5 block w-full shadow-sm sm:text-sm border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 transition-colors" placeholder="0.00" name="maximumBalance" value="">
+                            </div>
+                        </div>
+
+                        <div class="sm:col-span-2">
+                            <label for="profitSharingRatio" class="block text-sm font-medium text-gray-700">Profit Sharing Ratio</label>
+                            <div class="mt-1 relative rounded-md shadow-sm">
+                                <input type="number" step="0.0001" min="0" max="1" id="profitSharingRatio" class="pl-3 pr-16 py-2.5 block w-full shadow-sm sm:text-sm border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 transition-colors" placeholder="0.015" name="profitSharingRatio" value="0">
+                                <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                    <span class="text-gray-500 sm:text-sm bg-gray-50 px-2 py-1 rounded border border-gray-200" id="profit-percentage">0%</span>
+                                </div>
+                            </div>
+                            <p class="mt-1 text-sm text-gray-500">Enter as decimal (e.g., 0.015 for 1.5%)</p>
+                            
+                        </div>
+
+                        <div class="sm:col-span-2">
+                            <label for="profitSharingType" class="block text-sm font-medium text-gray-700">Profit Sharing Type</label>
+                            <select id="profitSharingType" class="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500" name="profitSharingType">
+                                <option value="MUDHARABAH" selected="selected">MUDHARABAH</option>
+                                <option value="MUSHARAKAH">MUSHARAKAH</option>
+                                <option value="WADIAH">WADIAH</option>
+                                <option value="MURABAHAH">MURABAHAH</option>
+                                <option value="IJARAH">IJARAH</option>
+                                <option value="SALAM">SALAM</option>
+                                <option value="ISTISNA">ISTISNA</option>
+                            </select>
+                        </div>
+
+                        <div class="sm:col-span-2">
+                            <label for="profitDistributionFrequency" class="block text-sm font-medium text-gray-700">Profit Distribution</label>
+                            <select id="profitDistributionFrequency" class="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500" name="profitDistributionFrequency">
+                                <option value="DAILY">DAILY</option>
+                                <option value="MONTHLY" selected="selected">MONTHLY</option>
+                                <option value="QUARTERLY">QUARTERLY</option>
+                                <option value="ANNUALLY">ANNUALLY</option>
+                                <option value="ON_MATURITY">ON_MATURITY</option>
+                            </select>
+                        </div>
+
+                        <div class="sm:col-span-2">
+                            <label for="nisbahCustomer" class="block text-sm font-medium text-gray-700">Nisbah Customer</label>
+                            <input type="number" step="0.0001" min="0" max="1" id="nisbahCustomer" class="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500" name="nisbahCustomer" value="">
+                            <p class="mt-1 text-sm text-gray-500">Customer's profit share (e.g., 0.7 for 70%)</p>
+                        </div>
+
+                        <div class="sm:col-span-2">
+                            <label for="nisbahBank" class="block text-sm font-medium text-gray-700">Nisbah Bank</label>
+                            <input type="number" step="0.0001" min="0" max="1" id="nisbahBank" class="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500" name="nisbahBank" value="">
+                            <p class="mt-1 text-sm text-gray-500">Bank's profit share (e.g., 0.3 for 30%)</p>
+                        </div>
+
+                        <div class="sm:col-span-2">
+                            <div class="flex items-center p-3 bg-white rounded-md shadow-sm border border-gray-200 mt-6">
+                                <input id="isShariahCompliant" type="checkbox" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded" name="isShariahCompliant" value="true" checked="checked"><input type="hidden" name="_isShariahCompliant" value="on"/>
+                                <div class="ml-3">
+                                    <label for="isShariahCompliant" class="block text-sm font-medium text-gray-900">Shariah Compliant</label>
+                                    <p class="text-xs text-gray-500">Product follows Islamic banking principles</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="sm:col-span-3">
+                            <label for="shariahBoardApprovalNumber" class="block text-sm font-medium text-gray-700">Shariah Board Approval Number</label>
+                            <input type="text" id="shariahBoardApprovalNumber" class="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 transition-colors" placeholder="DSN-001/2024" name="shariahBoardApprovalNumber" value="">
+                        </div>
+
+                        <div class="sm:col-span-3">
+                            <label for="shariahBoardApprovalDate" class="block text-sm font-medium text-gray-700">Shariah Board Approval Date</label>
+                            <input type="date" id="shariahBoardApprovalDate" class="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 transition-colors" name="shariahBoardApprovalDate" value="">
+                        </div>
+                        
+                        <div class="sm:col-span-6">
+                            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                                <div class="flex">
+                                    <div class="flex-shrink-0">
+                                        <svg class="h-5 w-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+                                        </svg>
+                                    </div>
+                                    <div class="ml-3">
+                                        <h3 class="text-sm font-medium text-blue-800">Islamic Banking Information</h3>
+                                        <p class="mt-2 text-sm text-blue-700">
+                                            This section configures Shariah-compliant features including profit-sharing mechanisms, Nisbah ratios, and religious compliance requirements. Ensure all settings comply with Islamic banking principles.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Navigation Buttons -->
+                    <div class="flex justify-between mt-8">
+                        <button type="button" id="prev-step-2" class="btn-enhanced inline-flex items-center px-6 py-3 border-2 border-gray-400 text-sm font-semibold rounded-md text-gray-800 bg-white hover:bg-gray-100 hover:border-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors shadow-md">
+                            <svg class="mr-2 -ml-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
+                            </svg>
+                            Previous: Basic Info
+                        </button>
+                        <button type="button" id="next-step-2" class="btn-enhanced inline-flex items-center px-6 py-3 border border-transparent text-sm font-semibold rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors shadow-md hover:shadow-lg">
+                            Next: Limits & Fees
+                            <svg class="ml-2 -mr-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 3: Limits and Fees -->
+                <div class="form-step" id="step-3">
+                    <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+                        <div class="sm:col-span-6">
+                            <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Limits and Fees</h3>
+                            <p class="text-sm text-gray-600 mb-4">Set transaction limits and fee structures for this product</p>
+                        </div>
+
+                        <div class="sm:col-span-2">
+                            <label for="dailyWithdrawalLimit" class="block text-sm font-medium text-gray-700">Daily Withdrawal Limit</label>
+                            <div class="mt-1 relative rounded-md shadow-sm">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <span class="text-gray-500 sm:text-sm">Rp</span>
+                                </div>
+                                <input type="number" step="0.01" id="dailyWithdrawalLimit" class="pl-10 pr-3 py-2.5 block w-full shadow-sm sm:text-sm border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 transition-colors" placeholder="5,000,000" name="dailyWithdrawalLimit" value="">
+                            </div>
+                        </div>
+
+                        <div class="sm:col-span-2">
+                            <label for="monthlyTransactionLimit" class="block text-sm font-medium text-gray-700">Monthly Transaction Limit</label>
+                            <input type="number" id="monthlyTransactionLimit" class="mt-1 block w-full px-3 py-2.5 shadow-sm sm:text-sm border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 transition-colors" placeholder="100" name="monthlyTransactionLimit" value="">
+                            <p class="mt-1 text-sm text-gray-500">Number of transactions per month</p>
+                        </div>
+
+                        <div class="sm:col-span-2">
+                            <label for="overdraftLimit" class="block text-sm font-medium text-gray-700">Overdraft Limit</label>
+                            <div class="mt-1 relative rounded-md shadow-sm">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <span class="text-gray-500 sm:text-sm">Rp</span>
+                                </div>
+                                <input type="number" step="0.01" id="overdraftLimit" class="pl-10 pr-3 py-2.5 block w-full shadow-sm sm:text-sm border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 transition-colors" placeholder="1,000,000" name="overdraftLimit" value="0">
+                            </div>
+                        </div>
+
+                        <div class="sm:col-span-2">
+                            <label for="monthlyMaintenanceFee" class="block text-sm font-medium text-gray-700">Monthly Maintenance Fee</label>
+                            <div class="mt-1 relative rounded-md shadow-sm">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <span class="text-gray-500 sm:text-sm">Rp</span>
+                                </div>
+                                <input type="number" step="0.01" id="monthlyMaintenanceFee" class="pl-12 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 transition-colors" placeholder="10,000" name="monthlyMaintenanceFee" value="0">
+                            </div>
+                        </div>
+
+                        <div class="sm:col-span-2">
+                            <label for="atmWithdrawalFee" class="block text-sm font-medium text-gray-700">ATM Withdrawal Fee</label>
+                            <div class="mt-1 relative rounded-md shadow-sm">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <span class="text-gray-500 sm:text-sm">Rp</span>
+                                </div>
+                                <input type="number" step="0.01" id="atmWithdrawalFee" class="pl-12 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 transition-colors" placeholder="2,500" name="atmWithdrawalFee" value="0">
+                            </div>
+                        </div>
+
+                        <div class="sm:col-span-2">
+                            <label for="interBankTransferFee" class="block text-sm font-medium text-gray-700">Inter Bank Transfer Fee</label>
+                            <div class="mt-1 relative rounded-md shadow-sm">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <span class="text-gray-500 sm:text-sm">Rp</span>
+                                </div>
+                                <input type="number" step="0.01" id="interBankTransferFee" class="pl-12 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 transition-colors" placeholder="6,500" name="interBankTransferFee" value="0">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Navigation Buttons -->
+                    <div class="flex justify-between mt-8">
+                        <button type="button" id="prev-step-3" class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
+                            <svg class="mr-2 -ml-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                            </svg>
+                            Previous: Islamic Banking
+                        </button>
+                        <button type="button" id="next-step-3" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
+                            Next: Transactions
+                            <svg class="ml-2 -mr-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 4: Transaction Settings -->
+                <div class="form-step" id="step-4">
+                    <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+                        <div class="sm:col-span-6">
+                            <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Transaction Settings</h3>
+                            <p class="text-sm text-gray-600 mb-4">Configure transaction allowances and penalty fees</p>
+                        </div>
+
+                        <div class="sm:col-span-2">
+                            <label for="freeTransactionsPerMonth" class="block text-sm font-medium text-gray-700">Free Transactions Per Month</label>
+                            <input type="number" id="freeTransactionsPerMonth" class="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 transition-colors" placeholder="10" name="freeTransactionsPerMonth" value="0">
+                            <p class="mt-1 text-sm text-gray-500">Number of free transactions allowed</p>
+                        </div>
+
+                        <div class="sm:col-span-2">
+                            <label for="excessTransactionFee" class="block text-sm font-medium text-gray-700">Excess Transaction Fee</label>
+                            <div class="mt-1 relative rounded-md shadow-sm">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <span class="text-gray-500 sm:text-sm">Rp</span>
+                                </div>
+                                <input type="number" step="0.01" id="excessTransactionFee" class="pl-12 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 transition-colors" placeholder="5,000" name="excessTransactionFee" value="0">
+                            </div>
+                        </div>
+
+                        <div class="sm:col-span-2">
+                            <label for="belowMinimumBalanceFee" class="block text-sm font-medium text-gray-700">Below Minimum Balance Fee</label>
+                            <div class="mt-1 relative rounded-md shadow-sm">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <span class="text-gray-500 sm:text-sm">Rp</span>
+                                </div>
+                                <input type="number" step="0.01" id="belowMinimumBalanceFee" class="pl-12 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 transition-colors" placeholder="25,000" name="belowMinimumBalanceFee" value="0">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Navigation Buttons -->
+                    <div class="flex justify-between mt-8">
+                        <button type="button" id="prev-step-4" class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
+                            <svg class="mr-2 -ml-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                            </svg>
+                            Previous: Limits & Fees
+                        </button>
+                        <button type="button" id="next-step-4" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
+                            Next: Eligibility
+                            <svg class="ml-2 -mr-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 5: Customer Eligibility -->
+                <div class="form-step" id="step-5">
+                    <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+                        <div class="sm:col-span-6">
+                            <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Customer Eligibility</h3>
+                            <p class="text-sm text-gray-600 mb-4">Define eligibility criteria and required documentation</p>
+                        </div>
+
+                        <div class="sm:col-span-2">
+                            <label for="minCustomerAge" class="block text-sm font-medium text-gray-700">Minimum Age</label>
+                            <input type="number" id="minCustomerAge" class="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 transition-colors" placeholder="17" min="0" max="150" name="minCustomerAge" value="">
+                            <p class="mt-1 text-sm text-gray-500">Minimum age in years</p>
+                        </div>
+
+                        <div class="sm:col-span-2">
+                            <label for="maxCustomerAge" class="block text-sm font-medium text-gray-700">Maximum Age</label>
+                            <input type="number" id="maxCustomerAge" class="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 transition-colors" placeholder="65" min="0" max="150" name="maxCustomerAge" value="">
+                            <p class="mt-1 text-sm text-gray-500">Maximum age in years</p>
+                        </div>
+
+                        <div class="sm:col-span-2">
+                            <label for="allowedCustomerTypes" class="block text-sm font-medium text-gray-700">Allowed Customer Types</label>
+                            <input type="text" id="allowedCustomerTypes" class="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                                   placeholder="PERSONAL,CORPORATE" name="allowedCustomerTypes" value="PERSONAL,CORPORATE">
+                            <p class="mt-1 text-sm text-gray-500">Comma-separated (e.g., PERSONAL,CORPORATE)</p>
+                            <div class="mt-2 flex flex-wrap gap-2">
+                                <label class="inline-flex items-center">
+                                    <input type="checkbox" value="PERSONAL" class="form-checkbox h-4 w-4 text-indigo-600" onchange="updateCustomerTypes()">
+                                    <span class="ml-2 text-sm text-gray-700">Personal</span>
+                                </label>
+                                <label class="inline-flex items-center">
+                                    <input type="checkbox" value="CORPORATE" class="form-checkbox h-4 w-4 text-indigo-600" onchange="updateCustomerTypes()">
+                                    <span class="ml-2 text-sm text-gray-700">Corporate</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="sm:col-span-6">
+                            <label for="requiredDocuments" class="block text-sm font-medium text-gray-700">Required Documents</label>
+                            <textarea id="requiredDocuments" rows="3"
+                                      class="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                                      placeholder="List the required documents for account opening (e.g., KTP, NPWP, proof of income...)" name="requiredDocuments"></textarea>
+                        </div>
+                    </div>
+                    
+                    <!-- Navigation Buttons -->
+                    <div class="flex justify-between mt-8">
+                        <button type="button" id="prev-step-5" class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
+                            <svg class="mr-2 -ml-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                            </svg>
+                            Previous: Transactions
+                        </button>
+                        <button type="button" id="next-step-5" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
+                            Next: Lifecycle
+                            <svg class="ml-2 -mr-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 6: Product Lifecycle -->
+                <div class="form-step" id="step-6">
+                    <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+                        <div class="sm:col-span-6">
+                            <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Product Lifecycle</h3>
+                            <p class="text-sm text-gray-600 mb-4">Set launch and retirement dates for this product</p>
+                        </div>
+
+                        <div class="sm:col-span-3">
+                            <label for="launchDate" class="block text-sm font-medium text-gray-700">Launch Date</label>
+                            <input type="date" id="launchDate" class="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 transition-colors" name="launchDate" value="">
+                            <p class="mt-1 text-sm text-gray-500">When this product becomes available</p>
+                        </div>
+
+                        <div class="sm:col-span-3">
+                            <label for="retirementDate" class="block text-sm font-medium text-gray-700">Retirement Date</label>
+                            <input type="date" id="retirementDate" class="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 transition-colors" name="retirementDate" value="">
+                            <p class="mt-1 text-sm text-gray-500">When this product will be discontinued (optional)</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Navigation Buttons -->
+                    <div class="flex justify-between mt-8">
+                        <button type="button" id="prev-step-6" class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
+                            <svg class="mr-2 -ml-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                            </svg>
+                            Previous: Eligibility
+                        </button>
+                        <div class="flex space-x-3">
+                            <button type="button" id="review-form" class="btn-enhanced inline-flex items-center px-6 py-3 border-2 border-indigo-600 text-sm font-semibold rounded-md text-indigo-700 bg-white hover:bg-indigo-50 hover:border-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors shadow-md">
+                                Review Form
+                            </button>
+                            <button type="submit" id="submit-btn" class="btn-enhanced inline-flex items-center px-8 py-3 border-2 border-transparent text-sm font-bold rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors shadow-lg hover:shadow-xl">
+                                <span>Create Product</span>
+                                <svg class="ml-2 -mr-1 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                                </svg>
+                            </button>
+                            <!-- Hidden submit button for tests -->
+                            <input type="submit" id="legacy-submit-btn" style="display: none;" value="Create Product">
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+        
+        <!-- Floating Save Button -->
+        <div id="floating-save" class="floating-save">
+            <button type="button" onclick="document.getElementById('product-form').submit()" 
+                    class="bg-green-600 hover:bg-green-700 text-white rounded-full p-4 shadow-xl transition-all duration-300 hover:shadow-2xl border-2 border-green-500 hover:border-green-400">
+                <svg class="h-7 w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+        

@@ -64,7 +64,8 @@ public class PassbookRestController {
             }
 
             if (request.getPrintedTransactionIds() == null || request.getPrintedTransactionIds().isEmpty()) {
-                return ResponseEntity.ok(Map.of("success", true, "message", "No transactions to mark as printed"));
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(Map.of("success", false, "error", "No valid transaction IDs provided"));
             }
 
             boolean ok = passbookService.reportPrintResult(request);

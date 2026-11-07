@@ -93,5 +93,32 @@ class RbacControllerIntegrationTest extends BaseIntegrationTest {
                 .andExpect(view().name("rbac/permissions/list"))
                 .andExpect(model().attributeExists("permissions"));
     }
+
+    @Test
+    @DisplayName("GET /rbac/users/list with filter status=PENDING - renders filtered users list")
+    void getUsersList_withPendingFilter() throws Exception {
+        mockMvc.perform(get("/rbac/users/list").param("status", "PENDING"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("rbac/users/list"))
+                .andExpect(model().attributeExists("users"))
+                .andExpect(model().attribute("status", "PENDING"));
+    }
+
+    @Test
+    @DisplayName("POST /rbac/users/{id}/approve - approves user and redirects to pending list")
+    void approveUser_redirectsToUsersList() throws Exception {
+        User pendingUser = new User();
+        pendingUser.setUsername("pending_user_" + System.currentTimeMillis());
+        pendingUser.setPassword("$2a$10$dummy");
+        pendingUser.setFullName("Pending User");
+        pendingUser.setEmail(pendingUser.getUsername() + "@tazkia.ac.id");
+        pendingUser.setApproved(false);
+        pendingUser.setEnabled(false);
+        pendingUser = userRepository.save(pendingUser);
+
+        mockMvc.perform(post("/rbac/users/" + pendingUser.getId() + "/approve"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/rbac/users/list?status=PENDING"));
+    }
 }
 

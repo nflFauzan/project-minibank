@@ -38,10 +38,10 @@ test.describe('Manajemen Produk Tabungan', () => {
   test('Lihat detail produk tabungan', async ({ page }) => {
     await productPage.navigateToList();
     // Klik detail produk pertama di tabel
-    const detailLink = page.locator('table tr a[href*="/cs/product/"]').first();
+    const detailLink = page.locator('table tr a[href*="/product/view/"], table tr a[href*="/cs/product/"]').first();
     await detailLink.click();
     // Verifikasi halaman detail terbuka
-    await expect(page).toHaveURL(/\/cs\/product\/\d+/);
+    await expect(page).toHaveURL(/(?:\/product\/view\/|\/cs\/product\/)/);
     await expect(page.locator('body')).toBeVisible();
   });
 
@@ -50,11 +50,11 @@ test.describe('Manajemen Produk Tabungan', () => {
     // Klik link Edit dari produk pertama di tabel
     const editLink = page.locator('table tr a[href*="/edit"]').first();
     await editLink.click();
-    await expect(page).toHaveURL(/\/cs\/product\/\d+\/edit/);
+    await expect(page).toHaveURL(/(?:\/product\/edit\/|\/cs\/product\/.*\/edit)/);
 
     // Ubah nama produk
     const updatedName = 'Updated Tabungan ' + Date.now();
-    await page.locator('#namaProduk').fill(updatedName);
+    await page.locator('#productName, #namaProduk').fill(updatedName);
     await productPage.submitForm();
 
     // Setelah submit, seharusnya redirect ke detail atau list dengan success
@@ -64,7 +64,7 @@ test.describe('Manajemen Produk Tabungan', () => {
   test('Toggle status produk (aktif/nonaktif)', async ({ page }) => {
     await productPage.navigateToList();
     // Ambil baris produk pertama dan klik tombol toggle
-    const toggleForm = page.locator('form[action*="/toggle"]').first();
+    const toggleForm = page.locator('form[action*="/toggle"], form[action*="/delete"]').first();
     await expect(toggleForm).toBeVisible();
     await toggleForm.locator('button[type="submit"]').click();
 
@@ -73,7 +73,7 @@ test.describe('Manajemen Produk Tabungan', () => {
     await productPage.expectListTableVisible();
 
     // Toggle kembali agar status produk dipulihkan untuk test lain
-    const toggleBackForm = page.locator('form[action*="/toggle"]').first();
+    const toggleBackForm = page.locator('form[action*="/toggle"], form[action*="/delete"]').first();
     if (await toggleBackForm.count() > 0) {
       await toggleBackForm.locator('button[type="submit"]').click();
       await productPage.navigateToList();

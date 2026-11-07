@@ -1,0 +1,302 @@
+
+            <div>
+        <!-- Page Header -->
+        <div class="bg-white shadow rounded-lg mb-6">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <div class="flex justify-between items-center">
+                    <h1 id="page-title" class="text-2xl font-bold text-gray-900">Product Management</h1>
+                    <a href="/product/create" 
+                       class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-bsi-primary hover:bg-bsi-teal focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-bsi-primary"
+                       id="create-product-btn">
+                        <svg class="-ml-1 mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                        </svg>
+                        New Product
+                    </a>
+                </div>
+            </div>
+
+            <!-- Success/Error Messages -->
+            
+
+            
+
+            <!-- Search and Filter Form -->
+            <div class="px-6 py-4">
+                <form action="/product/list" method="get" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div>
+                        <label for="search" class="block text-sm font-medium text-gray-700 mb-1">Search</label>
+                        <input type="text" id="search" name="search" value=""
+                               placeholder="Product code, name, or description"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-bsi-primary focus:border-bsi-primary">
+                    </div>
+                    <div>
+                        <label for="productType" class="block text-sm font-medium text-gray-700 mb-1">Type</label>
+                        <select id="productType" name="productType" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-bsi-primary focus:border-bsi-primary">
+                            <option value="">All Types</option>
+                            <option value="SAVINGS">SAVINGS</option>
+                            <option value="CHECKING">CHECKING</option>
+                            <option value="DEPOSIT">DEPOSIT</option>
+                            <option value="TABUNGAN_WADIAH">TABUNGAN_WADIAH</option>
+                            <option value="TABUNGAN_MUDHARABAH">TABUNGAN_MUDHARABAH</option>
+                            <option value="DEPOSITO_MUDHARABAH">DEPOSITO_MUDHARABAH</option>
+                            <option value="PEMBIAYAAN_MURABAHAH">PEMBIAYAAN_MURABAHAH</option>
+                            <option value="PEMBIAYAAN_MUDHARABAH">PEMBIAYAAN_MUDHARABAH</option>
+                            <option value="PEMBIAYAAN_MUSHARAKAH">PEMBIAYAAN_MUSHARAKAH</option>
+                            <option value="PEMBIAYAAN_IJARAH">PEMBIAYAAN_IJARAH</option>
+                            <option value="PEMBIAYAAN_SALAM">PEMBIAYAAN_SALAM</option>
+                            <option value="PEMBIAYAAN_ISTISNA">PEMBIAYAAN_ISTISNA</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="category" class="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                        <select id="category" name="category" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-bsi-primary focus:border-bsi-primary">
+                            <option value="">All Categories</option>
+                            <option value="Deposito Syariah">Deposito Syariah</option>
+                            <option value="Giro Syariah">Giro Syariah</option>
+                            <option value="Pembiayaan Syariah">Pembiayaan Syariah</option>
+                            <option value="Tabungan Syariah">Tabungan Syariah</option>
+                        </select>
+                    </div>
+                    <div class="flex items-end">
+                        <button type="submit" id="filter-button" class="w-full px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-bsi-accent hover:bg-bsi-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-bsi-accent">
+                            Filter
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Products Table -->
+        <div class="bg-white shadow rounded-lg overflow-hidden">
+            <div class="min-w-full">
+                
+
+                <div>
+                    <table class="min-w-full divide-y divide-gray-200" id="products-table">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    <a href="/product/list?sortBy=productCode&amp;sortDir=asc&amp;search=&amp;productType=&amp;category=" 
+                                       class="group inline-flex items-center hover:text-gray-900">
+                                        Code
+                                        <span class="ml-2 flex-none rounded text-gray-400 group-hover:text-gray-500">
+                                            
+                                            
+                                            <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                                                <path d="M5 12a1 1 0 102 0V6.414l1.293 1.293a1 1 0 001.414-1.414l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L5 6.414V12zM15 8a1 1 0 10-2 0v5.586l-1.293-1.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L15 13.586V8z"/>
+                                            </svg>
+                                        </span>
+                                    </a>
+                                </th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    <a href="/product/list?sortBy=productName&amp;sortDir=asc&amp;search=&amp;productType=&amp;category=" 
+                                       class="group inline-flex items-center hover:text-gray-900">
+                                        Name
+                                        <span class="ml-2 flex-none rounded text-gray-400 group-hover:text-gray-500">
+                                            
+                                            
+                                            <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                                                <path d="M5 12a1 1 0 102 0V6.414l1.293 1.293a1 1 0 001.414-1.414l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L5 6.414V12zM15 8a1 1 0 10-2 0v5.586l-1.293-1.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L15 13.586V8z"/>
+                                            </svg>
+                                        </span>
+                                    </a>
+                                </th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Profit Sharing</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                <th scope="col" class="relative px-6 py-3"><span class="sr-only">Actions</span></th>
+                            </tr>
+                        </thead>
+                        <tbody id="products-table-body" class="bg-white divide-y divide-gray-200">
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900" id="product-code-TAB001">TAB001</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm font-medium text-gray-900">Tabungan Wadiah Basic</div>
+                                    <div class="text-sm text-gray-500">Tabungan dengan akad wadiah untuk nasabah peror...</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-bsi-info bg-opacity-20 text-bsi-info">TABUNGAN_WADIAH</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Tabungan Syariah</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                    <span>02.75%</span>
+                                    
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-bsi-success bg-opacity-20 text-bsi-success" id="status-TAB001">Active</span>
+                                    
+                                    
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                    <div class="flex items-center justify-end space-x-2">
+                                        <a href="/product/view/aad6cc28-62c3-43d6-bb8b-6bdfb339baea" class="text-bsi-primary hover:text-bsi-teal" id="view-TAB001">View</a>
+                                        <a href="/product/edit/aad6cc28-62c3-43d6-bb8b-6bdfb339baea" class="text-bsi-primary hover:text-bsi-teal" id="edit-TAB001">Edit</a>
+                                        <form action="/product/delete/aad6cc28-62c3-43d6-bb8b-6bdfb339baea" method="post" class="inline" onsubmit="return confirm('Are you sure you want to deactivate this product?')"><input type="hidden" name="_csrf" value="iPGTFqBNcu1uXxSUyGRQjYoaB9QapK_lFoxD1173_Ga9h4RSuMehdcR5StxDbi33-Ulkub0qKrYowMzIIL0gsm7GnwXf4rY2"/>
+                                            <button type="submit" class="text-bsi-secondary hover:text-bsi-orange-dark" id="deactivate-TAB001">Deactivate</button>
+                                        </form>
+                                        
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900" id="product-code-TAB002">TAB002</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm font-medium text-gray-900">Tabungan Mudharabah Premium</div>
+                                    <div class="text-sm text-gray-500">Tabungan mudharabah dengan nisbah bagi hasil ya...</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-bsi-info bg-opacity-20 text-bsi-info">TABUNGAN_MUDHARABAH</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Tabungan Syariah</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                    <span>03.50%</span>
+                                    
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-bsi-success bg-opacity-20 text-bsi-success" id="status-TAB002">Active</span>
+                                    
+                                    
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                    <div class="flex items-center justify-end space-x-2">
+                                        <a href="/product/view/5a0866c8-300c-4baa-ae0a-f06ba80baf6a" class="text-bsi-primary hover:text-bsi-teal" id="view-TAB002">View</a>
+                                        <a href="/product/edit/5a0866c8-300c-4baa-ae0a-f06ba80baf6a" class="text-bsi-primary hover:text-bsi-teal" id="edit-TAB002">Edit</a>
+                                        <form action="/product/delete/5a0866c8-300c-4baa-ae0a-f06ba80baf6a" method="post" class="inline" onsubmit="return confirm('Are you sure you want to deactivate this product?')"><input type="hidden" name="_csrf" value="iPGTFqBNcu1uXxSUyGRQjYoaB9QapK_lFoxD1173_Ga9h4RSuMehdcR5StxDbi33-Ulkub0qKrYowMzIIL0gsm7GnwXf4rY2"/>
+                                            <button type="submit" class="text-bsi-secondary hover:text-bsi-orange-dark" id="deactivate-TAB002">Deactivate</button>
+                                        </form>
+                                        
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900" id="product-code-DEP001">DEP001</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm font-medium text-gray-900">Deposito Mudharabah</div>
+                                    <div class="text-sm text-gray-500">Deposito berjangka dengan akad mudharabah</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-bsi-info bg-opacity-20 text-bsi-info">DEPOSITO_MUDHARABAH</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Deposito Syariah</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                    <span>01.00%</span>
+                                    
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-bsi-success bg-opacity-20 text-bsi-success" id="status-DEP001">Active</span>
+                                    
+                                    
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                    <div class="flex items-center justify-end space-x-2">
+                                        <a href="/product/view/75d4e53a-978e-4db1-820c-4eaef76fd885" class="text-bsi-primary hover:text-bsi-teal" id="view-DEP001">View</a>
+                                        <a href="/product/edit/75d4e53a-978e-4db1-820c-4eaef76fd885" class="text-bsi-primary hover:text-bsi-teal" id="edit-DEP001">Edit</a>
+                                        <form action="/product/delete/75d4e53a-978e-4db1-820c-4eaef76fd885" method="post" class="inline" onsubmit="return confirm('Are you sure you want to deactivate this product?')"><input type="hidden" name="_csrf" value="iPGTFqBNcu1uXxSUyGRQjYoaB9QapK_lFoxD1173_Ga9h4RSuMehdcR5StxDbi33-Ulkub0qKrYowMzIIL0gsm7GnwXf4rY2"/>
+                                            <button type="submit" class="text-bsi-secondary hover:text-bsi-orange-dark" id="deactivate-DEP001">Deactivate</button>
+                                        </form>
+                                        
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900" id="product-code-PEM001">PEM001</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm font-medium text-gray-900">Pembiayaan Murabahah</div>
+                                    <div class="text-sm text-gray-500">Pembiayaan dengan akad murabahah untuk kebutuha...</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-bsi-info bg-opacity-20 text-bsi-info">PEMBIAYAAN_MURABAHAH</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Pembiayaan Syariah</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                    <span>03.00%</span>
+                                    
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-bsi-success bg-opacity-20 text-bsi-success" id="status-PEM001">Active</span>
+                                    
+                                    
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                    <div class="flex items-center justify-end space-x-2">
+                                        <a href="/product/view/67d240f1-1eea-420e-8cd9-30e7b9b773e3" class="text-bsi-primary hover:text-bsi-teal" id="view-PEM001">View</a>
+                                        <a href="/product/edit/67d240f1-1eea-420e-8cd9-30e7b9b773e3" class="text-bsi-primary hover:text-bsi-teal" id="edit-PEM001">Edit</a>
+                                        <form action="/product/delete/67d240f1-1eea-420e-8cd9-30e7b9b773e3" method="post" class="inline" onsubmit="return confirm('Are you sure you want to deactivate this product?')"><input type="hidden" name="_csrf" value="iPGTFqBNcu1uXxSUyGRQjYoaB9QapK_lFoxD1173_Ga9h4RSuMehdcR5StxDbi33-Ulkub0qKrYowMzIIL0gsm7GnwXf4rY2"/>
+                                            <button type="submit" class="text-bsi-secondary hover:text-bsi-orange-dark" id="deactivate-PEM001">Deactivate</button>
+                                        </form>
+                                        
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900" id="product-code-PEM002">PEM002</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm font-medium text-gray-900">Pembiayaan Musharakah</div>
+                                    <div class="text-sm text-gray-500">Pembiayaan dengan akad musharakah untuk modal u...</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-bsi-info bg-opacity-20 text-bsi-info">PEMBIAYAAN_MUSHARAKAH</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Pembiayaan Syariah</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                    <span>01.50%</span>
+                                    
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-bsi-success bg-opacity-20 text-bsi-success" id="status-PEM002">Active</span>
+                                    
+                                    
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                    <div class="flex items-center justify-end space-x-2">
+                                        <a href="/product/view/61382207-742f-446b-b8ae-cbe0ecbbdba2" class="text-bsi-primary hover:text-bsi-teal" id="view-PEM002">View</a>
+                                        <a href="/product/edit/61382207-742f-446b-b8ae-cbe0ecbbdba2" class="text-bsi-primary hover:text-bsi-teal" id="edit-PEM002">Edit</a>
+                                        <form action="/product/delete/61382207-742f-446b-b8ae-cbe0ecbbdba2" method="post" class="inline" onsubmit="return confirm('Are you sure you want to deactivate this product?')"><input type="hidden" name="_csrf" value="iPGTFqBNcu1uXxSUyGRQjYoaB9QapK_lFoxD1173_Ga9h4RSuMehdcR5StxDbi33-Ulkub0qKrYowMzIIL0gsm7GnwXf4rY2"/>
+                                            <button type="submit" class="text-bsi-secondary hover:text-bsi-orange-dark" id="deactivate-PEM002">Deactivate</button>
+                                        </form>
+                                        
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900" id="product-code-GIR001">GIR001</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm font-medium text-gray-900">Giro Wadiah Corporate</div>
+                                    <div class="text-sm text-gray-500">Rekening giro dengan akad wadiah untuk kebutuha...</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-bsi-info bg-opacity-20 text-bsi-info">TABUNGAN_WADIAH</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Giro Syariah</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                    <span>02.50%</span>
+                                    
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-bsi-success bg-opacity-20 text-bsi-success" id="status-GIR001">Active</span>
+                                    
+                                    
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                    <div class="flex items-center justify-end space-x-2">
+                                        <a href="/product/view/505d05a8-a448-44a7-a43a-5c8060c1fdfa" class="text-bsi-primary hover:text-bsi-teal" id="view-GIR001">View</a>
+                                        <a href="/product/edit/505d05a8-a448-44a7-a43a-5c8060c1fdfa" class="text-bsi-primary hover:text-bsi-teal" id="edit-GIR001">Edit</a>
+                                        <form action="/product/delete/505d05a8-a448-44a7-a43a-5c8060c1fdfa" method="post" class="inline" onsubmit="return confirm('Are you sure you want to deactivate this product?')"><input type="hidden" name="_csrf" value="iPGTFqBNcu1uXxSUyGRQjYoaB9QapK_lFoxD1173_Ga9h4RSuMehdcR5StxDbi33-Ulkub0qKrYowMzIIL0gsm7GnwXf4rY2"/>
+                                            <button type="submit" class="text-bsi-secondary hover:text-bsi-orange-dark" id="deactivate-GIR001">Deactivate</button>
+                                        </form>
+                                        
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- Pagination -->
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+        

@@ -191,7 +191,7 @@ public class SecurityConfigTest {
         @WithMockUser(username = "adminUser", roles = {"ADMIN"})
         @DisplayName("ROLE_ADMIN - has superuser access to admin, cs, teller, and supervisor modules")
         void adminAccessControl() throws Exception {
-            mockMvc.perform(get("/admin/users/create"))
+            mockMvc.perform(get("/rbac/users/create"))
                     .andExpect(status().isOk());
 
             mockMvc.perform(get("/cs/customers"))

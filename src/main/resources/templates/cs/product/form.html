@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>CS - Form Produk</title>
+  <title th:text="${mode == 'EDIT' ? 'Edit Product - Minibank' : 'Create Product - Minibank'}">Product Form - Minibank</title>
 
   <link rel="stylesheet" th:href="@{/css/cs-shell.css}">
   <link rel="stylesheet" th:href="@{/css/custom.css}">
@@ -15,7 +15,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
   <style>
-    /* Sinkronisasi Font Poppins Global */
     body {
       font-family: 'Poppins', sans-serif !important;
       background-color: #f8fafc;
@@ -26,57 +25,133 @@
       font-size: 24px;
       font-weight: 800;
       color: #0f172a;
+    }
+
+    .form-container {
+      max-width: 1000px;
+      margin: 20px 0;
+    }
+
+    .form-section-card {
+      background: #fff;
+      border: 1px solid #f1f5f9;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+      padding: 28px;
       margin-bottom: 24px;
     }
 
-    /* Container Card Form */
-    .form-card {
-      background: #fff;
-      border: 1px solid rgba(0,0,0,.06);
-      border-radius: 20px;
-      box-shadow: 0 10px 30px rgba(0,0,0,.04);
-      padding: 32px;
-      max-width: 720px;
+    .section-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: #1e3a8a;
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1.5px solid #f8fafc;
+      padding-bottom: 12px;
     }
 
-    /* Label Styling */
+    .form-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .form-grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 20px;
+    }
+
+    @media (max-width: 768px) {
+      .form-grid-2, .form-grid-3 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group.full-width {
+      grid-column: 1 / -1;
+    }
+
     .form-label {
       font-weight: 600;
-      font-size: 14px;
+      font-size: 13px;
       color: #475569;
-      margin-bottom: 8px;
-      display: block;
     }
 
-    /* Input & Select Styling */
+    .required-star {
+      color: #ef4444;
+      font-weight: 700;
+    }
+
     .form-control-custom {
       width: 100%;
-      padding: 12px 16px;
+      padding: 11px 16px;
       border-radius: 12px;
       border: 1.5px solid #e2e8f0;
       font-family: 'Poppins', sans-serif;
       font-size: 14px;
       transition: all 0.2s ease;
       outline: none;
+      background-color: #fff;
+      box-sizing: border-box;
     }
 
     .form-control-custom:focus {
-      border-color: #2563eb;
-      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+      border-color: #1e3a8a;
+      box-shadow: 0 0 0 4px rgba(30, 58, 138, 0.08);
+    }
+
+    .form-control-custom[readonly] {
+      background-color: #f8fafc;
+      color: #64748b;
+      cursor: not-allowed;
     }
 
     .help-text {
       font-size: 12px;
       color: #94a3b8;
-      margin-top: 4px;
     }
 
-    /* Button Styling Sesuai Dashboard */
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .checkbox-group input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: #1e3a8a;
+      cursor: pointer;
+    }
+
+    .checkbox-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: #334155;
+      cursor: pointer;
+    }
+
     .btn-primary-rounded {
       background: linear-gradient(135deg, #1e3a8a, #2563eb);
       color: #fff;
       border: none;
-      padding: 12px 28px;
+      padding: 12px 32px;
       border-radius: 12px;
       font-weight: 700;
       font-size: 14px;
@@ -102,23 +177,14 @@
       color: #64748b;
       font-size: 14px;
       transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
     }
 
     .btn-secondary-custom:hover {
       background: #f1f5f9;
       color: #1e3a8a;
     }
-
-    .alert {
-      border-radius: 12px;
-      padding: 16px;
-      font-weight: 500;
-      margin-bottom: 20px;
-      border: none;
-    }
-
-    .alert-success { background: #f0fdf4; color: #166534; }
-    .alert-danger { background: #fef2f2; color: #991b1b; }
   </style>
 </head>
 
@@ -131,68 +197,357 @@
 
     <main class="cs-page" style="padding: 32px;">
       
-      <h1 class="page-title" th:text="${mode == 'EDIT' ? 'Edit Produk Tabungan' : 'Tambah Produk Baru'}"></h1>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
+        <div>
+          <h1 class="page-title" th:text="${mode == 'EDIT' ? 'Edit Product' : 'Create Product'}">Create Product</h1>
+          <p style="color: #64748b; font-size: 14px; margin-top: 4px;">Konfigurasi parameter perbankan syariah, nisbah bagi hasil, limit, dan biaya operasional.</p>
+        </div>
+        <a th:href="@{/product/list}" id="back-to-list-btn" class="btn-secondary-custom">
+          &larr; Back to List
+        </a>
+      </div>
 
-      <div th:if="${success}" class="alert alert-success shadow-sm" th:text="${success}"></div>
-      <div th:if="${error}" class="alert alert-danger shadow-sm" th:text="${error}"></div>
+      <div th:if="${success}" class="alert alert-success" style="margin-bottom:20px; padding:14px 20px; background:#f0fdf4; color:#166534; border-radius:12px; font-weight:600;" th:text="${success}"></div>
+      <div th:if="${error}" class="alert alert-danger" style="margin-bottom:20px; padding:14px 20px; background:#fef2f2; color:#991b1b; border-radius:12px; font-weight:600;" th:text="${error}"></div>
 
-      <div class="form-card">
-        <form method="post" th:action="${actionUrl}" th:object="${form}">
-          
+      <div class="form-container">
+        <form method="post" th:action="${actionUrl}" th:object="${form}" id="product-form">
           <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-          
-          <div class="mb-4">
-            <label class="form-label">Kode Produk <span style="color: #ef4444;">*</span></label>
-            <input class="form-control-custom" type="text" th:field="*{kodeProduk}" 
-                   placeholder="Contoh: TAB_WADIAH" required th:readonly="${mode == 'EDIT'}"/>
-            <div class="help-text">Kode unik sistem (tidak dapat diubah jika sudah tersimpan).</div>
+
+          <!-- 1. Basic Information -->
+          <div class="form-section-card">
+            <h2 class="section-title">1. Basic Information</h2>
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label for="productCode" class="form-label">Product Code <span class="required-star">*</span></label>
+                <input class="form-control-custom" type="text" id="productCode" name="productCode" 
+                       th:value="*{resolveCode()}" placeholder="e.g., TAB001" required th:readonly="${mode == 'EDIT'}"/>
+                <div class="help-text">Unique code in uppercase (cannot be changed once created).</div>
+              </div>
+
+              <div class="form-group">
+                <label for="productName" class="form-label">Product Name <span class="required-star">*</span></label>
+                <input class="form-control-custom" type="text" id="productName" name="productName" 
+                       th:value="*{resolveName()}" placeholder="e.g., Tabungan Wadiah Basic" required/>
+              </div>
+
+              <div class="form-group">
+                <label for="productType" class="form-label">Product Type <span class="required-star">*</span></label>
+                <select class="form-control-custom" id="productType" name="productType" required>
+                  <option value="" disabled th:selected="${form.productType == null}">Select Type</option>
+                  <option th:each="opt : ${productTypeOptions}"
+                          th:value="${opt}"
+                          th:text="${opt}"
+                          th:selected="${form.productType == opt}">
+                  </option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="productCategory" class="form-label">Category <span class="required-star">*</span></label>
+                <input class="form-control-custom" type="text" id="productCategory" name="productCategory" 
+                       th:value="*{resolveCategory()}" placeholder="e.g., Tabungan Syariah" required/>
+              </div>
+
+              <div class="form-group">
+                <label for="currency" class="form-label">Currency</label>
+                <input class="form-control-custom" type="text" id="currency" name="currency" 
+                       th:value="*{currency != null ? currency : 'IDR'}" placeholder="IDR"/>
+              </div>
+
+              <div class="form-group full-width">
+                <label for="description" class="form-label">Description</label>
+                <textarea class="form-control-custom" id="description" name="description" rows="3" 
+                          placeholder="Penjelasan produk dan akad syariah..." th:text="*{resolveDescription()}"></textarea>
+              </div>
+            </div>
           </div>
 
-          <div class="mb-4">
-            <label class="form-label">Nama Produk <span style="color: #ef4444;">*</span></label>
-            <input class="form-control-custom" type="text" th:field="*{namaProduk}" 
-                   placeholder="Contoh: Tabungan Easy Wadiah" required/>
+          <!-- 2. Settings -->
+          <div class="form-section-card">
+            <h2 class="section-title">2. Settings</h2>
+            <div class="form-grid-2">
+              <label class="checkbox-group">
+                <input type="checkbox" id="isActive" name="isActive" value="true" th:checked="*{resolveActive()}"/>
+                <span class="checkbox-label">Active</span>
+              </label>
+
+              <label class="checkbox-group">
+                <input type="checkbox" id="isDefault" name="isDefault" value="true" th:checked="*{isDefault}"/>
+                <span class="checkbox-label">Default Product</span>
+              </label>
+
+              <label class="checkbox-group">
+                <input type="checkbox" id="allowOverdraft" name="allowOverdraft" value="true" th:checked="*{allowOverdraft}"/>
+                <span class="checkbox-label">Allow Overdraft</span>
+              </label>
+
+              <label class="checkbox-group">
+                <input type="checkbox" id="requireMaintainingBalance" name="requireMaintainingBalance" value="true" th:checked="*{requireMaintainingBalance}"/>
+                <span class="checkbox-label">Require Maintaining Balance</span>
+              </label>
+            </div>
           </div>
 
-          <div class="mb-4">
-            <label class="form-label">Jenis Akad <span style="color: #ef4444;">*</span></label>
-            <select class="form-control-custom form-select" th:field="*{jenisAkad}" required>
-              <option value="" disabled selected>-- Pilih Jenis Akad --</option>
-              <option th:each="o : ${akadOptions}"
-                      th:value="${o.value}"
-                      th:text="${o.label}">
-              </option>
-            </select>
+          <!-- 3. Islamic Banking Configuration -->
+          <div class="form-section-card">
+            <h2 class="section-title">3. Islamic Banking Configuration</h2>
+            <div class="form-grid-3">
+              <div class="form-group">
+                <label for="minimumOpeningBalance" class="form-label">Minimum Opening Balance (IDR) <span class="required-star">*</span></label>
+                <input class="form-control-custom" type="number" id="minimumOpeningBalance" name="minimumOpeningBalance" 
+                       th:value="*{resolveOpeningBalance()}" step="0.01" min="0" max="1000000000" required/>
+                <div class="help-text">Setoran awal minimum untuk pembukaan rekening</div>
+              </div>
+
+              <div class="form-group">
+                <label for="minimumBalance" class="form-label">Minimum Balance (IDR)</label>
+                <input class="form-control-custom" type="number" id="minimumBalance" name="minimumBalance" 
+                       th:value="*{minimumBalance != null ? minimumBalance : 0}" step="0.01" min="0"/>
+                <div class="help-text">Saldo mengendap minimal</div>
+              </div>
+
+              <div class="form-group">
+                <label for="maximumBalance" class="form-label">Maximum Balance (IDR)</label>
+                <input class="form-control-custom" type="number" id="maximumBalance" name="maximumBalance" 
+                       th:value="*{maximumBalance}" step="0.01" placeholder="Kosongkan jika tidak ada limit"/>
+              </div>
+
+              <div class="form-group">
+                <label for="profitSharingRatio" class="form-label">Profit Sharing Ratio</label>
+                <input class="form-control-custom" type="number" id="profitSharingRatio" name="profitSharingRatio" 
+                       th:value="*{profitSharingRatio != null ? profitSharingRatio : 0}" step="0.0001" min="0" max="1" placeholder="e.g., 0.0275"/>
+                <div class="help-text">Rasio bagi hasil (e.g., 0.0275 untuk 2.75%)</div>
+              </div>
+
+              <div class="form-group">
+                <label for="profitSharingType" class="form-label">Profit Sharing Type</label>
+                <select class="form-control-custom" id="profitSharingType" name="profitSharingType">
+                  <option value="" disabled th:selected="${form.profitSharingType == null}">Pilih Akad</option>
+                  <option th:each="opt : ${profitSharingTypeOptions}"
+                          th:value="${opt}"
+                          th:text="${opt}"
+                          th:selected="${form.profitSharingType == opt}">
+                  </option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="profitDistributionFrequency" class="form-label">Profit Distribution</label>
+                <select class="form-control-custom" id="profitDistributionFrequency" name="profitDistributionFrequency">
+                  <option th:each="opt : ${profitDistributionFrequencyOptions}"
+                          th:value="${opt}"
+                          th:text="${opt}"
+                          th:selected="${form.profitDistributionFrequency == opt}">
+                  </option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="nisbahCustomer" class="form-label">Nisbah Customer</label>
+                <input class="form-control-custom" type="number" id="nisbahCustomer" name="nisbahCustomer" 
+                       th:value="*{nisbahCustomer}" step="0.0001" min="0" max="1" placeholder="e.g., 0.7000 (70%)"/>
+              </div>
+
+              <div class="form-group">
+                <label for="nisbahBank" class="form-label">Nisbah Bank</label>
+                <input class="form-control-custom" type="number" id="nisbahBank" name="nisbahBank" 
+                       th:value="*{nisbahBank}" step="0.0001" min="0" max="1" placeholder="e.g., 0.3000 (30%)"/>
+              </div>
+
+              <div class="form-group" style="justify-content: flex-end;">
+                <label class="checkbox-group" style="margin-top: 24px;">
+                  <input type="checkbox" id="isShariahCompliant" name="isShariahCompliant" value="true" th:checked="*{isShariahCompliant}"/>
+                  <span class="checkbox-label">Shariah Compliant</span>
+                </label>
+              </div>
+
+              <div class="form-group">
+                <label for="shariahBoardApprovalNumber" class="form-label">Approval Number</label>
+                <input class="form-control-custom" type="text" id="shariahBoardApprovalNumber" name="shariahBoardApprovalNumber" 
+                       th:value="*{shariahBoardApprovalNumber}" placeholder="Nomor Surat Dewan Syariah"/>
+              </div>
+
+              <div class="form-group">
+                <label for="shariahBoardApprovalDate" class="form-label">Approval Date</label>
+                <input class="form-control-custom" type="date" id="shariahBoardApprovalDate" name="shariahBoardApprovalDate" 
+                       th:value="*{shariahBoardApprovalDate}"/>
+              </div>
+            </div>
           </div>
 
-          <div class="mb-4">
-            <label class="form-label">Deskripsi Singkat</label>
-            <input class="form-control-custom" type="text" th:field="*{deskripsiSingkat}" 
-                   placeholder="Penjelasan singkat mengenai manfaat produk"/>
+          <!-- 4. Limits and Fees -->
+          <div class="form-section-card">
+            <h2 class="section-title">4. Limits and Fees</h2>
+            <div class="form-grid-3">
+              <div class="form-group">
+                <label for="dailyWithdrawalLimit" class="form-label">Daily Withdrawal Limit (IDR)</label>
+                <input class="form-control-custom" type="number" id="dailyWithdrawalLimit" name="dailyWithdrawalLimit" 
+                       th:value="*{dailyWithdrawalLimit}" step="0.01" placeholder="e.g., 5000000"/>
+              </div>
+
+              <div class="form-group">
+                <label for="monthlyTransactionLimit" class="form-label">Monthly Transaction Limit</label>
+                <input class="form-control-custom" type="number" id="monthlyTransactionLimit" name="monthlyTransactionLimit" 
+                       th:value="*{monthlyTransactionLimit}" placeholder="e.g., 50"/>
+              </div>
+
+              <div class="form-group">
+                <label for="overdraftLimit" class="form-label">Overdraft Limit (IDR)</label>
+                <input class="form-control-custom" type="number" id="overdraftLimit" name="overdraftLimit" 
+                       th:value="*{overdraftLimit != null ? overdraftLimit : 0}" step="0.01"/>
+              </div>
+
+              <div class="form-group">
+                <label for="monthlyMaintenanceFee" class="form-label">Monthly Maintenance Fee (IDR)</label>
+                <input class="form-control-custom" type="number" id="monthlyMaintenanceFee" name="monthlyMaintenanceFee" 
+                       th:value="*{monthlyMaintenanceFee != null ? monthlyMaintenanceFee : 0}" step="0.01"/>
+              </div>
+
+              <div class="form-group">
+                <label for="atmWithdrawalFee" class="form-label">ATM Withdrawal Fee (IDR)</label>
+                <input class="form-control-custom" type="number" id="atmWithdrawalFee" name="atmWithdrawalFee" 
+                       th:value="*{atmWithdrawalFee != null ? atmWithdrawalFee : 0}" step="0.01"/>
+              </div>
+
+              <div class="form-group">
+                <label for="interBankTransferFee" class="form-label">Inter Bank Transfer Fee (IDR)</label>
+                <input class="form-control-custom" type="number" id="interBankTransferFee" name="interBankTransferFee" 
+                       th:value="*{interBankTransferFee != null ? interBankTransferFee : 0}" step="0.01"/>
+              </div>
+            </div>
           </div>
 
-          <div class="mb-5">
-            <label class="form-label">Setoran Awal Minimum (IDR) <span style="color: #ef4444;">*</span></label>
-            <input class="form-control-custom" type="number" th:field="*{setoranAwalMinimum}"
-                   step="0.01" min="0" max="1000000000" required/>
-            <div class="help-text">Minimal 0 dan maksimal 1.000.000.000</div>
+          <!-- 5. Transaction Settings -->
+          <div class="form-section-card">
+            <h2 class="section-title">5. Transaction Settings</h2>
+            <div class="form-grid-3">
+              <div class="form-group">
+                <label for="freeTransactionsPerMonth" class="form-label">Free Transactions / Month</label>
+                <input class="form-control-custom" type="number" id="freeTransactionsPerMonth" name="freeTransactionsPerMonth" 
+                       th:value="*{freeTransactionsPerMonth != null ? freeTransactionsPerMonth : 0}"/>
+              </div>
+
+              <div class="form-group">
+                <label for="excessTransactionFee" class="form-label">Excess Transaction Fee (IDR)</label>
+                <input class="form-control-custom" type="number" id="excessTransactionFee" name="excessTransactionFee" 
+                       th:value="*{excessTransactionFee != null ? excessTransactionFee : 0}" step="0.01"/>
+              </div>
+
+              <div class="form-group">
+                <label for="belowMinimumBalanceFee" class="form-label">Below Min Balance Fee (IDR)</label>
+                <input class="form-control-custom" type="number" id="belowMinimumBalanceFee" name="belowMinimumBalanceFee" 
+                       th:value="*{belowMinimumBalanceFee != null ? belowMinimumBalanceFee : 0}" step="0.01"/>
+              </div>
+            </div>
           </div>
 
-          <div style="display:flex; gap:16px; align-items:center; border-top: 1px solid #f1f5f9; pt-4; margin-top: 20px; padding-top: 24px;">
-            <button type="submit" class="btn-primary-rounded" th:text="${submitLabel}">Simpan Produk</button>
-            <a th:href="@{/cs/product}" class="btn-secondary-custom">Batal</a>
+          <!-- 6. Customer Eligibility -->
+          <div class="form-section-card">
+            <h2 class="section-title">6. Customer Eligibility</h2>
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label for="minCustomerAge" class="form-label">Minimum Age (years)</label>
+                <input class="form-control-custom" type="number" id="minCustomerAge" name="minCustomerAge" 
+                       th:value="*{minCustomerAge}" min="0" max="150" placeholder="17"/>
+              </div>
 
-            <a th:if="${mode == 'EDIT'}"
-               th:href="@{/cs/product/{id}(id=${p.id})}"
-               class="btn-link" style="margin-left: auto; text-decoration: none; font-weight: 600; color: #2563eb; font-size: 14px;">
+              <div class="form-group">
+                <label for="maxCustomerAge" class="form-label">Maximum Age (years)</label>
+                <input class="form-control-custom" type="number" id="maxCustomerAge" name="maxCustomerAge" 
+                       th:value="*{maxCustomerAge}" min="0" max="150" placeholder="65"/>
+              </div>
+
+              <div class="form-group full-width">
+                <label for="allowedCustomerTypes" class="form-label">Allowed Customer Types</label>
+                <input class="form-control-custom" type="text" id="allowedCustomerTypes" name="allowedCustomerTypes" 
+                       th:value="*{allowedCustomerTypes != null ? allowedCustomerTypes : 'PERSONAL,CORPORATE'}" placeholder="PERSONAL,CORPORATE"/>
+                <div style="display:flex; gap:16px; margin-top:8px;">
+                  <label class="checkbox-group" style="padding: 6px 12px;">
+                    <input type="checkbox" value="PERSONAL" id="chk-personal" onchange="updateCustomerTypes()">
+                    <span class="checkbox-label">Personal</span>
+                  </label>
+                  <label class="checkbox-group" style="padding: 6px 12px;">
+                    <input type="checkbox" value="CORPORATE" id="chk-corporate" onchange="updateCustomerTypes()">
+                    <span class="checkbox-label">Corporate</span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="form-group full-width">
+                <label for="requiredDocuments" class="form-label">Required Documents</label>
+                <textarea class="form-control-custom" id="requiredDocuments" name="requiredDocuments" rows="2" 
+                          placeholder="e.g., KTP, NPWP (optional)" th:text="*{requiredDocuments}"></textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- 7. Product Lifecycle -->
+          <div class="form-section-card">
+            <h2 class="section-title">7. Product Lifecycle</h2>
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label for="launchDate" class="form-label">Launch Date</label>
+                <input class="form-control-custom" type="date" id="launchDate" name="launchDate" th:value="*{launchDate}"/>
+              </div>
+
+              <div class="form-group">
+                <label for="retirementDate" class="form-label">Retirement Date</label>
+                <input class="form-control-custom" type="date" id="retirementDate" name="retirementDate" th:value="*{retirementDate}"/>
+              </div>
+            </div>
+          </div>
+
+          <!-- Compatibility Aliases for tests -->
+          <input type="hidden" id="kodeProduk" name="kodeProduk" th:value="*{resolveCode()}">
+          <input type="hidden" id="namaProduk" name="namaProduk" th:value="*{resolveName()}">
+          <input type="hidden" id="setoranAwalMinimum" name="setoranAwalMinimum" th:value="*{resolveOpeningBalance()}">
+          <input type="hidden" id="deskripsiSingkat" name="deskripsiSingkat" th:value="*{resolveDescription()}">
+
+          <!-- Action Buttons -->
+          <div style="display:flex; gap:16px; align-items:center; margin-top: 24px; padding-top: 16px;">
+            <button type="submit" id="legacy-submit-btn" class="btn-primary-rounded" th:text="${submitLabel}">Create Product</button>
+            <a th:href="@{/product/list}" class="btn-secondary-custom">Batal</a>
+
+            <a th:if="${mode == 'EDIT' and p != null}"
+               th:href="@{/product/view/{id}(id=${p.uuid ?: p.id})}"
+               style="margin-left: auto; text-decoration: none; font-weight: 600; color: #2563eb; font-size: 14px;">
                Ke Halaman Detail &rarr;
             </a>
           </div>
+
         </form>
       </div>
-    </main>
 
+    </main>
   </div>
 </div>
+
+<script>
+  function updateCustomerTypes() {
+    const personal = document.getElementById('chk-personal').checked;
+    const corporate = document.getElementById('chk-corporate').checked;
+    const types = [];
+    if (personal) types.push('PERSONAL');
+    if (corporate) types.push('CORPORATE');
+    document.getElementById('allowedCustomerTypes').value = types.join(',');
+  }
+
+  // Initialize checkboxes from input value
+  window.addEventListener('DOMContentLoaded', () => {
+    const val = document.getElementById('allowedCustomerTypes').value || '';
+    if (val.includes('PERSONAL')) document.getElementById('chk-personal').checked = true;
+    if (val.includes('CORPORATE')) document.getElementById('chk-corporate').checked = true;
+
+    // Sync alias inputs on submit
+    const form = document.getElementById('product-form');
+    form.addEventListener('submit', () => {
+      document.getElementById('kodeProduk').value = document.getElementById('productCode').value;
+      document.getElementById('namaProduk').value = document.getElementById('productName').value;
+      document.getElementById('setoranAwalMinimum').value = document.getElementById('minimumOpeningBalance').value;
+      document.getElementById('deskripsiSingkat').value = document.getElementById('description').value;
+    });
+  });
+</script>
 </body>
 </html>

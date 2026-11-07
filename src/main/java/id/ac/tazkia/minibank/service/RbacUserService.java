@@ -31,6 +31,22 @@ public class RbacUserService {
         return userRepository.searchUsers(search, pageable);
     }
 
+    public Page<User> searchUsersFiltered(String search, String status, String role, Long branchId, Pageable pageable) {
+        return userRepository.searchUsersFiltered(search, status, role, branchId, pageable);
+    }
+
+    public long countPending() {
+        return userRepository.countByApprovedFalse();
+    }
+
+    public long countActive() {
+        return userRepository.countByApprovedTrueAndEnabledTrue();
+    }
+
+    public long countInactive() {
+        return userRepository.countByApprovedTrueAndEnabledFalse();
+    }
+
     public List<User> searchUsersList(String search) {
         return userRepository.searchUsersList(search);
     }

@@ -38,3 +38,5 @@ build/
 docs/superpowers/
 playwright-tests/test-results/
 playwright-tests/playwright-report/
+
+.tools/

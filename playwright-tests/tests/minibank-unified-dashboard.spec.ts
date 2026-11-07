@@ -82,7 +82,7 @@ test.describe('Minibank Unified Dashboard - Native UI & Flow Verification', () =
     await expect(page.locator('#reports-button')).toBeVisible();
   });
 
-  test('Admin login lands directly on unified /dashboard with native Admin view & RBAC', async ({ page }) => {
+  test('Admin login lands on clean dashboard without approval queue, and accesses RBAC in Settings', async ({ page }) => {
     await page.goto('/login');
     await page.fill('#username', 'admin');
     await page.fill('#password', 'minibank123');
@@ -97,10 +97,25 @@ test.describe('Minibank Unified Dashboard - Native UI & Flow Verification', () =
     await expect(page.locator('.greeting-card')).toBeVisible();
     await expect(page.locator('#header-username')).toHaveText('admin');
 
-    // Admin-specific actions and tables
+    // Stats and product cards visible
+    await expect(page.locator('#statistics-cards')).toBeVisible();
+    await expect(page.locator('#productCardsContainer')).toBeVisible();
+
+    // Verify Antrean Approval & RBAC tables are removed from dashboard
+    await expect(page.locator('.admin-approval-section')).toHaveCount(0);
+    await expect(page.locator('#dashboard-approval-queue')).toHaveCount(0);
+
+    // Navigate to Settings from sidebar to manage RBAC
+    await page.click('#settings-link');
+    await page.waitForURL('**/settings*');
     await expect(page.locator('#create-user-button')).toBeVisible();
-    await expect(page.locator('.admin-approval-section')).toBeVisible();
     await expect(page.locator('text=Pengelolaan Pengguna & Hak Akses (RBAC)')).toBeVisible();
+
+    // Navigate to /rbac/users/list and verify Antrean Approval tab & filters
+    await page.goto('/rbac/users/list');
+    await expect(page.locator('.status-tabs')).toBeVisible();
+    await expect(page.locator('.status-tabs a[href*="PENDING"]')).toBeVisible();
+    await expect(page.locator('.filter-bar')).toBeVisible();
 
     // Logout and redirect to login
     await page.click('#logout-button');

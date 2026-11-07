@@ -25,6 +25,7 @@ public class ActiveModuleFilter extends OncePerRequestFilter {
                 || uri.startsWith("/images/")
                 || uri.startsWith("/api/")
                 || uri.startsWith("/passbook")
+                || uri.startsWith("/product")
                 || uri.startsWith("/favicon.ico");
     }
 

@@ -26,12 +26,47 @@ public interface UserRepository extends JpaRepository<User, Long> {
     // PENDING = approved false
     List<User> findByApprovedFalse();
 
+    long countByApprovedFalse();
+    long countByApprovedTrueAndEnabledTrue();
+    long countByApprovedTrueAndEnabledFalse();
+
     @Query("SELECT u FROM User u LEFT JOIN FETCH u.branch WHERE " +
            "(:search IS NULL OR :search = '' OR " +
            "LOWER(u.username) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
            "LOWER(u.fullName) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
            "LOWER(u.email) LIKE LOWER(CONCAT('%', :search, '%')))")
     Page<User> searchUsers(@Param("search") String search, Pageable pageable);
+
+    @Query(value = "SELECT DISTINCT u FROM User u LEFT JOIN FETCH u.branch LEFT JOIN u.roles r WHERE " +
+           "(:search IS NULL OR :search = '' OR " +
+           " LOWER(u.username) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
+           " LOWER(u.fullName) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
+           " LOWER(u.email) LIKE LOWER(CONCAT('%', :search, '%'))) AND " +
+           "(:status IS NULL OR :status = '' OR :status = 'ALL' OR " +
+           " (:status = 'PENDING' AND u.approved = false) OR " +
+           " (:status = 'ACTIVE' AND u.approved = true AND u.enabled = true) OR " +
+           " (:status = 'INACTIVE' AND u.approved = true AND u.enabled = false) OR " +
+           " (:status = 'LOCKED' AND u.locked = true)) AND " +
+           "(:role IS NULL OR :role = '' OR :role = 'ALL' OR r.name = :role) AND " +
+           "(:branchId IS NULL OR u.branch.id = :branchId)",
+           countQuery = "SELECT COUNT(DISTINCT u) FROM User u LEFT JOIN u.roles r WHERE " +
+           "(:search IS NULL OR :search = '' OR " +
+           " LOWER(u.username) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
+           " LOWER(u.fullName) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
+           " LOWER(u.email) LIKE LOWER(CONCAT('%', :search, '%'))) AND " +
+           "(:status IS NULL OR :status = '' OR :status = 'ALL' OR " +
+           " (:status = 'PENDING' AND u.approved = false) OR " +
+           " (:status = 'ACTIVE' AND u.approved = true AND u.enabled = true) OR " +
+           " (:status = 'INACTIVE' AND u.approved = true AND u.enabled = false) OR " +
+           " (:status = 'LOCKED' AND u.locked = true)) AND " +
+           "(:role IS NULL OR :role = '' OR :role = 'ALL' OR r.name = :role) AND " +
+           "(:branchId IS NULL OR u.branch.id = :branchId)")
+    Page<User> searchUsersFiltered(
+            @Param("search") String search,
+            @Param("status") String status,
+            @Param("role") String role,
+            @Param("branchId") Long branchId,
+            Pageable pageable);
 
     @Query("SELECT u FROM User u LEFT JOIN FETCH u.branch WHERE " +
            "(:search IS NULL OR :search = '' OR " +

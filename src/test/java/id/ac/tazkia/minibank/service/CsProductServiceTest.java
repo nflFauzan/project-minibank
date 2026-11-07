@@ -165,4 +165,57 @@ class CsProductServiceTest extends BaseIntegrationTest {
         Page<ProdukTabungan> result = csProductService.search(null, null, PageRequest.of(0, 10));
         assertNotNull(result);
     }
+
+    @Test
+    @DisplayName("options - validasi opsi produk dan akad")
+    void options_validations() {
+        assertEquals(12, csProductService.productTypeOptions().size());
+        assertEquals(4, csProductService.categoryOptions().size());
+        assertEquals(7, csProductService.profitSharingTypeOptions().size());
+        assertEquals(5, csProductService.profitDistributionFrequencyOptions().size());
+    }
+
+    @Test
+    @DisplayName("findByIdOrUuid - cari dengan numeric ID dan UUID")
+    void findByIdOrUuid_success() {
+        ProdukTabungan byId = csProductService.findByIdOrUuid(existingProduk.getId().toString());
+        assertEquals(existingProduk.getId(), byId.getId());
+
+        assertNotNull(existingProduk.getUuid());
+        ProdukTabungan byUuid = csProductService.findByIdOrUuid(existingProduk.getUuid());
+        assertEquals(existingProduk.getId(), byUuid.getId());
+    }
+
+    @Test
+    @DisplayName("deactivate & activate - ubah status aktif via UUID")
+    void deactivateAndActivate_uuid() {
+        csProductService.deactivate(existingProduk.getUuid());
+        ProdukTabungan p1 = produkTabunganRepository.findById(existingProduk.getId()).orElseThrow();
+        assertFalse(p1.getAktif());
+
+        csProductService.activate(existingProduk.getUuid());
+        ProdukTabungan p2 = produkTabunganRepository.findById(existingProduk.getId()).orElseThrow();
+        assertTrue(p2.getAktif());
+    }
+
+    @Test
+    @DisplayName("create & update dengan ProductFormDto")
+    void createAndUpdate_dto() {
+        id.ac.tazkia.minibank.dto.ProductFormDto dto = new id.ac.tazkia.minibank.dto.ProductFormDto();
+        dto.setProductCode("NEWDTO");
+        dto.setProductName("Produk DTO");
+        dto.setProductType("TABUNGAN_MUDHARABAH");
+        dto.setProductCategory("Tabungan Syariah");
+        dto.setProfitSharingType("MUDHARABAH");
+        dto.setMinimumOpeningBalance(new BigDecimal("150000"));
+
+        ProdukTabungan created = csProductService.create(dto);
+        assertNotNull(created.getId());
+        assertNotNull(created.getUuid());
+        assertEquals("NEWDTO", created.getKodeProduk());
+
+        dto.setProductName("Produk DTO Updated");
+        ProdukTabungan updated = csProductService.update(created.getUuid(), dto);
+        assertEquals("Produk DTO Updated", updated.getNamaProduk());
+    }
 }

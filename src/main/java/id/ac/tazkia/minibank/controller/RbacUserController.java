@@ -5,6 +5,7 @@ import id.ac.tazkia.minibank.dto.rbac.UserEditForm;
 import id.ac.tazkia.minibank.dto.rbac.UserPasswordForm;
 import id.ac.tazkia.minibank.entity.Role;
 import id.ac.tazkia.minibank.entity.User;
+import id.ac.tazkia.minibank.service.AdminUserService;
 import id.ac.tazkia.minibank.service.RbacUserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,7 @@ import java.util.List;
 public class RbacUserController {
 
     private final RbacUserService rbacUserService;
+    private final AdminUserService adminService;
 
     public static final List<String> STUDY_PROGRAMS = List.of(
             "Ekonomi Syariah",
@@ -44,10 +46,13 @@ public class RbacUserController {
 
     @GetMapping("/list")
     public String listUsers(@RequestParam(name = "search", required = false) String search,
+                            @RequestParam(name = "status", required = false) String status,
+                            @RequestParam(name = "role", required = false) String role,
+                            @RequestParam(name = "branchId", required = false) Long branchId,
                             @RequestParam(name = "page", defaultValue = "0") int page,
                             @RequestParam(name = "size", defaultValue = "10") int size,
                             Model model) {
-        Page<User> usersPage = rbacUserService.searchUsers(search,
+        Page<User> usersPage = rbacUserService.searchUsersFiltered(search, status, role, branchId,
                 PageRequest.of(page, size, Sort.by("id").descending()));
 
         model.addAttribute("users", usersPage.getContent());
@@ -56,8 +61,36 @@ public class RbacUserController {
         model.addAttribute("totalPages", usersPage.getTotalPages());
         model.addAttribute("totalElements", usersPage.getTotalElements());
         model.addAttribute("search", search != null ? search : "");
+        model.addAttribute("status", status != null ? status : "ALL");
+        model.addAttribute("selectedRole", role != null ? role : "");
+        model.addAttribute("selectedBranchId", branchId);
+        model.addAttribute("branches", rbacUserService.listActiveBranches());
+        model.addAttribute("availableRoles", AVAILABLE_ROLES);
+        model.addAttribute("pendingCount", rbacUserService.countPending());
+        model.addAttribute("activeCount", rbacUserService.countActive());
+        model.addAttribute("inactiveCount", rbacUserService.countInactive());
         model.addAttribute("activeNav", "rbac-users");
         return "rbac/users/list";
+    }
+
+    @PostMapping("/{id}/approve")
+    public String approveUser(@PathVariable Long id,
+                              @RequestParam(name = "roles", required = false) List<String> roles,
+                              RedirectAttributes ra) {
+        if (roles != null && !roles.isEmpty()) {
+            adminService.approve(id, roles);
+        } else {
+            adminService.approve(id);
+        }
+        ra.addFlashAttribute("successMessage", "Pengguna berhasil disetujui dan telah aktif.");
+        return "redirect:/rbac/users/list?status=PENDING";
+    }
+
+    @PostMapping("/{id}/reject")
+    public String rejectUser(@PathVariable Long id, RedirectAttributes ra) {
+        adminService.reject(id);
+        ra.addFlashAttribute("successMessage", "Permohonan registrasi pengguna ditolak.");
+        return "redirect:/rbac/users/list?status=PENDING";
     }
 
     @GetMapping("/create")

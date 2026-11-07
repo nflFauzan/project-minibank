@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>CS - Produk Tabungan</title>
+  <title>Product Management - Minibank</title>
 
   <link rel="stylesheet" th:href="@{/css/cs-shell.css}">
   <link rel="stylesheet" th:href="@{/css/custom.css}">
@@ -48,26 +48,57 @@
       box-shadow: 0 6px 12px rgba(0, 0, 0, 0.05);
     }
 
-    /* Toolbar / Search Section */
-    .toolbar {
-      display: flex;
+    /* Toolbar / Filter Form */
+    .toolbar-grid {
+      display: grid;
+      grid-template-columns: 2fr 1.5fr 1.5fr 1fr auto;
       gap: 12px;
       background: #fff;
-      padding: 16px;
+      padding: 16px 20px;
       border-radius: 16px;
       border: 1px solid #f1f5f9;
       margin-top: 20px;
-      align-items: center;
-      flex-wrap: wrap;
+      align-items: end;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
     }
 
-    .toolbar input, .toolbar select {
-      padding: 10px 16px;
+    @media (max-width: 1024px) {
+      .toolbar-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .toolbar-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .filter-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: #64748b;
+    }
+
+    .toolbar-input, .toolbar-select {
+      padding: 10px 14px;
       border-radius: 10px;
       border: 1px solid #e2e8f0;
       font-family: 'Poppins', sans-serif;
       font-size: 14px;
       outline: none;
+      background-color: #fff;
+      transition: border-color 0.2s;
+    }
+
+    .toolbar-input:focus, .toolbar-select:focus {
+      border-color: #1e3a8a;
     }
 
     /* Table Styling */
@@ -78,13 +109,13 @@
       border-radius: 20px;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
       padding: 12px;
-      overflow: auto;
+      overflow-x: auto;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      min-width: 1000px;
+      min-width: 1050px;
       font-size: 14px;
     }
 
@@ -100,6 +131,18 @@
       text-transform: uppercase;
       font-size: 11px;
       letter-spacing: 0.05em;
+    }
+
+    th a {
+      color: inherit;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    th a:hover {
+      color: #1e3a8a;
     }
 
     td {
@@ -119,29 +162,54 @@
 
     /* Badges */
     .badge {
-      padding: 4px 12px;
+      padding: 4px 10px;
       border-radius: 8px;
       font-size: 12px;
-      font-weight: 700;
+      font-weight: 600;
       display: inline-block;
     }
+    .badge-type { background: #eff6ff; color: #1d4ed8; border: 1px solid #dbeafe; font-size: 11px; }
     .badge-active { background: #ecfdf5; color: #059669; }
-    .badge-inactive { background: #f1f5f9; color: #64748b; }
+    .badge-inactive { background: #fef2f2; color: #b91c1c; }
 
     .action-link {
       text-decoration: none;
       font-weight: 700;
       color: #2563eb;
+      font-size: 13px;
+    }
+    .action-link:hover {
+      text-decoration: underline;
     }
 
     .link-danger {
-      color: #dc2626;
+      color: #ea580c;
       background: none;
       border: none;
       font-family: 'Poppins', sans-serif;
       font-weight: 700;
       cursor: pointer;
       padding: 0;
+      font-size: 13px;
+    }
+    .link-danger:hover {
+      text-decoration: underline;
+      color: #c2410c;
+    }
+
+    .link-success {
+      color: #16a34a;
+      background: none;
+      border: none;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 700;
+      cursor: pointer;
+      padding: 0;
+      font-size: 13px;
+    }
+    .link-success:hover {
+      text-decoration: underline;
+      color: #15803d;
     }
 
     .pagination-container {
@@ -179,77 +247,158 @@
 
     <main class="cs-page" style="padding: 32px;">
       
-      <div style="display:flex; align-items:center; justify-content:space-between;">
-        <h1 class="page-title">Produk Tabungan</h1>
-        <a th:href="@{/cs/product/new}" class="btn-primary-custom">
-          + Tambah Produk
+      <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px;">
+        <div>
+          <h1 class="page-title">Product Management</h1>
+          <p style="color: #64748b; font-size: 14px; margin-top: 4px;">Kelola produk perbankan syariah, nisbah bagi hasil, limit, dan biaya.</p>
+        </div>
+        <a id="create-product-btn" th:href="@{/product/create}" class="btn-primary-custom" style="background:#1e3a8a; color:#fff; border:none;">
+          <svg style="width:18px; height:18px; margin-right:8px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+          </svg>
+          Create Product
         </a>
       </div>
 
-      <div th:if="${success}" style="margin-top:20px; padding:12px; background:#f0fdf4; color:#166534; border-radius:10px; font-weight:600;" th:text="${success}"></div>
-      <div th:if="${error}" style="margin-top:20px; padding:12px; background:#fef2f2; color:#991b1b; border-radius:10px; font-weight:600;" th:text="${error}"></div>
+      <!-- Flash Messages -->
+      <div th:if="${success}" class="alert alert-success" style="margin-top:20px; padding:14px 20px; background:#f0fdf4; color:#166534; border-radius:12px; font-weight:600;" th:text="${success}"></div>
+      <div th:if="${error}" class="alert alert-danger" style="margin-top:20px; padding:14px 20px; background:#fef2f2; color:#991b1b; border-radius:12px; font-weight:600;" th:text="${error}"></div>
 
-      <form method="get" th:action="@{/cs/product}" class="toolbar">
-        <div style="display: flex; align-items: center; gap: 8px;">
-          <span style="font-size: 14px; font-weight: 600; color: #64748b;">Status:</span>
-          <select name="status">
-            <option value="ALL" th:selected="${status == 'ALL'}">Semua</option>
-            <option value="ACTIVE" th:selected="${status == 'ACTIVE'}">Aktif</option>
-            <option value="INACTIVE" th:selected="${status == 'INACTIVE'}">Nonaktif</option>
+      <!-- Filter Form matching minibank.tazkia.ac.id -->
+      <form method="get" th:action="@{/product/list}" class="toolbar-grid">
+        <div class="filter-group">
+          <label for="search" class="filter-label">Search</label>
+          <input type="text" id="search" name="search" th:value="${search ?: q}" 
+                 placeholder="Product code, name, or description" class="toolbar-input">
+        </div>
+
+        <div class="filter-group">
+          <label for="productType" class="filter-label">Type</label>
+          <select id="productType" name="productType" class="toolbar-select">
+            <option value="">All Types</option>
+            <option th:each="opt : ${productTypeOptions}"
+                    th:value="${opt}"
+                    th:text="${opt}"
+                    th:selected="${productType == opt}">
+            </option>
           </select>
         </div>
 
-        <div style="flex: 1; min-width: 250px;">
-          <input type="text" name="q" th:value="${q}" placeholder="Cari kode, nama, atau akad..." style="width: 100%;">
+        <div class="filter-group">
+          <label for="category" class="filter-label">Category</label>
+          <select id="category" name="category" class="toolbar-select">
+            <option value="">All Categories</option>
+            <option th:each="cat : ${categoryOptions}"
+                    th:value="${cat}"
+                    th:text="${cat}"
+                    th:selected="${category == cat}">
+            </option>
+          </select>
         </div>
 
-        <button type="submit" class="btn-primary-custom" style="background: #1e3a8a; color: #fff; border: none;">Terapkan</button>
+        <div class="filter-group">
+          <label for="status" class="filter-label">Status</label>
+          <select id="status" name="status" class="toolbar-select">
+            <option value="ALL" th:selected="${status == 'ALL'}">All Status</option>
+            <option value="ACTIVE" th:selected="${status == 'ACTIVE'}">Active</option>
+            <option value="INACTIVE" th:selected="${status == 'INACTIVE'}">Inactive</option>
+          </select>
+        </div>
+
+        <div>
+          <button type="submit" id="filter-button" class="btn-primary-custom" style="background:#1e3a8a; color:#fff; border:none; width:100%; justify-content:center;">
+            Filter
+          </button>
+        </div>
       </form>
 
+      <!-- Products Table matching minibank.tazkia.ac.id -->
       <div class="table-container">
         <table>
           <thead>
             <tr>
-              <th>Kode Produk</th>
-              <th>Nama Produk</th>
-              <th>Jenis Akad</th>
-              <th>Setoran Awal (IDR)</th>
+              <th>
+                <a th:href="@{/product/list(sortBy='productCode', sortDir=${sortBy == 'productCode' and sortDir == 'asc' ? 'desc' : 'asc'}, search=${search}, productType=${productType}, category=${category}, status=${status})}">
+                  Code
+                  <span th:if="${sortBy == 'productCode'}" th:text="${sortDir == 'asc' ? '↑' : '↓'}"></span>
+                </a>
+              </th>
+              <th>
+                <a th:href="@{/product/list(sortBy='productName', sortDir=${sortBy == 'productName' and sortDir == 'asc' ? 'desc' : 'asc'}, search=${search}, productType=${productType}, category=${category}, status=${status})}">
+                  Name
+                  <span th:if="${sortBy == 'productName'}" th:text="${sortDir == 'asc' ? '↑' : '↓'}"></span>
+                </a>
+              </th>
+              <th>Type</th>
+              <th>Category</th>
+              <th>Profit Sharing</th>
               <th>Status</th>
-              <th style="width: 200px;">Aksi</th>
+              <th style="width: 220px; text-align: right;">Actions</th>
             </tr>
           </thead>
           <tbody>
             <tr th:if="${page.totalElements == 0}">
-              <td colspan="6" style="padding:40px; text-align:center; color:#94a3b8;">Tidak ada data produk ditemukan.</td>
+              <td colspan="7" style="padding:40px; text-align:center; color:#94a3b8;">No products found matching criteria.</td>
             </tr>
 
             <tr th:each="p : ${page.content}">
-              <td style="font-weight:700; color:#1e3a8a;" th:text="${p.kodeProduk}">PROD01</td>
-              <td style="font-weight:700; color:#0f172a;" th:text="${p.namaProduk}">Nama Produk</td>
+              <!-- Product Code -->
+              <td style="font-weight:700; color:#1e3a8a;" th:id="'product-code-' + ${p.kodeProduk}" th:text="${p.kodeProduk}">TAB001</td>
+
+              <!-- Product Name + Description Subtitle -->
               <td>
-                <span style="background: #f8fafc; padding: 4px 8px; border-radius: 6px; font-size: 12px; border: 1px solid #e2e8f0;" th:text="${p.jenisAkad}">Wadiah</span>
+                <div style="font-weight:700; color:#0f172a;" th:text="${p.namaProduk}">Tabungan Wadiah Basic</div>
+                <div style="font-size:12px; color:#64748b; margin-top:2px; max-width:320px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" 
+                     th:text="${p.deskripsiSingkat}">Deskripsi singkat produk perbankan</div>
               </td>
-              <td style="font-weight: 600;" th:text="${#numbers.formatDecimal(p.setoranAwalMinimum, 0, 'POINT', 0, 'COMMA')}">0</td>
+
+              <!-- Product Type Badge -->
+              <td>
+                <span class="badge badge-type" th:text="${p.productType ?: ('TABUNGAN_' + p.jenisAkad)}">TABUNGAN_WADIAH</span>
+              </td>
+
+              <!-- Product Category -->
+              <td th:text="${p.productCategory ?: 'Tabungan Syariah'}">Tabungan Syariah</td>
+
+              <!-- Profit Sharing (Ratio as Percentage) -->
+              <td style="font-weight:600; color:#0f172a;">
+                <span th:if="${p.profitSharingRatio != null}" 
+                      th:text="${#numbers.formatDecimal(p.profitSharingRatio * 100, 2, 'POINT', 2, 'COMMA') + '%'}">02.75%</span>
+                <span th:if="${p.profitSharingRatio == null}">-</span>
+              </td>
+
+              <!-- Status Badge -->
               <td>
                 <span th:class="${p.aktif ? 'badge badge-active' : 'badge badge-inactive'}" 
-                      th:text="${p.aktif ? 'Aktif' : 'Nonaktif'}">Aktif</span>
+                      th:id="'status-' + ${p.kodeProduk}"
+                      th:text="${p.aktif ? 'Active' : 'Inactive'}">Active</span>
               </td>
-              <td>
-                <div style="display:flex; gap:12px; align-items:center;">
-                  <a th:href="@{/cs/product/{id}(id=${p.id})}" class="action-link">Detail</a>
+
+              <!-- Action Links (View, Edit, Deactivate / Activate) -->
+              <td style="text-align: right;">
+                <div style="display:inline-flex; gap:10px; align-items:center;">
+                  <a th:href="@{/product/view/{id}(id=${p.uuid ?: p.id})}" 
+                     class="action-link" 
+                     th:id="'view-' + ${p.kodeProduk}">View</a>
                   <span style="color:#e2e8f0;">|</span>
-                  <a th:href="@{/cs/product/{id}/edit(id=${p.id})}" class="action-link">Edit</a>
+                  <a th:href="@{/product/edit/{id}(id=${p.uuid ?: p.id})}" 
+                     class="action-link" 
+                     th:id="'edit-' + ${p.kodeProduk}">Edit</a>
                   <span style="color:#e2e8f0;">|</span>
                   
-                  <form th:action="@{/cs/product/{id}/toggle(id=${p.id})}" method="post" style="display:inline;">
-                    <input type="hidden" name="q" th:value="${q}">
+                  <form th:action="@{/product/delete/{id}(id=${p.uuid ?: p.id})}" method="post" style="display:inline;">
+                    <input type="hidden" name="search" th:value="${search ?: q}">
+                    <input type="hidden" name="productType" th:value="${productType}">
+                    <input type="hidden" name="category" th:value="${category}">
                     <input type="hidden" name="status" th:value="${status}">
                     <input type="hidden" name="page" th:value="${page.number}">
                     <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
                     
-                    <button class="link-danger" type="submit"
-                            th:onclick="return confirm([[${p.aktif} ? 'Nonaktifkan produk ini?' : 'Aktifkan produk ini?']]);">
-                      <span th:text="${p.aktif} ? 'Nonaktif' : 'Aktif'"></span>
+                    <button th:class="${p.aktif ? 'link-danger' : 'link-success'}" 
+                            type="submit"
+                            th:id="(${p.aktif ? 'deactivate-' : 'activate-'} + ${p.kodeProduk})"
+                            th:onclick="return confirm([[${p.aktif} ? 'Are you sure you want to deactivate this product?' : 'Are you sure you want to activate this product?']]);">
+                      <span th:text="${p.aktif ? 'Deactivate' : 'Activate'}">Deactivate</span>
                     </button>
                   </form>
                 </div>
@@ -259,14 +408,15 @@
         </table>
       </div>
 
+      <!-- Pagination -->
       <div class="pagination-container" th:if="${page.totalPages > 1}">
         <a th:if="${page.hasPrevious()}" class="pagination-link"
-           th:href="@{/cs/product(page=${page.number-1}, q=${q}, status=${status})}">Sebelumnya</a>
+           th:href="@{/product/list(page=${page.number-1}, search=${search ?: q}, productType=${productType}, category=${category}, status=${status}, sortBy=${sortBy}, sortDir=${sortDir})}">Previous</a>
 
-        <span>Halaman <span th:text="${page.number + 1}"></span> dari <span th:text="${page.totalPages}"></span></span>
+        <span>Page <span th:text="${page.number + 1}"></span> of <span th:text="${page.totalPages}"></span></span>
 
         <a th:if="${page.hasNext()}" class="pagination-link"
-           th:href="@{/cs/product(page=${page.number+1}, q=${q}, status=${status})}">Berikutnya</a>
+           th:href="@{/product/list(page=${page.number+1}, search=${search ?: q}, productType=${productType}, category=${category}, status=${status}, sortBy=${sortBy}, sortDir=${sortDir})}">Next</a>
       </div>
 
     </main>

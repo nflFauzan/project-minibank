@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>User Management - Minibank</title>
+  <title>User Management & Approval - Minibank</title>
 
   <link rel="stylesheet" th:href="@{/css/cs-shell.css}">
   <link rel="stylesheet" th:href="@{/css/custom.css}">
@@ -27,90 +27,198 @@
       margin: 0;
     }
     .content-card {
-      margin-top: 20px;
+      margin-top: 18px;
       background: #fff;
-      border-radius: 16px;
+      border-radius: 18px;
       border: 1px solid #e2e8f0;
-      box-shadow: 0 4px 20px rgba(0,0,0,.04);
+      box-shadow: 0 4px 20px rgba(0,0,0,.03);
       padding: 24px;
     }
-    .filter-bar {
+
+    /* STATUS TABS */
+    .status-tabs {
       display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      border-bottom: 1px solid #e2e8f0;
+      padding-bottom: 14px;
+      overflow-x: auto;
+    }
+
+    .tab-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 18px;
+      border-radius: 999px;
+      font-size: 13.5px;
+      font-weight: 600;
+      text-decoration: none;
+      color: #64748b;
+      background: #f1f5f9;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .tab-pill:hover {
+      background: #e2e8f0;
+      color: #0f172a;
+    }
+
+    .tab-pill.active {
+      background: #113C8D;
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(17, 60, 141, 0.25);
+    }
+
+    .tab-counter {
+      padding: 2px 7px;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 700;
+      background: rgba(0, 0, 0, 0.08);
+      color: inherit;
+    }
+
+    .tab-pill.active .tab-counter {
+      background: rgba(255, 255, 255, 0.25);
+      color: #ffffff;
+    }
+
+    .tab-counter-pending {
+      background: #f59e0b !important;
+      color: #ffffff !important;
+      animation: pulse 2s infinite;
+    }
+
+    /* FILTER BAR */
+    .filter-bar {
+      display: grid;
+      grid-template-columns: 2fr 1.2fr 1.2fr 1.2fr auto auto;
       gap: 12px;
       align-items: center;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
+      margin-bottom: 22px;
+      background: #f8fafc;
+      padding: 16px;
+      border-radius: 14px;
+      border: 1px solid #e2e8f0;
     }
-    .search-input {
-      flex: 1;
-      min-width: 260px;
-      padding: 10px 16px;
+
+    .filter-input, .filter-select {
+      width: 100%;
+      padding: 9px 14px;
       border-radius: 10px;
       border: 1.5px solid #d0d7de;
       font-family: 'Poppins', sans-serif;
-      font-size: 14px;
+      font-size: 13.5px;
       outline: none;
+      background: #fff;
     }
-    .search-input:focus {
+
+    .filter-input:focus, .filter-select:focus {
       border-color: #113C8D;
     }
+
     .btn-primary-blue {
       background: #113C8D;
       color: #fff;
       border: none;
       border-radius: 10px;
-      padding: 10px 20px;
+      padding: 9px 18px;
       font-weight: 700;
-      font-size: 14px;
+      font-size: 13.5px;
       cursor: pointer;
       text-decoration: none;
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       gap: 6px;
       transition: background 0.2s;
+      white-space: nowrap;
     }
+
     .btn-primary-blue:hover {
       background: #0c2d6e;
     }
+
     .btn-secondary-custom {
-      background: #f1f5f9;
+      background: #fff;
       color: #475569;
       border: 1.5px solid #cbd5e1;
       border-radius: 10px;
-      padding: 9px 18px;
+      padding: 8px 16px;
       font-weight: 600;
-      font-size: 14px;
+      font-size: 13.5px;
       cursor: pointer;
       text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      white-space: nowrap;
     }
+
     .btn-secondary-custom:hover {
-      background: #e2e8f0;
+      background: #f1f5f9;
     }
+
+    /* TABLE */
     table.data-table-custom {
       width: 100%;
       border-collapse: collapse;
       margin-top: 8px;
     }
+
     table.data-table-custom th {
-      padding: 14px 12px;
+      padding: 12px 10px;
       text-align: left;
-      font-size: 12px;
+      font-size: 11.5px;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.6px;
+      letter-spacing: 0.5px;
       color: #64748b;
       border-bottom: 2px solid #e2e8f0;
       background: #f8fafc;
+      white-space: nowrap;
     }
+
     table.data-table-custom td {
-      padding: 14px 12px;
-      font-size: 14px;
+      padding: 12px 10px;
+      font-size: 12.5px;
       color: #334155;
       border-bottom: 1px solid #f1f5f9;
       vertical-align: middle;
     }
+
     table.data-table-custom tbody tr:hover {
       background-color: #f8fafc;
+    }
+
+    .pending-row {
+      background-color: #fffbeb !important;
+    }
+
+    .pending-row:hover {
+      background-color: #fef3c7 !important;
+    }
+
+    .col-fullname {
+      max-width: 130px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .col-email {
+      max-width: 160px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .col-date {
+      white-space: nowrap;
+      font-size: 11.5px;
+      color: #64748b;
     }
     .badge-status {
       padding: 4px 10px;
@@ -119,39 +227,110 @@
       font-weight: 700;
       display: inline-block;
     }
+
     .badge-active { background: #dcfce7; color: #166534; }
     .badge-inactive { background: #fee2e2; color: #991b1b; }
-    .badge-locked { background: #fef3c7; color: #92400e; margin-left: 4px; }
+    .badge-pending { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+    .badge-locked { background: #e2e8f0; color: #475569; margin-left: 4px; }
+
+    .badge-role {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 600;
+      margin-right: 3px;
+      background: #e0f2fe;
+      color: #0369a1;
+    }
+
     .action-links {
       display: flex;
-      gap: 8px;
+      gap: 4px;
       align-items: center;
       flex-wrap: wrap;
     }
+
     .action-link {
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 700;
       text-decoration: none;
-      padding: 5px 10px;
+      padding: 4px 7px;
       border-radius: 6px;
       transition: all 0.15s;
+      border: none;
+      cursor: pointer;
+      white-space: nowrap;
     }
+
     .action-view { background: #eff6ff; color: #1d4ed8; }
     .action-edit { background: #fefce8; color: #a16207; }
     .action-pass { background: #f3e8ff; color: #7e22ce; }
     .action-roles { background: #ecfdf5; color: #047857; }
-    .action-deact { background: #f1f5f9; color: #475569; border: none; cursor: pointer; }
-    .action-delete { background: #fee2e2; color: #b91c1c; border: none; cursor: pointer; }
-    .action-link:hover, .action-btn-sm:hover { opacity: 0.85; }
+    .action-deact { background: #f1f5f9; color: #475569; }
+    .action-delete { background: #fee2e2; color: #b91c1c; }
+
+    .btn-approve-inline {
+      background: #10b981;
+      color: #ffffff;
+      font-weight: 700;
+      padding: 4px 9px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      font-size: 11px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .btn-approve-inline:hover {
+      background: #059669;
+    }
+
+    .btn-reject-inline {
+      background: #ef4444;
+      color: #ffffff;
+      font-weight: 700;
+      padding: 4px 9px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      font-size: 11px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+    }
+      font-weight: 700;
+      padding: 6px 12px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      font-size: 12px;
+    }
+
+    .btn-reject-inline:hover {
+      background: #dc2626;
+    }
+
+    .action-link:hover { opacity: 0.85; }
+
     .alert-banner {
       padding: 12px 18px;
-      border-radius: 10px;
-      margin-bottom: 16px;
+      border-radius: 12px;
+      margin-bottom: 18px;
       font-size: 14px;
       font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
+
     .alert-success { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
     .alert-error { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+
     .pagination-bar {
       display: flex;
       justify-content: space-between;
@@ -159,6 +338,18 @@
       margin-top: 20px;
       font-size: 13px;
       color: #64748b;
+    }
+
+    @media (max-width: 1024px) {
+      .filter-bar {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .filter-bar {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
@@ -170,61 +361,142 @@
   <div class="cs-content">
     <div th:replace="~{cs/fragments :: topbar}"></div>
 
-    <main class="cs-page" style="padding: 30px;">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <main class="cs-page" style="padding: 20px 24px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
         <div>
           <h1 class="page-title">User Management</h1>
-          <p style="margin: 4px 0 0; color: #64748b; font-size: 14px;">Kelola akun pengguna, penugasan role, dan status akses</p>
+          <p style="margin: 4px 0 0; color: #64748b; font-size: 14px;">Antrean Approval Registrasi Pengguna Baru, Penugasan Role, dan Pengelolaan Akses Akun</p>
         </div>
-        <a id="btn-create-user" th:href="@{/rbac/users/create}" class="btn-primary-blue">+ Create User</a>
+        <a id="btn-create-user" th:href="@{/rbac/users/create}" class="btn-primary-blue">+ Tambah Pengguna Baru</a>
       </div>
 
+      <!-- Feedback Notifications -->
       <div th:if="${successMessage}" class="alert-banner alert-success" th:text="${successMessage}"></div>
+      <div th:if="${param.approved}" class="alert-banner alert-success">✓ Akun pengguna berhasil disetujui dan diaktifkan.</div>
+      <div th:if="${param.rejected}" class="alert-banner alert-success">✓ Permohonan registrasi akun pengguna telah ditolak.</div>
       <div th:if="${errorMessage}" class="alert-banner alert-error" th:text="${errorMessage}"></div>
 
       <div class="content-card">
-        <!-- Search Bar -->
+
+        <!-- 1. Quick Filter Tabs -->
+        <div class="status-tabs">
+          <a th:href="@{/rbac/users/list}" class="tab-pill" th:classappend="${status == null or status == '' or status == 'ALL'} ? ' active' : ''">
+            <span>Semua Pengguna</span>
+          </a>
+
+          <a th:href="@{/rbac/users/list(status='PENDING')}" class="tab-pill" th:classappend="${status == 'PENDING'} ? ' active' : ''">
+            <span>Antrean Approval Registrasi</span>
+            <span class="tab-counter" th:classappend="${pendingCount != null and pendingCount > 0} ? ' tab-counter-pending' : ''" th:text="${pendingCount} ?: 0">0</span>
+          </a>
+
+          <a th:href="@{/rbac/users/list(status='ACTIVE')}" class="tab-pill" th:classappend="${status == 'ACTIVE'} ? ' active' : ''">
+            <span>Pengguna Aktif</span>
+            <span class="tab-counter" th:text="${activeCount} ?: 0">0</span>
+          </a>
+
+          <a th:href="@{/rbac/users/list(status='INACTIVE')}" class="tab-pill" th:classappend="${status == 'INACTIVE'} ? ' active' : ''">
+            <span>Nonaktif</span>
+            <span class="tab-counter" th:text="${inactiveCount} ?: 0">0</span>
+          </a>
+        </div>
+
+        <!-- 2. Search & Filter Bar Form -->
         <form th:action="@{/rbac/users/list}" method="get" class="filter-bar">
-          <input type="text" name="search" class="search-input" th:value="${search}" placeholder="Search by username, email, or full name..." />
-          <button type="submit" class="btn-primary-blue">Search</button>
-          <a th:href="@{/rbac/users/list}" class="btn-secondary-custom">Clear</a>
+          <div>
+            <input type="text" name="search" class="filter-input" th:value="${search}" placeholder="Cari username, nama, email..." />
+          </div>
+
+          <div>
+            <select name="status" class="filter-select">
+              <option value="" th:selected="${status == null or status == '' or status == 'ALL'}">Semua Status</option>
+              <option value="PENDING" th:selected="${status == 'PENDING'}">Menunggu Approval</option>
+              <option value="ACTIVE" th:selected="${status == 'ACTIVE'}">Aktif</option>
+              <option value="INACTIVE" th:selected="${status == 'INACTIVE'}">Nonaktif</option>
+              <option value="LOCKED" th:selected="${status == 'LOCKED'}">Terkunci</option>
+            </select>
+          </div>
+
+          <div>
+            <select name="role" class="filter-select">
+              <option value="" th:selected="${selectedRole == null or selectedRole == ''}">Semua Role</option>
+              <option th:each="r : ${availableRoles}" th:value="${r}" th:text="${r}" th:selected="${selectedRole == r}">ROLE_CS</option>
+            </select>
+          </div>
+
+          <div>
+            <select name="branchId" class="filter-select">
+              <option value="" th:selected="${selectedBranchId == null}">Semua Cabang</option>
+              <option th:each="b : ${branches}" th:value="${b.id}" th:text="${b.name + ' (' + b.code + ')'}" th:selected="${selectedBranchId == b.id}">Kantor Pusat</option>
+            </select>
+          </div>
+
+          <div>
+            <button type="submit" class="btn-primary-blue">Search</button>
+          </div>
+
+          <div>
+            <a th:href="@{/rbac/users/list}" class="btn-secondary-custom">Reset</a>
+          </div>
         </form>
 
-        <!-- Table -->
-        <div style="overflow-x: auto;">
-          <table class="data-table-custom">
+        <!-- 3. Table of Users & Approval Queue -->
+        <div style="margin-top: 16px; border: 1px solid #e2e8f0; border-radius: 12px; overflow-x: auto;">
+          <table class="data-table-custom" style="margin-top: 0;">
             <thead>
               <tr>
                 <th>Username</th>
-                <th>Full Name</th>
+                <th>Nama Lengkap</th>
                 <th>Email</th>
-                <th>Branch</th>
+                <th>Role / Akses</th>
+                <th>Cabang</th>
                 <th>Status</th>
-                <th>Created Date</th>
-                <th style="min-width: 280px;">Actions</th>
+                <th>Tgl Didaftarkan</th>
+                <th style="min-width: 215px;">Aksi Otorisasi / Kelola</th>
               </tr>
             </thead>
             <tbody>
               <tr th:if="${#lists.isEmpty(users)}">
-                <td colspan="7" style="text-align: center; color: #94a3b8; padding: 30px;">Tidak ada data pengguna ditemukan.</td>
+                <td colspan="8" style="text-align: center; color: #94a3b8; padding: 36px;">
+                  Tidak ada data pengguna yang sesuai dengan kriteria filter saat ini.
+                </td>
               </tr>
-              <tr th:each="u : ${users}">
+              <tr th:each="u : ${users}" th:classappend="${!u.approved} ? ' pending-row' : ''">
                 <td>
                   <strong style="color: #113C8D;" th:text="${u.username}">username</strong>
+                  <div th:if="${!u.approved}" style="font-size: 10.5px; color: #b45309; font-weight: 700;">★ Pendaftar Baru</div>
                 </td>
-                <td th:text="${u.fullName}">Full Name</td>
-                <td th:text="${u.email}">email@domain.com</td>
+                <td class="col-fullname" th:title="${u.fullName}" th:text="${u.fullName}">Full Name</td>
+                <td class="col-email" th:title="${u.email}" th:text="${u.email}">email@domain.com</td>
                 <td>
-                  <span th:text="${u.branch != null ? u.branch.name + ' (' + u.branch.code + ')' : '-'}">Kantor Pusat</span>
+                  <span th:each="r : ${u.roles}" class="badge-role" th:text="${r.name}">ROLE_CS</span>
+                  <span th:if="${u.roles == null or #lists.isEmpty(u.roles)}" style="font-size: 11px; color: #94a3b8;">Belum ada role</span>
                 </td>
                 <td>
-                  <span th:if="${u.enabled}" class="badge-status badge-active">Active</span>
-                  <span th:unless="${u.enabled}" class="badge-status badge-inactive">Inactive</span>
+                  <span th:text="${u.branch != null ? u.branch.name : '-'}">Kantor Pusat</span>
+                </td>
+                <td>
+                  <span th:if="${!u.approved}" class="badge-status badge-pending">Menunggu Approval</span>
+                  <span th:if="${u.approved and u.enabled}" class="badge-status badge-active">Active</span>
+                  <span th:if="${u.approved and !u.enabled}" class="badge-status badge-inactive">Inactive</span>
                   <span th:if="${u.locked}" class="badge-status badge-locked">Locked</span>
                 </td>
-                <td th:text="${u.createdAt != null ? #temporals.format(u.createdAt, 'dd/MM/yyyy') : '-'}">08/11/2025</td>
+                <td class="col-date" th:text="${u.createdAt != null ? #temporals.format(u.createdAt, 'dd/MM/yyyy HH:mm') : '-'}">08/11/2025</td>
                 <td>
-                  <div class="action-links">
+                  <!-- AKSI UNTUK USER YANG BELUM DI-APPROVE (ANTREAN APPROVAL) -->
+                  <div th:if="${!u.approved}" class="action-links">
+                    <a th:href="@{'/admin/approval/' + ${u.id}}" class="action-link action-view" style="background:#dbeafe; color:#1e40af; font-weight:700;">Review & Approval</a>
+                    
+                    <form th:action="@{'/rbac/users/' + ${u.id} + '/approve'}" method="post" style="display:inline;">
+                      <button type="submit" class="btn-approve-inline">✓ Setujui</button>
+                    </form>
+
+                    <form th:action="@{'/rbac/users/' + ${u.id} + '/reject'}" method="post" style="display:inline;" onsubmit="return confirm('Tolak permohonan registrasi pengguna ini?');">
+                      <button type="submit" class="btn-reject-inline">✕ Tolak</button>
+                    </form>
+                  </div>
+
+                  <!-- AKSI UNTUK USER SUDAH TERVERIFIKASI / BIASA -->
+                  <div th:if="${u.approved}" class="action-links">
                     <a th:href="@{'/rbac/users/view/' + ${u.id}}" class="action-link action-view">View</a>
                     <a th:href="@{'/rbac/users/edit/' + ${u.id}}" class="action-link action-edit">Edit</a>
                     <a th:href="@{'/rbac/users/' + ${u.id} + '/password'}" class="action-link action-pass">Password</a>
@@ -249,16 +521,16 @@
 
         <!-- Pagination -->
         <div class="pagination-bar" th:if="${totalPages > 1}">
-          <span>Showing page <strong th:text="${currentPage + 1}">1</strong> of <strong th:text="${totalPages}">1</strong> (<span th:text="${totalElements}">0</span> total users)</span>
+          <span>Menampilkan halaman <strong th:text="${currentPage + 1}">1</strong> dari <strong th:text="${totalPages}">1</strong> (<span th:text="${totalElements}">0</span> total pengguna)</span>
           <div style="display: flex; gap: 8px;">
-            <a th:if="${currentPage > 0}" th:href="@{/rbac/users/list(search=${search}, page=${currentPage - 1})}" class="btn-secondary-custom">&larr; Previous</a>
-            <a th:if="${currentPage + 1 < totalPages}" th:href="@{/rbac/users/list(search=${search}, page=${currentPage + 1})}" class="btn-secondary-custom">Next &rarr;</a>
+            <a th:if="${currentPage > 0}" th:href="@{/rbac/users/list(search=${search}, status=${status}, role=${selectedRole}, branchId=${selectedBranchId}, page=${currentPage - 1})}" class="btn-secondary-custom">&larr; Previous</a>
+            <a th:if="${currentPage + 1 < totalPages}" th:href="@{/rbac/users/list(search=${search}, status=${status}, role=${selectedRole}, branchId=${selectedBranchId}, page=${currentPage + 1})}" class="btn-secondary-custom">Next &rarr;</a>
           </div>
         </div>
+
       </div>
     </main>
   </div>
 </div>
 </body>
 </html>
-
