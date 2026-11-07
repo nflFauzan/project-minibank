@@ -32,9 +32,16 @@ setup('authenticate as Supervisor', async ({ page }) => {
   setup.setTimeout(60_000); // Extra time for slowMo
   const loginPage = new LoginPage(page);
   await loginPage.navigate();
-  await loginPage.login('spv', 'spv1234', 'SUPERVISOR');
+  // Try minibank123 first (demo standard), fall back to spv1234
+  await loginPage.login('spv', 'minibank123', 'SUPERVISOR');
   
-  await page.waitForURL('**/dashboard', { timeout: 30_000 });
+  try {
+    await page.waitForURL('**/dashboard', { timeout: 5_000 });
+  } catch {
+    await loginPage.navigate();
+    await loginPage.login('spv', 'spv1234', 'SUPERVISOR');
+    await page.waitForURL('**/dashboard', { timeout: 30_000 });
+  }
   
   await page.context().storageState({ path: path.join(authDir, 'supervisor.json') });
 });

@@ -994,12 +994,21 @@
           <span>Otorisasi & Supervisi Operasional</span>
         </div>
         <div class="action-grid">
-          <a th:href="@{/approval/queue}" class="action-btn-card">
+          <a th:href="@{/supervisor/account}" class="action-btn-card">
             <div class="action-icon">⚖️</div>
             <div>
               <div class="action-title">Antrean Approval Rekening</div>
               <div class="action-desc" th:text="${pendingCount != null ? pendingCount + ' rekening menunggu verifikasi' : 'Tinjau berkas rekening baru'}">
                 Tinjau berkas rekening baru
+              </div>
+            </div>
+          </a>
+          <a th:href="@{/supervisor/nasabah}" class="action-btn-card">
+            <div class="action-icon">👥</div>
+            <div>
+              <div class="action-title">Antrean Approval Nasabah</div>
+              <div class="action-desc" th:text="${pendingNasabahCount != null ? pendingNasabahCount + ' nasabah menunggu verifikasi' : 'Tinjau berkas nasabah baru'}">
+                Tinjau berkas nasabah baru
               </div>
             </div>
           </a>

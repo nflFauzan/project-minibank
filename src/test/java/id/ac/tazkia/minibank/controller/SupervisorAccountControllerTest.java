@@ -3,6 +3,7 @@ package id.ac.tazkia.minibank.controller;
 import id.ac.tazkia.minibank.entity.Rekening;
 import id.ac.tazkia.minibank.entity.RekeningStatus;
 import id.ac.tazkia.minibank.repository.UserRepository;
+import id.ac.tazkia.minibank.service.SupervisorNasabahApprovalService;
 import id.ac.tazkia.minibank.service.SupervisorRekeningApprovalService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,9 @@ class SupervisorAccountControllerTest {
 
     @MockBean
     private SupervisorRekeningApprovalService approvalService;
+
+    @MockBean
+    private SupervisorNasabahApprovalService nasabahApprovalService;
 
     @MockBean
     private UserRepository userRepository;

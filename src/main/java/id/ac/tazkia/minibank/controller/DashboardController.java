@@ -165,7 +165,10 @@ public class DashboardController {
         if (isBranchManager) {
             try {
                 long pendingCount = supervisorRekeningApprovalService.pendingCount();
+                long pendingNasabah = nasabahRepository.countByStatus(id.ac.tazkia.minibank.entity.NasabahStatus.INACTIVE);
                 model.addAttribute("pendingCount", pendingCount);
+                model.addAttribute("pendingRekeningCount", pendingCount);
+                model.addAttribute("pendingNasabahCount", pendingNasabah);
             } catch (Exception ignored) {}
         }
 

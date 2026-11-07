@@ -150,6 +150,56 @@
       color: #475569;
       font-size: 14px;
     }
+
+    /* Approval Queue Tabs Navigation */
+    .status-tabs {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 24px;
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 14px;
+      overflow-x: auto;
+    }
+
+    .tab-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 22px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 700;
+      text-decoration: none;
+      color: #64748b;
+      background: #f1f5f9;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .tab-pill:hover {
+      background: #e2e8f0;
+      color: #0f172a;
+    }
+
+    .tab-pill.active {
+      background: #1e3a8a;
+      color: #ffffff;
+      box-shadow: 0 4px 14px rgba(30, 58, 138, 0.25);
+    }
+
+    .tab-counter {
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 800;
+      background: rgba(0, 0, 0, 0.08);
+      color: #334155;
+    }
+
+    .tab-pill.active .tab-counter {
+      background: rgba(255, 255, 255, 0.25);
+      color: #ffffff;
+    }
   </style>
 </head>
 
@@ -163,10 +213,28 @@
     <main class="cs-page" style="padding: 30px;">
 
       <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom: 20px;">
-        <h1 class="page-title">Approval Rekening</h1>
+        <h1 class="page-title">Approval Queue</h1>
         <div class="pending-count-box">
           Status Pending: <span style="color: #b45309;" th:text="${pendingCount}">0</span>
         </div>
+      </div>
+
+      <!-- Tab Navigation between Approval Nasabah and Approval Rekening -->
+      <div class="status-tabs" id="approval-tabs">
+        <a id="tab-approval-nasabah" th:href="@{/supervisor/nasabah}" class="tab-pill" th:classappend="${activeTab == 'nasabah'} ? ' active' : ''">
+          <svg style="width:18px; height:18px; stroke:currentColor; fill:none;" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+          </svg>
+          <span>Approval Registrasi Nasabah</span>
+          <span class="tab-counter" th:text="${pendingNasabahCount != null ? pendingNasabahCount : 0}">0</span>
+        </a>
+        <a id="tab-approval-rekening" th:href="@{/supervisor/account}" class="tab-pill" th:classappend="${activeTab == 'account'} ? ' active' : ''">
+          <svg style="width:18px; height:18px; stroke:currentColor; fill:none;" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+          </svg>
+          <span>Approval Pembukaan Rekening</span>
+          <span class="tab-counter" th:text="${pendingRekeningCount != null ? pendingRekeningCount : (pendingCount ?: 0)}">0</span>
+        </a>
       </div>
 
       <div th:if="${success}" style="background:#ecfdf5; color:#059669; padding:16px; border-radius:12px; font-weight:700; margin-bottom:15px; border:none;" th:text="${success}"></div>

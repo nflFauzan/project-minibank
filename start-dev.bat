@@ -222,15 +222,19 @@ if "!APP_RUNNING!"=="1" (
     echo  Database     : localhost:2345 [Database: pgminibank]
     echo  Console Log  : Lihat jendela "MiniBank Backend [Spring Boot :8080]"
     echo.
-    echo  Akun Demo:
-    echo  +------------+----------+-----------+
-    echo  ^| Role       ^| Username ^| Password  ^|
-    echo  +------------+----------+-----------+
-    echo  ^| CS         ^| zann     ^| zann      ^|
-    echo  ^| Teller     ^| zann     ^| zann      ^|
-    echo  ^| Supervisor ^| zann     ^| zann      ^|
-    echo  ^| Admin      ^| admin    ^| minibank123 ^|
-    echo  +------------+----------+-----------+
+    echo  Akun Demo Siap Pakai:
+    echo  +------------------+----------+-------------+-------------------------------+
+    echo  ^| Role             ^| Username ^| Password    ^| Keterangan                    ^|
+    echo  +------------------+----------+-------------+-------------------------------+
+    echo  ^| Admin / BM       ^| admin    ^| minibank123 ^| Administrator Utama           ^|
+    echo  ^| Supervisor / BM  ^| spv      ^| minibank123 ^| Supervisor Approval           ^|
+    echo  ^| Customer Service ^| cs1      ^| minibank123 ^| Fatimah CS (Buka Rekening)    ^|
+    echo  ^| Teller           ^| teller1  ^| minibank123 ^| Hasan Teller (Transaksi/Buku) ^|
+    echo  ^| All-Role (Tim)   ^| ainun    ^| minibank123 ^| Mahasiswa Tim Tazkia          ^|
+    echo  ^| All-Role (Tim)   ^| fauzan   ^| minibank123 ^| Mahasiswa Tim Tazkia          ^|
+    echo  ^| All-Role (Tim)   ^| akmal    ^| minibank123 ^| Mahasiswa Tim Tazkia          ^|
+    echo  ^| All-Role (Tim)   ^| zahra    ^| minibank123 ^| Mahasiswa Tim Tazkia          ^|
+    echo  +------------------+----------+-------------+-------------------------------+
     echo.
     echo  Untuk mematikan seluruh layanan:
     echo    Jalankan file: stop-dev.bat

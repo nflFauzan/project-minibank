@@ -312,5 +312,46 @@ public class TestResetController {
         zann.getRoles().clear();
         zann.getRoles().add(roleCs);
         userRepo.save(zann);
+
+        // spv (Supervisor)
+        Role roleSpv = roleRepo.findByName("ROLE_SUPERVISOR").orElseGet(() -> roleRepo.save(new Role(null, "ROLE_SUPERVISOR")));
+        User spv = userRepo.findByUsername("spv").orElseGet(User::new);
+        spv.setUsername("spv");
+        spv.setEmail("spv@tazkia.ac.id");
+        spv.setFullName("Supervisor Default");
+        spv.setPassword(passwordEncoder.encode("spv1234"));
+        spv.setApproved(true);
+        spv.setEnabled(true);
+        spv.getRoles().clear();
+        spv.getRoles().add(roleSpv);
+        spv.getRoles().add(roleBm);
+        userRepo.save(spv);
+
+        // teller
+        User teller = userRepo.findByUsername("teller").orElseGet(User::new);
+        teller.setUsername("teller");
+        teller.setEmail("teller@tazkia.ac.id");
+        teller.setFullName("Teller Default");
+        teller.setPassword(passwordEncoder.encode("teller1234"));
+        teller.setApproved(true);
+        teller.setEnabled(true);
+        teller.getRoles().clear();
+        teller.getRoles().add(roleTeller);
+        userRepo.save(teller);
+
+        // fauzan (Multi-role demo user: BM, CS, TELLER, SUPERVISOR)
+        User fauzan = userRepo.findByUsername("fauzan").orElseGet(User::new);
+        fauzan.setUsername("fauzan");
+        fauzan.setEmail("241572010008.naufal@student.stmik.tazkia.ac.id");
+        fauzan.setFullName("Naufal Fauzan");
+        fauzan.setPassword(passwordEncoder.encode("minibank123"));
+        fauzan.setApproved(true);
+        fauzan.setEnabled(true);
+        fauzan.getRoles().clear();
+        fauzan.getRoles().add(roleBm);
+        fauzan.getRoles().add(roleCs);
+        fauzan.getRoles().add(roleTeller);
+        fauzan.getRoles().add(roleSpv);
+        userRepo.save(fauzan);
     }
 }
