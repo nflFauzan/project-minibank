@@ -18,7 +18,7 @@ services:
       - minibank-network
 
   app:
-    image: ${APP_IMAGE:-ghcr.io/nflfauzan/aplikasi-minibank:latest}
+    image: ${APP_IMAGE:-minibank-app:latest}
     container_name: minibank-prod-app
     restart: unless-stopped
     depends_on:
@@ -29,6 +29,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-pgminibank}
       SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-minibank}
       SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-minibank_prod_secret_2026}
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
       JAVA_OPTS: "-Xms256m -Xmx512m -XX:+UseG1GC"
     ports:
       - "127.0.0.1:8080:8080"
@@ -43,4 +44,3 @@ networks:
   minibank-network:
     name: minibank-prod-network
     driver: bridge
-
