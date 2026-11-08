@@ -53,7 +53,7 @@ class CsCustomerControllerTest extends BaseIntegrationTest {
     }
 
     @Test
-    @DisplayName("POST /cs/customers - berhasil buat nasabah baru & data tersimpan di DB")
+    @DisplayName("POST /cs/customers - berhasil buat nasabah baru & tetap di form new dengan flash CIF")
     void create_success() throws Exception {
         long countBefore = nasabahRepository.count();
 
@@ -61,14 +61,15 @@ class CsCustomerControllerTest extends BaseIntegrationTest {
                         .param("namaSesuaiIdentitas", "Aisyah Putri")
                         .param("nik", "9876543210123456"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/cs/customers"))
-                .andExpect(flash().attributeExists("success"));
+                .andExpect(redirectedUrl("/cs/customers/new"))
+                .andExpect(flash().attributeExists("success"))
+                .andExpect(flash().attributeExists("registeredCif"));
 
         assertTrue(nasabahRepository.count() > countBefore);
     }
 
     @Test
-    @DisplayName("POST /cs/customers/new - berhasil buat nasabah baru (endpoint alternatif)")
+    @DisplayName("POST /cs/customers/new - berhasil buat nasabah baru & tetap di form new dengan flash CIF")
     void create_viaNewEndpoint_success() throws Exception {
         long countBefore = nasabahRepository.count();
 
@@ -76,8 +77,9 @@ class CsCustomerControllerTest extends BaseIntegrationTest {
                         .param("namaSesuaiIdentitas", "Aisyah")
                         .param("nik", "1111222233334444"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/cs/customers"))
-                .andExpect(flash().attributeExists("success"));
+                .andExpect(redirectedUrl("/cs/customers/new"))
+                .andExpect(flash().attributeExists("success"))
+                .andExpect(flash().attributeExists("registeredCif"));
 
         assertTrue(nasabahRepository.count() > countBefore);
     }

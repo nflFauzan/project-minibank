@@ -13,7 +13,11 @@ Dokumen ini merupakan panduan praktis alur kerja dan operasional aplikasi **Tazk
    - **Kewarganegaraan:** Bila memilih radio button **WNI**, kolom **Negara** akan terisi otomatis dengan `INDONESIA`.
    - **Status Pernikahan:** Pilih dari opsi dropdown standar (`BELUM MENIKAH`, `MENIKAH`, `DUDA`, `JANDA`).
    - **Agama:** Pilih dari opsi dropdown standar (`ISLAM`, `KRISTEN`, `KATOLIK`, `HINDU`, `BUDHA`, `KONGHUCU`, `LAINNYA`).
-3. Tekan **Simpan Data Nasabah**. Nasabah baru akan masuk ke antrean status `INACTIVE / PENDING APPROVAL` untuk diverifikasi oleh Supervisor.
+3. Tekan **Simpan Data Nasabah**.
+   - Halaman akan **tetap berada di halaman pendaftaran nasabah** (`/cs/customers/new`) dan secara otomatis di-refresh ke bagian paling atas.
+   - Form pendaftaran di-reset bersih agar siap untuk mendaftarkan nasabah berikutnya.
+   - Muncul banner notifikasi hijau dengan **Nomor CIF** nasabah yang baru saja dibuat (contoh: `C0000001`) beserta nama nasabah.
+   - Nasabah baru otomatis masuk ke antrean status untuk diverifikasi oleh Supervisor.
 
 ### 1.2 Pencarian Data Nasabah
 1. Masuk ke menu **Daftar Nasabah** (`/cs/customers`).

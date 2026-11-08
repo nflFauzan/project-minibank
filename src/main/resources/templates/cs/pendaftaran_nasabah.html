@@ -120,7 +120,33 @@
 
                     <form th:action="@{/cs/customers}" th:object="${nasabah}" method="post">
 
-                        <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+                        <!-- Notifikasi Berhasil dengan Nomor CIF -->
+                        <div th:if="${registeredCif != null or successMessage != null or success != null}" 
+                             id="registration-success-alert"
+                             class="alert alert-success d-flex align-items-center justify-content-between p-3 mb-4 flex-wrap gap-2" 
+                             style="border-radius: 14px; background: #ecfdf5; border: 1.5px solid #a7f3d0; color: #065f46;">
+                            <div class="d-flex align-items-center gap-3">
+                                <div style="background: #10b981; color: #fff; width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: bold; flex-shrink: 0;">
+                                    &#10003;
+                                </div>
+                                <div>
+                                    <div style="font-weight: 800; font-size: 16px; color: #065f46;">
+                                        Pendaftaran Nasabah Berhasil Disimpan!
+                                    </div>
+                                    <div style="font-size: 14px; margin-top: 3px; color: #047857;">
+                                        <span th:if="${registeredName != null}">Nasabah: <strong th:text="${registeredName}">Nama</strong> &bull; </span>
+                                        <span>Nomor CIF: <strong id="cif-badge" style="background: #047857; color: #ffffff; padding: 2px 10px; border-radius: 6px; font-size: 15px; letter-spacing: 0.5px;" th:text="${registeredCif ?: '-'}">C0000001</strong></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="d-flex gap-2">
+                                <a th:href="@{/cs/customers}" class="btn btn-sm btn-outline-success fw-bold" style="border-radius:8px; padding: 7px 14px;">
+                                    Lihat Daftar Nasabah
+                                </a>
+                            </div>
+                        </div>
+
+                        <div th:if="${error != null or errorMessage != null}" class="alert alert-danger" style="border-radius: 12px;" th:text="${error ?: errorMessage}"></div>
                         <div th:if="${#fields.hasErrors('*')}" class="alert alert-danger">
                             <ul class="mb-0">
                                 <li th:each="err : ${#fields.errors('*')}" th:text="${err}"></li>
@@ -404,6 +430,13 @@
                         el.setSelectionRange(start, end);
                     }
                 }
+            }
+        });
+
+        // Scroll to top when success alert is present
+        window.addEventListener('DOMContentLoaded', function() {
+            if (document.getElementById('registration-success-alert')) {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             }
         });
     </script>

@@ -44,9 +44,12 @@ public class CsCustomerController {
     public String create(@ModelAttribute("nasabah") Nasabah form,
                          RedirectAttributes ra) {
         try {
-            nasabahService.createNasabah(form);
-            ra.addFlashAttribute("success", "Nasabah berhasil didaftarkan dan dapat langsung dibuatkan rekening.");
-            return "redirect:/cs/customers";
+            Nasabah saved = nasabahService.createNasabah(form);
+            ra.addFlashAttribute("successMessage", "Data nasabah berhasil disimpan! Nomor CIF: " + saved.getCif());
+            ra.addFlashAttribute("success", "Data nasabah berhasil disimpan!");
+            ra.addFlashAttribute("registeredCif", saved.getCif());
+            ra.addFlashAttribute("registeredName", saved.getNamaLengkap());
+            return "redirect:/cs/customers/new";
         } catch (Exception e) {
             ra.addFlashAttribute("error", "Gagal mendaftarkan nasabah: " + e.getMessage());
             return "redirect:/cs/customers/new";

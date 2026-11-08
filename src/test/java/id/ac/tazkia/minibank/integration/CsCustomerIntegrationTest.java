@@ -41,7 +41,8 @@ class CsCustomerIntegrationTest extends BaseIntegrationTest {
                         .param("email", "budi@email.com")
                         .param("alamatIdentitas", "Jl. Merdeka No. 1"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/cs/customers"));
+                .andExpect(redirectedUrl("/cs/customers/new"))
+                .andExpect(flash().attributeExists("registeredCif"));
 
         // Verifikasi data masuk ke database
         long countAfter = nasabahRepository.count();
