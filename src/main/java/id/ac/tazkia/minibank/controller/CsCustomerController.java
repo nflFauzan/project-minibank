@@ -105,8 +105,8 @@ public class CsCustomerController {
         return "redirect:/cs/customers";
     }
 
-    // DELETE: POST /cs/customers/{id}/delete
-    @PostMapping("/{id:\\d+}/delete")
+    // DELETE: POST / GET /cs/customers/{id}/delete atau /cs/customers/delete/{id}
+    @RequestMapping(value = {"/{id:\\d+}/delete", "/delete/{id:\\d+}"}, method = {RequestMethod.POST, RequestMethod.GET})
     public String delete(@PathVariable Long id, RedirectAttributes ra) {
         try {
             nasabahService.deleteNasabah(id);

@@ -217,4 +217,40 @@ class CsCustomerControllerTest extends BaseIntegrationTest {
                 .andExpect(redirectedUrl("/cs/customers"))
                 .andExpect(flash().attributeExists("error"));
     }
+
+    @Test
+    @DisplayName("GET /cs/customers/{id}/delete - berhasil hapus nasabah via GET juga")
+    void delete_viaGet_success() throws Exception {
+        Nasabah n = new Nasabah();
+        n.setCif("T" + java.util.UUID.randomUUID().toString().substring(0, 7));
+        n.setNik("9" + java.util.UUID.randomUUID().toString().replace("-", "").substring(0, 15));
+        n.setNamaSesuaiIdentitas("Nasabah Test GET Delete");
+        n.setStatus(NasabahStatus.ACTIVE);
+        Nasabah saved = nasabahRepository.save(n);
+
+        mockMvc.perform(get("/cs/customers/" + saved.getId() + "/delete"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/cs/customers"))
+                .andExpect(flash().attributeExists("success"));
+
+        assertFalse(nasabahRepository.findById(saved.getId()).isPresent());
+    }
+
+    @Test
+    @DisplayName("POST /cs/customers/delete/{id} - format URL alternatif berhasil")
+    void delete_alternateUrl_success() throws Exception {
+        Nasabah n = new Nasabah();
+        n.setCif("T" + java.util.UUID.randomUUID().toString().substring(0, 7));
+        n.setNik("9" + java.util.UUID.randomUUID().toString().replace("-", "").substring(0, 15));
+        n.setNamaSesuaiIdentitas("Nasabah Test Alt URL");
+        n.setStatus(NasabahStatus.ACTIVE);
+        Nasabah saved = nasabahRepository.save(n);
+
+        mockMvc.perform(post("/cs/customers/delete/" + saved.getId()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/cs/customers"))
+                .andExpect(flash().attributeExists("success"));
+
+        assertFalse(nasabahRepository.findById(saved.getId()).isPresent());
+    }
 }
