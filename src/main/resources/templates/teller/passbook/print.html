@@ -3,101 +3,89 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title th:text="'Passbook - ' + ${account.nomorRekening} + ' - Minibank Islamic Banking'">Passbook Print</title>
+  <title th:text="'Passbook - ' + ${account.nomorRekening} + ' - Mini Bank Tazkia'">Cetak Buku Tabungan</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
 
   <style>
-    /* Print-specific styles */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
     @media print {
       @page {
-        size: A4;
-        margin: 0.5in;
+        size: A4 landscape;
+        margin: 0;
       }
       body {
+        background: #ffffff !important;
+        margin: 0 !important;
+        padding: 0 !important;
         -webkit-print-color-adjust: exact;
         print-color-adjust: exact;
-        font-family: 'Courier Prime', 'Courier New', monospace;
-        font-size: 11px;
-        line-height: 1.3;
-        background: #fff !important;
-        color: #000 !important;
       }
       .no-print {
         display: none !important;
       }
-      .page-break {
+
+      /* Mode A4 Landscape: Memenuhi Kertas A4 secara proporsional */
+      body.size-a4 .passbook-canvas {
+        width: 270mm !important;
+        height: 175mm !important;
+        margin: 15mm auto !important;
         page-break-after: always;
-      }
-      .page-break-avoid {
-        page-break-inside: avoid;
-      }
-      table {
-        width: 100%;
-        border-collapse: collapse;
-      }
-      th, td {
-        border: 1px solid #000 !important;
-        padding: 4px 6px;
-        text-align: left;
-        vertical-align: top;
-      }
-      .passbook-container {
+        break-after: page;
         box-shadow: none !important;
-        padding: 0 !important;
-        max-width: 100% !important;
       }
 
-      body.blanko-mode .passbook-header,
-      body.blanko-mode .account-info-grid,
-      body.blanko-mode .footer-info,
-      body.blanko-mode thead {
+      /* Mode Asli 1:1 Fisik Buku (155mm x 100mm) */
+      body.size-original .passbook-canvas {
+        width: 155mm !important;
+        height: 100mm !important;
+        margin: 0 auto !important;
+        page-break-after: always;
+        break-after: page;
+        box-shadow: none !important;
+      }
+
+      /* MODE 1: OVERPRINT BLANKO FISIK */
+      body.blanko-mode .page-bg-img {
         display: none !important;
       }
-      body.blanko-mode table, 
-      body.blanko-mode th, 
-      body.blanko-mode td {
-        border: none !important;
-      }
-      body.blanko-mode .transactions-table td {
-        padding: 6px 6px;
+      body.blanko-mode .cell-text {
+        color: #000000 !important;
       }
     }
 
-    /* Screen styles */
     @media screen {
       body {
         font-family: 'Poppins', sans-serif;
-        background-color: #f1f5f9;
-        margin: 0;
-        padding: 20px;
+        background-color: #0f172a;
+        padding: 24px;
         color: #0f172a;
       }
       .no-print {
-        background: #fff;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-        padding: 16px 24px;
-        margin-bottom: 24px;
-        border-radius: 12px;
-        max-width: 21cm;
+        background: #ffffff;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        padding: 20px 28px;
+        margin-bottom: 28px;
+        border-radius: 14px;
+        max-width: 196mm;
         margin-left: auto;
         margin-right: auto;
       }
-      .passbook-container {
-        max-width: 21cm;
-        margin: 0 auto;
-        background: white;
-        padding: 24px;
-        border-radius: 8px;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-        font-family: 'Courier Prime', 'Courier New', monospace;
+      .passbook-canvas {
+        box-shadow: 0 15px 35px rgba(0,0,0,0.35);
+        margin-bottom: 24px;
       }
     }
 
     .btn-act {
-      padding: 8px 18px;
+      padding: 9px 18px;
       border-radius: 8px;
       font-size: 13px;
       font-weight: 600;
@@ -108,118 +96,154 @@
       border: none;
       cursor: pointer;
       font-family: 'Poppins', sans-serif;
+      transition: all 0.2s;
     }
     .btn-gray { background-color: #64748b; color: #fff; }
     .btn-gray:hover { background-color: #475569; }
     .btn-green { background-color: #16a34a; color: #fff; }
     .btn-green:hover { background-color: #15803d; }
 
-    .passbook-header {
+    /* Canvas Buku Tabungan */
+    .size-a4 .passbook-canvas {
+      width: 196mm;
+      height: 126.5mm;
+      margin: 0 auto;
+      position: relative;
+      overflow: hidden;
+      font-family: 'Courier Prime', 'Courier New', monospace;
+      background: #ffffff;
+    }
+
+    .size-original .passbook-canvas {
+      width: 155mm;
+      height: 100mm;
+      margin: 0 auto;
+      position: relative;
+      overflow: hidden;
+      font-family: 'Courier Prime', 'Courier New', monospace;
+      background: #ffffff;
+    }
+
+    /* Gambar Latar Asli Menggunakan Tag <img> (Anti Blank pada Cetak PDF) */
+    .page-bg-img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: fill;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* Area Data Transaksi Overlay (Y=35.4% di bawah header) */
+    .tx-rows-container {
+      position: absolute;
+      top: 35.4%;
+      left: 0;
+      width: 100%;
+      height: 64.6%;
+      z-index: 5;
+    }
+
+    .tx-rows-container-bottom {
+      position: absolute;
+      top: 15.0%;
+      left: 0;
+      width: 100%;
+      height: 85.0%;
+      z-index: 5;
+    }
+
+    /* Setiap baris mutasi */
+    .tx-row {
+      position: absolute;
+      width: 100%;
+      height: 6.66%;
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      margin-bottom: 20px;
-      padding: 15px;
-      border: 2px solid #333;
+      font-size: 8.5px;
+      color: #0f172a;
+      line-height: 1;
     }
 
-    .passbook-logo {
-      width: 70px;
-      height: 70px;
-      object-fit: contain;
+    /* Koordinat Kolom Presisi Berdasarkan Scan Piksel Isi_01.jpg */
+    .col-cell {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+      white-space: nowrap;
     }
 
-    .bank-info {
-      flex-grow: 1;
-      margin-left: 20px;
-    }
+    .col-no { left: 0%; width: 5.14%; justify-content: center; }
+    .col-tgl { left: 5.14%; width: 14.03%; justify-content: center; letter-spacing: -0.2px; }
+    .col-sandi { left: 19.17%; width: 8.15%; justify-content: center; font-weight: 700; }
+    .col-debit { left: 27.32%; width: 18.48%; justify-content: flex-end; padding-right: 3mm; }
+    .col-kredit { left: 45.80%; width: 18.55%; justify-content: flex-end; padding-right: 3mm; }
+    .col-saldo { left: 64.35%; width: 21.43%; justify-content: flex-end; padding-right: 4mm; font-weight: 700; }
+    .col-petugas { left: 85.78%; width: 14.22%; justify-content: center; }
 
-    .bank-info h1 {
-      margin: 0;
-      font-size: 18px;
-      font-weight: 700;
-      letter-spacing: 0.5px;
-    }
-
-    .bank-info p {
-      margin: 2px 0 0 0;
-      font-size: 11px;
-    }
-
-    .account-info-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-      margin-bottom: 20px;
+    .guide-card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
       padding: 12px 16px;
-      border: 1px solid #333;
+      margin-top: 14px;
       font-size: 12px;
+      line-height: 1.5;
+      color: #334155;
     }
 
-    .account-info-grid p {
-      margin: 4px 0;
-    }
-
-    .transactions-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-bottom: 20px;
-    }
-
-    .transactions-table th,
-    .transactions-table td {
-      border: 1px solid #333;
-      padding: 6px 8px;
-      font-size: 11px;
-    }
-
-    .transactions-table th {
-      background-color: #f1f5f9;
+    .setting-pill {
+      background: #e0e7ff;
+      color: #3730a3;
+      padding: 2px 8px;
+      border-radius: 4px;
       font-weight: 700;
-      text-align: center;
-    }
-
-    .amount-credit {
-      color: #16a34a;
-      font-weight: 600;
-    }
-
-    .amount-debit {
-      color: #dc2626;
-      font-weight: 600;
-    }
-
-    .footer-info {
-      margin-top: 24px;
-      padding: 12px 16px;
-      border: 1px solid #333;
-      font-size: 10px;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
+      font-size: 11px;
     }
   </style>
 </head>
 
-<body>
+<body class="size-a4">
 
-  <!-- Screen Print Controls -->
+  <!-- Screen Control Bar (Hanya tampil di monitor) -->
   <div class="no-print">
-    <div style="display: flex; justify-content: space-between; align-items: center;">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
       <div>
-        <h2 id="page-title" style="margin: 0 0 4px 0; font-size: 20px; font-weight: 700;">Passbook Print View</h2>
-        <p style="margin: 0; font-size: 13px; color: #64748b;">Account: <strong th:text="${account.nomorRekening}">A2000009</strong> - <span th:text="${account.namaNasabah}">Saniatun Nurhasanah</span></p>
+        <h2 id="page-title" style="margin: 0 0 4px 0; font-size: 18px; font-weight: 700; color: #1e3a8a;">Cetak Transaksi Buku Tabungan</h2>
+        <p style="margin: 0; font-size: 12px; color: #64748b;">
+          Rekening: <strong th:text="${account.nomorRekening}">A2000009</strong> - <span th:text="${account.namaNasabah}">Nasabah</span>
+        </p>
       </div>
-      <div style="display: flex; gap: 14px; align-items: center;">
-        <label style="font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; user-select: none;">
+
+      <div style="display: flex; gap: 12px; align-items: center;">
+        <div style="display: flex; align-items: center; gap: 8px; background: #f1f5f9; padding: 6px 12px; border-radius: 8px;">
+          <label style="font-size: 12px; font-weight: 700; color: #1e40af;">Ukuran Kertas:</label>
+          <select id="paperSizeSelect" onchange="changePaperSize(this.value)" style="padding: 4px 10px; border-radius: 6px; border: 1px solid #cbd5e1; font-weight: 600; font-size: 12px; cursor: pointer;">
+            <option value="size-a4" selected>📄 Pas Kertas A4 (Fit to A4) — Rekomendasi</option>
+            <option value="size-original">📐 Ukuran Asli Fisik (155 x 100 mm)</option>
+          </select>
+        </div>
+
+        <label style="font-size: 12.5px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; user-select: none;">
           <input type="checkbox" id="blankoModeToggle" onchange="toggleBlankoMode(this.checked)" />
-          Mode Cetak Kertas Blanko Fisik
+          Mode 1: Overprint Blanko Fisik
         </label>
-        <a th:href="@{/teller/passbook/preview/{id}(id=${accountId})}" class="btn-act btn-gray">Back to Preview</a>
-        <button id="printButton" onclick="window.print()" class="btn-act btn-green">🖨️ Print Passbook</button>
+        <a th:href="@{/teller/passbook/preview/{id}(id=${accountId})}" class="btn-act btn-gray">Kembali</a>
+        <button id="printButton" onclick="window.print()" class="btn-act btn-green">🖨️ Cetak (Print)</button>
       </div>
     </div>
-    <div style="margin-top: 10px; font-size: 11px; color: #64748b;">
-      <strong>Print Tips:</strong> Centang "Mode Cetak Kertas Blanko Fisik" jika ingin mencetak ke buku fisik tanpa bingkai/header. Nonaktifkan "Headers and footers" pada dialog print browser.
+    
+    <div class="guide-card">
+      <strong style="color: #1e40af;">💡 Tips Penting Saat Jendela Print Browser (`Ctrl + P`) Muncul:</strong><br>
+      • <strong>Layout:</strong> Pilih <span class="setting-pill">Landscape (Mendatar)</span> jika mencetak di kertas A4.<br>
+      • <strong>Margins:</strong> Pilih <span class="setting-pill">None (Tanpa Margin)</span> agar halaman pas sempurna.<br>
+      • <strong>Headers and footers:</strong> <span class="setting-pill">HILANGKAN CENTANG</span> agar tanggal & URL tidak mengotori kertas.<br>
+      • <strong>Background graphics:</strong> <span class="setting-pill">CENTANG</span> untuk ketajaman warna maksimal (gambar otomatis tampil karena menggunakan tag gambar langsung).
     </div>
   </div>
 
@@ -231,103 +255,65 @@
         document.body.classList.remove('blanko-mode');
       }
     }
+
+    function changePaperSize(sizeClass) {
+      document.body.classList.remove('size-a4', 'size-original');
+      document.body.classList.add(sizeClass);
+    }
   </script>
 
-  <!-- Passbook Printable Area -->
-  <div class="passbook-container">
-    
-    <!-- Bank Header -->
-    <div class="passbook-header page-break-avoid">
-      <div style="flex-shrink: 0;">
-        <img th:src="@{/images/logo-tazkia.png}" alt="Bank Logo" class="passbook-logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-        <div style="display:none; width:70px; height:70px; background:#e2e8f0; border-radius:4px; text-align:center; padding-top:20px; font-size:11px; font-weight:700;">
-          BANK<br>LOGO
+  <!-- HALAMAN 1 (ATAS): Menggunakan Latar Asli Isi_01.jpg via Tag <img> (Anti Blank) -->
+  <div class="passbook-canvas">
+    <img th:src="@{/images/passbook/Isi_01.jpg}" alt="Isi Buku Tabungan Halaman 1" class="page-bg-img" />
+
+    <div class="tx-rows-container">
+      <!-- 15 Baris Transaksi Pertama (Top Page) -->
+      <div th:each="tx, stat : ${transactions}" class="tx-row" th:if="${stat.count <= 15}"
+           th:style="'top: ' + ${(stat.count - 1) * 6.66} + '%;'">
+        <div class="col-cell col-no cell-text" th:text="${stat.count}">1</div>
+        <div class="col-cell col-tgl cell-text" th:text="${#temporals.format(tx.processedAt, 'dd/MM/yy')}">08/11/26</div>
+        <div class="col-cell col-sandi cell-text" th:text="${tx.sandiCode != null ? tx.sandiCode : (tx.tipe.name() == 'DEPOSIT' ? '52' : (tx.tipe.name() == 'WITHDRAWAL' ? '26' : '213'))}">52</div>
+        <div class="col-cell col-debit cell-text">
+          <span th:if="${tx.tipe.name() == 'WITHDRAWAL' or (tx.tipe.name() == 'TRANSFER' and tx.keterangan != null and #strings.startsWith(#strings.toLowerCase(tx.keterangan),'transfer ke')) or (tx.saldoSesudah != null and tx.saldoSebelum != null and tx.saldoSesudah < tx.saldoSebelum)}" 
+                th:text="${#numbers.formatDecimal(tx.jumlah, 1, 'POINT', 0, 'COMMA')}">500.000</span>
         </div>
-      </div>
-      <div class="bank-info">
-        <h1>Minibank Islamic Banking</h1>
-        <p>Jl. Ir. H. Djuanda No. 78, Sentul City, Bogor 16810, Indonesia</p>
-        <p style="font-size: 14px; font-weight: 700; margin-top: 6px; letter-spacing: 1px;">BUKU TABUNGAN / PASSBOOK</p>
-      </div>
-      <div style="text-align: right; font-size: 11px;">
-        <p style="margin: 0;">Print Date:</p>
-        <p style="margin: 2px 0 0 0; font-weight: 700;" th:text="${printDate}">06/11/2026</p>
-      </div>
-    </div>
-
-    <!-- Account & Customer Details Grid -->
-    <div class="account-info-grid page-break-avoid">
-      <div>
-        <p><strong>Account Number:</strong> <span th:text="${account.nomorRekening}">A2000009</span></p>
-        <p><strong>Account Name:</strong> <span th:text="${account.namaNasabah}">Saniatun Nurhasanah</span></p>
-        <p><strong>Product Type:</strong> <span th:text="${account.produk != null ? account.produk : 'Tabungan Wadiah Basic'}">Tabungan Wadiah Basic</span></p>
-        <p><strong>Opened Date:</strong> <span th:text="${#temporals.format(account.tanggalPembukaan, 'dd/MM/yyyy')}">14/11/2025</span></p>
-      </div>
-      <div>
-        <p><strong>Customer Name:</strong> <span th:text="${customer != null ? customer.namaLengkap : account.namaNasabah}">Saniatun Nurhasanah</span></p>
-        <p><strong>Customer Number:</strong> <span th:text="${account.cifNasabah}">C1000014</span></p>
-        <p><strong>Current Balance:</strong> <strong>IDR <span th:text="${#numbers.formatDecimal(account.saldo, 1, 'COMMA', 2, 'POINT')}">3,500,000.00</span></strong></p>
-        <p><strong>Account Status:</strong> <span th:text="${account.statusActive ? 'ACTIVE' : 'CLOSED'}">ACTIVE</span></p>
+        <div class="col-cell col-kredit cell-text">
+          <span th:if="${tx.tipe.name() == 'DEPOSIT' or (tx.tipe.name() == 'TRANSFER' and tx.keterangan != null and !#strings.startsWith(#strings.toLowerCase(tx.keterangan),'transfer ke')) or (tx.saldoSesudah != null and tx.saldoSebelum != null and tx.saldoSesudah >= tx.saldoSebelum)}" 
+                th:text="${#numbers.formatDecimal(tx.jumlah, 1, 'POINT', 0, 'COMMA')}">1.000.000</span>
+        </div>
+        <div class="col-cell col-saldo cell-text">
+          <span th:text="${#numbers.formatDecimal(tx.saldoSesudah, 1, 'POINT', 0, 'COMMA')}">1.000.000</span>
+        </div>
+        <div class="col-cell col-petugas cell-text" th:text="${tx.processedBy}">teller1</div>
       </div>
     </div>
+  </div>
 
-    <!-- Transactions Table -->
-    <div>
-      <table class="transactions-table">
-        <thead>
-          <tr>
-            <th style="width: 6%; text-align: center;">No.</th>
-            <th style="width: 14%; text-align: center;">Tanggal</th>
-            <th style="width: 8%; text-align: center;">Sandi</th>
-            <th style="width: 18%; text-align: right;">Mutasi Debit</th>
-            <th style="width: 18%; text-align: right;">Mutasi Kredit</th>
-            <th style="width: 22%; text-align: right;">Saldo</th>
-            <th style="width: 14%; text-align: center;">Petugas</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr th:if="${transactions == null or #lists.isEmpty(transactions)}">
-            <td colspan="7" style="text-align: center; padding: 20px;">Belum ada transaksi tercatat.</td>
-          </tr>
-          <tr th:each="tx, stat : ${transactions}">
-            <td style="text-align: center;" th:text="${stat.count}">1</td>
-            <td style="text-align: center;" th:text="${#temporals.format(tx.processedAt, 'dd/MM/yy')}">08/11/26</td>
-            <td style="text-align: center; font-weight: 700;" th:text="${tx.sandiCode != null ? tx.sandiCode : (tx.tipe.name() == 'DEPOSIT' ? '52' : (tx.tipe.name() == 'WITHDRAWAL' ? '26' : '213'))}">52</td>
-            <td style="text-align: right;">
-              <span th:if="${tx.tipe.name() == 'WITHDRAWAL' or (tx.tipe.name() == 'TRANSFER' and tx.keterangan != null and #strings.startsWith(#strings.toLowerCase(tx.keterangan),'transfer ke')) or (tx.saldoSesudah != null and tx.saldoSebelum != null and tx.saldoSesudah < tx.saldoSebelum)}" 
-                    class="amount-debit" 
-                    th:text="${#numbers.formatDecimal(tx.jumlah, 1, 'POINT', 0, 'COMMA')}">500.000</span>
-            </td>
-            <td style="text-align: right;">
-              <span th:if="${tx.tipe.name() == 'DEPOSIT' or (tx.tipe.name() == 'TRANSFER' and tx.keterangan != null and !#strings.startsWith(#strings.toLowerCase(tx.keterangan),'transfer ke')) or (tx.saldoSesudah != null and tx.saldoSebelum != null and tx.saldoSesudah >= tx.saldoSebelum)}" 
-                    class="amount-credit" 
-                    th:text="${#numbers.formatDecimal(tx.jumlah, 1, 'POINT', 0, 'COMMA')}">1.000.000</span>
-            </td>
-            <td style="text-align: right; font-weight: 700;">
-              <span th:text="${#numbers.formatDecimal(tx.saldoSesudah, 1, 'POINT', 0, 'COMMA')}">1.000.000</span>
-            </td>
-            <td style="text-align: center;" th:text="${tx.processedBy}">teller1</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+  <!-- HALAMAN 2 (BAWAH / LANJUTAN): Menggunakan Latar Asli Isi_02.jpg via Tag <img> -->
+  <div class="passbook-canvas" th:if="${transactions != null and #lists.size(transactions) > 15}">
+    <img th:src="@{/images/passbook/Isi_02.jpg}" alt="Isi Buku Tabungan Halaman 2" class="page-bg-img" />
 
-    <!-- Footer Information -->
-    <div class="footer-info page-break-avoid">
-      <div>
-        <p style="margin: 2px 0;"><strong>Generated by:</strong> Minibank Islamic Banking</p>
-        <p style="margin: 2px 0;"><strong>Print Date:</strong> <span th:text="${printDate}">06/11/2026</span></p>
-        <p style="margin: 4px 0 0 0; font-style: italic;">This document is computer generated and does not require signature.</p>
-      </div>
-      <div style="text-align: right;">
-        <p style="margin: 2px 0;"><strong>Customer Service:</strong> 1500-xxx</p>
-        <p style="margin: 2px 0;"><strong>Website:</strong> www.minibank.co.id</p>
-        <p style="margin: 2px 0;"><strong>Email:</strong> info@minibank.co.id</p>
+    <div class="tx-rows-container-bottom">
+      <div th:each="tx, stat : ${transactions}" class="tx-row" th:if="${stat.count > 15 and stat.count <= 30}"
+           th:style="'top: ' + ${(stat.count - 16) * 6.66} + '%;'">
+        <div class="col-cell col-no cell-text" th:text="${stat.count}">16</div>
+        <div class="col-cell col-tgl cell-text" th:text="${#temporals.format(tx.processedAt, 'dd/MM/yy')}">08/11/26</div>
+        <div class="col-cell col-sandi cell-text" th:text="${tx.sandiCode != null ? tx.sandiCode : (tx.tipe.name() == 'DEPOSIT' ? '52' : (tx.tipe.name() == 'WITHDRAWAL' ? '26' : '213'))}">52</div>
+        <div class="col-cell col-debit cell-text">
+          <span th:if="${tx.tipe.name() == 'WITHDRAWAL' or (tx.tipe.name() == 'TRANSFER' and tx.keterangan != null and #strings.startsWith(#strings.toLowerCase(tx.keterangan),'transfer ke')) or (tx.saldoSesudah != null and tx.saldoSebelum != null and tx.saldoSesudah < tx.saldoSebelum)}" 
+                th:text="${#numbers.formatDecimal(tx.jumlah, 1, 'POINT', 0, 'COMMA')}">500.000</span>
+        </div>
+        <div class="col-cell col-kredit cell-text">
+          <span th:if="${tx.tipe.name() == 'DEPOSIT' or (tx.tipe.name() == 'TRANSFER' and tx.keterangan != null and !#strings.startsWith(#strings.toLowerCase(tx.keterangan),'transfer ke')) or (tx.saldoSesudah != null and tx.saldoSebelum != null and tx.saldoSesudah >= tx.saldoSebelum)}" 
+                th:text="${#numbers.formatDecimal(tx.jumlah, 1, 'POINT', 0, 'COMMA')}">1.000.000</span>
+        </div>
+        <div class="col-cell col-saldo cell-text">
+          <span th:text="${#numbers.formatDecimal(tx.saldoSesudah, 1, 'POINT', 0, 'COMMA')}">1.000.000</span>
+        </div>
+        <div class="col-cell col-petugas cell-text" th:text="${tx.processedBy}">teller1</div>
       </div>
     </div>
-
   </div>
 
 </body>
 </html>
-

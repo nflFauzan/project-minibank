@@ -1,5 +1,6 @@
 package id.ac.tazkia.minibank.controller;
 
+import id.ac.tazkia.minibank.entity.Nasabah;
 import id.ac.tazkia.minibank.entity.Passbook;
 import id.ac.tazkia.minibank.entity.Rekening;
 import id.ac.tazkia.minibank.entity.Transaksi;
@@ -142,6 +143,80 @@ public class TellerPassbookController {
             return "teller/passbook/print";
         } catch (Exception e) {
             log.error("Failed to load passbook print view for {}: {}", accountId, e.getMessage());
+            ra.addFlashAttribute("error", "Rekening tidak ditemukan: " + e.getMessage());
+            return "redirect:/teller/passbook/select-account";
+        }
+    }
+
+    // 7. PRINT IDENTITY PAGE (Depan_01)
+    @GetMapping({"/teller/passbook/print-identity/{accountId}", "/passbook/print-identity/{accountId}"})
+    public String printIdentity(@PathVariable String accountId, Model model, RedirectAttributes ra) {
+        try {
+            Rekening rekening = passbookService.findRekening(accountId);
+            Passbook passbook = passbookService.getOrCreatePassbook(rekening);
+            Nasabah nasabah = rekening.getNasabah();
+
+            String address = nasabah != null && nasabah.getAlamatIdentitas() != null && !nasabah.getAlamatIdentitas().isBlank()
+                    ? nasabah.getAlamatIdentitas()
+                    : (nasabah != null && nasabah.getAlamatDomisili() != null ? nasabah.getAlamatDomisili() : "Bogor, Jawa Barat");
+            String identityNumber = nasabah != null && nasabah.getNik() != null ? nasabah.getNik() : "-";
+            String branch = rekening.getCabangPembukaan() != null && !rekening.getCabangPembukaan().isBlank()
+                    ? rekening.getCabangPembukaan()
+                    : "KCU Tazkia Sentul";
+            String createdDate = rekening.getTanggalPembukaan() != null
+                    ? rekening.getTanggalPembukaan().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+                    : LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+
+            model.addAttribute("account", rekening);
+            model.addAttribute("passbook", passbook);
+            model.addAttribute("customer", nasabah);
+            model.addAttribute("address", address);
+            model.addAttribute("identityNumber", identityNumber);
+            model.addAttribute("branch", branch);
+            model.addAttribute("createdDate", createdDate);
+            model.addAttribute("accountId", accountId);
+
+            return "teller/passbook/print-identity";
+        } catch (Exception e) {
+            log.error("Failed to load passbook identity print view for {}: {}", accountId, e.getMessage());
+            ra.addFlashAttribute("error", "Rekening tidak ditemukan: " + e.getMessage());
+            return "redirect:/teller/passbook/select-account";
+        }
+    }
+
+    // 8. FULL BOOKLET VIEW (Cover, Depan, Isi, Belakang 100% Persis Gambar)
+    @GetMapping({"/teller/passbook/booklet/{accountId}", "/passbook/booklet/{accountId}"})
+    public String fullBooklet(@PathVariable String accountId, Model model, RedirectAttributes ra) {
+        try {
+            Rekening rekening = passbookService.findRekening(accountId);
+            Passbook passbook = passbookService.getOrCreatePassbook(rekening);
+            Nasabah nasabah = rekening.getNasabah();
+            List<Transaksi> transactions = passbookService.getTransactionsForPrint(rekening, null, null);
+
+            String address = nasabah != null && nasabah.getAlamatIdentitas() != null && !nasabah.getAlamatIdentitas().isBlank()
+                    ? nasabah.getAlamatIdentitas()
+                    : (nasabah != null && nasabah.getAlamatDomisili() != null ? nasabah.getAlamatDomisili() : "Bogor, Jawa Barat");
+            String identityNumber = nasabah != null && nasabah.getNik() != null ? nasabah.getNik() : "-";
+            String branch = rekening.getCabangPembukaan() != null && !rekening.getCabangPembukaan().isBlank()
+                    ? rekening.getCabangPembukaan()
+                    : "KCU Tazkia Sentul";
+            String createdDate = rekening.getTanggalPembukaan() != null
+                    ? rekening.getTanggalPembukaan().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+                    : LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+
+            model.addAttribute("account", rekening);
+            model.addAttribute("passbook", passbook);
+            model.addAttribute("customer", nasabah);
+            model.addAttribute("transactions", transactions);
+            model.addAttribute("address", address);
+            model.addAttribute("identityNumber", identityNumber);
+            model.addAttribute("branch", branch);
+            model.addAttribute("createdDate", createdDate);
+            model.addAttribute("accountId", accountId);
+
+            return "teller/passbook/booklet-full";
+        } catch (Exception e) {
+            log.error("Failed to load full passbook booklet for {}: {}", accountId, e.getMessage());
             ra.addFlashAttribute("error", "Rekening tidak ditemukan: " + e.getMessage());
             return "redirect:/teller/passbook/select-account";
         }

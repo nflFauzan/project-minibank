@@ -108,5 +108,69 @@ class PassbookPrintLayoutTest extends BaseIntegrationTest {
                 .andExpect(model().attributeExists("account"))
                 .andExpect(model().attributeExists("transactions"));
     }
+
+    @Test
+    @DisplayName("GET /teller/passbook/print-identity/{id} should return identity print template")
+    void testPrintIdentityView() throws Exception {
+        Nasabah n = new Nasabah();
+        n.setCif("C8880003");
+        n.setNik("8880003333333333");
+        n.setNamaSesuaiIdentitas("Identity Print Customer");
+        n.setAlamatIdentitas("Sentul City Bogor");
+        n.setStatus(NasabahStatus.ACTIVE);
+        n = nasabahRepository.save(n);
+
+        Rekening r = new Rekening();
+        r.setNomorRekening("54388800303");
+        r.setStatusActive(true);
+        r.setSaldo(new BigDecimal("2500000"));
+        r.setNasabah(n);
+        r.setCifNasabah(n.getCif());
+        r.setNamaNasabah(n.getNamaSesuaiIdentitas());
+        r.setProduk("Tabungan Mudharabah");
+        r.setTanggalPembukaan(LocalDate.now());
+        r = rekeningRepository.save(r);
+
+        UsernamePasswordAuthenticationToken auth =
+                new UsernamePasswordAuthenticationToken("teller1", "password", java.util.List.of(() -> "ROLE_TELLER"));
+
+        mockMvc.perform(get("/teller/passbook/print-identity/" + r.getId()).principal(auth))
+                .andExpect(status().isOk())
+                .andExpect(view().name("teller/passbook/print-identity"))
+                .andExpect(model().attributeExists("account"))
+                .andExpect(model().attributeExists("address"))
+                .andExpect(model().attributeExists("identityNumber"));
+    }
+
+    @Test
+    @DisplayName("GET /teller/passbook/booklet/{id} should return full booklet template")
+    void testFullBookletView() throws Exception {
+        Nasabah n = new Nasabah();
+        n.setCif("C8880004");
+        n.setNik("8880004444444444");
+        n.setNamaSesuaiIdentitas("Booklet Customer");
+        n.setStatus(NasabahStatus.ACTIVE);
+        n = nasabahRepository.save(n);
+
+        Rekening r = new Rekening();
+        r.setNomorRekening("54388800404");
+        r.setStatusActive(true);
+        r.setSaldo(new BigDecimal("5000000"));
+        r.setNasabah(n);
+        r.setCifNasabah(n.getCif());
+        r.setNamaNasabah(n.getNamaSesuaiIdentitas());
+        r.setProduk("Tabungan Mudharabah");
+        r.setTanggalPembukaan(LocalDate.now());
+        r = rekeningRepository.save(r);
+
+        UsernamePasswordAuthenticationToken auth =
+                new UsernamePasswordAuthenticationToken("teller1", "password", java.util.List.of(() -> "ROLE_TELLER"));
+
+        mockMvc.perform(get("/teller/passbook/booklet/" + r.getId()).principal(auth))
+                .andExpect(status().isOk())
+                .andExpect(view().name("teller/passbook/booklet-full"))
+                .andExpect(model().attributeExists("account"))
+                .andExpect(model().attributeExists("transactions"));
+    }
 }
 

@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title th:text="'Buku Tabungan Lengkap - ' + ${account.nomorRekening}">Buku Tabungan Lengkap 100% - Mini Bank Tazkia</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #0f172a;
+      color: #334155;
+    }
+
+    @media print {
+      @page {
+        size: A4 portrait;
+        margin: 0;
+      }
+      body {
+        background: #ffffff !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      .no-print, .spread-title {
+        display: none !important;
+      }
+      .spread-container {
+        gap: 0 !important;
+        padding: 0 !important;
+      }
+      
+      /* Mode A4: Memenuhi Kertas A4 secara proporsional */
+      body.size-a4 .book-spread {
+        width: 196mm !important;
+        height: 253mm !important;
+        margin: 12mm auto !important;
+        page-break-after: always;
+        break-after: page;
+        box-shadow: none !important;
+      }
+      body.size-a4 .spread-page {
+        width: 196mm !important;
+        height: 126.5mm !important;
+      }
+
+      /* Mode Asli 1:1 Fisik Buku (155mm x 200mm) */
+      body.size-original .book-spread {
+        width: 155mm !important;
+        height: 200mm !important;
+        margin: 0 auto !important;
+        page-break-after: always;
+        break-after: page;
+        box-shadow: none !important;
+      }
+      body.size-original .spread-page {
+        width: 155mm !important;
+        height: 100mm !important;
+      }
+    }
+
+    .no-print {
+      background: #ffffff;
+      padding: 18px 30px;
+      margin-bottom: 30px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+      position: sticky;
+      top: 0;
+      z-index: 999;
+    }
+
+    .btn-act {
+      padding: 9px 20px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border: none;
+      cursor: pointer;
+      font-family: 'Poppins', sans-serif;
+      transition: all 0.2s;
+    }
+    .btn-gray { background-color: #64748b; color: #fff; }
+    .btn-gray:hover { background-color: #475569; }
+    .btn-green { background-color: #16a34a; color: #fff; }
+    .btn-green:hover { background-color: #15803d; }
+
+    .spread-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 40px;
+      padding-bottom: 60px;
+    }
+
+    /* Tiap Bukaan Buku */
+    /* Default Mode: Pas di A4 (196mm x 253mm) */
+    .size-a4 .book-spread {
+      width: 196mm;
+      height: 253mm;
+      background: #ffffff;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.35);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .size-a4 .spread-page {
+      width: 196mm;
+      height: 126.5mm;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Ukuran Asli Fisik 1:1 */
+    .size-original .book-spread {
+      width: 155mm;
+      height: 200mm;
+      background: #ffffff;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.35);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .size-original .spread-page {
+      width: 155mm;
+      height: 100mm;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Gambar Latar Menggunakan Tag <img> Asli (Anti-Blank saat dicetak ke PDF/Kertas) */
+    .page-bg-img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: fill;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .spine-divider {
+      height: 1px;
+      background: rgba(0,0,0,0.06);
+      width: 100%;
+      position: relative;
+      z-index: 10;
+    }
+
+    /* Live Data Values Overlay on Depan_01 (Z-index 5 di atas <img>) */
+    .val-overlay {
+      position: absolute;
+      z-index: 5;
+      font-weight: 600;
+      font-size: 11.5px;
+      line-height: 1.25;
+      color: #163668;
+      white-space: nowrap;
+    }
+
+    .val-nama {
+      top: 16.5%;
+      left: 19.0%;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 11.5px;
+    }
+
+    .val-rekening {
+      top: 21.5%;
+      left: 27.0%;
+      font-family: 'Courier Prime', monospace;
+      font-weight: 700;
+      font-size: 12px;
+      letter-spacing: 0.5px;
+    }
+
+    .val-alamat {
+      top: 26.5%;
+      left: 20.2%;
+      font-size: 10.5px;
+      font-weight: 500;
+      max-width: 44%;
+      white-space: normal;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+
+    .val-cabang {
+      top: 16.5%;
+      left: 68.0%;
+      font-weight: 600;
+      font-size: 11.5px;
+    }
+
+    .val-nik {
+      top: 21.5%;
+      left: 73.5%;
+      font-family: 'Courier Prime', monospace;
+      font-weight: 600;
+      font-size: 11.5px;
+    }
+
+    .val-tgl {
+      top: 26.5%;
+      left: 76.5%;
+      font-family: 'Courier Prime', monospace;
+      font-weight: 600;
+      font-size: 11.5px;
+    }
+
+    /* Data Transaksi Overlay on Isi_01 & Isi_02 (Z-index 5) */
+    .tx-container-top {
+      position: absolute;
+      top: 35.4%;
+      left: 0;
+      width: 100%;
+      height: 64.6%;
+      z-index: 5;
+      font-family: 'Courier Prime', monospace;
+    }
+
+    .tx-container-bottom {
+      position: absolute;
+      top: 15.0%;
+      left: 0;
+      width: 100%;
+      height: 85.0%;
+      z-index: 5;
+      font-family: 'Courier Prime', monospace;
+    }
+
+    .tx-row-spread {
+      position: absolute;
+      width: 100%;
+      height: 4.30%;
+      display: flex;
+      align-items: center;
+      font-size: 8.5px;
+      color: #0f172a;
+    }
+
+    /* Kolom Presisi */
+    .c-cell {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    .c-no { left: 0%; width: 5.14%; justify-content: center; }
+    .c-tgl { left: 5.14%; width: 14.03%; justify-content: center; letter-spacing: -0.2px; }
+    .c-sandi { left: 19.17%; width: 8.15%; justify-content: center; font-weight: 700; }
+    .c-debit { left: 27.32%; width: 18.48%; justify-content: flex-end; padding-right: 3mm; }
+    .c-kredit { left: 45.80%; width: 18.55%; justify-content: flex-end; padding-right: 3mm; }
+    .c-saldo { left: 64.35%; width: 21.43%; justify-content: flex-end; padding-right: 4mm; font-weight: 700; }
+    .c-petugas { left: 85.78%; width: 14.22%; justify-content: center; }
+
+    .spread-title {
+      color: #94a3b8;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+
+    .guide-card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin-top: 14px;
+      font-size: 12px;
+      line-height: 1.5;
+      color: #334155;
+    }
+
+    .setting-pill {
+      background: #e0e7ff;
+      color: #3730a3;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: 700;
+      font-size: 11px;
+    }
+  </style>
+</head>
+
+<body class="size-a4">
+
+  <!-- Header Layar & Kontrol Pilihan Kertas -->
+  <div class="no-print">
+    <div style="max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
+      <div>
+        <h2 style="margin: 0 0 4px 0; font-size: 20px; font-weight: 800; color: #1e3a8a;">Buku Tabungan Lengkap (Full Booklet)</h2>
+        <p style="margin: 0; font-size: 13px; color: #64748b;">
+          Rekening: <strong th:text="${account.nomorRekening}">A2000009</strong> - <span th:text="${account.namaNasabah}">Nasabah</span> | Format: 4 Lembar Buka (8 Halaman Fisik)
+        </p>
+      </div>
+
+      <!-- Pilihan Ukuran Kertas -->
+      <div style="display: flex; gap: 14px; align-items: center;">
+        <div style="display: flex; align-items: center; gap: 8px; background: #f1f5f9; padding: 6px 14px; border-radius: 8px;">
+          <label style="font-size: 12px; font-weight: 700; color: #1e40af;">Ukuran Kertas:</label>
+          <select id="paperSizeSelect" onchange="changePaperSize(this.value)" style="padding: 4px 10px; border-radius: 6px; border: 1px solid #cbd5e1; font-weight: 600; font-size: 12px; cursor: pointer;">
+            <option value="size-a4" selected>📄 Pas Kertas A4 (Fit to A4) — Rekomendasi</option>
+            <option value="size-original">📐 Ukuran Asli Buku Fisik (155 x 200 mm)</option>
+          </select>
+        </div>
+
+        <a th:href="@{/teller/passbook/preview/{id}(id=${accountId})}" class="btn-act btn-gray">Kembali</a>
+        <button onclick="window.print()" class="btn-act btn-green">🖨️ Cetak Seluruh Buku (PDF / Duplex)</button>
+      </div>
+    </div>
+    
+    <!-- Panduan Super Jelas untuk Cetak PDF / Kertas -->
+    <div class="guide-card" style="max-width: 1200px; margin: 12px auto 0 auto;">
+      <strong style="color: #1e40af;">💡 Tips Penting Saat Jendela Print Browser (`Ctrl + P`) Muncul:</strong><br>
+      1. <strong>Paper size:</strong> Pilih <span class="setting-pill">A4</span> (Buku otomatis nge-pass proporsional memenuhi lembar A4 tanpa sisa kosong banyak).<br>
+      2. <strong>Margins:</strong> Pilih <span class="setting-pill">None</span> (Tanpa margin) agar tidak terdorong atau menyusut.<br>
+      3. <strong>Headers and footers:</strong> <span class="setting-pill">HILANGKAN CENTANG</span> agar tanggal dan URL browser tidak mengotori tepi kertas.<br>
+      4. <strong>Background graphics:</strong> <span class="setting-pill">CENTANG</span> agar warna dan gambar latar belakang buku tabungan tercetak tajam dan utuh.
+    </div>
+  </div>
+
+  <script>
+    function changePaperSize(sizeClass) {
+      document.body.classList.remove('size-a4', 'size-original');
+      document.body.classList.add(sizeClass);
+    }
+  </script>
+
+  <div class="spread-container">
+
+    <!-- BUKAAN 1: COVER LUAR (Cover Belakang & Cover Depan) -->
+    <div>
+      <div class="spread-title">Lembar 1: Cover Luar (Cover_01 & Cover_02)</div>
+      <div class="book-spread">
+        <div class="spread-page">
+          <img th:src="@{/images/passbook/Cover_01.jpg}" alt="Cover Belakang" class="page-bg-img" />
+        </div>
+        <div class="spine-divider"></div>
+        <div class="spread-page">
+          <img th:src="@{/images/passbook/Cover_02.jpg}" alt="Cover Depan" class="page-bg-img" />
+        </div>
+      </div>
+    </div>
+
+    <!-- BUKAAN 2: HALAMAN DEPAN DALAM (Produk MBT & Identitas Rekening Live) -->
+    <div>
+      <div class="spread-title">Lembar 2: Bagian Dalam Depan (Depan_02 & Depan_01 dengan Data Nasabah)</div>
+      <div class="book-spread">
+        <!-- Depan_02: Info Produk -->
+        <div class="spread-page">
+          <img th:src="@{/images/passbook/Depan_02.jpg}" alt="Info Produk MBT" class="page-bg-img" />
+        </div>
+        <div class="spine-divider"></div>
+        <!-- Depan_01: Halaman Identitas -->
+        <div class="spread-page">
+          <img th:src="@{/images/passbook/Depan_01.jpg}" alt="Identitas Rekening" class="page-bg-img" />
+          
+          <!-- Live Overlay Nilai Nasabah (Tepat di sebelah titik dua :) -->
+          <div class="val-overlay val-nama" th:text="${account.namaNasabah}">Melvina Syahnum</div>
+          <div class="val-overlay val-rekening" th:text="${account.nomorRekening}">54300058701</div>
+          <div class="val-overlay val-alamat" th:text="${address}">JL. KAYU MANIS BARAT NO.57</div>
+
+          <div class="val-overlay val-cabang" th:text="${branch}">KCU Tazkia Sentul</div>
+          <div class="val-overlay val-nik" th:text="${identityNumber}">3175014112880002</div>
+          <div class="val-overlay val-tgl" th:text="${createdDate}">08/11/2026</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BUKAAN 3: HALAMAN TRANSAKSI (Isi_01 & Isi_02) -->
+    <div>
+      <div class="spread-title">Lembar 3: Halaman Transaksi Mutasi (Isi_01 & Isi_02 dengan Data Transaksi)</div>
+      <div class="book-spread">
+        <!-- Isi_01: Transaksi 1-15 -->
+        <div class="spread-page">
+          <img th:src="@{/images/passbook/Isi_01.jpg}" alt="Halaman Transaksi 1" class="page-bg-img" />
+          <div class="tx-container-top">
+            <div th:each="tx, stat : ${transactions}" class="tx-row-spread" th:if="${stat.count <= 15}"
+                 th:style="'top: ' + ${(stat.count - 1) * 6.66} + '%;'">
+              <div class="c-cell c-no" th:text="${stat.count}">1</div>
+              <div class="c-cell c-tgl" th:text="${#temporals.format(tx.processedAt, 'dd/MM/yy')}">08/11/26</div>
+              <div class="c-cell c-sandi" th:text="${tx.sandiCode != null ? tx.sandiCode : (tx.tipe.name() == 'DEPOSIT' ? '52' : (tx.tipe.name() == 'WITHDRAWAL' ? '26' : '213'))}">52</div>
+              <div class="c-cell c-debit">
+                <span th:if="${tx.tipe.name() == 'WITHDRAWAL' or (tx.tipe.name() == 'TRANSFER' and tx.keterangan != null and #strings.startsWith(#strings.toLowerCase(tx.keterangan),'transfer ke')) or (tx.saldoSesudah != null and tx.saldoSebelum != null and tx.saldoSesudah < tx.saldoSebelum)}" 
+                      th:text="${#numbers.formatDecimal(tx.jumlah, 1, 'POINT', 0, 'COMMA')}">500.000</span>
+              </div>
+              <div class="c-cell c-kredit">
+                <span th:if="${tx.tipe.name() == 'DEPOSIT' or (tx.tipe.name() == 'TRANSFER' and tx.keterangan != null and !#strings.startsWith(#strings.toLowerCase(tx.keterangan),'transfer ke')) or (tx.saldoSesudah != null and tx.saldoSebelum != null and tx.saldoSesudah >= tx.saldoSebelum)}" 
+                      th:text="${#numbers.formatDecimal(tx.jumlah, 1, 'POINT', 0, 'COMMA')}">1.000.000</span>
+              </div>
+              <div class="c-cell c-saldo">
+                <span th:text="${#numbers.formatDecimal(tx.saldoSesudah, 1, 'POINT', 0, 'COMMA')}">1.000.000</span>
+              </div>
+              <div class="c-cell c-petugas" th:text="${tx.processedBy}">teller1</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="spine-divider"></div>
+
+        <!-- Isi_02: Transaksi 16-30 -->
+        <div class="spread-page">
+          <img th:src="@{/images/passbook/Isi_02.jpg}" alt="Halaman Transaksi 2" class="page-bg-img" />
+          <div class="tx-container-bottom">
+            <div th:each="tx, stat : ${transactions}" class="tx-row-spread" th:if="${stat.count > 15 and stat.count <= 30}"
+                 th:style="'top: ' + ${(stat.count - 16) * 6.66} + '%;'">
+              <div class="c-cell c-no" th:text="${stat.count}">16</div>
+              <div class="c-cell c-tgl" th:text="${#temporals.format(tx.processedAt, 'dd/MM/yy')}">08/11/26</div>
+              <div class="c-cell c-sandi" th:text="${tx.sandiCode != null ? tx.sandiCode : (tx.tipe.name() == 'DEPOSIT' ? '52' : (tx.tipe.name() == 'WITHDRAWAL' ? '26' : '213'))}">52</div>
+              <div class="c-cell c-debit">
+                <span th:if="${tx.tipe.name() == 'WITHDRAWAL' or (tx.tipe.name() == 'TRANSFER' and tx.keterangan != null and #strings.startsWith(#strings.toLowerCase(tx.keterangan),'transfer ke')) or (tx.saldoSesudah != null and tx.saldoSebelum != null and tx.saldoSesudah < tx.saldoSebelum)}" 
+                      th:text="${#numbers.formatDecimal(tx.jumlah, 1, 'POINT', 0, 'COMMA')}">500.000</span>
+              </div>
+              <div class="c-cell c-kredit">
+                <span th:if="${tx.tipe.name() == 'DEPOSIT' or (tx.tipe.name() == 'TRANSFER' and tx.keterangan != null and !#strings.startsWith(#strings.toLowerCase(tx.keterangan),'transfer ke')) or (tx.saldoSesudah != null and tx.saldoSebelum != null and tx.saldoSesudah >= tx.saldoSebelum)}" 
+                      th:text="${#numbers.formatDecimal(tx.jumlah, 1, 'POINT', 0, 'COMMA')}">1.000.000</span>
+              </div>
+              <div class="c-cell c-saldo">
+                <span th:text="${#numbers.formatDecimal(tx.saldoSesudah, 1, 'POINT', 0, 'COMMA')}">1.000.000</span>
+              </div>
+              <div class="c-cell c-petugas" th:text="${tx.processedBy}">teller1</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BUKAAN 4: KETENTUAN DAN SYARAT (Belakang_01 & Belakang_02) -->
+    <div>
+      <div class="spread-title">Lembar 4: Ketentuan dan Syarat A s/d E (Belakang_01 & Belakang_02)</div>
+      <div class="book-spread">
+        <div class="spread-page">
+          <img th:src="@{/images/passbook/Belakang_01.jpg}" alt="Syarat Bagian A" class="page-bg-img" />
+        </div>
+        <div class="spine-divider"></div>
+        <div class="spread-page">
+          <img th:src="@{/images/passbook/Belakang_02.jpg}" alt="Syarat Bagian B-E" class="page-bg-img" />
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>

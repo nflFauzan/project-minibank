@@ -148,15 +148,7 @@ public class PassbookService {
 
             String sandi = t.getSandiCode();
             if (sandi == null || sandi.isBlank()) {
-                if (t.getTipe() == TipeTransaksi.DEPOSIT) {
-                    sandi = "52";
-                } else if (t.getTipe() == TipeTransaksi.WITHDRAWAL) {
-                    sandi = "26";
-                } else if (t.getTipe() == TipeTransaksi.TRANSFER) {
-                    sandi = "213";
-                } else {
-                    sandi = "99";
-                }
+                sandi = SandiTransaksi.resolveDefault(t.getTipe());
             }
 
             txDtos.add(new PassbookPrintDataResponse.TransactionDto(
@@ -251,7 +243,7 @@ public class PassbookService {
                     t.setPrintedPage(pb.getCurrentPage());
                     t.setPrintedLine(currentLine);
                     if (t.getSandiCode() == null || t.getSandiCode().isBlank()) {
-                        t.setSandiCode(t.getTipe() == TipeTransaksi.WITHDRAWAL ? "26" : "52");
+                        t.setSandiCode(SandiTransaksi.resolveDefault(t.getTipe()));
                     }
                     updated.add(t);
                 }

@@ -40,3 +40,9 @@ playwright-tests/test-results/
 playwright-tests/playwright-report/
 
 .tools/
+
+### Scratch & Local Test Artifacts ###
+screenshot*.png
+*.pdf
+test-pdf.js
+

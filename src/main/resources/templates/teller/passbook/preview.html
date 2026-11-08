@@ -234,8 +234,10 @@
         <h1 class="page-title" id="page-title">Passbook Preview</h1>
         <div class="header-actions">
           <a th:href="@{/teller/passbook/select-account}" id="back-to-selection-button" class="btn-act btn-gray">Back to Selection</a>
-          <a th:href="@{/teller/passbook/direct-print/{id}(id=${accountId})}" id="direct-print-button" class="btn-act btn-blue" title="Print directly to Epson PLQ-20 passbook printer">Direct Print (PLQ-20)</a>
-          <a th:href="@{/teller/passbook/print/{id}(id=${accountId})}" id="preview-print-button" class="btn-act btn-green" title="Print to browser/PDF">Browser Print</a>
+          <a th:href="@{/teller/passbook/print-identity/{id}(id=${accountId})}" id="print-identity-button" class="btn-act btn-blue" style="background-color: #0284c7;" title="Cetak Halaman Identitas Nasabah (Depan_01)">Cetak Identitas</a>
+          <a th:href="@{/teller/passbook/print/{id}(id=${accountId})}" id="preview-print-button" class="btn-act btn-green" title="Cetak Transaksi (Mode 1: Blanko Fisik / Mode 2: Full Grafis 100%)">Cetak Transaksi</a>
+          <a th:href="@{/teller/passbook/booklet/{id}(id=${accountId})}" id="full-booklet-button" class="btn-act btn-blue" style="background-color: #4f46e5;" title="Cetak Buku Tabungan Utuh (Cover, Depan, Isi, Belakang)">Buku Lengkap (Booklet)</a>
+          <a th:href="@{/teller/passbook/direct-print/{id}(id=${accountId})}" id="direct-print-button" class="btn-act btn-gray" title="Print directly to Epson PLQ-20 passbook printer">Direct Print (PLQ-20)</a>
         </div>
       </div>
 
