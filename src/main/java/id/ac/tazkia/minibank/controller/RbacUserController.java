@@ -7,6 +7,7 @@ import id.ac.tazkia.minibank.entity.Role;
 import id.ac.tazkia.minibank.entity.User;
 import id.ac.tazkia.minibank.service.AdminUserService;
 import id.ac.tazkia.minibank.service.RbacUserService;
+import id.ac.tazkia.minibank.service.UserActivityService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -28,6 +29,7 @@ public class RbacUserController {
 
     private final RbacUserService rbacUserService;
     private final AdminUserService adminService;
+    private final UserActivityService userActivityService;
 
     public static final List<String> STUDY_PROGRAMS = List.of(
             "Ekonomi Syariah",
@@ -139,6 +141,16 @@ public class RbacUserController {
         User user = rbacUserService.findById(id);
         model.addAttribute("user", user);
         model.addAttribute("activeNav", "rbac-users");
+
+        if (userActivityService != null && user != null) {
+            String uname = user.getUsername();
+            model.addAttribute("activitySummary", userActivityService.getUserSummary(uname));
+            model.addAttribute("recentActivities", userActivityService.getUserRecentActivities(uname, 15));
+            model.addAttribute("userCustomers", userActivityService.getUserCustomers(uname, PageRequest.of(0, 10)));
+            model.addAttribute("userAccounts", userActivityService.getUserAccounts(uname, PageRequest.of(0, 10)));
+            model.addAttribute("userTransactions", userActivityService.getUserTransactions(uname, PageRequest.of(0, 10)));
+        }
+
         return "rbac/users/view";
     }
 

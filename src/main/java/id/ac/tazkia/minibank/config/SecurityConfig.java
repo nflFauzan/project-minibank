@@ -6,6 +6,7 @@ import id.ac.tazkia.minibank.security.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -14,6 +15,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
+@EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
@@ -29,7 +31,7 @@ public class SecurityConfig {
     .requestMatchers("/", "/login", "/signup", "/css/**", "/js/**", "/images/**", "/api/**").permitAll()
     .requestMatchers("/rbac/users/*/password", "/rbac/users/list", "/rbac/users/view/**").hasAnyRole("SUPERVISOR", "BRANCH_MANAGER", "ADMIN")
     .requestMatchers("/admin/**", "/rbac/**").hasRole("ADMIN")
-    .requestMatchers("/supervisor/**", "/branch-manager/**").hasAnyRole("SUPERVISOR", "BRANCH_MANAGER", "ADMIN")
+    .requestMatchers("/supervisor/**", "/branch-manager/**", "/audit/**").hasAnyRole("SUPERVISOR", "BRANCH_MANAGER", "ADMIN")
     .requestMatchers("/product/**").hasAnyRole("CS", "ADMIN")
     .requestMatchers("/cs/**").hasAnyRole("CS", "ADMIN")
     .requestMatchers("/teller/**").hasAnyRole("TELLER", "ADMIN")

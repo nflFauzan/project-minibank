@@ -1,6 +1,8 @@
 package id.ac.tazkia.minibank.service;
 
+import id.ac.tazkia.minibank.entity.ActivityType;
 import id.ac.tazkia.minibank.entity.Rekening;
+import id.ac.tazkia.minibank.entity.SandiTransaksi;
 import id.ac.tazkia.minibank.entity.StatusTransaksi;
 import id.ac.tazkia.minibank.entity.TipeTransaksi;
 import id.ac.tazkia.minibank.entity.Transaksi;
@@ -23,6 +25,7 @@ public class TellerWithdrawalService {
     private final RekeningRepository rekeningRepository;
     private final TransaksiRepository transaksiRepository;
     private final UserRepository userRepository;
+    private final UserActivityService userActivityService;
 
     public static final BigDecimal TELLER_LIMIT = new BigDecimal("5000000");
 
@@ -92,6 +95,7 @@ public class TellerWithdrawalService {
         t.setGroupId(t.getId());
         t.setNomorTransaksi(nomorTransaksi);
         t.setTipe(TipeTransaksi.WITHDRAWAL);
+        t.setSandiCode(SandiTransaksi.PENARIKAN_TUNAI.getCode());
         t.setChannel("TELLER");
 
        // ✅ WAJIB isi rekening_id
@@ -120,6 +124,15 @@ t.setProcessedByFullName(fullName);
 t.setStatus(pending ? StatusTransaksi.PENDING_APPROVAL : StatusTransaksi.SUCCESS);
 
 transaksiRepository.save(t);
+
+if (userActivityService != null) {
+    userActivityService.log(
+        usernameLogin, fullName, "ROLE_TELLER",
+        ActivityType.TRANSACTION_WITHDRAWAL, "TELLER",
+        "Penarikan tunai dari rekening " + r.getNomorRekening() + " (" + namaRekening + ") sebesar Rp " + jumlah,
+        nomorTransaksi, jumlah, pending ? "PENDING" : "SUCCESS"
+    );
+}
 
         return new WithdrawalResult(nomorTransaksi, saldoSesudah, pending);
     }

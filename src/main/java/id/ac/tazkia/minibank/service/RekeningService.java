@@ -1,5 +1,6 @@
 package id.ac.tazkia.minibank.service;
 
+import id.ac.tazkia.minibank.entity.ActivityType;
 import id.ac.tazkia.minibank.entity.Nasabah;
 import id.ac.tazkia.minibank.entity.NasabahStatus;
 import id.ac.tazkia.minibank.entity.ProdukTabungan;
@@ -31,6 +32,7 @@ public class RekeningService {
     private final ProdukTabunganRepository produkTabunganRepository;
     private final UserRepository userRepository;
     private final id.ac.tazkia.minibank.repository.TransaksiRepository transaksiRepository;
+    private final UserActivityService userActivityService;
 
     @Data
     public static class OpenAccountForm {
@@ -165,7 +167,16 @@ public List<Nasabah> listEligibleCustomers(NasabahStatus status, String q) {
         r.setCabangPembukaan("Cabang Bandung");
         r.setPetugasCs(currentUserFullNameOrUsername());
 
-        return rekeningRepository.save(r);
+        Rekening saved = rekeningRepository.save(r);
+        if (userActivityService != null) {
+            userActivityService.logCurrent(
+                    ActivityType.ACCOUNT_OPEN, "ACCOUNT",
+                    "Pembukaan rekening baru: " + saved.getNomorRekening() + " (" + saved.getProduk() + ")",
+                    saved.getNomorRekening(), saved.getNominalSetoranAwal(),
+                    saved.getStatus() != null ? saved.getStatus().name() : "PENDING"
+            );
+        }
+        return saved;
     }
 
     @Transactional
@@ -182,6 +193,13 @@ public List<Nasabah> listEligibleCustomers(NasabahStatus status, String q) {
             r.setReasonForClosure(reason);
         }
         rekeningRepository.save(r);
+        if (userActivityService != null) {
+            userActivityService.logCurrent(
+                    ActivityType.ACCOUNT_STATUS_CHANGE, "ACCOUNT",
+                    "Penutupan rekening: " + r.getNomorRekening() + " - Alasan: " + reason,
+                    r.getNomorRekening(), null, "CLOSED"
+            );
+        }
     }
 
     @Transactional

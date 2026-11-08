@@ -1,5 +1,6 @@
 package id.ac.tazkia.minibank.service;
 
+import id.ac.tazkia.minibank.entity.ActivityType;
 import id.ac.tazkia.minibank.entity.Rekening;
 import id.ac.tazkia.minibank.entity.RekeningStatus;
 import id.ac.tazkia.minibank.repository.RekeningRepository;
@@ -17,6 +18,7 @@ import java.util.List;
 public class SupervisorRekeningApprovalService {
 
     private final RekeningRepository rekeningRepository;
+    private final UserActivityService userActivityService;
 
     public long pendingCount() {
         return rekeningRepository.countByStatus(RekeningStatus.PENDING);
@@ -56,6 +58,14 @@ public class SupervisorRekeningApprovalService {
         r.setApprovalNotes(notes);
         r.setRejectionReason(null);
         rekeningRepository.save(r);
+        if (userActivityService != null) {
+            userActivityService.log(
+                    supervisorName, supervisorName, "ROLE_SUPERVISOR",
+                    ActivityType.APPROVAL_ACCOUNT, "APPROVAL",
+                    "Menyetujui pembukaan rekening " + r.getNomorRekening() + " (" + r.getNamaRekening() + ")",
+                    r.getNomorRekening(), r.getNominalSetoranAwal(), "APPROVED"
+            );
+        }
     }
 
     @Transactional
@@ -71,6 +81,14 @@ public class SupervisorRekeningApprovalService {
         r.setApprovalNotes(notes);
         r.setRejectionReason(reason.trim());
         rekeningRepository.save(r);
+        if (userActivityService != null) {
+            userActivityService.log(
+                    supervisorName, supervisorName, "ROLE_SUPERVISOR",
+                    ActivityType.APPROVAL_ACCOUNT, "APPROVAL",
+                    "Menolak pembukaan rekening " + r.getNomorRekening() + " - Alasan: " + reason,
+                    r.getNomorRekening(), r.getNominalSetoranAwal(), "REJECTED"
+            );
+        }
     }
 }
 

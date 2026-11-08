@@ -1,6 +1,8 @@
 package id.ac.tazkia.minibank.service;
 
+import id.ac.tazkia.minibank.entity.ActivityType;
 import id.ac.tazkia.minibank.entity.Rekening;
+import id.ac.tazkia.minibank.entity.SandiTransaksi;
 import id.ac.tazkia.minibank.entity.StatusTransaksi;
 import id.ac.tazkia.minibank.entity.TipeTransaksi;
 import id.ac.tazkia.minibank.entity.Transaksi;
@@ -25,6 +27,7 @@ public class TellerTransferService {
     private final RekeningRepository rekeningRepository;
     private final TransaksiRepository transaksiRepository;
     private final UserRepository userRepository;
+    private final UserActivityService userActivityService;
 
     @Transactional
     public UUID transfer(
@@ -118,6 +121,7 @@ public class TellerTransferService {
         out.setRekening(sumber); // rekening_id NOT NULL
         out.setNomorTransaksi(noOut);
         out.setTipe(TipeTransaksi.TRANSFER);
+        out.setSandiCode(SandiTransaksi.TRANSFER.getCode());
         out.setChannel("TELLER");
 
         out.setNomorRekening(sumber.getNomorRekening());
@@ -145,6 +149,7 @@ public class TellerTransferService {
         in.setRekening(tujuan);
         in.setNomorTransaksi(noIn);
         in.setTipe(TipeTransaksi.TRANSFER);
+        in.setSandiCode(SandiTransaksi.TRANSFER.getCode());
         in.setChannel("TELLER");
 
         in.setNomorRekening(tujuan.getNomorRekening());
@@ -167,6 +172,15 @@ public class TellerTransferService {
 
         transaksiRepository.save(out);
         transaksiRepository.save(in);
+
+        if (userActivityService != null) {
+            userActivityService.log(
+                processedByUsername, processedByFullName, "ROLE_TELLER",
+                ActivityType.TRANSACTION_TRANSFER, "TELLER",
+                "Transfer dari " + sumber.getNomorRekening() + " ke " + tujuan.getNomorRekening() + " sebesar Rp " + jumlah,
+                out.getNomorTransaksi(), jumlah, pending ? "PENDING" : "SUCCESS"
+            );
+        }
 
         return groupId;
     }

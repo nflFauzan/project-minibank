@@ -1,5 +1,6 @@
 package id.ac.tazkia.minibank.service;
 
+import id.ac.tazkia.minibank.entity.ActivityType;
 import id.ac.tazkia.minibank.entity.Nasabah;
 import id.ac.tazkia.minibank.entity.NasabahStatus;
 import id.ac.tazkia.minibank.repository.NasabahRepository;
@@ -21,6 +22,7 @@ public class NasabahService {
 
     private final NasabahRepository nasabahRepository;
     private final RekeningRepository rekeningRepository;
+    private final UserActivityService userActivityService;
 
     @Transactional
     public Nasabah createNasabah(Nasabah form) {
@@ -42,7 +44,16 @@ public class NasabahService {
             form.setCif(generateNextCif());
         }
 
-        return nasabahRepository.save(form);
+        Nasabah saved = nasabahRepository.save(form);
+        if (userActivityService != null) {
+            userActivityService.logCurrent(
+                    ActivityType.CUSTOMER_REGISTER, "CUSTOMER",
+                    "Pendaftaran nasabah baru: " + saved.getNamaLengkap(),
+                    saved.getCif(), null,
+                    saved.getStatus() != null ? saved.getStatus().name() : "SUCCESS"
+            );
+        }
+        return saved;
     }
 
     private String generateNextCif() {
@@ -126,7 +137,14 @@ public class NasabahService {
         n.setKodePosDomisili(form.getKodePosDomisili());
 
         // Status biarkan (CS tidak ubah)
-        nasabahRepository.save(n);
+        Nasabah saved = nasabahRepository.save(n);
+        if (userActivityService != null) {
+            userActivityService.logCurrent(
+                    ActivityType.CUSTOMER_UPDATE, "CUSTOMER",
+                    "Memperbarui data nasabah: " + saved.getNamaLengkap(),
+                    saved.getCif(), null, "SUCCESS"
+            );
+        }
     }
 
     @Transactional

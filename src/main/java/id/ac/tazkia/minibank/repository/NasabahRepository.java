@@ -68,4 +68,8 @@ public interface NasabahRepository extends JpaRepository<Nasabah, Long> {
     }
 
     long countByCreatedAtBetween(java.time.LocalDateTime start, java.time.LocalDateTime end);
+
+    List<Nasabah> findByCreatedByOrderByCreatedAtDesc(String createdBy, Pageable pageable);
+
+    long countByCreatedBy(String createdBy);
 }

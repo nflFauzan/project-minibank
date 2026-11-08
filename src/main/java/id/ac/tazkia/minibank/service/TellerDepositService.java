@@ -1,6 +1,8 @@
 package id.ac.tazkia.minibank.service;
 
+import id.ac.tazkia.minibank.entity.ActivityType;
 import id.ac.tazkia.minibank.entity.Rekening;
+import id.ac.tazkia.minibank.entity.SandiTransaksi;
 import id.ac.tazkia.minibank.entity.StatusTransaksi;
 import id.ac.tazkia.minibank.entity.TipeTransaksi;
 import id.ac.tazkia.minibank.entity.Transaksi;
@@ -23,6 +25,7 @@ public class TellerDepositService {
     private final RekeningRepository rekeningRepository;
     private final TransaksiRepository transaksiRepository;
     private final UserRepository userRepository;
+    private final UserActivityService userActivityService;
 
     public static final BigDecimal TELLER_LIMIT = new BigDecimal("5000000");
 
@@ -88,6 +91,7 @@ t.setGroupId(groupId);
 
 t.setNomorTransaksi(nomorTransaksi);
 t.setTipe(TipeTransaksi.DEPOSIT);
+t.setSandiCode(SandiTransaksi.SETOR_TUNAI.getCode());
 t.setChannel("TELLER");
 
 // ✅ WAJIB isi rekening_id
@@ -117,6 +121,14 @@ t.setStatus(pending ? StatusTransaksi.PENDING_APPROVAL : StatusTransaksi.SUCCESS
 
 transaksiRepository.save(t);
 
+if (userActivityService != null) {
+    userActivityService.log(
+        usernameLogin, fullName, "ROLE_TELLER",
+        ActivityType.TRANSACTION_DEPOSIT, "TELLER",
+        "Setoran tunai ke rekening " + r.getNomorRekening() + " (" + namaRekening + ") sebesar Rp " + jumlah,
+        nomorTransaksi, jumlah, pending ? "PENDING" : "SUCCESS"
+    );
+}
 
     return new DepositResult(nomorTransaksi, saldoSesudah, pending);
 }

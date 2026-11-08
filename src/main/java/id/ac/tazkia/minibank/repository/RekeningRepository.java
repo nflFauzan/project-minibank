@@ -106,4 +106,8 @@ public interface RekeningRepository extends JpaRepository<Rekening, Long> {
                                                  Pageable pageable);
 
     long countByCreatedAtBetween(java.time.LocalDateTime start, java.time.LocalDateTime end);
+
+    List<Rekening> findByPetugasCsOrderByCreatedAtDesc(String petugasCs, Pageable pageable);
+
+    long countByPetugasCs(String petugasCs);
 }

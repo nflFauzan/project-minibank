@@ -1,5 +1,6 @@
 package id.ac.tazkia.minibank.service;
 
+import id.ac.tazkia.minibank.entity.ActivityType;
 import id.ac.tazkia.minibank.entity.Nasabah;
 import id.ac.tazkia.minibank.entity.NasabahStatus;
 import id.ac.tazkia.minibank.repository.NasabahRepository;
@@ -16,6 +17,7 @@ import java.util.List;
 public class SupervisorNasabahApprovalService {
 
     private final NasabahRepository nasabahRepository;
+    private final UserActivityService userActivityService;
 
     public long pendingCount() {
         return nasabahRepository.countByStatus(NasabahStatus.INACTIVE);
@@ -62,6 +64,14 @@ public class SupervisorNasabahApprovalService {
         n.setRejectionReason(null);
 
         nasabahRepository.save(n);
+        if (userActivityService != null) {
+            userActivityService.log(
+                    supervisorName, supervisorName, "ROLE_SUPERVISOR",
+                    ActivityType.APPROVAL_CUSTOMER, "APPROVAL",
+                    "Menyetujui pendaftaran nasabah " + n.getNamaLengkap() + " (" + n.getCif() + ")",
+                    n.getCif(), null, "APPROVED"
+            );
+        }
     }
 
     @Transactional
@@ -75,5 +85,13 @@ public class SupervisorNasabahApprovalService {
         n.setRejectionReason(reason);
 
         nasabahRepository.save(n);
+        if (userActivityService != null) {
+            userActivityService.log(
+                    supervisorName, supervisorName, "ROLE_SUPERVISOR",
+                    ActivityType.APPROVAL_CUSTOMER, "APPROVAL",
+                    "Menolak pendaftaran nasabah " + n.getNamaLengkap() + " (" + n.getCif() + ") - Alasan: " + reason,
+                    n.getCif(), null, "REJECTED"
+            );
+        }
     }
 }

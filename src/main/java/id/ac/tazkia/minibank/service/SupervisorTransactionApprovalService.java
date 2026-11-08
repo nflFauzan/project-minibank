@@ -1,5 +1,6 @@
 package id.ac.tazkia.minibank.service;
 
+import id.ac.tazkia.minibank.entity.ActivityType;
 import id.ac.tazkia.minibank.entity.Rekening;
 import id.ac.tazkia.minibank.entity.StatusTransaksi;
 import id.ac.tazkia.minibank.entity.TipeTransaksi;
@@ -22,6 +23,7 @@ public class SupervisorTransactionApprovalService {
 
     private final TransaksiRepository transaksiRepository;
     private final RekeningRepository rekeningRepository;
+    private final UserActivityService userActivityService;
 
     public long pendingCount() {
         return listPendingTransactions().size();
@@ -113,6 +115,15 @@ public class SupervisorTransactionApprovalService {
                 transaksiRepository.save(t);
             }
         }
+
+        if (userActivityService != null) {
+            userActivityService.log(
+                    supervisorUsername, supervisorUsername, "ROLE_SUPERVISOR",
+                    ActivityType.APPROVAL_TRANSACTION, "APPROVAL",
+                    "Menyetujui transaksi " + tx.getNomorTransaksi() + " (" + tx.getTipe() + ") sebesar Rp " + tx.getJumlah(),
+                    tx.getNomorTransaksi(), tx.getJumlah(), "APPROVED"
+            );
+        }
     }
 
     @Transactional
@@ -141,6 +152,15 @@ public class SupervisorTransactionApprovalService {
             tx.setRejectionReason(reason);
             tx.setApprovalNotes(notes);
             transaksiRepository.save(tx);
+        }
+
+        if (userActivityService != null) {
+            userActivityService.log(
+                    supervisorUsername, supervisorUsername, "ROLE_SUPERVISOR",
+                    ActivityType.APPROVAL_TRANSACTION, "APPROVAL",
+                    "Menolak transaksi " + tx.getNomorTransaksi() + " (" + tx.getTipe() + ") - Alasan: " + reason,
+                    tx.getNomorTransaksi(), tx.getJumlah(), "REJECTED"
+            );
         }
     }
 }

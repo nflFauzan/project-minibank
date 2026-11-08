@@ -144,6 +144,116 @@
       font-weight: 600;
     }
     .alert-success { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 16px;
+      margin-top: 24px;
+    }
+    .stat-card {
+      background: #fff;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 18px 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,.03);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .stat-card-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+    .stat-card-val {
+      font-size: 24px;
+      font-weight: 800;
+      color: #113C8D;
+      line-height: 1.2;
+    }
+    .stat-card-sub {
+      font-size: 12px;
+      color: #94a3b8;
+      margin-top: 4px;
+      font-weight: 600;
+    }
+    .tab-header {
+      display: flex;
+      gap: 10px;
+      border-bottom: 2px solid #f1f5f9;
+      margin-bottom: 20px;
+      overflow-x: auto;
+    }
+    .tab-item {
+      padding: 10px 18px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #64748b;
+      background: transparent;
+      border: none;
+      border-bottom: 3px solid transparent;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+    .tab-item:hover { color: #113C8D; }
+    .tab-item.active {
+      color: #113C8D;
+      border-bottom-color: #113C8D;
+    }
+    .tab-badge {
+      background: #eff6ff;
+      color: #113C8D;
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-weight: 800;
+    }
+    .tab-pane { display: none; }
+    .tab-pane.active { display: block; }
+    .data-table-wrap {
+      overflow-x: auto;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+    }
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 13px;
+    }
+    .data-table th {
+      background: #f8fafc;
+      padding: 12px 16px;
+      font-weight: 700;
+      color: #475569;
+      border-bottom: 1.5px solid #e2e8f0;
+      white-space: nowrap;
+    }
+    .data-table td {
+      padding: 12px 16px;
+      border-bottom: 1px solid #f1f5f9;
+      color: #1e293b;
+      vertical-align: middle;
+    }
+    .data-table tr:last-child td { border-bottom: none; }
+    .tag-module {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+    .tag-cs { background: #e0f2fe; color: #0369a1; }
+    .tag-teller { background: #fef3c7; color: #92400e; }
+    .tag-spv { background: #f3e8ff; color: #7e22ce; }
+    .tag-auth { background: #f1f5f9; color: #475569; }
   </style>
 </head>
 
@@ -245,6 +355,221 @@
           </div>
         </div>
       </div>
+
+      <!-- Activity Summary Cards (Supervisor & Admin Tracking) -->
+      <div class="stat-grid" th:if="${activitySummary != null}">
+        <div class="stat-card">
+          <span class="stat-card-title">Nasabah Didaftarkan</span>
+          <span class="stat-card-val" th:text="${activitySummary.totalCustomersRegistered}">0</span>
+          <span class="stat-card-sub">Peran Customer Service</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-card-title">Rekening Dibuka</span>
+          <span class="stat-card-val" th:text="${activitySummary.totalAccountsOpened}">0</span>
+          <span class="stat-card-sub">Akun Tabungan Nasabah</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-card-title">Transaksi Teller</span>
+          <span class="stat-card-val" th:text="${activitySummary.totalTransactionsProcessed}">0</span>
+          <span class="stat-card-sub" th:text="'Total Rp ' + ${#numbers.formatDecimal(activitySummary.totalTransactionAmount, 0, 'POINT', 0, 'COMMA')}">Total Rp 0</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-card-title">Aktivitas Approval</span>
+          <span class="stat-card-val" th:text="${activitySummary.totalApprovals}">0</span>
+          <span class="stat-card-sub">Persetujuan / Supervisor</span>
+        </div>
+      </div>
+
+      <!-- Activity Tracking Detail Card with Tabs -->
+      <div class="content-card" style="margin-top: 24px;" id="activity-tracking-section">
+        <div class="card-heading">
+          <span>Riwayat Aktivitas &amp; Log Praktikum</span>
+          <a th:href="@{'/audit/activities?username=' + ${user.username}}" class="btn-action-outline" style="font-size: 12px; padding: 6px 14px;">
+            Buka di Log Global &rarr;
+          </a>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="tab-header">
+          <button type="button" class="tab-item active" onclick="switchTab('tab-timeline', this)">
+            Timeline Aktivitas
+            <span class="tab-badge" th:text="${recentActivities != null ? #lists.size(recentActivities) : 0}">0</span>
+          </button>
+          <button type="button" class="tab-item" onclick="switchTab('tab-nasabah', this)">
+            Nasabah Didaftarkan
+            <span class="tab-badge" th:text="${activitySummary != null ? activitySummary.totalCustomersRegistered : 0}">0</span>
+          </button>
+          <button type="button" class="tab-item" onclick="switchTab('tab-rekening', this)">
+            Rekening Dibuka
+            <span class="tab-badge" th:text="${activitySummary != null ? activitySummary.totalAccountsOpened : 0}">0</span>
+          </button>
+          <button type="button" class="tab-item" onclick="switchTab('tab-transaksi', this)">
+            Transaksi Teller
+            <span class="tab-badge" th:text="${activitySummary != null ? activitySummary.totalTransactionsProcessed : 0}">0</span>
+          </button>
+        </div>
+
+        <!-- Tab 1: Timeline Aktivitas Terkini -->
+        <div id="tab-timeline" class="tab-pane active">
+          <div th:if="${#lists.isEmpty(recentActivities)}" style="padding: 30px; text-align: center; color: #94a3b8;">
+            Belum ada catatan aktivitas yang tercatat untuk pengguna ini.
+          </div>
+          <div th:unless="${#lists.isEmpty(recentActivities)}" class="data-table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Waktu</th>
+                  <th>Modul</th>
+                  <th>Aktivitas</th>
+                  <th>Referensi</th>
+                  <th>Nominal</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr th:each="act : ${recentActivities}">
+                  <td th:text="${#temporals.format(act.timestamp, 'dd/MM/yyyy HH:mm:ss')}" style="color: #64748b; font-weight: 600;">08/11/2026 14:00</td>
+                  <td>
+                    <span class="tag-module"
+                          th:classappend="${act.module == 'CUSTOMER' ? 'tag-cs' : (act.module == 'ACCOUNT' ? 'tag-cs' : (act.module == 'TELLER' ? 'tag-teller' : (act.module == 'APPROVAL' ? 'tag-spv' : 'tag-auth')))}"
+                          th:text="${act.module}">CUSTOMER</span>
+                  </td>
+                  <td th:text="${act.description}" style="font-weight: 600;">Mendaftarkan nasabah baru</td>
+                  <td th:text="${act.referenceNumber != null ? act.referenceNumber : '-'}" style="font-family: monospace; font-weight: 700; color: #113C8D;">C0000001</td>
+                  <td th:text="${act.amount != null ? 'Rp ' + #numbers.formatDecimal(act.amount, 0, 'POINT', 0, 'COMMA') : '-'}">-</td>
+                  <td>
+                    <span class="badge-status"
+                          th:classappend="${act.status == 'SUCCESS' or act.status == 'ACTIVE' or act.status == 'APPROVED' ? 'badge-active' : (act.status == 'REJECTED' or act.status == 'FAILED' ? 'badge-inactive' : 'badge-locked')}"
+                          th:text="${act.status}">SUCCESS</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Tab 2: Nasabah Didaftarkan -->
+        <div id="tab-nasabah" class="tab-pane">
+          <div th:if="${#lists.isEmpty(userCustomers)}" style="padding: 30px; text-align: center; color: #94a3b8;">
+            Pengguna ini belum pernah mendaftarkan nasabah.
+          </div>
+          <div th:unless="${#lists.isEmpty(userCustomers)}" class="data-table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>No CIF</th>
+                  <th>Nama Lengkap</th>
+                  <th>NIK</th>
+                  <th>Email / HP</th>
+                  <th>Status</th>
+                  <th>Tanggal Daftar</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr th:each="cust : ${userCustomers}">
+                  <td style="font-family: monospace; font-weight: 700; color: #113C8D;" th:text="${cust.cif}">C0000001</td>
+                  <td style="font-weight: 600;" th:text="${cust.namaLengkap}">Ahmad Syarif</td>
+                  <td th:text="${cust.nik}">3201010101010001</td>
+                  <td th:text="${cust.noHp != null ? cust.noHp : cust.email}">08123456789</td>
+                  <td>
+                    <span class="badge-status"
+                          th:classappend="${cust.status != null and cust.status.name() == 'ACTIVE' ? 'badge-active' : (cust.status != null and cust.status.name() == 'REJECTED' ? 'badge-inactive' : 'badge-locked')}"
+                          th:text="${cust.status}">ACTIVE</span>
+                  </td>
+                  <td th:text="${cust.createdAt != null ? #temporals.format(cust.createdAt, 'dd/MM/yyyy HH:mm') : '-'}">08/11/2026</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Tab 3: Rekening Dibuka -->
+        <div id="tab-rekening" class="tab-pane">
+          <div th:if="${#lists.isEmpty(userAccounts)}" style="padding: 30px; text-align: center; color: #94a3b8;">
+            Pengguna ini belum pernah membuka rekening.
+          </div>
+          <div th:unless="${#lists.isEmpty(userAccounts)}" class="data-table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>No Rekening</th>
+                  <th>Nama Rekening</th>
+                  <th>Produk</th>
+                  <th>Setoran Awal</th>
+                  <th>Status</th>
+                  <th>Tanggal Buka</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr th:each="acc : ${userAccounts}">
+                  <td style="font-family: monospace; font-weight: 700; color: #113C8D;" th:text="${acc.nomorRekening}">54300000101</td>
+                  <td style="font-weight: 600;" th:text="${acc.namaRekening}">Ahmad Syarif - Personal</td>
+                  <td th:text="${acc.produk}">Tabungan Wadiah</td>
+                  <td th:text="${acc.nominalSetoranAwal != null ? 'Rp ' + #numbers.formatDecimal(acc.nominalSetoranAwal, 0, 'POINT', 0, 'COMMA') : '-'}">Rp 100,000</td>
+                  <td>
+                    <span class="badge-status"
+                          th:classappend="${acc.statusActive ? 'badge-active' : (acc.status != null and acc.status.name() == 'REJECTED' ? 'badge-inactive' : 'badge-locked')}"
+                          th:text="${acc.status}">ACTIVE</span>
+                  </td>
+                  <td th:text="${acc.createdAt != null ? #temporals.format(acc.createdAt, 'dd/MM/yyyy HH:mm') : (acc.tanggalPembukaan != null ? #temporals.format(acc.tanggalPembukaan, 'dd/MM/yyyy') : '-')}">08/11/2026</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Tab 4: Transaksi Teller -->
+        <div id="tab-transaksi" class="tab-pane">
+          <div th:if="${#lists.isEmpty(userTransactions)}" style="padding: 30px; text-align: center; color: #94a3b8;">
+            Pengguna ini belum memproses transaksi teller.
+          </div>
+          <div th:unless="${#lists.isEmpty(userTransactions)}" class="data-table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>No Transaksi</th>
+                  <th>Waktu</th>
+                  <th>Tipe / Sandi</th>
+                  <th>No Rekening</th>
+                  <th>Nominal</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr th:each="tx : ${userTransactions}">
+                  <td style="font-family: monospace; font-weight: 700; color: #113C8D;" th:text="${tx.nomorTransaksi}">TRX-001</td>
+                  <td th:text="${tx.processedAt != null ? #temporals.format(tx.processedAt, 'dd/MM/yyyy HH:mm') : '-'}">08/11/2026</td>
+                  <td>
+                    <span class="tag-module tag-teller" th:text="${tx.tipe}">DEPOSIT</span>
+                    <span th:if="${tx.sandiCode != null}" style="font-size: 11px; color: #64748b; margin-left: 4px;" th:text="'(' + ${tx.sandiCode} + ')'">(52)</span>
+                  </td>
+                  <td th:text="${tx.nomorRekening}">54300000101</td>
+                  <td style="font-weight: 700; color: #1e3a8a;" th:text="${tx.jumlah != null ? 'Rp ' + #numbers.formatDecimal(tx.jumlah, 0, 'POINT', 0, 'COMMA') : '-'}">Rp 500,000</td>
+                  <td>
+                    <span class="badge-status"
+                          th:classappend="${tx.status != null and tx.status.name() == 'SUCCESS' ? 'badge-active' : (tx.status != null and tx.status.name() == 'REJECTED' ? 'badge-inactive' : 'badge-locked')}"
+                          th:text="${tx.status}">SUCCESS</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <script>
+        function switchTab(tabId, el) {
+          document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+          document.querySelectorAll('.tab-item').forEach(b => b.classList.remove('active'));
+          const target = document.getElementById(tabId);
+          if (target) {
+            target.classList.add('active');
+          }
+          if (el) {
+            el.classList.add('active');
+          }
+        }
+      </script>
     </main>
   </div>
 </div>

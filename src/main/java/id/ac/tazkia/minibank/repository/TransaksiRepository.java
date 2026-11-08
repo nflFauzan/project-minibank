@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -57,4 +58,13 @@ public interface TransaksiRepository extends JpaRepository<Transaksi, UUID> {
             id.ac.tazkia.minibank.entity.Rekening rekening, java.time.LocalDateTime end);
 
     List<Transaksi> findByProcessedAtBetweenOrderByProcessedAtAsc(java.time.LocalDateTime start, java.time.LocalDateTime end);
+
+    List<Transaksi> findByProcessedByUsernameOrderByProcessedAtDesc(String username, Pageable pageable);
+
+    long countByProcessedByUsername(String username);
+
+    long countByProcessedByUsernameAndTipe(String username, TipeTransaksi tipe);
+
+    @Query("select coalesce(sum(t.jumlah), 0) from Transaksi t where t.processedByUsername = :username and (t.status is null or t.status = 'SUCCESS')")
+    BigDecimal sumTotalNominalByProcessedByUsername(@Param("username") String username);
 }

@@ -68,12 +68,17 @@ class RbacControllerIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
-    @DisplayName("GET /rbac/users/view/{id} - renders user details")
+    @DisplayName("GET /rbac/users/view/{id} - renders user details and activity tracking summary")
     void getViewUser() throws Exception {
         mockMvc.perform(get("/rbac/users/view/" + sampleUser.getId()))
                 .andExpect(status().isOk())
                 .andExpect(view().name("rbac/users/view"))
-                .andExpect(model().attributeExists("user"));
+                .andExpect(model().attributeExists("user"))
+                .andExpect(model().attributeExists("activitySummary"))
+                .andExpect(model().attributeExists("recentActivities"))
+                .andExpect(model().attributeExists("userCustomers"))
+                .andExpect(model().attributeExists("userAccounts"))
+                .andExpect(model().attributeExists("userTransactions"));
     }
 
     @Test
