@@ -120,15 +120,245 @@
       box-shadow: 0 8px 15px rgba(30, 58, 138, 0.3);
     }
 
+    .print-only {
+      display: none;
+    }
+
     @media print {
-      .cs-sidebar, .cs-topbar, .btn-print, .back-link {
+      @page {
+        size: A4 portrait;
+        margin: 10mm;
+      }
+      body {
+        background: #ffffff !important;
+        color: #000000 !important;
+        font-family: 'Poppins', sans-serif !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      .no-print, .cs-sidebar, .cs-topbar, .back-link, .btn-print, .detail-card {
         display: none !important;
       }
-      .cs-shell, .cs-content, .cs-page, .detail-card {
+      .cs-shell, .cs-content, .cs-page {
         padding: 0 !important;
         margin: 0 !important;
-        box-shadow: none !important;
-        border: none !important;
+        background: transparent !important;
+        width: 100% !important;
+      }
+      .print-only {
+        display: block !important;
+      }
+
+      /* Desain Slip Resmi Bank */
+      .bank-official-slip {
+        border: 2px solid #1e3a8a;
+        border-radius: 8px;
+        padding: 20px 24px;
+        max-width: 190mm;
+        margin: 0 auto;
+        background: #ffffff;
+        font-size: 11.5px;
+        color: #0f172a;
+      }
+      .slip-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-bottom: 12px;
+      }
+      .slip-brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .slip-logo {
+        height: 48px;
+        width: auto;
+      }
+      .bank-title {
+        font-size: 17px;
+        font-weight: 800;
+        color: #1e3a8a;
+        letter-spacing: -0.3px;
+      }
+      .bank-subtitle {
+        font-size: 10.5px;
+        font-weight: 700;
+        color: #2563eb;
+      }
+      .bank-address {
+        font-size: 9px;
+        color: #64748b;
+        margin-top: 2px;
+      }
+      .slip-type-box {
+        text-align: right;
+      }
+      .slip-badge {
+        display: inline-block;
+        background: #1e3a8a;
+        color: #ffffff;
+        font-weight: 800;
+        font-size: 12px;
+        padding: 6px 14px;
+        border-radius: 6px;
+        letter-spacing: 0.5px;
+      }
+      .slip-channel {
+        font-size: 9px;
+        font-weight: 600;
+        color: #64748b;
+        margin-top: 4px;
+      }
+      .double-divider {
+        border-top: 2px solid #1e3a8a;
+        border-bottom: 1px solid #1e3a8a;
+        height: 3px;
+        margin: 8px 0 14px 0;
+      }
+      .slip-meta-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 6px 20px;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        padding: 8px 12px;
+        font-size: 10.5px;
+        margin-bottom: 14px;
+      }
+      .slip-data-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 11px;
+        margin-bottom: 14px;
+      }
+      .slip-data-table td {
+        padding: 4px 6px;
+        vertical-align: top;
+      }
+      .slip-data-table .lbl {
+        width: 140px;
+        color: #475569;
+        font-weight: 600;
+      }
+      .slip-data-table .sep {
+        width: 10px;
+        font-weight: 700;
+      }
+      .slip-data-table .val {
+        color: #0f172a;
+        font-weight: 600;
+      }
+      .slip-data-table .val-mono {
+        font-family: 'Courier Prime', monospace;
+        font-weight: 700;
+        font-size: 12px;
+        color: #1e3a8a;
+      }
+      .slip-data-table .val-bold {
+        font-weight: 800;
+        text-transform: uppercase;
+        color: #0f172a;
+      }
+      .slip-amount-card {
+        border: 1.5px solid #2563eb;
+        background: #eff6ff;
+        border-radius: 6px;
+        padding: 10px 14px;
+        margin-bottom: 12px;
+      }
+      .amount-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .amount-label {
+        font-size: 11px;
+        font-weight: 800;
+        color: #1e3a8a;
+      }
+      .amount-figure {
+        font-size: 18px;
+        font-weight: 900;
+        color: #1e3a8a;
+        font-family: 'Courier Prime', monospace;
+      }
+      .terbilang-row {
+        margin-top: 6px;
+        font-size: 10.5px;
+        border-top: 1px dashed #bfdbfe;
+        padding-top: 6px;
+        color: #1e40af;
+      }
+      .terbilang-label {
+        font-weight: 700;
+        margin-right: 6px;
+      }
+      .terbilang-text {
+        font-weight: 700;
+        font-style: italic;
+      }
+      .slip-balance-summary {
+        display: flex;
+        justify-content: space-between;
+        background: #f1f5f9;
+        border-radius: 6px;
+        padding: 8px 12px;
+        font-size: 10.5px;
+        margin-bottom: 16px;
+      }
+      .slip-signatures {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 16px;
+        text-align: center;
+        margin-top: 16px;
+        padding-top: 10px;
+      }
+      .sig-col {
+        border: 1px solid #cbd5e1;
+        border-radius: 6px;
+        padding: 8px;
+        background: #ffffff;
+      }
+      .sig-header {
+        font-size: 10px;
+        font-weight: 700;
+        color: #475569;
+        border-bottom: 1px solid #e2e8f0;
+        padding-bottom: 4px;
+        margin-bottom: 6px;
+      }
+      .sig-space {
+        height: 48px;
+      }
+      .sig-footer {
+        font-size: 10.5px;
+        font-weight: 700;
+        color: #0f172a;
+      }
+      .sig-sub {
+        font-size: 9px;
+        color: #64748b;
+      }
+      .stamp-circle {
+        display: inline-block;
+        border: 1.5px dashed #2563eb;
+        color: #2563eb;
+        border-radius: 50%;
+        padding: 8px 10px;
+        font-size: 8.5px;
+        font-weight: 800;
+        transform: rotate(-8deg);
+      }
+      .slip-notice {
+        margin-top: 14px;
+        padding-top: 8px;
+        border-top: 1px solid #e2e8f0;
+        font-size: 8.5px;
+        color: #64748b;
+        line-height: 1.4;
       }
     }
   </style>
@@ -223,13 +453,121 @@
           </div>
         </div>
 
-        <div style="display: flex; justify-content: flex-end;">
-            <button id="print-receipt-button" onclick="window.print()" class="btn-print">
-                <span style="font-size: 18px;">&#128424;</span> Cetak Bukti Transaksi
+        <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 25px;">
+            <a th:href="@{/teller/transaction/receipt/{id}(id=${tx.id})}" target="_blank"
+               style="text-decoration: none; background: #64748b; color: #fff; padding: 12px 24px; border-radius: 12px; font-weight: 700; font-size: 13.5px; display: inline-flex; align-items: center; gap: 8px;">
+                <span>📄</span> Download Struk PDF
+            </a>
+            <button id="print-receipt-button" onclick="window.print()" class="btn-print" style="margin-top: 0;">
+                <span style="font-size: 18px;">🖨️</span> Cetak Slip Transaksi Resmi
             </button>
         </div>
 
       </div>
+
+      <!-- DOKUMEN RESMI: SLIP TRANSAKSI TELLER STANDAR BANK (Hanya tampil saat dicetak ke Kertas / PDF) -->
+      <div class="bank-official-slip print-only">
+        <!-- Kop Bank -->
+        <div class="slip-header">
+          <div class="slip-brand">
+            <div>
+              <div class="bank-title">MINI BANK TAZKIA</div>
+              <div class="bank-subtitle">KANTOR CABANG OPERASIONAL SYARIAH SENTUL CITY</div>
+              <div class="bank-address">Jl. Ir. H. Djuanda No. 78 Sentul City, Bogor 16810 | Telp: (021) 87962291</div>
+            </div>
+          </div>
+          <div class="slip-type-box">
+            <div class="slip-badge" th:text="${tx.tipe.name() == 'DEPOSIT' ? 'SLIP SETORAN TUNAI' : (tx.tipe.name() == 'WITHDRAWAL' ? 'SLIP PENARIKAN TUNAI' : 'SLIP PEMINDAHBUKUAN')}">SLIP SETORAN TUNAI</div>
+            <div class="slip-channel">KANAL TELLER • LEMBAR RESMI NASABAH & BANK</div>
+          </div>
+        </div>
+
+        <div class="double-divider"></div>
+
+        <!-- Metadata Validasi Sistem -->
+        <div class="slip-meta-grid">
+          <div><strong>No. Validasi:</strong> <span th:text="${tx.nomorTransaksi}">T3000585</span></div>
+          <div><strong>Tanggal Jam:</strong> <span th:text="${#temporals.format(tx.processedAt, 'dd/MM/yyyy HH:mm:ss')}">08/11/2026 17:45:00</span></div>
+          <div><strong>Ref Sistem ID:</strong> <span th:text="${tx.id}">UUID</span></div>
+          <div><strong>Teller:</strong> <span th:text="${tx.processedBy}">teller1</span> (<span th:text="${tx.processedByFullName ?: 'Ainun'}">Ainun</span>)</div>
+        </div>
+
+        <!-- Data Rekening & Nasabah -->
+        <table class="slip-data-table">
+          <tr>
+            <td class="lbl">Nomor Rekening</td>
+            <td class="sep">:</td>
+            <td class="val-mono" th:text="${tx.rekening.nomorRekening}">54300058701</td>
+            <td class="lbl">No. CIF / Nasabah</td>
+            <td class="sep">:</td>
+            <td class="val" th:text="${tx.rekening.cifNasabah ?: 'C1000017'}">C1000017</td>
+          </tr>
+          <tr>
+            <td class="lbl">Nama Pemilik</td>
+            <td class="sep">:</td>
+            <td class="val-bold" th:text="${tx.rekening.namaNasabah}">MELVINA SYAHNUM</td>
+            <td class="lbl">Produk Bank</td>
+            <td class="sep">:</td>
+            <td class="val" th:text="${tx.rekening.produk}">Tabungan Mudharabah Tazkia</td>
+          </tr>
+          <tr>
+            <td class="lbl">Keterangan / Berita</td>
+            <td class="sep">:</td>
+            <td class="val" colspan="4" th:text="${tx.keterangan}">Setoran Awal Tabungan</td>
+          </tr>
+        </table>
+
+        <!-- Nominal Transaksi & Terbilang -->
+        <div class="slip-amount-card">
+          <div class="amount-row">
+            <div class="amount-label">NOMINAL TRANSAKSI:</div>
+            <div class="amount-figure">
+              IDR <span th:text="${#numbers.formatDecimal(tx.jumlah, 1, 'POINT', 2, 'COMMA')}">1.000.000,00</span>
+            </div>
+          </div>
+          <div class="terbilang-row">
+            <span class="terbilang-label">Terbilang:</span>
+            <span class="terbilang-text" th:text="'*** ' + ${#strings.toUpperCase(terbilang ?: 'Satu Juta Rupiah')} + ' ***'">*** SATU JUTA RUPIAH ***</span>
+          </div>
+        </div>
+
+        <!-- Mutasi Saldo Buku -->
+        <div class="slip-balance-summary">
+          <div>Saldo Sebelum: <strong>IDR <span th:text="${#numbers.formatDecimal(tx.saldoSebelum ?: 0, 1, 'POINT', 2, 'COMMA')}">0,00</span></strong></div>
+          <div>&rarr; Mutasi: <strong th:text="${(tx.tipe.name() == 'WITHDRAWAL' ? '-' : '+') + ' IDR ' + #numbers.formatDecimal(tx.jumlah, 1, 'POINT', 2, 'COMMA')}">+ IDR 1.000.000,00</strong></div>
+          <div>&rarr; Saldo Akhir: <strong style="color: #1e3a8a;">IDR <span th:text="${#numbers.formatDecimal(tx.saldoSesudah ?: 0, 1, 'POINT', 2, 'COMMA')}">1.000.000,00</span></strong></div>
+        </div>
+
+        <!-- Kotak Tanda Tangan Resmi Bank -->
+        <div class="slip-signatures">
+          <div class="sig-col">
+            <div class="sig-header">Penyetor / Penarik / Nasabah</div>
+            <div class="sig-space"></div>
+            <div class="sig-footer">( ............................................ )</div>
+            <div class="sig-sub" th:text="${tx.rekening.namaNasabah}">Melvina Syahnum</div>
+          </div>
+          <div class="sig-col">
+            <div class="sig-header">Teller / Kasir Bank</div>
+            <div class="sig-space"></div>
+            <div class="sig-footer">( <span th:text="${tx.processedByFullName ?: tx.processedBy}">Ainun</span> )</div>
+            <div class="sig-sub">Petugas Resmi</div>
+          </div>
+          <div class="sig-col">
+            <div class="sig-header">Validasi & Stempel Bank</div>
+            <div class="sig-space stamp-box" style="display:flex; align-items:center; justify-content:center;">
+              <div class="stamp-circle">TERVALIDASI SISTEM</div>
+            </div>
+            <div class="sig-footer" th:text="${#temporals.format(tx.processedAt, 'dd/MM/yyyy HH:mm')}">08/11/2026</div>
+            <div class="sig-sub">KCU Sentul City</div>
+          </div>
+        </div>
+
+        <!-- Catatan Standar Bank -->
+        <div class="slip-notice">
+          <strong>Perhatian:</strong> Harap simpan slip ini sebagai bukti transaksi perbankan yang sah. Tanda tangan dan stempel/validasi sistem kasir diperlukan untuk keabsahan transaksi. Mini Bank Tazkia berizin dan diawasi oleh Otoritas Jasa Keuangan (OJK).
+        </div>
+      </div>
+
     </main>
   </div>
 </div>

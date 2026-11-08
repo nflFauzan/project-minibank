@@ -219,15 +219,60 @@
 
     /* Print Styles */
     @media print {
-      body { background: #ffffff !important; }
-      .cs-shell .cs-sidebar, .cs-topbar, .glass-toolbar, .no-print { display: none !important; }
-      .cs-content { margin-left: 0 !important; width: 100% !important; }
-      .cs-page { padding: 0 !important; }
-      .glass-card, .glass-table-container { box-shadow: none !important; border: 1px solid #cbd5e1 !important; }
-      .print-header { display: block !important; margin-bottom: 20px; }
+      @page {
+        size: A4 portrait;
+        margin: 12mm 15mm;
+      }
+      body {
+        background: #ffffff !important;
+        color: #000000 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      .cs-shell .cs-sidebar, .cs-topbar, .glass-toolbar, .no-print {
+        display: none !important;
+      }
+      .cs-content {
+        margin-left: 0 !important;
+        width: 100% !important;
+        padding: 0 !important;
+      }
+      .cs-page {
+        padding: 0 !important;
+      }
+      .glass-card, .glass-table-container {
+        box-shadow: none !important;
+        border: 1px solid #cbd5e1 !important;
+        background: #ffffff !important;
+        padding: 16px !important;
+      }
+      .print-header {
+        display: block !important;
+        margin-bottom: 20px;
+      }
+      .print-footer {
+        display: block !important;
+        margin-top: 30px;
+        page-break-inside: avoid;
+      }
+      table {
+        min-width: 100% !important;
+        font-size: 11px !important;
+      }
+      th {
+        background-color: #f1f5f9 !important;
+        color: #1e3a8a !important;
+        border-bottom: 1.5px solid #1e3a8a !important;
+        padding: 8px 6px !important;
+      }
+      td {
+        padding: 8px 6px !important;
+        border-bottom: 1px solid #e2e8f0 !important;
+      }
     }
 
     .print-header { display: none; }
+    .print-footer { display: none; }
   </style>
 </head>
 
@@ -242,9 +287,20 @@
       
       <!-- Print Header (Visible only when printed) -->
       <div class="print-header">
-        <div style="border-bottom: 2px solid #1e3a8a; padding-bottom: 12px; margin-bottom: 16px;">
-          <h2 style="margin: 0; color: #1e3a8a;">TAZKIA MINIBANK - REKENING KORAN / MUTASI</h2>
-          <p style="margin: 4px 0 0; font-size: 12px; color: #64748b;">Institut Agama Islam Tazkia • Cabang Operasional Perbankan Syariah</p>
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; border-bottom: 2.5px solid #1e3a8a; padding-bottom: 12px; margin-bottom: 16px;">
+          <div>
+            <h1 style="margin: 0; font-size: 20px; font-weight: 800; color: #1e3a8a; letter-spacing: -0.5px;">MINI BANK TAZKIA</h1>
+            <div style="font-size: 11px; font-weight: 700; color: #2563eb;">KANTOR CABANG OPERASIONAL SYARIAH SENTUL CITY</div>
+            <div style="font-size: 9.5px; color: #64748b; margin-top: 2px;">Jl. Ir. H. Djuanda No. 78 Sentul City, Bogor 16810 | Telp: (021) 87962291</div>
+          </div>
+          <div style="text-align: right;">
+            <div style="display:inline-block; border: 1.5px solid #1e3a8a; background: #eff6ff; padding: 4px 12px; border-radius: 4px; font-weight: 800; font-size: 12px; color: #1e3a8a;">
+              REKENING KORAN / BANK STATEMENT
+            </div>
+            <div style="font-size: 9.5px; color: #64748b; margin-top: 4px;">
+              Dokumen Resmi Nasabah
+            </div>
+          </div>
         </div>
       </div>
 
@@ -433,6 +489,40 @@
             </tr>
           </tbody>
         </table>
+      </div>
+
+      <!-- Print Footer: Pengesahan & Disclaimer Resmi Bank (Visible only when printed) -->
+      <div class="print-footer">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 25px; padding-top: 15px; border-top: 1px solid #cbd5e1;">
+          <div style="font-size: 9px; color: #64748b; line-height: 1.5;">
+            <strong>Catatan & Ketentuan Perbankan:</strong><br>
+            1. Rekening koran ini merupakan rekaman data transaksi mutasi yang sah dan mengikat yang diterbitkan oleh Core Banking System Mini Bank Tazkia.<br>
+            2. Apabila terdapat sanggahan atau perbedaan saldo, nasabah wajib memberitahukan kepada bank selambat-lambatnya 14 (empat belas) hari kalender setelah tanggal rekening koran ini.<br>
+            3. Mini Bank Tazkia berizin dan diawasi oleh Otoritas Jasa Keuangan (OJK).
+          </div>
+          <div style="display: flex; justify-content: space-around; text-align: center;">
+            <div style="width: 140px;">
+              <div style="font-size: 10px; font-weight: 700; color: #475569;">Petugas Customer Service</div>
+              <div style="height: 50px;"></div>
+              <div style="border-top: 1px solid #0f172a; font-size: 10px; font-weight: 700; color: #0f172a; padding-top: 4px;">
+                ( ................................... )
+              </div>
+              <div style="font-size: 8.5px; color: #64748b;">CS Representative</div>
+            </div>
+            <div style="width: 140px;">
+              <div style="font-size: 10px; font-weight: 700; color: #475569;">Branch Manager / Spv</div>
+              <div style="height: 50px; display:flex; align-items:center; justify-content:center;">
+                <div style="border: 1px dashed #2563eb; color: #2563eb; border-radius: 4px; padding: 2px 6px; font-size: 8px; font-weight: 800;">
+                  TERVERIFIKASI
+                </div>
+              </div>
+              <div style="border-top: 1px solid #0f172a; font-size: 10px; font-weight: 700; color: #0f172a; padding-top: 4px;">
+                ( ................................... )
+              </div>
+              <div style="font-size: 8.5px; color: #64748b;">Supervisor Operasional</div>
+            </div>
+          </div>
+        </div>
       </div>
 
     </main>

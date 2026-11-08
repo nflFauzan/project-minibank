@@ -24,7 +24,7 @@
 
     @media print {
       @page {
-        size: A4 portrait;
+        size: 155mm 200mm;
         margin: 0;
       }
       body {
@@ -42,22 +42,7 @@
         padding: 0 !important;
       }
       
-      /* Mode A4: Memenuhi Kertas A4 secara proporsional */
-      body.size-a4 .book-spread {
-        width: 196mm !important;
-        height: 253mm !important;
-        margin: 12mm auto !important;
-        page-break-after: always;
-        break-after: page;
-        box-shadow: none !important;
-      }
-      body.size-a4 .spread-page {
-        width: 196mm !important;
-        height: 126.5mm !important;
-      }
-
-      /* Mode Asli 1:1 Fisik Buku (155mm x 200mm) */
-      body.size-original .book-spread {
+      .book-spread {
         width: 155mm !important;
         height: 200mm !important;
         margin: 0 auto !important;
@@ -65,7 +50,7 @@
         break-after: page;
         box-shadow: none !important;
       }
-      body.size-original .spread-page {
+      .spread-page {
         width: 155mm !important;
         height: 100mm !important;
       }
@@ -310,7 +295,7 @@
   </style>
 </head>
 
-<body class="size-a4">
+<body class="size-original">
 
   <!-- Header Layar & Kontrol Pilihan Kertas -->
   <div class="no-print">
@@ -327,8 +312,8 @@
         <div style="display: flex; align-items: center; gap: 8px; background: #f1f5f9; padding: 6px 14px; border-radius: 8px;">
           <label style="font-size: 12px; font-weight: 700; color: #1e40af;">Ukuran Kertas:</label>
           <select id="paperSizeSelect" onchange="changePaperSize(this.value)" style="padding: 4px 10px; border-radius: 6px; border: 1px solid #cbd5e1; font-weight: 600; font-size: 12px; cursor: pointer;">
-            <option value="size-a4" selected>📄 Pas Kertas A4 (Fit to A4) — Rekomendasi</option>
-            <option value="size-original">📐 Ukuran Asli Buku Fisik (155 x 200 mm)</option>
+            <option value="size-original" selected>📐 Ukuran Asli Buku Fisik (155 x 200 mm) — Pas Tanpa Putih</option>
+            <option value="size-a4">📄 Skala Kertas A4 (196 x 253 mm)</option>
           </select>
         </div>
 
@@ -339,11 +324,10 @@
     
     <!-- Panduan Super Jelas untuk Cetak PDF / Kertas -->
     <div class="guide-card" style="max-width: 1200px; margin: 12px auto 0 auto;">
-      <strong style="color: #1e40af;">💡 Tips Penting Saat Jendela Print Browser (`Ctrl + P`) Muncul:</strong><br>
-      1. <strong>Paper size:</strong> Pilih <span class="setting-pill">A4</span> (Buku otomatis nge-pass proporsional memenuhi lembar A4 tanpa sisa kosong banyak).<br>
-      2. <strong>Margins:</strong> Pilih <span class="setting-pill">None</span> (Tanpa margin) agar tidak terdorong atau menyusut.<br>
-      3. <strong>Headers and footers:</strong> <span class="setting-pill">HILANGKAN CENTANG</span> agar tanggal dan URL browser tidak mengotori tepi kertas.<br>
-      4. <strong>Background graphics:</strong> <span class="setting-pill">CENTANG</span> agar warna dan gambar latar belakang buku tabungan tercetak tajam dan utuh.
+      <strong style="color: #1e40af;">💡 Tips Cetak Pas Sempurna (Seperti PDF Jam 3 Sore):</strong><br>
+      • <strong>Margins:</strong> Pilih <span class="setting-pill">None (Tanpa margin)</span> agar buku pas penuh tanpa tepi putih.<br>
+      • <strong>Headers and footers:</strong> <span class="setting-pill">HILANGKAN CENTANG</span> agar URL dan tanggal browser tidak muncul.<br>
+      • <strong>Background graphics:</strong> <span class="setting-pill">CENTANG</span> agar seluruh warna dan gambar fisik buku tabungan tercetak tajam dan utuh.
     </div>
   </div>
 

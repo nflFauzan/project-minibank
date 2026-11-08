@@ -172,12 +172,18 @@
     }
 
     @media print {
+      @page {
+        size: A4 portrait;
+        margin: 12mm 15mm;
+      }
       body {
         background: #fff !important;
-        color: #000 !important;
-        font-family: 'Times New Roman', serif !important;
+        color: #0f172a !important;
+        font-family: 'Poppins', sans-serif !important;
         padding: 0 !important;
         margin: 0 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
       }
 
       .cs-sidebar,

@@ -45,4 +45,6 @@ playwright-tests/playwright-report/
 screenshot*.png
 *.pdf
 test-pdf.js
+docs/panduan/screenshots/
+
 

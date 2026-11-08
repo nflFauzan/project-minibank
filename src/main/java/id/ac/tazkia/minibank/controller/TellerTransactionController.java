@@ -8,6 +8,7 @@ import id.ac.tazkia.minibank.repository.TransaksiRepository;
 import id.ac.tazkia.minibank.service.TellerDepositService;
 import id.ac.tazkia.minibank.service.TellerWithdrawalService;
 import id.ac.tazkia.minibank.service.TellerTransferService;
+import id.ac.tazkia.minibank.util.TerbilangUtil;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -62,6 +63,7 @@ public class TellerTransactionController {
         model.addAttribute("active", "transaction");
         model.addAttribute("tx", t);
         model.addAttribute("groupTx", group);
+        model.addAttribute("terbilang", TerbilangUtil.toTerbilang(t.getJumlah()));
 
         return "teller/transaction/view";
     }
