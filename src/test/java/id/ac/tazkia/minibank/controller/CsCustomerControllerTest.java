@@ -89,6 +89,36 @@ class CsCustomerControllerTest extends BaseIntegrationTest {
     }
 
     @Test
+    @DisplayName("POST /cs/customers - gagal jika data belum lengkap (NIK kosong)")
+    void create_failsWhenNikEmpty() throws Exception {
+        long countBefore = nasabahRepository.count();
+
+        mockMvc.perform(post("/cs/customers")
+                        .param("namaSesuaiIdentitas", "Nasabah Tanpa NIK")
+                        .param("nik", ""))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/cs/customers/new"))
+                .andExpect(flash().attributeExists("error"));
+
+        assertEquals(countBefore, nasabahRepository.count());
+    }
+
+    @Test
+    @DisplayName("POST /cs/customers - gagal jika data belum lengkap (Nama kosong)")
+    void create_failsWhenNamaEmpty() throws Exception {
+        long countBefore = nasabahRepository.count();
+
+        mockMvc.perform(post("/cs/customers")
+                        .param("namaSesuaiIdentitas", "")
+                        .param("nik", "1234567890123456"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/cs/customers/new"))
+                .andExpect(flash().attributeExists("error"));
+
+        assertEquals(countBefore, nasabahRepository.count());
+    }
+
+    @Test
     @DisplayName("GET /cs/customers/{id} - tampil detail nasabah")
     void view_success() throws Exception {
         mockMvc.perform(get("/cs/customers/" + existingNasabah.getId()))

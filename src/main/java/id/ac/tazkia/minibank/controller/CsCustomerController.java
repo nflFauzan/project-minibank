@@ -43,6 +43,13 @@ public class CsCustomerController {
     @PostMapping({"", "/new"})
     public String create(@ModelAttribute("nasabah") Nasabah form,
                          RedirectAttributes ra) {
+        // Validasi kelengkapan data dasar nasabah
+        if (form.getNik() == null || form.getNik().trim().isBlank() ||
+            form.getNamaSesuaiIdentitas() == null || form.getNamaSesuaiIdentitas().trim().isBlank()) {
+            ra.addFlashAttribute("error", "Data nasabah belum lengkap. NIK dan Nama sesuai identitas wajib diisi.");
+            return "redirect:/cs/customers/new";
+        }
+
         try {
             Nasabah saved = nasabahService.createNasabah(form);
             ra.addFlashAttribute("successMessage", "Data nasabah berhasil disimpan! Nomor CIF: " + saved.getCif());

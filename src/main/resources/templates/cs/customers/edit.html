@@ -235,6 +235,24 @@
       }
     }
   });
+
+  // Cegah Enter submit prematur
+  const editForm = document.querySelector('form');
+  if (editForm) {
+    editForm.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        const target = e.target;
+        const tag = target.tagName ? target.tagName.toLowerCase() : '';
+        const type = (target.type || '').toLowerCase();
+        if (tag === 'textarea' || type === 'submit') return;
+        e.preventDefault();
+        const focusables = Array.from(editForm.querySelectorAll('input:not([type="hidden"]):not([disabled]), select:not([disabled]), textarea:not([disabled]), button[type="submit"]'));
+        const idx = focusables.indexOf(target);
+        if (idx > -1 && idx + 1 < focusables.length) focusables[idx + 1].focus();
+        return false;
+      }
+    });
+  }
 </script>
 </body>
 </html>

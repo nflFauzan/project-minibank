@@ -158,19 +158,19 @@
                             
                             <div class="row mb-3 align-items-center">
                                 <div class="col-md-3">
-                                    <label class="form-label">Nomor Identitas (NIK)<span class="badge-required">*</span></label>
+                                    <label class="form-label" for="nik">Nomor Identitas (NIK)<span class="badge-required">*</span></label>
                                 </div>
                                 <div class="col-md-9">
-                                    <input type="text" class="form-control" th:field="*{nik}" placeholder="Masukkan 16 digit NIK" />
+                                    <input type="text" class="form-control" th:field="*{nik}" id="nik" placeholder="Masukkan 16 digit NIK" required maxlength="16" minlength="16" pattern="[0-9]{16}" title="NIK harus terdiri dari 16 digit angka" />
                                 </div>
                             </div>
 
                             <div class="row mb-3 align-items-center">
                                 <div class="col-md-3">
-                                    <label class="form-label">Nama Sesuai Identitas<span class="badge-required">*</span></label>
+                                    <label class="form-label" for="namaLengkap">Nama Sesuai Identitas<span class="badge-required">*</span></label>
                                 </div>
                                 <div class="col-md-9">
-                                    <input type="text" class="form-control" th:field="*{namaLengkap}" placeholder="Nama lengkap sesuai KTP" />
+                                    <input type="text" class="form-control" th:field="*{namaLengkap}" id="namaLengkap" placeholder="Nama lengkap sesuai KTP" required />
                                 </div>
                             </div>
 
@@ -179,19 +179,19 @@
                                     <label class="form-label">Tempat & Tanggal Lahir<span class="badge-required">*</span></label>
                                 </div>
                                 <div class="col-md-5">
-                                    <input type="text" class="form-control" th:field="*{tempatLahir}" placeholder="Tempat Lahir" />
+                                    <input type="text" class="form-control" th:field="*{tempatLahir}" id="tempatLahir" placeholder="Tempat Lahir" required />
                                 </div>
                                 <div class="col-md-4">
-                                    <input type="date" class="form-control" th:field="*{tanggalLahir}" />
+                                    <input type="date" class="form-control" th:field="*{tanggalLahir}" id="tanggalLahir" required />
                                 </div>
                             </div>
 
                             <div class="row mb-3 align-items-center">
                                 <div class="col-md-3">
-                                    <label class="form-label">Nama Gadis Ibu Kandung<span class="badge-required">*</span></label>
+                                    <label class="form-label" for="namaIbuKandung">Nama Gadis Ibu Kandung<span class="badge-required">*</span></label>
                                 </div>
                                 <div class="col-md-9">
-                                    <input type="text" class="form-control" th:field="*{namaIbuKandung}" />
+                                    <input type="text" class="form-control" th:field="*{namaIbuKandung}" id="namaIbuKandung" placeholder="Nama gadis ibu kandung" required />
                                 </div>
                             </div>
 
@@ -202,11 +202,11 @@
                                 <div class="col-md-4">
                                     <div class="d-flex gap-3">
                                         <div class="form-check">
-                                            <input class="form-check-input" type="radio" th:field="*{jenisKelamin}" value="L" id="jkLaki" />
+                                            <input class="form-check-input" type="radio" th:field="*{jenisKelamin}" value="L" id="jkLaki" required />
                                             <label class="form-check-label" for="jkLaki">Laki-laki</label>
                                         </div>
                                         <div class="form-check">
-                                            <input class="form-check-input" type="radio" th:field="*{jenisKelamin}" value="P" id="jkPerempuan" />
+                                            <input class="form-check-input" type="radio" th:field="*{jenisKelamin}" value="P" id="jkPerempuan" required />
                                             <label class="form-check-label" for="jkPerempuan">Perempuan</label>
                                         </div>
                                     </div>
@@ -214,11 +214,11 @@
                                 <div class="col-md-5">
                                     <div class="d-flex gap-3">
                                         <div class="form-check">
-                                            <input class="form-check-input" type="radio" th:field="*{penduduk}" value="WNI" id="pendudukWni" onchange="handlePendudukChange(this.value)" />
+                                            <input class="form-check-input" type="radio" th:field="*{penduduk}" value="WNI" id="pendudukWni" onchange="handlePendudukChange(this.value)" required />
                                             <label class="form-check-label" for="pendudukWni">WNI</label>
                                         </div>
                                         <div class="form-check">
-                                            <input class="form-check-input" type="radio" th:field="*{penduduk}" value="WNA" id="pendudukWna" onchange="handlePendudukChange(this.value)" />
+                                            <input class="form-check-input" type="radio" th:field="*{penduduk}" value="WNA" id="pendudukWna" onchange="handlePendudukChange(this.value)" required />
                                             <label class="form-check-label" for="pendudukWna">WNA</label>
                                         </div>
                                     </div>
@@ -227,8 +227,8 @@
 
                             <div class="row mb-3">
                                 <div class="col-md-4">
-                                    <label class="form-label">Status Pernikahan</label>
-                                    <select class="form-select" th:field="*{statusPernikahan}">
+                                    <label class="form-label" for="statusPernikahan">Status Pernikahan<span class="badge-required">*</span></label>
+                                    <select class="form-select" th:field="*{statusPernikahan}" id="statusPernikahan" required>
                                         <option value="">-- PILIH STATUS PERNIKAHAN --</option>
                                         <option value="BELUM MENIKAH">BELUM MENIKAH</option>
                                         <option value="MENIKAH">MENIKAH</option>
@@ -237,8 +237,8 @@
                                     </select>
                                 </div>
                                 <div class="col-md-4">
-                                    <label class="form-label">Agama</label>
-                                    <select class="form-select" th:field="*{agama}">
+                                    <label class="form-label" for="agama">Agama<span class="badge-required">*</span></label>
+                                    <select class="form-select" th:field="*{agama}" id="agama" required>
                                         <option value="">-- PILIH AGAMA --</option>
                                         <option value="ISLAM">ISLAM</option>
                                         <option value="KRISTEN PROTESTAN">KRISTEN PROTESTAN</option>
@@ -250,7 +250,7 @@
                                     </select>
                                 </div>
                                 <div class="col-md-4">
-                                    <label class="form-label">Negara</label>
+                                    <label class="form-label" for="inputNegara">Negara</label>
                                     <input type="text" class="form-control" id="inputNegara" th:field="*{negara}" />
                                 </div>
                             </div>
@@ -260,32 +260,32 @@
                             <div class="section-header-bar">Kontak & Informasi Pekerjaan</div>
                             <div class="row mb-3">
                                 <div class="col-md-6">
-                                    <label class="form-label">Nomor HP</label>
-                                    <input type="text" class="form-control" th:field="*{noHp}" />
+                                    <label class="form-label" for="noHp">Nomor HP<span class="badge-required">*</span></label>
+                                    <input type="text" class="form-control" th:field="*{noHp}" id="noHp" placeholder="08xxxxxxxxxx" required />
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="form-label">Email</label>
-                                    <input type="email" class="form-control" th:field="*{email}" />
+                                    <label class="form-label" for="email">Email</label>
+                                    <input type="email" class="form-control" th:field="*{email}" id="email" placeholder="nama@email.com" />
                                 </div>
                             </div>
                             <div class="row mb-3">
                                 <div class="col-md-4">
-                                    <label class="form-label">Pekerjaan</label>
-                                    <input type="text" class="form-control" th:field="*{pekerjaan}" />
+                                    <label class="form-label" for="pekerjaan">Pekerjaan<span class="badge-required">*</span></label>
+                                    <input type="text" class="form-control" th:field="*{pekerjaan}" id="pekerjaan" placeholder="Pekerjaan saat ini" required />
                                 </div>
                                 <div class="col-md-4">
-                                    <label class="form-label">Jabatan</label>
-                                    <input type="text" class="form-control" th:field="*{jabatan}" />
+                                    <label class="form-label" for="jabatan">Jabatan</label>
+                                    <input type="text" class="form-control" th:field="*{jabatan}" id="jabatan" />
                                 </div>
                                 <div class="col-md-4">
-                                    <label class="form-label">Penghasilan / Bulan</label>
-                                    <input type="text" class="form-control" th:field="*{penghasilanPerBulan}" />
+                                    <label class="form-label" for="penghasilanPerBulan">Penghasilan / Bulan</label>
+                                    <input type="text" class="form-control" th:field="*{penghasilanPerBulan}" id="penghasilanPerBulan" />
                                 </div>
                             </div>
                             <div class="row mb-3">
                                 <div class="col-md-12">
-                                    <label class="form-label">Nama Perusahaan</label>
-                                    <input type="text" class="form-control" th:field="*{namaPerusahaan}" />
+                                    <label class="form-label" for="namaPerusahaan">Nama Perusahaan</label>
+                                    <input type="text" class="form-control" th:field="*{namaPerusahaan}" id="namaPerusahaan" />
                                 </div>
                             </div>
                         </section>
@@ -294,8 +294,8 @@
                             <div class="section-header-bar">Informasi Alamat Identitas</div>
                             <div class="row mb-3">
                                 <div class="col-md-12">
-                                    <label class="form-label">Alamat Lengkap (KTP)</label>
-                                    <input type="text" class="form-control" th:field="*{alamatIdentitas}" maxlength="35" placeholder="Maksimal 35 karakter" />
+                                    <label class="form-label" for="alamatIdentitas">Alamat Lengkap (KTP)<span class="badge-required">*</span></label>
+                                    <input type="text" class="form-control" th:field="*{alamatIdentitas}" id="alamatIdentitas" maxlength="35" placeholder="Maksimal 35 karakter" required />
                                 </div>
                             </div>
                             <div class="row mb-3">
@@ -437,6 +437,74 @@
         window.addEventListener('DOMContentLoaded', function() {
             if (document.getElementById('registration-success-alert')) {
                 window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+
+            const regForm = document.querySelector('form');
+            if (regForm) {
+                // Cegah penekanan tombol ENTER agar tidak otomatis men-submit form
+                // Pindahkan fokus ke input berikutnya demi kemudahan input data petugas CS
+                regForm.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        const target = e.target;
+                        const tag = target.tagName ? target.tagName.toLowerCase() : '';
+                        const type = (target.type || '').toLowerCase();
+
+                        // Biarkan Enter normal hanya pada textarea atau ketika tombol Simpan ditekan langsung
+                        if (tag === 'textarea' || type === 'submit') {
+                            return;
+                        }
+
+                        // Cegah submit prematur
+                        e.preventDefault();
+
+                        // Cari dan fokuskan ke input/select berikutnya
+                        const focusableElements = Array.from(regForm.querySelectorAll(
+                            'input:not([type="hidden"]):not([disabled]), select:not([disabled]), textarea:not([disabled]), button[type="submit"]'
+                        ));
+                        const currentIndex = focusableElements.indexOf(target);
+                        if (currentIndex > -1 && currentIndex + 1 < focusableElements.length) {
+                            focusableElements[currentIndex + 1].focus();
+                        }
+                        return false;
+                    }
+                });
+
+                // Validasi kelengkapan form sebelum submit
+                regForm.addEventListener('submit', function(e) {
+                    if (!regForm.checkValidity()) {
+                        e.preventDefault();
+                        e.stopPropagation();
+
+                        let alertBox = document.getElementById('client-validation-alert');
+                        if (!alertBox) {
+                            alertBox = document.createElement('div');
+                            alertBox.id = 'client-validation-alert';
+                            alertBox.className = 'alert alert-danger mb-4';
+                            alertBox.style.borderRadius = '12px';
+                            alertBox.style.fontWeight = '600';
+                            const firstSection = regForm.querySelector('section');
+                            if (firstSection) {
+                                regForm.insertBefore(alertBox, firstSection);
+                            } else {
+                                regForm.prepend(alertBox);
+                            }
+                        }
+                        alertBox.innerHTML = '&#9888; Data nasabah belum diisi lengkap. Mohon lengkapi semua kolom wajib bertanda bintang (*) sebelum menyimpan.';
+                        alertBox.style.display = 'block';
+
+                        const firstInvalid = regForm.querySelector(':invalid');
+                        if (firstInvalid) {
+                            firstInvalid.focus();
+                            firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }
+                        return false;
+                    } else {
+                        const alertBox = document.getElementById('client-validation-alert');
+                        if (alertBox) {
+                            alertBox.style.display = 'none';
+                        }
+                    }
+                });
             }
         });
     </script>
