@@ -3,7 +3,10 @@ package id.ac.tazkia.minibank.service;
 import id.ac.tazkia.minibank.BaseIntegrationTest;
 import id.ac.tazkia.minibank.entity.Nasabah;
 import id.ac.tazkia.minibank.entity.NasabahStatus;
+import id.ac.tazkia.minibank.entity.Rekening;
+import id.ac.tazkia.minibank.entity.RekeningStatus;
 import id.ac.tazkia.minibank.repository.NasabahRepository;
+import id.ac.tazkia.minibank.repository.RekeningRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -22,6 +25,7 @@ class NasabahServiceTest extends BaseIntegrationTest {
 
     @Autowired private NasabahService nasabahService;
     @Autowired private NasabahRepository nasabahRepository;
+    @Autowired private RekeningRepository rekeningRepository;
 
     @BeforeEach
     void setUp() {
@@ -102,7 +106,7 @@ class NasabahServiceTest extends BaseIntegrationTest {
         Nasabah actual = nasabahService.getById(saved.getId());
 
         assertNotNull(actual);
-        assertEquals("Budi Santoso", actual.getNamaSesuaiIdentitas());
+        assertEquals("BUDI SANTOSO", actual.getNamaSesuaiIdentitas());
     }
 
     @Test
@@ -131,5 +135,47 @@ class NasabahServiceTest extends BaseIntegrationTest {
         List<Nasabah> result = nasabahService.listAllCustomers();
 
         assertTrue(result.size() >= 2);
+    }
+
+    @Test
+    @DisplayName("deleteNasabah - berhasil jika nasabah tidak memiliki rekening")
+    void deleteNasabah_successWhenNoAccounts() {
+        Nasabah n = new Nasabah();
+        n.setNik("9710009999999999");
+        n.setNamaSesuaiIdentitas("Nasabah Tanpa Rekening");
+        n.setCif("C9710090");
+        n.setStatus(NasabahStatus.ACTIVE);
+        Nasabah saved = nasabahRepository.save(n);
+
+        nasabahService.deleteNasabah(saved.getId());
+
+        assertFalse(nasabahRepository.findById(saved.getId()).isPresent());
+    }
+
+    @Test
+    @DisplayName("deleteNasabah - gagal dan throw IllegalStateException jika nasabah masih punya rekening")
+    void deleteNasabah_throwsExceptionWhenHasAccounts() {
+        Nasabah n = new Nasabah();
+        n.setNik("9710008888888888");
+        n.setNamaSesuaiIdentitas("Nasabah Punya Rekening");
+        n.setCif("C9710091");
+        n.setStatus(NasabahStatus.ACTIVE);
+        Nasabah saved = nasabahRepository.save(n);
+
+        Rekening r = new Rekening();
+        r.setNomorRekening("TEST-ACC-DEL-01");
+        r.setNasabah(saved);
+        r.setCifNasabah(saved.getCif());
+        r.setNamaNasabah(saved.getNamaLengkap());
+        r.setStatus(RekeningStatus.ACTIVE);
+        r.setStatusActive(true);
+        rekeningRepository.save(r);
+
+        IllegalStateException ex = assertThrows(IllegalStateException.class, () ->
+                nasabahService.deleteNasabah(saved.getId())
+        );
+
+        assertTrue(ex.getMessage().contains("rekening terdaftar"));
+        assertTrue(nasabahRepository.findById(saved.getId()).isPresent());
     }
 }

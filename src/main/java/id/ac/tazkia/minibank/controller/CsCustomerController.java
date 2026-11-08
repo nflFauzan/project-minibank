@@ -97,4 +97,20 @@ public class CsCustomerController {
         }
         return "redirect:/cs/customers";
     }
+
+    // DELETE: POST /cs/customers/{id}/delete
+    @PostMapping("/{id:\\d+}/delete")
+    public String delete(@PathVariable Long id, RedirectAttributes ra) {
+        try {
+            nasabahService.deleteNasabah(id);
+            ra.addFlashAttribute("success", "Nasabah berhasil dihapus.");
+        } catch (EntityNotFoundException e) {
+            ra.addFlashAttribute("error", "Nasabah tidak ditemukan.");
+        } catch (IllegalStateException e) {
+            ra.addFlashAttribute("error", e.getMessage());
+        } catch (Exception e) {
+            ra.addFlashAttribute("error", "Gagal menghapus nasabah: " + e.getMessage());
+        }
+        return "redirect:/cs/customers";
+    }
 }

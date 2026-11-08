@@ -1,5 +1,6 @@
 package id.ac.tazkia.minibank.repository;
 
+import id.ac.tazkia.minibank.entity.Nasabah;
 import id.ac.tazkia.minibank.entity.Rekening;
 import id.ac.tazkia.minibank.entity.RekeningStatus;
 import jakarta.persistence.LockModeType;
@@ -65,6 +66,8 @@ public interface RekeningRepository extends JpaRepository<Rekening, Long> {
 
     // biar DashboardService kamu gak error lagi
     long countByStatusActive(boolean statusActive);
+
+    long countByNasabah(Nasabah nasabah);
 
     long countByStatus(RekeningStatus status);
     List<Rekening> findByStatusOrderByCreatedAtDesc(RekeningStatus status);

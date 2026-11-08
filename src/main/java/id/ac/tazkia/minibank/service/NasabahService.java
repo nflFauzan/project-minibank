@@ -3,6 +3,7 @@ package id.ac.tazkia.minibank.service;
 import id.ac.tazkia.minibank.entity.Nasabah;
 import id.ac.tazkia.minibank.entity.NasabahStatus;
 import id.ac.tazkia.minibank.repository.NasabahRepository;
+import id.ac.tazkia.minibank.repository.RekeningRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -19,6 +20,7 @@ import java.util.List;
 public class NasabahService {
 
     private final NasabahRepository nasabahRepository;
+    private final RekeningRepository rekeningRepository;
 
     @Transactional
     public Nasabah createNasabah(Nasabah form) {
@@ -125,5 +127,15 @@ public class NasabahService {
 
         // Status biarkan (CS tidak ubah)
         nasabahRepository.save(n);
+    }
+
+    @Transactional
+    public void deleteNasabah(Long id) {
+        Nasabah n = getById(id);
+        long accounts = rekeningRepository.countByNasabah(n);
+        if (accounts > 0) {
+            throw new IllegalStateException("Nasabah tidak dapat dihapus karena masih memiliki " + accounts + " rekening terdaftar. Tutup atau hapus rekening terlebih dahulu.");
+        }
+        nasabahRepository.delete(n);
     }
 }

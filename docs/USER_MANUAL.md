@@ -24,7 +24,19 @@ Dokumen ini merupakan panduan praktis alur kerja dan operasional aplikasi **Tazk
 2. Masukkan kata kunci (Nama, Nomor CIF, NIK, No. HP, atau Email) pada kotak pencarian di bagian atas tabel.
 3. Klik tombol **Cari**. Untuk mengembalikan daftar penuh, klik tombol **Reset**.
 
-### 1.3 Pembukaan Rekening
+### 1.3 Pengelolaan dan Penghapusan Nasabah
+1. Pada tabel **Daftar Nasabah** (`/cs/customers`), terdapat kolom aksi: **View**, **Edit**, dan **Delete**.
+2. **Lihat / Ubah Data Nasabah:**
+   - Klik **View** untuk memeriksa seluruh atribut identitas, domisili, dan pekerjaan nasabah.
+   - Klik **Edit** untuk memperbarui data identitas nasabah bila terdapat revisi atau kekeliruan.
+3. **Penghapusan Nasabah (Delete):**
+   - Klik tombol **Delete** pada baris nasabah yang ingin dihapus.
+   - Konfirmasi dialog konfirmasi perbankan akan muncul: *"Apakah Anda yakin ingin menghapus nasabah ini?"*.
+   - **Aturan Integritas Data Perbankan:**
+     - Nasabah yang **masih memiliki rekening terdaftar** (aktif, tutup, dsb.) **tidak dapat dihapus** demi menjaga audit trail transaksi dan integritas relasi data. Sistem akan memunculkan peringatan: *"Nasabah tidak dapat dihapus karena masih memiliki X rekening terdaftar. Tutup atau hapus rekening terlebih dahulu."*
+     - Nasabah yang **belum memiliki rekening** (misal nasabah baru atau salah registrasi) dapat dihapus secara permanen, dan sistem akan menampilkan notifikasi sukses hijau.
+
+### 1.4 Pembukaan Rekening
 1. Masuk ke menu **Rekening** &rarr; **Buka Rekening**.
 2. Pilih nasabah yang sudah berstatus `ACTIVE` (telah disetujui Supervisor).
 3. Pilih produk tabungan (contoh: Wadiah Yad Dhamanah atau Mudharabah Mutlaqah), setoran awal, dan cabang.

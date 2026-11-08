@@ -3,7 +3,10 @@ package id.ac.tazkia.minibank.controller;
 import id.ac.tazkia.minibank.BaseIntegrationTest;
 import id.ac.tazkia.minibank.entity.Nasabah;
 import id.ac.tazkia.minibank.entity.NasabahStatus;
+import id.ac.tazkia.minibank.entity.Rekening;
+import id.ac.tazkia.minibank.entity.RekeningStatus;
 import id.ac.tazkia.minibank.repository.NasabahRepository;
+import id.ac.tazkia.minibank.repository.RekeningRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,6 +22,7 @@ class CsCustomerControllerTest extends BaseIntegrationTest {
 
     @Autowired private MockMvc mockMvc;
     @Autowired private NasabahRepository nasabahRepository;
+    @Autowired private RekeningRepository rekeningRepository;
 
     private Nasabah existingNasabah;
 
@@ -139,6 +143,46 @@ class CsCustomerControllerTest extends BaseIntegrationTest {
     void update_notFound() throws Exception {
         mockMvc.perform(post("/cs/customers/999999")
                         .param("namaSesuaiIdentitas", "Someone"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/cs/customers"))
+                .andExpect(flash().attributeExists("error"));
+    }
+
+    @Test
+    @DisplayName("POST /cs/customers/{id}/delete - berhasil hapus nasabah tanpa rekening")
+    void delete_success() throws Exception {
+        mockMvc.perform(post("/cs/customers/" + existingNasabah.getId() + "/delete"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/cs/customers"))
+                .andExpect(flash().attributeExists("success"));
+
+        assertFalse(nasabahRepository.findById(existingNasabah.getId()).isPresent());
+    }
+
+    @Test
+    @DisplayName("POST /cs/customers/{id}/delete - gagal hapus nasabah yang masih memiliki rekening")
+    void delete_failsWhenHasAccounts() throws Exception {
+        Rekening r = new Rekening();
+        r.setNomorRekening("TEST-ACC-DEL-02");
+        r.setNasabah(existingNasabah);
+        r.setCifNasabah(existingNasabah.getCif());
+        r.setNamaNasabah(existingNasabah.getNamaLengkap());
+        r.setStatus(RekeningStatus.ACTIVE);
+        r.setStatusActive(true);
+        rekeningRepository.save(r);
+
+        mockMvc.perform(post("/cs/customers/" + existingNasabah.getId() + "/delete"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/cs/customers"))
+                .andExpect(flash().attributeExists("error"));
+
+        assertTrue(nasabahRepository.findById(existingNasabah.getId()).isPresent());
+    }
+
+    @Test
+    @DisplayName("POST /cs/customers/{id}/delete - not found redirect")
+    void delete_notFound() throws Exception {
+        mockMvc.perform(post("/cs/customers/999999/delete"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/cs/customers"))
                 .andExpect(flash().attributeExists("error"));

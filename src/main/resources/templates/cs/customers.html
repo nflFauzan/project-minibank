@@ -145,6 +145,9 @@
         </a>
       </div>
 
+      <div th:if="${success}" style="margin-top: 18px; padding: 14px 18px; background: rgba(236,253,245,0.85); backdrop-filter: blur(10px); color: #047857; border: 1px solid rgba(167,243,208,0.8); border-radius: 12px; font-weight: 600;" th:text="${success}"></div>
+      <div th:if="${error}" style="margin-top: 18px; padding: 14px 18px; background: rgba(254,242,242,0.85); backdrop-filter: blur(10px); color: #991b1b; border: 1px solid rgba(254,202,202,0.8); border-radius: 12px; font-weight: 600;" th:text="${error}"></div>
+
       <div style="margin-top: 18px; background: #fff; border: 1px solid #f1f5f9; border-radius: 16px; padding: 16px 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.02);">
         <form method="get" th:action="@{/cs/customers}" style="display: flex; gap: 12px; align-items: center;">
           <input type="text" name="q" th:value="${q}" placeholder="Cari berdasarkan nama, CIF, NIK, atau no HP..." 
@@ -170,7 +173,7 @@
               <th>Nama Lengkap</th>
               <th>Status</th>
               <th>Created At</th>
-              <th style="width:120px;">Action</th>
+              <th style="width:160px;">Action</th>
             </tr>
           </thead>
 
@@ -196,6 +199,13 @@
                 <a th:href="@{|/cs/customers/${n.id}|}" class="action-link">View</a>
                 <span class="divider">|</span>
                 <a th:href="@{|/cs/customers/${n.id}/edit|}" class="action-link">Edit</a>
+                <span class="divider">|</span>
+                <form th:action="@{|/cs/customers/${n.id}/delete|}" method="post" style="display:inline;"
+                      onsubmit="return confirm('Apakah Anda yakin ingin menghapus nasabah ini?');">
+                  <button type="submit" class="action-link" style="background:none; border:none; padding:0; cursor:pointer; color:#dc2626; font-family:inherit; font-size:inherit;">
+                    Delete
+                  </button>
+                </form>
               </td>
             </tr>
           </tbody>
