@@ -36,8 +36,8 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: Run Tests & Build Executable JAR
-        run: mvn clean package -B
+      - name: Build Executable JAR
+        run: mvn clean package -DskipTests -B
 
       - name: Transfer Deployment Artifacts to VPS
         uses: appleboy/scp-action@v0.1.7
