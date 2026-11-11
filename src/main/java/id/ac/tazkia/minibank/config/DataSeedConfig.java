@@ -46,7 +46,7 @@ public class DataSeedConfig {
                     Role adminRole = roleRepo.findByName("ROLE_ADMIN").orElseThrow();
                     User admin = new User();
                     admin.setUsername("admin");
-                    admin.setPassword(encoder.encode("admin1234"));
+                    admin.setPassword(encoder.encode("minibank123"));
                     admin.setFullName("Super Admin");
                     admin.setEmail("admin@tazkia.ac.id");
                     admin.setApproved(true);
@@ -55,27 +55,13 @@ public class DataSeedConfig {
                     userRepo.save(admin);
                 }
 
-                // zann (CS) default
-                if (userRepo.findByUsername("zann").isEmpty()) {
-                    Role csRole = roleRepo.findByName("ROLE_CS").orElseThrow();
-                    User zann = new User();
-                    zann.setUsername("zann");
-                    zann.setPassword(encoder.encode("zann"));
-                    zann.setFullName("Zann Customer Service");
-                    zann.setEmail("zann@tazkia.ac.id");
-                    zann.setApproved(true);
-                    zann.setEnabled(true);
-                    zann.getRoles().add(csRole);
-                    userRepo.save(zann);
-                }
-
                 // spv (Supervisor) default
                 if (userRepo.findByUsername("spv").isEmpty()) {
                     Role spvRole = roleRepo.findByName("ROLE_SUPERVISOR").orElseThrow();
                     User spv = new User();
                     spv.setUsername("spv");
-                    spv.setPassword(encoder.encode("spv1234"));
-                    spv.setFullName("Supervisor Default");
+                    spv.setPassword(encoder.encode("minibank123"));
+                    spv.setFullName("Supervisor");
                     spv.setEmail("spv@tazkia.ac.id");
                     spv.setApproved(true);
                     spv.setEnabled(true);
@@ -84,18 +70,33 @@ public class DataSeedConfig {
                     userRepo.save(spv);
                 }
 
-                // teller (Teller) default
-                if (userRepo.findByUsername("teller").isEmpty()) {
-                    Role tellerRole = roleRepo.findByName("ROLE_TELLER").orElseThrow();
-                    User teller = new User();
-                    teller.setUsername("teller");
-                    teller.setPassword(encoder.encode("teller1234"));
-                    teller.setFullName("Teller Default");
-                    teller.setEmail("teller@tazkia.ac.id");
-                    teller.setApproved(true);
-                    teller.setEnabled(true);
-                    teller.getRoles().add(tellerRole);
-                    userRepo.save(teller);
+                // zann & teller hanya dibuat jika profile dev/local (untuk Playwright CI lokal)
+                if (env.acceptsProfiles(Profiles.of("dev", "local"))) {
+                    if (userRepo.findByUsername("zann").isEmpty()) {
+                        Role csRole = roleRepo.findByName("ROLE_CS").orElseThrow();
+                        User zann = new User();
+                        zann.setUsername("zann");
+                        zann.setPassword(encoder.encode("zann"));
+                        zann.setFullName("Zann Customer Service");
+                        zann.setEmail("zann@tazkia.ac.id");
+                        zann.setApproved(true);
+                        zann.setEnabled(true);
+                        zann.getRoles().add(csRole);
+                        userRepo.save(zann);
+                    }
+
+                    if (userRepo.findByUsername("teller").isEmpty()) {
+                        Role tellerRole = roleRepo.findByName("ROLE_TELLER").orElseThrow();
+                        User teller = new User();
+                        teller.setUsername("teller");
+                        teller.setPassword(encoder.encode("teller1234"));
+                        teller.setFullName("Teller Default");
+                        teller.setEmail("teller@tazkia.ac.id");
+                        teller.setApproved(true);
+                        teller.setEnabled(true);
+                        teller.getRoles().add(tellerRole);
+                        userRepo.save(teller);
+                    }
                 }
 
                 // Nasabah & Produk & Live Minibank Accounts cuma kalau BUKAN profile test
@@ -104,6 +105,7 @@ public class DataSeedConfig {
                     // Minibank Tazkia live credential seeding & role cleanup
                     Role adminRole = roleRepo.findByName("ROLE_ADMIN").orElse(null);
                     Role bmRole = roleRepo.findByName("ROLE_BRANCH_MANAGER").orElse(null);
+                    Role spvRole = roleRepo.findByName("ROLE_SUPERVISOR").orElse(null);
                     Role csRole = roleRepo.findByName("ROLE_CS").orElse(null);
                     Role tellerRole = roleRepo.findByName("ROLE_TELLER").orElse(null);
 
@@ -114,6 +116,18 @@ public class DataSeedConfig {
                             admin.getRoles().add(bmRole);
                         }
                         userRepo.save(admin);
+                    });
+
+                    // Ensure spv password is minibank123 and has supervisor & branch manager roles
+                    userRepo.findByUsername("spv").ifPresent(spv -> {
+                        spv.setPassword(encoder.encode("minibank123"));
+                        if (spvRole != null && !spv.getRoles().contains(spvRole)) {
+                            spv.getRoles().add(spvRole);
+                        }
+                        if (bmRole != null && !spv.getRoles().contains(bmRole)) {
+                            spv.getRoles().add(bmRole);
+                        }
+                        userRepo.save(spv);
                     });
 
                     // Ensure cs1 exists with minibank123
@@ -152,37 +166,34 @@ public class DataSeedConfig {
                         });
                     }
 
-                    // Reset zann to only have ROLE_CS
-                    userRepo.findByUsername("zann").ifPresent(z -> {
-                        if (csRole != null) {
-                            z.getRoles().removeIf(r -> !r.getName().equals("ROLE_CS"));
-                            if (!z.getRoles().contains(csRole)) {
-                                z.getRoles().add(csRole);
-                            }
-                            userRepo.save(z);
-                        }
-                    });
+                    // Di profile prod, bersihkan akun testing non-utama jika ada
+                    if (env.acceptsProfiles(Profiles.of("prod"))) {
+                        userRepo.findByUsername("zann").ifPresent(userRepo::delete);
+                        userRepo.findByUsername("teller").ifPresent(userRepo::delete);
+                    }
 
-                    // Nasabah ACTIVE default untuk testing
-                    nasabahRepo.findByCif("C0000001").ifPresentOrElse(
-                        n -> {
-                            if (n.getStatus() != NasabahStatus.ACTIVE) {
+                    // Nasabah ACTIVE default untuk dev/testing saja (bukan prod dan bukan test)
+                    if (!env.acceptsProfiles(Profiles.of("prod", "test"))) {
+                        nasabahRepo.findByCif("C0000001").ifPresentOrElse(
+                            n -> {
+                                if (n.getStatus() != NasabahStatus.ACTIVE) {
+                                    n.setStatus(NasabahStatus.ACTIVE);
+                                    nasabahRepo.save(n);
+                                }
+                            },
+                            () -> {
+                                Nasabah n = new Nasabah();
+                                n.setCif("C0000001");
+                                n.setNik("1234567890123456");
+                                n.setNamaLengkap("Budi Santoso");
                                 n.setStatus(NasabahStatus.ACTIVE);
+                                n.setTempatLahir("Jakarta");
+                                n.setNamaIbuKandung("Siti Aminah");
                                 nasabahRepo.save(n);
                             }
-                        },
-                        () -> {
-                            Nasabah n = new Nasabah();
-                            n.setCif("C0000001");
-                            n.setNik("1234567890123456");
-                            n.setNamaLengkap("Budi Santoso");
-                            n.setStatus(NasabahStatus.ACTIVE);
-                            n.setTempatLahir("Jakarta");
-                            n.setNamaIbuKandung("Siti Aminah");
-                            nasabahRepo.save(n);
-                        }
-                    );
-    
+                        );
+                    }
+
                     // Produk default
                     if (produkRepo.findActiveProducts().isEmpty()) {
                         ProdukTabungan p = new ProdukTabungan();
