@@ -115,7 +115,7 @@ class TestResetControllerTest extends BaseIntegrationTest {
             assertEquals(5, nasabahRepository.count());
             Nasabah defaultNasabah = nasabahRepository.findByCif("C0000001").orElseThrow();
             assertEquals("C0000001", defaultNasabah.getCif());
-            assertEquals("Budi Santoso", defaultNasabah.getNamaLengkap());
+            assertEquals("BUDI SANTOSO", defaultNasabah.getNamaLengkap());
             assertEquals(NasabahStatus.ACTIVE, defaultNasabah.getStatus());
 
             assertEquals(1, produkTabunganRepository.count());

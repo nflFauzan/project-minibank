@@ -61,14 +61,15 @@ class TellerDepositServiceAdditionalTest extends BaseIntegrationTest {
     }
 
     @Test
-    @DisplayName("deposit - nominal sangat besar - berhasil")
+    @DisplayName("deposit - nominal sangat besar - berhasil dan pending approval")
     void deposit_nominalSangatBesar_success() {
         BigDecimal largeAmount = new BigDecimal("100000000000"); // 100 miliar
         var result = depositService.deposit("54399100101",
                 largeAmount, "Setoran Tunai Besar", null, "teller1");
 
         assertNotNull(result);
-        assertEquals(0, new BigDecimal("100001000000").compareTo(result.saldoBaru()));
+        assertTrue(result.pendingApproval());
+        assertEquals(0, new BigDecimal("1000000").compareTo(result.saldoBaru()));
     }
 
     @Test

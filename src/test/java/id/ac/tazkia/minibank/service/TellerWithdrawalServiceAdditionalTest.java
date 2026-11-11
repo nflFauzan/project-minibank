@@ -63,7 +63,7 @@ class TellerWithdrawalServiceAdditionalTest extends BaseIntegrationTest {
     }
 
     @Test
-    @DisplayName("withdraw - nominal sangat besar - berhasil")
+    @DisplayName("withdraw - nominal sangat besar - berhasil dan pending approval")
     void withdraw_nominalSangatBesar_success() {
         // Tambahkan saldo rekening terlebih dahulu
         seededRekening.setSaldo(new BigDecimal("1000000000000")); // 1 Triliun
@@ -74,7 +74,8 @@ class TellerWithdrawalServiceAdditionalTest extends BaseIntegrationTest {
                 largeAmount, "Tarik Nominal Besar", null, "teller1");
 
         assertNotNull(result);
-        assertEquals(0, new BigDecimal("200000000000").compareTo(result.saldoBaru()));
+        assertTrue(result.pendingApproval());
+        assertEquals(0, new BigDecimal("1000000000000").compareTo(result.saldoBaru()));
     }
 
     @Test

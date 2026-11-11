@@ -119,8 +119,8 @@ class TellerTransferServiceAdditionalTest extends BaseIntegrationTest {
         Rekening sumber = rekeningRepository.findByNomorRekening("54399300101").orElseThrow();
         Rekening tujuan = rekeningRepository.findByNomorRekening("54399300202").orElseThrow();
 
-        assertEquals(0, new BigDecimal("300000000000").compareTo(sumber.getSaldo()));
-        assertEquals(0, new BigDecimal("700000500000").compareTo(tujuan.getSaldo()));
+        assertEquals(0, new BigDecimal("1000000000000").compareTo(sumber.getSaldo()));
+        assertEquals(0, seededTujuan.getSaldo().compareTo(tujuan.getSaldo()));
     }
 
     @Test

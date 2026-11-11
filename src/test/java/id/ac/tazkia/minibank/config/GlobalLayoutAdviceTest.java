@@ -24,27 +24,27 @@ public class GlobalLayoutAdviceTest {
 
     @Test
     @WithMockUser(username = "fauzan", roles = {"CS", "TELLER", "SUPERVISOR"})
-    @DisplayName("GlobalLayoutAdvice injects multi-role flags and Branch Manager roleLabel on CS page")
+    @DisplayName("GlobalLayoutAdvice injects multi-role flags and Supervisor roleLabel on CS page")
     void multiRoleUserOnCsPage_hasUnifiedAttributes() throws Exception {
         mockMvc.perform(get("/cs/customers"))
                 .andExpect(status().isOk())
                 .andExpect(model().attribute("isCs", true))
                 .andExpect(model().attribute("isTeller", true))
                 .andExpect(model().attribute("isBranchManager", true))
-                .andExpect(model().attribute("roleLabel", "Branch Manager"))
+                .andExpect(model().attribute("roleLabel", "Supervisor"))
                 .andExpect(model().attribute("username", "fauzan"));
     }
 
     @Test
     @WithMockUser(username = "fauzan", roles = {"CS", "TELLER", "SUPERVISOR"})
-    @DisplayName("GlobalLayoutAdvice injects multi-role flags and Branch Manager roleLabel on Teller page")
+    @DisplayName("GlobalLayoutAdvice injects multi-role flags and Supervisor roleLabel on Teller page")
     void multiRoleUserOnTellerPage_hasUnifiedAttributes() throws Exception {
         mockMvc.perform(get("/teller/transaction/list"))
                 .andExpect(status().isOk())
                 .andExpect(model().attribute("isCs", true))
                 .andExpect(model().attribute("isTeller", true))
                 .andExpect(model().attribute("isBranchManager", true))
-                .andExpect(model().attribute("roleLabel", "Branch Manager"))
+                .andExpect(model().attribute("roleLabel", "Supervisor"))
                 .andExpect(model().attribute("username", "fauzan"));
     }
 

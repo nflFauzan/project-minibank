@@ -62,7 +62,7 @@ class RekeningServiceTest extends BaseIntegrationTest {
         assertNotNull(result.getId());
         assertTrue(result.getNomorRekening().startsWith("543"));
         assertEquals("C9890001", result.getCifNasabah());
-        assertEquals("Budi Santoso", result.getNamaNasabah());
+        assertEquals("BUDI SANTOSO", result.getNamaNasabah());
         assertEquals(id.ac.tazkia.minibank.entity.RekeningStatus.PENDING, result.getStatus());
         assertFalse(result.isStatusActive());
         assertTrue(rekeningRepository.findById(result.getId()).isPresent());
