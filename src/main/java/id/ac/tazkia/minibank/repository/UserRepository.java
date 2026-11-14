@@ -30,14 +30,16 @@ public interface UserRepository extends JpaRepository<User, Long> {
     long countByApprovedTrueAndEnabledTrue();
     long countByApprovedTrueAndEnabledFalse();
 
-    @Query("SELECT u FROM User u LEFT JOIN FETCH u.branch WHERE " +
+    @EntityGraph(attributePaths = {"roles", "branch"})
+    @Query("SELECT u FROM User u WHERE " +
            "(:search IS NULL OR :search = '' OR " +
            "LOWER(u.username) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
            "LOWER(u.fullName) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
            "LOWER(u.email) LIKE LOWER(CONCAT('%', :search, '%')))")
     Page<User> searchUsers(@Param("search") String search, Pageable pageable);
 
-    @Query(value = "SELECT DISTINCT u FROM User u LEFT JOIN FETCH u.branch LEFT JOIN u.roles r WHERE " +
+    @EntityGraph(attributePaths = {"roles", "branch"})
+    @Query(value = "SELECT DISTINCT u FROM User u LEFT JOIN u.branch b LEFT JOIN u.roles r WHERE " +
            "(:search IS NULL OR :search = '' OR " +
            " LOWER(u.username) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
            " LOWER(u.fullName) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
@@ -68,7 +70,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
             @Param("branchId") Long branchId,
             Pageable pageable);
 
-    @Query("SELECT u FROM User u LEFT JOIN FETCH u.branch WHERE " +
+    @EntityGraph(attributePaths = {"roles", "branch"})
+    @Query("SELECT u FROM User u WHERE " +
            "(:search IS NULL OR :search = '' OR " +
            "LOWER(u.username) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
            "LOWER(u.fullName) LIKE LOWER(CONCAT('%', :search, '%')) OR " +

@@ -26,6 +26,11 @@ public class ActiveModuleFilter extends OncePerRequestFilter {
                 || uri.startsWith("/api/")
                 || uri.startsWith("/passbook")
                 || uri.startsWith("/product")
+                || uri.startsWith("/rbac")
+                || uri.startsWith("/audit")
+                || uri.startsWith("/approval")
+                || uri.startsWith("/reports")
+                || uri.startsWith("/settings")
                 || uri.startsWith("/favicon.ico");
     }
 

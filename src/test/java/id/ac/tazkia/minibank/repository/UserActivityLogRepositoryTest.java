@@ -54,5 +54,13 @@ class UserActivityLogRepositoryTest extends BaseIntegrationTest {
         assertEquals(1, page.getTotalElements());
         assertEquals("TRX-20261108-001", page.getContent().get(0).getReferenceNumber());
     }
+
+    @Test
+    @DisplayName("Filter pencarian audit log dengan semua parameter null dan Pageable Sort")
+    void testSearchActivitiesAllNull() {
+        Page<UserActivityLog> page = userActivityLogRepository.searchActivities(
+                null, null, null, null, null, null, PageRequest.of(0, 20, org.springframework.data.domain.Sort.by("timestamp").descending()));
+        assertNotNull(page);
+    }
 }
 

@@ -8,6 +8,7 @@ import id.ac.tazkia.minibank.repository.UserRepository;
 import id.ac.tazkia.minibank.service.UserActivityService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -23,11 +24,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.List;
 
 @Controller
 @RequestMapping("/audit/activities")
 @RequiredArgsConstructor
+@Slf4j
 @PreAuthorize("hasAnyRole('ADMIN', 'SUPERVISOR', 'BRANCH_MANAGER') or hasAuthority('AUDIT_VIEW')")
 public class UserActivityController {
 
@@ -49,13 +52,28 @@ public class UserActivityController {
                         @RequestParam(name = "page", defaultValue = "0") int page,
                         @RequestParam(name = "size", defaultValue = "20") int size,
                         Model model) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("timestamp").descending());
-        Page<UserActivityLog> activityPage = userActivityService.searchActivities(filter, pageable);
+        if (filter == null) {
+            filter = new UserActivityFilterDto();
+        }
+        Pageable pageable = PageRequest.of(Math.max(0, page), Math.max(1, size), Sort.by("timestamp").descending());
+        Page<UserActivityLog> activityPage;
+        try {
+            activityPage = userActivityService.searchActivities(filter, pageable);
+        } catch (Exception e) {
+            log.error("Error searching user activities: {}", e.getMessage(), e);
+            activityPage = Page.empty(pageable);
+        }
         if (activityPage == null) {
             activityPage = Page.empty(pageable);
         }
 
-        List<User> userList = userRepository.findAll(Sort.by("fullName").ascending());
+        List<User> userList;
+        try {
+            userList = userRepository.findAll(Sort.by("fullName").ascending());
+        } catch (Exception e) {
+            log.error("Error loading user list for filter: {}", e.getMessage(), e);
+            userList = Collections.emptyList();
+        }
 
         model.addAttribute("activities", activityPage.getContent());
         model.addAttribute("page", activityPage);

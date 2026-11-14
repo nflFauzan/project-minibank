@@ -219,7 +219,7 @@
           </p>
         </div>
         <div>
-          <a th:href="@{/audit/activities/export(username=${filter.username}, module=${filter.module}, activityType=${filter.activityType}, startDate=${filter.startDate}, endDate=${filter.endDate}, q=${filter.q})}"
+          <a th:href="@{/audit/activities/export(username=${filter != null ? filter.username : null}, module=${filter != null ? filter.module : null}, activityType=${filter != null ? filter.activityType : null}, startDate=${filter != null ? filter.startDate : null}, endDate=${filter != null ? filter.endDate : null}, q=${filter != null ? filter.q : null})}"
              class="btn-custom btn-export-custom" id="export-csv-btn">
             <svg style="width: 16px; height: 16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
@@ -240,8 +240,8 @@
                 <option value="">-- Semua Pengguna --</option>
                 <option th:each="u : ${usersList}"
                         th:value="${u.username}"
-                        th:text="${u.fullName + ' (' + u.username + ')'}"
-                        th:selected="${filter.username == u.username}">
+                        th:text="${(u.fullName != null and !#strings.isEmpty(u.fullName) ? u.fullName : u.username) + ' (' + u.username + ')'}"
+                        th:selected="${filter != null and filter.username == u.username}">
                   Ahmad Fauzi (211011001)
                 </option>
               </select>
@@ -255,7 +255,7 @@
                 <option th:each="m : ${modulesList}"
                         th:value="${m}"
                         th:text="${m}"
-                        th:selected="${filter.module == m}">
+                        th:selected="${filter != null and filter.module == m}">
                   CUSTOMER
                 </option>
               </select>
@@ -265,21 +265,21 @@
             <div class="filter-item">
               <label class="filter-label" for="filter-startDate">Dari Tanggal</label>
               <input type="date" id="filter-startDate" name="startDate"
-                     th:value="${filter.startDate}" class="form-control-custom" />
+                     th:value="${filter != null ? filter.startDate : ''}" class="form-control-custom" />
             </div>
 
             <!-- Tanggal Selesai -->
             <div class="filter-item">
               <label class="filter-label" for="filter-endDate">Sampai Tanggal</label>
               <input type="date" id="filter-endDate" name="endDate"
-                     th:value="${filter.endDate}" class="form-control-custom" />
+                     th:value="${filter != null ? filter.endDate : ''}" class="form-control-custom" />
             </div>
 
             <!-- Kata Kunci -->
             <div class="filter-item">
               <label class="filter-label" for="filter-q">Cari Keyword / Ref</label>
               <input type="text" id="filter-q" name="q" placeholder="No Rekening, CIF, atau TRX..."
-                     th:value="${filter.q}" class="form-control-custom" />
+                     th:value="${filter != null ? filter.q : ''}" class="form-control-custom" />
             </div>
 
             <!-- Action Buttons -->
@@ -332,8 +332,8 @@
                   08/11/2026 14:20:00
                 </td>
                 <td>
-                  <a th:href="@{'/audit/activities?username=' + ${act.username}}"
-                     class="user-pill" th:text="${act.userFullName != null ? act.userFullName : act.username}">
+                  <a th:href="@{/audit/activities(username=${act.username})}"
+                     class="user-pill" th:text="${act.userFullName != null and !#strings.isEmpty(act.userFullName) ? act.userFullName : act.username}">
                     Ahmad Syarif
                   </a>
                   <div style="font-size: 11px; color: #94a3b8; font-family: monospace;" th:text="${act.username}">cs1</div>
@@ -379,19 +379,19 @@
 
           <div style="display: flex; gap: 6px;">
             <a th:if="${page.hasPrevious()}"
-               th:href="@{/audit/activities(page=${page.number - 1}, username=${filter.username}, module=${filter.module}, activityType=${filter.activityType}, startDate=${filter.startDate}, endDate=${filter.endDate}, q=${filter.q})}"
+               th:href="@{/audit/activities(page=${page.number - 1}, username=${filter != null ? filter.username : null}, module=${filter != null ? filter.module : null}, activityType=${filter != null ? filter.activityType : null}, startDate=${filter != null ? filter.startDate : null}, endDate=${filter != null ? filter.endDate : null}, q=${filter != null ? filter.q : null})}"
                class="page-link-custom">&laquo; Prev</a>
 
             <th:block th:each="i : ${#numbers.sequence(0, page.totalPages - 1)}">
               <a th:if="${i >= page.number - 2 and i <= page.number + 2}"
-                 th:href="@{/audit/activities(page=${i}, username=${filter.username}, module=${filter.module}, activityType=${filter.activityType}, startDate=${filter.startDate}, endDate=${filter.endDate}, q=${filter.q})}"
+                 th:href="@{/audit/activities(page=${i}, username=${filter != null ? filter.username : null}, module=${filter != null ? filter.module : null}, activityType=${filter != null ? filter.activityType : null}, startDate=${filter != null ? filter.startDate : null}, endDate=${filter != null ? filter.endDate : null}, q=${filter != null ? filter.q : null})}"
                  th:text="${i + 1}"
                  class="page-link-custom"
                  th:classappend="${i == page.number} ? ' active' : ''">1</a>
             </th:block>
 
             <a th:if="${page.hasNext()}"
-               th:href="@{/audit/activities(page=${page.number + 1}, username=${filter.username}, module=${filter.module}, activityType=${filter.activityType}, startDate=${filter.startDate}, endDate=${filter.endDate}, q=${filter.q})}"
+               th:href="@{/audit/activities(page=${page.number + 1}, username=${filter != null ? filter.username : null}, module=${filter != null ? filter.module : null}, activityType=${filter != null ? filter.activityType : null}, startDate=${filter != null ? filter.startDate : null}, endDate=${filter != null ? filter.endDate : null}, q=${filter != null ? filter.q : null})}"
                class="page-link-custom">Next &raquo;</a>
           </div>
         </div>

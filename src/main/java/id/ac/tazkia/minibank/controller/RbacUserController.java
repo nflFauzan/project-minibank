@@ -3,6 +3,7 @@ package id.ac.tazkia.minibank.controller;
 import id.ac.tazkia.minibank.dto.rbac.UserCreateForm;
 import id.ac.tazkia.minibank.dto.rbac.UserEditForm;
 import id.ac.tazkia.minibank.dto.rbac.UserPasswordForm;
+import id.ac.tazkia.minibank.entity.Branch;
 import id.ac.tazkia.minibank.entity.Role;
 import id.ac.tazkia.minibank.entity.User;
 import id.ac.tazkia.minibank.service.AdminUserService;
@@ -10,6 +11,7 @@ import id.ac.tazkia.minibank.service.RbacUserService;
 import id.ac.tazkia.minibank.service.UserActivityService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -20,11 +22,13 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Controller
 @RequestMapping("/rbac/users")
 @RequiredArgsConstructor
+@Slf4j
 public class RbacUserController {
 
     private final RbacUserService rbacUserService;
@@ -54,23 +58,54 @@ public class RbacUserController {
                             @RequestParam(name = "page", defaultValue = "0") int page,
                             @RequestParam(name = "size", defaultValue = "10") int size,
                             Model model) {
-        Page<User> usersPage = rbacUserService.searchUsersFiltered(search, status, role, branchId,
-                PageRequest.of(page, size, Sort.by("id").descending()));
+        int safePage = Math.max(0, page);
+        int safeSize = Math.max(1, size);
+        Page<User> usersPage;
+        try {
+            usersPage = rbacUserService.searchUsersFiltered(search, status, role, branchId,
+                    PageRequest.of(safePage, safeSize, Sort.by("id").descending()));
+        } catch (Exception e) {
+            log.error("Error searching filtered users: {}", e.getMessage(), e);
+            usersPage = Page.empty(PageRequest.of(safePage, safeSize));
+        }
+
+        if (usersPage == null) {
+            usersPage = Page.empty(PageRequest.of(safePage, safeSize));
+        }
+
+        List<Branch> branches;
+        try {
+            branches = rbacUserService.listActiveBranches();
+        } catch (Exception e) {
+            log.error("Error listing branches: {}", e.getMessage(), e);
+            branches = Collections.emptyList();
+        }
+
+        long pending = 0;
+        long active = 0;
+        long inactive = 0;
+        try {
+            pending = rbacUserService.countPending();
+            active = rbacUserService.countActive();
+            inactive = rbacUserService.countInactive();
+        } catch (Exception e) {
+            log.error("Error counting users by status: {}", e.getMessage(), e);
+        }
 
         model.addAttribute("users", usersPage.getContent());
         model.addAttribute("page", usersPage);
-        model.addAttribute("currentPage", page);
+        model.addAttribute("currentPage", safePage);
         model.addAttribute("totalPages", usersPage.getTotalPages());
         model.addAttribute("totalElements", usersPage.getTotalElements());
         model.addAttribute("search", search != null ? search : "");
         model.addAttribute("status", status != null ? status : "ALL");
         model.addAttribute("selectedRole", role != null ? role : "");
         model.addAttribute("selectedBranchId", branchId);
-        model.addAttribute("branches", rbacUserService.listActiveBranches());
+        model.addAttribute("branches", branches);
         model.addAttribute("availableRoles", AVAILABLE_ROLES);
-        model.addAttribute("pendingCount", rbacUserService.countPending());
-        model.addAttribute("activeCount", rbacUserService.countActive());
-        model.addAttribute("inactiveCount", rbacUserService.countInactive());
+        model.addAttribute("pendingCount", pending);
+        model.addAttribute("activeCount", active);
+        model.addAttribute("inactiveCount", inactive);
         model.addAttribute("activeNav", "rbac-users");
         return "rbac/users/list";
     }

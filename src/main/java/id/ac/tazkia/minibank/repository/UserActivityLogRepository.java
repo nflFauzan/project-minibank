@@ -21,7 +21,7 @@ public interface UserActivityLogRepository extends JpaRepository<UserActivityLog
 
     long countByUsernameAndActivityType(String username, ActivityType activityType);
 
-    @Query("SELECT l FROM UserActivityLog l WHERE " +
+    @Query(value = "SELECT l FROM UserActivityLog l WHERE " +
            "(:username IS NULL OR :username = '' OR LOWER(l.username) = LOWER(:username)) AND " +
            "(:module IS NULL OR :module = '' OR l.module = :module) AND " +
            "(:activityType IS NULL OR l.activityType = :activityType) AND " +
@@ -30,8 +30,17 @@ public interface UserActivityLogRepository extends JpaRepository<UserActivityLog
            "(:keyword IS NULL OR :keyword = '' OR " +
            " LOWER(l.description) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
            " LOWER(l.referenceNumber) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
-           " LOWER(l.userFullName) LIKE LOWER(CONCAT('%', :keyword, '%'))) " +
-           "ORDER BY l.timestamp DESC")
+           " LOWER(l.userFullName) LIKE LOWER(CONCAT('%', :keyword, '%')))",
+           countQuery = "SELECT COUNT(l) FROM UserActivityLog l WHERE " +
+           "(:username IS NULL OR :username = '' OR LOWER(l.username) = LOWER(:username)) AND " +
+           "(:module IS NULL OR :module = '' OR l.module = :module) AND " +
+           "(:activityType IS NULL OR l.activityType = :activityType) AND " +
+           "(:startDate IS NULL OR l.timestamp >= :startDate) AND " +
+           "(:endDate IS NULL OR l.timestamp <= :endDate) AND " +
+           "(:keyword IS NULL OR :keyword = '' OR " +
+           " LOWER(l.description) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
+           " LOWER(l.referenceNumber) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
+           " LOWER(l.userFullName) LIKE LOWER(CONCAT('%', :keyword, '%')))")
     Page<UserActivityLog> searchActivities(@Param("username") String username,
                                           @Param("module") String module,
                                           @Param("activityType") ActivityType activityType,

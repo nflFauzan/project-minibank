@@ -303,13 +303,6 @@
       align-items: center;
       gap: 3px;
     }
-      font-weight: 700;
-      padding: 6px 12px;
-      border-radius: 6px;
-      border: none;
-      cursor: pointer;
-      font-size: 12px;
-    }
 
     .btn-reject-inline:hover {
       background: #dc2626;
@@ -465,8 +458,8 @@
                   <strong style="color: #113C8D;" th:text="${u.username}">username</strong>
                   <div th:if="${!u.approved}" style="font-size: 10.5px; color: #b45309; font-weight: 700;">★ Pendaftar Baru</div>
                 </td>
-                <td class="col-fullname" th:title="${u.fullName}" th:text="${u.fullName}">Full Name</td>
-                <td class="col-email" th:title="${u.email}" th:text="${u.email}">email@domain.com</td>
+                <td class="col-fullname" th:title="${u.fullName != null ? u.fullName : u.username}" th:text="${u.fullName != null ? u.fullName : u.username}">Full Name</td>
+                <td class="col-email" th:title="${u.email != null ? u.email : '-'}" th:text="${u.email != null ? u.email : '-'}">email@domain.com</td>
                 <td>
                   <span th:each="r : ${u.roles}" class="badge-role" th:text="${r.name}">ROLE_CS</span>
                   <span th:if="${u.roles == null or #lists.isEmpty(u.roles)}" style="font-size: 11px; color: #94a3b8;">Belum ada role</span>
