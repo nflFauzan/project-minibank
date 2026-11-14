@@ -250,9 +250,15 @@
               </div>
 
               <div class="form-group">
-                <label for="currency" class="form-label">Currency</label>
-                <input class="form-control-custom" type="text" id="currency" name="currency" 
-                       th:value="*{currency != null ? currency : 'IDR'}" placeholder="IDR"/>
+                <label for="currency" class="form-label">Mata Uang (Currency Code) <span class="required-star">*</span></label>
+                <select class="form-control-custom" id="currency" name="currency" required>
+                  <option value="IDR" th:selected="*{currency == null or currency == 'IDR'}">IDR - Indonesian Rupiah</option>
+                  <option value="USD" th:selected="*{currency == 'USD'}">USD - US Dollar</option>
+                  <option value="SAR" th:selected="*{currency == 'SAR'}">SAR - Saudi Riyal</option>
+                  <option value="EUR" th:selected="*{currency == 'EUR'}">EUR - Euro</option>
+                  <option value="SGD" th:selected="*{currency == 'SGD'}">SGD - Singapore Dollar</option>
+                </select>
+                <span class="help-text">Pilih kode mata uang standar ISO perbankan syariah (contoh: IDR). Bukan nominal saldo.</span>
               </div>
 
               <div class="form-group full-width">

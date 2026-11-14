@@ -178,11 +178,9 @@ public class DataSeedConfigTest {
         @Test
         @DisplayName("Under 'test' profile – skips Nasabah and ProdukTabungan seeding completely")
         void testProfile_shouldSkipAdditionalSeeds() throws Exception {
-            when(roleRepo.findByName(anyString())).thenReturn(Optional.of(new Role(1L, "ROLE")));
-            when(userRepo.findByUsername("admin")).thenReturn(Optional.of(new User()));
-            when(userRepo.findByUsername("zann")).thenReturn(Optional.of(new User()));
-            when(userRepo.findByUsername("spv")).thenReturn(Optional.of(new User()));
-            when(userRepo.findByUsername("teller")).thenReturn(Optional.of(new User()));
+            lenient().when(roleRepo.findByName(anyString())).thenReturn(Optional.of(new Role(1L, "ROLE")));
+            lenient().when(userRepo.findByUsername(anyString())).thenReturn(Optional.of(new User()));
+            lenient().when(encoder.encode(anyString())).thenReturn("hashed");
             when(env.acceptsProfiles(any(Profiles.class))).thenReturn(true); // profile is "test"
 
             runner.run(new String[]{});
@@ -194,12 +192,10 @@ public class DataSeedConfigTest {
         @Test
         @DisplayName("Under non-'test' profile – runs Nasabah and ProdukTabungan seeding checks")
         void nonTestProfile_shouldExecuteAdditionalSeeds() throws Exception {
-            when(roleRepo.findByName(anyString())).thenReturn(Optional.of(new Role(1L, "ROLE")));
-            when(userRepo.findByUsername("admin")).thenReturn(Optional.of(new User()));
-            when(userRepo.findByUsername("zann")).thenReturn(Optional.of(new User()));
-            when(userRepo.findByUsername("spv")).thenReturn(Optional.of(new User()));
-            when(userRepo.findByUsername("teller")).thenReturn(Optional.of(new User()));
-            when(env.acceptsProfiles(any(Profiles.class))).thenReturn(false); // profile is not "test"
+            lenient().when(roleRepo.findByName(anyString())).thenReturn(Optional.of(new Role(1L, "ROLE")));
+            lenient().when(userRepo.findByUsername(anyString())).thenReturn(Optional.of(new User()));
+            lenient().when(encoder.encode(anyString())).thenReturn("hashed");
+            lenient().when(env.acceptsProfiles(any(Profiles.class))).thenReturn(false); // profile is not "test"
 
             when(nasabahRepo.findByCif("C0000001")).thenReturn(Optional.of(new Nasabah()));
             when(produkRepo.findActiveProducts()).thenReturn(List.of(new ProdukTabungan()));
@@ -221,8 +217,8 @@ public class DataSeedConfigTest {
         @BeforeEach
         void setupMocks() {
             lenient().when(roleRepo.findByName(anyString())).thenReturn(Optional.of(new Role(1L, "ROLE")));
-            lenient().when(userRepo.findByUsername("admin")).thenReturn(Optional.of(new User()));
-            lenient().when(userRepo.findByUsername("zann")).thenReturn(Optional.of(new User()));
+            lenient().when(userRepo.findByUsername(anyString())).thenReturn(Optional.of(new User()));
+            lenient().when(encoder.encode(anyString())).thenReturn("hashed");
             lenient().when(env.acceptsProfiles(any(Profiles.class))).thenReturn(false); // non-test
             lenient().when(produkRepo.findActiveProducts()).thenReturn(List.of(new ProdukTabungan()));
         }
@@ -282,10 +278,8 @@ public class DataSeedConfigTest {
         @BeforeEach
         void setupMocks() {
             lenient().when(roleRepo.findByName(anyString())).thenReturn(Optional.of(new Role(1L, "ROLE")));
-            lenient().when(userRepo.findByUsername("admin")).thenReturn(Optional.of(new User()));
-            lenient().when(userRepo.findByUsername("zann")).thenReturn(Optional.of(new User()));
-            lenient().when(userRepo.findByUsername("spv")).thenReturn(Optional.of(new User()));
-            lenient().when(userRepo.findByUsername("teller")).thenReturn(Optional.of(new User()));
+            lenient().when(userRepo.findByUsername(anyString())).thenReturn(Optional.of(new User()));
+            lenient().when(encoder.encode(anyString())).thenReturn("hashed");
             lenient().when(env.acceptsProfiles(any(Profiles.class))).thenReturn(false); // non-test
             lenient().when(nasabahRepo.findByCif("C0000001")).thenReturn(Optional.of(new Nasabah()));
         }

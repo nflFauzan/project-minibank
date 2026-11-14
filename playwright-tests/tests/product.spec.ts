@@ -113,4 +113,39 @@ test.describe('Manajemen Produk Tabungan', () => {
     await page.goto('/cs/product?q=Tabungan');
     await productPage.expectListTableVisible();
   });
+
+  test('Form produk memiliki dropdown mata uang ISO 4217 dengan default IDR', async ({ page }) => {
+    await productPage.navigateToCreateForm();
+    const currencySelect = page.locator('select#currency');
+    await expect(currencySelect).toBeVisible();
+    await expect(currencySelect).toHaveValue('IDR');
+
+    // Pastikan opsi standar ISO 4217 tersedia
+    const options = await currencySelect.locator('option').allTextContents();
+    expect(options.some(o => o.includes('IDR'))).toBeTruthy();
+    expect(options.some(o => o.includes('USD'))).toBeTruthy();
+    expect(options.some(o => o.includes('SAR'))).toBeTruthy();
+  });
+
+  test('Tambah produk syariah dengan mata uang SAR (Tabungan Haji/Umrah)', async ({ page }) => {
+    const unique = Date.now();
+    const kodeProduk = `TAB_SAR_${unique}`.substring(0, 20);
+    const namaProduk = `Tabungan Haji SAR ${unique}`;
+
+    await productPage.navigateToCreateForm();
+    await productPage.fillProductForm({
+      kodeProduk,
+      namaProduk,
+      deskripsiSingkat: 'Produk tabungan syariah dalam mata uang Saudi Riyal',
+      jenisAkad: 'WADIAH',
+      setoranAwalMinimum: '1000',
+    });
+
+    // Pilih SAR pada dropdown mata uang
+    await page.locator('select#currency').selectOption('SAR');
+    await productPage.submitForm();
+
+    // Verifikasi sukses dan masuk ke list
+    await productPage.expectProductInList(namaProduk);
+  });
 });

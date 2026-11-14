@@ -1,5 +1,8 @@
 package id.ac.tazkia.minibank.dto;
 
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -21,6 +24,9 @@ public class ProductFormDto {
     private String productType;
     private String productCategory;
 
+    @NotNull(message = "Mata uang wajib dipilih")
+    @Size(min = 3, max = 3, message = "Kode mata uang harus tepat 3 karakter ISO")
+    @Pattern(regexp = "^(IDR|USD|SAR|EUR|SGD)$", message = "Mata uang harus salah satu dari: IDR, USD, SAR, EUR, SGD")
     private String currency = "IDR";
 
     private String description;

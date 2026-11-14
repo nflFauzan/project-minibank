@@ -218,4 +218,33 @@ class CsProductServiceTest extends BaseIntegrationTest {
         ProdukTabungan updated = csProductService.update(created.getUuid(), dto);
         assertEquals("Produk DTO Updated", updated.getNamaProduk());
     }
+
+    @Test
+    @DisplayName("create dengan currency valid (SAR) - berhasil disimpan")
+    void create_validCurrency_sar() {
+        id.ac.tazkia.minibank.dto.ProductFormDto dto = new id.ac.tazkia.minibank.dto.ProductFormDto();
+        dto.setProductCode("NEWSAR");
+        dto.setProductName("Tabungan Haji SAR");
+        dto.setProductType("TABUNGAN_WADIAH");
+        dto.setProfitSharingType("WADIAH");
+        dto.setCurrency("SAR");
+        dto.setMinimumOpeningBalance(new BigDecimal("100000"));
+
+        ProdukTabungan created = csProductService.create(dto);
+        assertEquals("SAR", created.getCurrency());
+    }
+
+    @Test
+    @DisplayName("create dengan currency invalid ('30k' atau salah format) - melempar IllegalArgumentException")
+    void create_invalidCurrency_throws() {
+        id.ac.tazkia.minibank.dto.ProductFormDto dto = new id.ac.tazkia.minibank.dto.ProductFormDto();
+        dto.setProductCode("ERRCURR");
+        dto.setProductName("Produk Salah Currency");
+        dto.setProductType("TABUNGAN_WADIAH");
+        dto.setProfitSharingType("WADIAH");
+        dto.setCurrency("30k");
+        dto.setMinimumOpeningBalance(new BigDecimal("100000"));
+
+        assertThrows(IllegalArgumentException.class, () -> csProductService.create(dto));
+    }
 }

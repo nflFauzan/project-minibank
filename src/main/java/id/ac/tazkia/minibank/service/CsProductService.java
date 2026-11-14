@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -336,9 +337,16 @@ public class CsProductService {
         if (dto.getProductCategory() != null && !dto.getProductCategory().isBlank()) {
             p.setProductCategory(dto.getProductCategory().trim());
         }
+        String curr = "IDR";
         if (dto.getCurrency() != null && !dto.getCurrency().isBlank()) {
-            p.setCurrency(dto.getCurrency().trim());
+            String candidate = dto.getCurrency().trim().toUpperCase(Locale.ROOT);
+            if (Set.of("IDR", "USD", "SAR", "EUR", "SGD").contains(candidate)) {
+                curr = candidate;
+            } else {
+                throw new IllegalArgumentException("Mata uang tidak valid. Pilih salah satu dari: IDR, USD, SAR, EUR, SGD.");
+            }
         }
+        p.setCurrency(curr);
         if (dto.getIsDefault() != null) p.setIsDefault(dto.getIsDefault());
         if (dto.getAllowOverdraft() != null) p.setAllowOverdraft(dto.getAllowOverdraft());
         if (dto.getRequireMaintainingBalance() != null) p.setRequireMaintainingBalance(dto.getRequireMaintainingBalance());
