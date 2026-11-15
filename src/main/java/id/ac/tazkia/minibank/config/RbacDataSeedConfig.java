@@ -74,13 +74,17 @@ public class RbacDataSeedConfig {
                 new PermissionRecord("CUSTOMER_VIEW", "View Customer", "CUSTOMER", "View customer information"),
                 new PermissionRecord("CUSTOMER_CREATE", "Create Customer", "CUSTOMER", "Register new customers"),
                 new PermissionRecord("CUSTOMER_UPDATE", "Update Customer", "CUSTOMER", "Update customer information"),
-                new PermissionRecord("CUSTOMER_ACTIVATE", "Activate/Deactivate Customer", "CUSTOMER", "Change customer active status"),
+                new PermissionRecord("CUSTOMER_ACTIVATE", "Activate/Deactivate Customer", "CUSTOMER",
+                        "Change customer active status"),
 
                 // APPROVAL
-                new PermissionRecord("CUSTOMER_APPROVE", "Approve Customer", "APPROVAL", "Approve customer registration"),
+                new PermissionRecord("CUSTOMER_APPROVE", "Approve Customer", "APPROVAL",
+                        "Approve customer registration"),
                 new PermissionRecord("ACCOUNT_APPROVE", "Approve Account", "APPROVAL", "Approve bank account opening"),
-                new PermissionRecord("TRANSACTION_APPROVE", "Approve Transaction", "APPROVAL", "Approve large transactions"),
-                new PermissionRecord("APPROVAL_VIEW", "View Approval Queue", "APPROVAL", "View pending approval requests"),
+                new PermissionRecord("TRANSACTION_APPROVE", "Approve Transaction", "APPROVAL",
+                        "Approve large transactions"),
+                new PermissionRecord("APPROVAL_VIEW", "View Approval Queue", "APPROVAL",
+                        "View pending approval requests"),
 
                 // ACCOUNT
                 new PermissionRecord("ACCOUNT_VIEW", "View Account", "ACCOUNT", "View account information"),
@@ -94,8 +98,10 @@ public class RbacDataSeedConfig {
                 // TRANSACTION
                 new PermissionRecord("TRANSACTION_VIEW", "View Transaction", "TRANSACTION", "View transaction history"),
                 new PermissionRecord("TRANSACTION_DEPOSIT", "Process Deposit", "TRANSACTION", "Process cash deposits"),
-                new PermissionRecord("TRANSACTION_WITHDRAWAL", "Process Withdrawal", "TRANSACTION", "Process cash withdrawals"),
-                new PermissionRecord("TRANSACTION_TRANSFER", "Process Transfer", "TRANSACTION", "Process inter-account transfers"),
+                new PermissionRecord("TRANSACTION_WITHDRAWAL", "Process Withdrawal", "TRANSACTION",
+                        "Process cash withdrawals"),
+                new PermissionRecord("TRANSACTION_TRANSFER", "Process Transfer", "TRANSACTION",
+                        "Process inter-account transfers"),
 
                 // REPORT
                 new PermissionRecord("REPORT_VIEW", "View Reports", "REPORT", "Generate and view financial reports"),
@@ -108,14 +114,14 @@ public class RbacDataSeedConfig {
                 new PermissionRecord("USER_CREATE", "Create User", "USER", "Create staff user accounts"),
                 new PermissionRecord("USER_UPDATE", "Update User", "USER", "Update staff user information"),
                 new PermissionRecord("USER_DEACTIVATE", "Deactivate User", "USER", "Deactivate staff user accounts"),
-                new PermissionRecord("USER_PASSWORD_RESET", "Reset User Password", "USER", "Reset user password for students and staff"),
+                new PermissionRecord("USER_PASSWORD_RESET", "Reset User Password", "USER",
+                        "Reset user password for students and staff"),
 
                 // BRANCH
                 new PermissionRecord("BRANCH_VIEW", "View Branch", "BRANCH", "View branch offices"),
                 new PermissionRecord("BRANCH_CREATE", "Create Branch", "BRANCH", "Register new bank branch"),
                 new PermissionRecord("BRANCH_UPDATE", "Update Branch", "BRANCH", "Update bank branch details"),
-                new PermissionRecord("BRANCH_DELETE", "Delete Branch", "BRANCH", "Remove branch office")
-        );
+                new PermissionRecord("BRANCH_DELETE", "Delete Branch", "BRANCH", "Remove branch office"));
 
         for (PermissionRecord r : records) {
             if (permissionRepository.findByPermissionCode(r.code).isEmpty()) {
@@ -153,8 +159,7 @@ public class RbacDataSeedConfig {
                     "ACCOUNT_VIEW", "ACCOUNT_APPROVE",
                     "TRANSACTION_VIEW", "TRANSACTION_APPROVE",
                     "APPROVAL_VIEW", "REPORT_VIEW", "AUDIT_VIEW",
-                    "PRODUCT_VIEW", "BRANCH_VIEW"
-            ));
+                    "PRODUCT_VIEW", "BRANCH_VIEW"));
             roleRepository.save(bmRole);
         });
 
@@ -167,8 +172,7 @@ public class RbacDataSeedConfig {
             assignPermissions(csRole, permMap, List.of(
                     "CUSTOMER_VIEW", "CUSTOMER_CREATE", "CUSTOMER_UPDATE",
                     "ACCOUNT_VIEW", "ACCOUNT_CREATE", "ACCOUNT_UPDATE",
-                    "PRODUCT_VIEW"
-            ));
+                    "PRODUCT_VIEW"));
             roleRepository.save(csRole);
         });
 
@@ -180,8 +184,7 @@ public class RbacDataSeedConfig {
             tellerRole.setActive(true);
             assignPermissions(tellerRole, permMap, List.of(
                     "TRANSACTION_VIEW", "TRANSACTION_DEPOSIT", "TRANSACTION_WITHDRAWAL",
-                    "TRANSACTION_TRANSFER", "BALANCE_VIEW", "ACCOUNT_VIEW"
-            ));
+                    "TRANSACTION_TRANSFER", "BALANCE_VIEW", "ACCOUNT_VIEW"));
             roleRepository.save(tellerRole);
         });
 
@@ -196,8 +199,7 @@ public class RbacDataSeedConfig {
                     "ACCOUNT_VIEW", "ACCOUNT_APPROVE",
                     "TRANSACTION_VIEW", "TRANSACTION_APPROVE",
                     "APPROVAL_VIEW", "REPORT_VIEW", "AUDIT_VIEW",
-                    "PRODUCT_VIEW", "BRANCH_VIEW", "USER_VIEW", "USER_PASSWORD_RESET"
-            ));
+                    "PRODUCT_VIEW", "BRANCH_VIEW", "USER_VIEW", "USER_PASSWORD_RESET"));
             roleRepository.save(spvRole);
         });
     }
@@ -259,6 +261,6 @@ public class RbacDataSeedConfig {
         });
     }
 
-    private record PermissionRecord(String code, String name, String category, String description) {}
+    private record PermissionRecord(String code, String name, String category, String description) {
+    }
 }
-

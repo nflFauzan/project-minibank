@@ -39,6 +39,10 @@ public class Rekening {
     @JoinColumn(name = "nasabah_id")
     private Nasabah nasabah;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "periode_id")
+    private PeriodePraktikum periode;
+
     @Column(name = "cif_nasabah", length = 8)
     private String cifNasabah;
 
@@ -175,4 +179,7 @@ public class Rekening {
 
     public BigDecimal getSaldo() { return saldo; }
     public void setSaldo(BigDecimal saldo) { this.saldo = saldo; }
+
+    public PeriodePraktikum getPeriode() { return periode; }
+    public void setPeriode(PeriodePraktikum periode) { this.periode = periode; }
 }

@@ -123,6 +123,12 @@
             </svg>
             <span>Permissions</span>
           </a>
+          <a id="admin-periods-link" th:href="@{/admin/periods}" class="nav-item" th:classappend="${active == 'periods'} ? ' active' : ''">
+            <svg class="h-5 w-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+            </svg>
+            <span>Periode Praktikum</span>
+          </a>
           <a id="roles-link" th:href="@{/rbac/roles/list}" style="display:none;" aria-hidden="true"></a>
           <a id="permissions-link" th:href="@{/rbac/permissions/list}" style="display:none;" aria-hidden="true"></a>
           <a id="admin-user-create-link" th:href="@{/rbac/users/create}" style="display:none;" aria-hidden="true"></a>
@@ -164,7 +170,11 @@
         Minggu, 21-12-2025 | 12:19
       </div>
 
-      <div class="cs-meta__right">
+      <div class="cs-meta__right" style="display:flex; align-items:center; gap:8px;">
+        <span th:if="${activePeriod != null and activePeriod.kode != null}" style="display:inline-flex; align-items:center; gap:5px; padding:3px 10px; border-radius:8px; background:rgba(236,253,245,0.9); color:#047857; font-weight:700; font-size:11px; border:1px solid rgba(167,243,208,0.8);">
+          <span style="display:inline-block; width:6px; height:6px; border-radius:50%; background:#10b981;"></span>
+          <span th:text="${(activePeriod.nama != null ? activePeriod.nama : 'Periode') + ' (' + activePeriod.kode + ')'}">Periode (2026/2027)</span>
+        </span>
         <span id="header-role" th:text="${roleLabel} ?: 'Staff'">Staff</span>
         <span class="cs-meta__sep">|</span>
         <span id="header-username" th:text="${username} ?: (${employeeId} ?: 'User')">User</span>

@@ -1,5 +1,7 @@
 package id.ac.tazkia.minibank.config;
 
+import id.ac.tazkia.minibank.service.PeriodePraktikumService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.ui.Model;
@@ -13,7 +15,10 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @ControllerAdvice
+@RequiredArgsConstructor
 public class GlobalLayoutAdvice {
+
+    private final PeriodePraktikumService periodePraktikumService;
 
     @ModelAttribute
     public void injectHeaderMeta(Model model, Authentication auth) {
@@ -58,5 +63,12 @@ public class GlobalLayoutAdvice {
         String formattedNow = LocalDateTime.now().format(fmt);
         model.addAttribute("nowText", formattedNow);
         model.addAttribute("currentDate", formattedNow);
+
+        if (periodePraktikumService != null) {
+            try {
+                var active = periodePraktikumService.getActivePeriod();
+                model.addAttribute("activePeriod", active);
+            } catch (Exception ignored) {}
+        }
     }
 }

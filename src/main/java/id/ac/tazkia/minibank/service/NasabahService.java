@@ -23,6 +23,7 @@ public class NasabahService {
     private final NasabahRepository nasabahRepository;
     private final RekeningRepository rekeningRepository;
     private final UserActivityService userActivityService;
+    private final PeriodePraktikumService periodePraktikumService;
 
     @Transactional
     public Nasabah createNasabah(Nasabah form) {
@@ -37,6 +38,11 @@ public class NasabahService {
         // default status
         if (form.getStatus() == null) {
             form.setStatus(NasabahStatus.ACTIVE);
+        }
+
+        // default periode aktif
+        if (form.getPeriode() == null && periodePraktikumService != null) {
+            form.setPeriode(periodePraktikumService.getActivePeriod());
         }
 
         // CIF auto-generate kalau kosong
@@ -85,6 +91,18 @@ public class NasabahService {
     @Transactional(readOnly = true)
     public Page<Nasabah> searchCustomers(String keyword, Pageable pageable) {
         return nasabahRepository.searchCustomers(keyword, pageable);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<Nasabah> searchCustomersAdvanced(String keyword, NasabahStatus status, Long periodeId, java.time.LocalDateTime startDate, java.time.LocalDateTime endDate, Pageable pageable) {
+        java.time.LocalDateTime start = (startDate != null) ? startDate : java.time.LocalDateTime.of(1970, 1, 1, 0, 0);
+        java.time.LocalDateTime end = (endDate != null) ? endDate : java.time.LocalDateTime.of(2099, 12, 31, 23, 59, 59);
+
+        if (periodeId != null) {
+            return nasabahRepository.searchCustomersByPeriod(keyword, status, periodeId, start, end, pageable);
+        } else {
+            return nasabahRepository.searchCustomersAllPeriods(keyword, status, start, end, pageable);
+        }
     }
 
     @Transactional(readOnly = true)

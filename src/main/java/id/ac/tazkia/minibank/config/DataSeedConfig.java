@@ -70,33 +70,31 @@ public class DataSeedConfig {
                     userRepo.save(spv);
                 }
 
-                // zann & teller hanya dibuat jika profile dev/local (untuk Playwright CI lokal)
-                if (env.acceptsProfiles(Profiles.of("dev", "local"))) {
-                    if (userRepo.findByUsername("zann").isEmpty()) {
-                        Role csRole = roleRepo.findByName("ROLE_CS").orElseThrow();
-                        User zann = new User();
-                        zann.setUsername("zann");
-                        zann.setPassword(encoder.encode("zann"));
-                        zann.setFullName("Zann Customer Service");
-                        zann.setEmail("zann@tazkia.ac.id");
-                        zann.setApproved(true);
-                        zann.setEnabled(true);
-                        zann.getRoles().add(csRole);
-                        userRepo.save(zann);
-                    }
+                // zann & teller untuk Playwright testing & local demo
+                if (userRepo.findByUsername("zann").isEmpty()) {
+                    Role csRole = roleRepo.findByName("ROLE_CS").orElseThrow();
+                    User zann = new User();
+                    zann.setUsername("zann");
+                    zann.setPassword(encoder.encode("zann"));
+                    zann.setFullName("Zann Customer Service");
+                    zann.setEmail("zann@tazkia.ac.id");
+                    zann.setApproved(true);
+                    zann.setEnabled(true);
+                    zann.getRoles().add(csRole);
+                    userRepo.save(zann);
+                }
 
-                    if (userRepo.findByUsername("teller").isEmpty()) {
-                        Role tellerRole = roleRepo.findByName("ROLE_TELLER").orElseThrow();
-                        User teller = new User();
-                        teller.setUsername("teller");
-                        teller.setPassword(encoder.encode("teller1234"));
-                        teller.setFullName("Teller Default");
-                        teller.setEmail("teller@tazkia.ac.id");
-                        teller.setApproved(true);
-                        teller.setEnabled(true);
-                        teller.getRoles().add(tellerRole);
-                        userRepo.save(teller);
-                    }
+                if (userRepo.findByUsername("teller").isEmpty()) {
+                    Role tellerRole = roleRepo.findByName("ROLE_TELLER").orElseThrow();
+                    User teller = new User();
+                    teller.setUsername("teller");
+                    teller.setPassword(encoder.encode("teller1234"));
+                    teller.setFullName("Teller Default");
+                    teller.setEmail("teller@tazkia.ac.id");
+                    teller.setApproved(true);
+                    teller.setEnabled(true);
+                    teller.getRoles().add(tellerRole);
+                    userRepo.save(teller);
                 }
 
                 // Nasabah & Produk & Live Minibank Accounts cuma kalau BUKAN profile test

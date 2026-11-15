@@ -5,14 +5,18 @@ import id.ac.tazkia.minibank.entity.Nasabah;
 import id.ac.tazkia.minibank.entity.Rekening;
 import id.ac.tazkia.minibank.entity.TipeTransaksi;
 import id.ac.tazkia.minibank.entity.Transaksi;
+import id.ac.tazkia.minibank.service.PeriodePraktikumService;
 import id.ac.tazkia.minibank.service.RekeningService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
@@ -21,16 +25,48 @@ import java.util.List;
 public class CsAccountController {
 
     private final RekeningService rekeningService;
+    private final PeriodePraktikumService periodePraktikumService;
 
     // /cs/account
     @GetMapping("")
     public String index(@RequestParam(value = "search", required = false) String search,
                         @RequestParam(value = "status", required = false, defaultValue = "ALL") String status,
+                        @RequestParam(value = "period", required = false) String period,
+                        @RequestParam(value = "startDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+                        @RequestParam(value = "endDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
                         Model model) {
         String cleanStatus = (status == null || status.isBlank() || status.equalsIgnoreCase("All Statuses")) ? "ALL" : status;
-        model.addAttribute("accounts", rekeningService.listAccounts(search, cleanStatus));
-        model.addAttribute("search", search);
+
+        Long periodeId = null;
+        String selectedPeriod = period;
+
+        if (period == null) {
+            var active = periodePraktikumService.getActivePeriod();
+            if (active != null) {
+                periodeId = active.getId();
+                selectedPeriod = String.valueOf(active.getId());
+            }
+        } else if ("all".equalsIgnoreCase(period) || period.isBlank()) {
+            periodeId = null;
+            selectedPeriod = "all";
+        } else {
+            try {
+                periodeId = Long.parseLong(period);
+            } catch (NumberFormatException e) {
+                periodeId = null;
+            }
+        }
+
+        LocalDateTime startDateTime = (startDate != null) ? startDate.atStartOfDay() : null;
+        LocalDateTime endDateTime = (endDate != null) ? endDate.atTime(23, 59, 59) : null;
+
+        model.addAttribute("accounts", rekeningService.listAccountsAdvanced(search, cleanStatus, periodeId, startDateTime, endDateTime));
+        model.addAttribute("search", search != null ? search : "");
         model.addAttribute("status", cleanStatus);
+        model.addAttribute("periods", periodePraktikumService.getDropdownPeriods());
+        model.addAttribute("selectedPeriod", selectedPeriod);
+        model.addAttribute("startDate", startDate != null ? startDate.toString() : "");
+        model.addAttribute("endDate", endDate != null ? endDate.toString() : "");
         return "cs/account";
     }
 

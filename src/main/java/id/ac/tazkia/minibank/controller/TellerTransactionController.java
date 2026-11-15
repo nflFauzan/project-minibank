@@ -5,6 +5,7 @@ import id.ac.tazkia.minibank.entity.Transaksi;
 import id.ac.tazkia.minibank.entity.TipeTransaksi;
 import id.ac.tazkia.minibank.repository.RekeningRepository;
 import id.ac.tazkia.minibank.repository.TransaksiRepository;
+import id.ac.tazkia.minibank.service.PeriodePraktikumService;
 import id.ac.tazkia.minibank.service.TellerDepositService;
 import id.ac.tazkia.minibank.service.TellerWithdrawalService;
 import id.ac.tazkia.minibank.service.TellerTransferService;
@@ -13,6 +14,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,6 +22,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -33,24 +37,57 @@ public class TellerTransactionController {
     private final TellerDepositService tellerDepositService;
     private final TellerWithdrawalService tellerWithdrawalService;
     private final TellerTransferService tellerTransferService;
+    private final PeriodePraktikumService periodePraktikumService;
 
     // ================= TRANSACTION LIST =================
     @GetMapping("/list")
     public String list(@RequestParam(required = false) String q,
                        @RequestParam(required = false) TipeTransaksi type,
-                       @RequestParam(defaultValue = "asc") String sort,
+                       @RequestParam(required = false) String period,
+                       @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+                       @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+                       @RequestParam(defaultValue = "desc") String sort,
                        @RequestParam(defaultValue = "0") int page,
                        Model model) {
 
-        Sort.Direction dir = "desc".equalsIgnoreCase(sort) ? Sort.Direction.DESC : Sort.Direction.ASC;
+        Long periodeId = null;
+        String selectedPeriod = period;
+
+        if (period == null) {
+            var active = periodePraktikumService.getActivePeriod();
+            if (active != null) {
+                periodeId = active.getId();
+                selectedPeriod = String.valueOf(active.getId());
+            }
+        } else if ("all".equalsIgnoreCase(period) || period.isBlank()) {
+            periodeId = null;
+            selectedPeriod = "all";
+        } else {
+            try {
+                periodeId = Long.parseLong(period);
+            } catch (NumberFormatException e) {
+                periodeId = null;
+            }
+        }
+
+        LocalDateTime startDateTime = (startDate != null) ? startDate.atStartOfDay() : LocalDateTime.of(1970, 1, 1, 0, 0);
+        LocalDateTime endDateTime = (endDate != null) ? endDate.atTime(23, 59, 59) : LocalDateTime.of(2099, 12, 31, 23, 59, 59);
+
+        Sort.Direction dir = "asc".equalsIgnoreCase(sort) ? Sort.Direction.ASC : Sort.Direction.DESC;
         Pageable pageable = PageRequest.of(page, 10, Sort.by(dir, "processedAt"));
-        Page<Transaksi> result = transaksiRepository.search(q, type, pageable);
+        Page<Transaksi> result = (periodeId != null)
+                ? transaksiRepository.searchByPeriod(q, type, periodeId, startDateTime, endDateTime, pageable)
+                : transaksiRepository.searchAllPeriods(q, type, startDateTime, endDateTime, pageable);
 
         model.addAttribute("active", "transaction");
         model.addAttribute("page", result);
-        model.addAttribute("q", q);
+        model.addAttribute("q", q != null ? q : "");
         model.addAttribute("type", type);
         model.addAttribute("sort", sort);
+        model.addAttribute("periods", periodePraktikumService.getDropdownPeriods());
+        model.addAttribute("selectedPeriod", selectedPeriod);
+        model.addAttribute("startDate", startDate != null ? startDate.toString() : "");
+        model.addAttribute("endDate", endDate != null ? endDate.toString() : "");
         return "teller/transaction/list";
     }
 

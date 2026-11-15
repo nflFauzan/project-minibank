@@ -148,19 +148,57 @@
       <div th:if="${success}" style="margin-top: 18px; padding: 14px 18px; background: rgba(236,253,245,0.85); backdrop-filter: blur(10px); color: #047857; border: 1px solid rgba(167,243,208,0.8); border-radius: 12px; font-weight: 600;" th:text="${success}"></div>
       <div th:if="${error}" style="margin-top: 18px; padding: 14px 18px; background: rgba(254,242,242,0.85); backdrop-filter: blur(10px); color: #991b1b; border: 1px solid rgba(254,202,202,0.8); border-radius: 12px; font-weight: 600;" th:text="${error}"></div>
 
-      <div style="margin-top: 18px; background: #fff; border: 1px solid #f1f5f9; border-radius: 16px; padding: 16px 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.02);">
-        <form method="get" th:action="@{/cs/customers}" style="display: flex; gap: 12px; align-items: center;">
-          <input type="text" name="q" th:value="${q}" placeholder="Cari berdasarkan nama, CIF, NIK, atau no HP..." 
-                 class="no-uppercase"
-                 style="flex: 1; padding: 10px 16px; border: 1.5px solid #e2e8f0; border-radius: 12px; font-size: 14px; outline: none;" />
-          <button type="submit" 
-                  style="background: #1e3a8a; color: #fff; border: none; padding: 10px 22px; border-radius: 12px; font-weight: 700; cursor: pointer;">
-            Cari
-          </button>
-          <a th:if="${q != null and !q.isEmpty()}" th:href="@{/cs/customers}" 
-             style="background: #f1f5f9; color: #475569; padding: 10px 18px; border-radius: 12px; text-decoration: none; font-weight: 600; font-size: 14px;">
-            Reset
-          </a>
+      <!-- Filter Toolbar -->
+      <div style="margin-top: 18px; background: #fff; border: 1px solid #f1f5f9; border-radius: 16px; padding: 18px 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.02);">
+        <form method="get" th:action="@{/cs/customers}" style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center;">
+          
+          <!-- Periode Dropdown -->
+          <div style="display: flex; flex-direction: column; gap: 4px;">
+            <label style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">Periode Praktikum</label>
+            <select name="period" style="padding: 9px 14px; border: 1.5px solid #e2e8f0; border-radius: 10px; font-size: 13px; font-weight: 600; color: #1e293b; background: #fff; outline: none; min-width: 200px;">
+              <option value="all" th:selected="${selectedPeriod == 'all'}">-- Semua Periode --</option>
+              <option th:each="p : ${periods}" 
+                      th:value="${p.id}" 
+                      th:selected="${selectedPeriod != null and selectedPeriod == p.id.toString()}"
+                      th:text="${(p.nama != null ? p.nama : p.kode) + (p.status.name() == 'ACTIVE' ? ' (Aktif)' : ' [Arsip]') + ' - ' + p.kode}">
+                2026/2027 (Aktif)
+              </option>
+            </select>
+          </div>
+
+          <!-- Tanggal Mulai -->
+          <div style="display: flex; flex-direction: column; gap: 4px;">
+            <label style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">Mulai Tanggal</label>
+            <input type="date" name="startDate" th:value="${startDate}" 
+                   style="padding: 8px 12px; border: 1.5px solid #e2e8f0; border-radius: 10px; font-size: 13px; color: #1e293b; outline: none;" />
+          </div>
+
+          <!-- Tanggal Selesai -->
+          <div style="display: flex; flex-direction: column; gap: 4px;">
+            <label style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">Sampai Tanggal</label>
+            <input type="date" name="endDate" th:value="${endDate}" 
+                   style="padding: 8px 12px; border: 1.5px solid #e2e8f0; border-radius: 10px; font-size: 13px; color: #1e293b; outline: none;" />
+          </div>
+
+          <!-- Search Keyword -->
+          <div style="display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 200px;">
+            <label style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">Pencarian</label>
+            <input type="text" name="q" th:value="${q}" placeholder="Nama, CIF, NIK, No HP..." 
+                   class="no-uppercase"
+                   style="padding: 9px 14px; border: 1.5px solid #e2e8f0; border-radius: 10px; font-size: 13px; outline: none;" />
+          </div>
+
+          <!-- Buttons -->
+          <div style="display: flex; gap: 8px; align-self: flex-end;">
+            <button type="submit" 
+                    style="background: #1e3a8a; color: #fff; border: none; padding: 10px 20px; border-radius: 10px; font-weight: 700; font-size: 13px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
+              Filter
+            </button>
+            <a th:href="@{/cs/customers}" 
+               style="background: #f1f5f9; color: #475569; padding: 10px 16px; border-radius: 10px; text-decoration: none; font-weight: 600; font-size: 13px;">
+              Reset
+            </a>
+          </div>
         </form>
       </div>
 
@@ -171,6 +209,7 @@
               <th>CIF</th>
               <th>NIK</th>
               <th>Nama Lengkap</th>
+              <th>Periode</th>
               <th>Status</th>
               <th>Created At</th>
               <th style="width:160px;">Action</th>
@@ -179,8 +218,8 @@
 
           <tbody>
             <tr th:if="${customers == null || #lists.isEmpty(customers)}">
-              <td colspan="6" style="padding:40px; text-align:center; color:#94a3b8;">
-                <div style="font-size: 16px;">Belum ada data nasabah.</div>
+              <td colspan="7" style="padding:40px; text-align:center; color:#94a3b8;">
+                <div style="font-size: 16px;">Belum ada data nasabah pada filter periode ini.</div>
               </td>
             </tr>
 
@@ -190,6 +229,16 @@
               <td style="font-weight:700; color:#0f172a;" 
                   th:text="${n.namaLengkap != null ? n.namaLengkap : n.namaSesuaiIdentitas}">
                 Nama Nasabah
+              </td>
+              <td>
+                <span th:if="${n.periode != null and n.periode.status.name() == 'ACTIVE'}" 
+                      style="padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: 700; background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0;" 
+                      th:text="${n.periode.kode}">2026/2027</span>
+                <span th:if="${n.periode != null and n.periode.status.name() == 'ARCHIVED'}" 
+                      style="padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: 700; background: #fef3c7; color: #92400e; border: 1px solid #fde68a;">
+                  Arsip <span th:text="${n.periode.kode}">2025/2026</span>
+                </span>
+                <span th:if="${n.periode == null}" style="font-size: 12px; color: #94a3b8;">-</span>
               </td>
               <td>
                 <span class="status-badge" th:text="${n.status}">ACTIVE</span>
@@ -218,10 +267,10 @@
           Menampilkan <strong th:text="${page.numberOfElements}"></strong> dari <strong th:text="${page.totalElements}"></strong> nasabah
         </span>
         <div style="display: flex; gap: 8px;">
-          <a th:if="${page.hasPrevious()}" th:href="@{/cs/customers(q=${q}, page=${page.number - 1})}" 
+          <a th:if="${page.hasPrevious()}" th:href="@{/cs/customers(q=${q}, period=${selectedPeriod}, startDate=${startDate}, endDate=${endDate}, page=${page.number - 1})}" 
              style="padding: 6px 14px; background: #f1f5f9; border-radius: 8px; text-decoration: none; font-weight: 700; color: #1e3a8a; font-size: 13px;">&larr; Prev</a>
           <span style="padding: 6px 14px; font-size: 13px; font-weight: 600; color: #334155;" th:text="${'Halaman ' + (page.number + 1) + ' dari ' + page.totalPages}"></span>
-          <a th:if="${page.hasNext()}" th:href="@{/cs/customers(q=${q}, page=${page.number + 1})}" 
+          <a th:if="${page.hasNext()}" th:href="@{/cs/customers(q=${q}, period=${selectedPeriod}, startDate=${startDate}, endDate=${endDate}, page=${page.number + 1})}" 
              style="padding: 6px 14px; background: #f1f5f9; border-radius: 8px; text-decoration: none; font-weight: 700; color: #1e3a8a; font-size: 13px;">Next &rarr;</a>
         </div>
       </div>

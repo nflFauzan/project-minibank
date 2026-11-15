@@ -49,6 +49,50 @@ public interface NasabahRepository extends JpaRepository<Nasabah, Long> {
     List<Nasabah> findByStatus(NasabahStatus status);
 
     long countByStatus(NasabahStatus status);
+    long countByPeriodeId(Long periodeId);
+
+    @Query("""
+        select n from Nasabah n
+        where n.createdAt >= :startDate and n.createdAt <= :endDate
+          and (:status is null or n.status = :status)
+          and (:q is null or :q = '' or
+              lower(n.namaLengkap) like lower(concat('%', :q, '%'))
+           or lower(n.cif) like lower(concat('%', :q, '%'))
+           or lower(n.nik) like lower(concat('%', :q, '%'))
+           or lower(n.email) like lower(concat('%', :q, '%'))
+           or lower(n.noHp) like lower(concat('%', :q, '%')))
+        order by n.createdAt desc
+    """)
+    Page<Nasabah> searchCustomersAllPeriods(
+            @Param("q") String q,
+            @Param("status") NasabahStatus status,
+            @Param("startDate") java.time.LocalDateTime startDate,
+            @Param("endDate") java.time.LocalDateTime endDate,
+            Pageable pageable
+    );
+
+    @Query("""
+        select n from Nasabah n
+        where n.periode.id = :periodeId
+          and n.createdAt >= :startDate and n.createdAt <= :endDate
+          and (:status is null or n.status = :status)
+          and (:q is null or :q = '' or
+              lower(n.namaLengkap) like lower(concat('%', :q, '%'))
+           or lower(n.cif) like lower(concat('%', :q, '%'))
+           or lower(n.nik) like lower(concat('%', :q, '%'))
+           or lower(n.email) like lower(concat('%', :q, '%'))
+           or lower(n.noHp) like lower(concat('%', :q, '%')))
+        order by n.createdAt desc
+    """)
+    Page<Nasabah> searchCustomersByPeriod(
+            @Param("q") String q,
+            @Param("status") NasabahStatus status,
+            @Param("periodeId") Long periodeId,
+            @Param("startDate") java.time.LocalDateTime startDate,
+            @Param("endDate") java.time.LocalDateTime endDate,
+            Pageable pageable
+    );
+
     List<Nasabah> findTop5ByStatusOrderByCreatedAtDesc(NasabahStatus status);
 
     @Query("select max(n.cif) from Nasabah n where n.cif like 'C%' and length(n.cif) = 8")

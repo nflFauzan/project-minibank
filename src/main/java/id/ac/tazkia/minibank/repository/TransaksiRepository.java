@@ -31,6 +31,52 @@ public interface TransaksiRepository extends JpaRepository<Transaksi, UUID> {
                            @Param("type") TipeTransaksi type,
                            Pageable pageable);
 
+    long countByPeriodeId(Long periodeId);
+
+    @Query("""
+        select t from Transaksi t
+        where t.processedAt >= :startDate and t.processedAt <= :endDate
+          and (:type is null or t.tipe = :type)
+          and (
+               :q is null or :q = ''
+               or lower(t.nomorTransaksi) like lower(concat('%', :q, '%'))
+               or lower(t.nomorRekening) like lower(concat('%', :q, '%'))
+               or lower(t.namaRekening) like lower(concat('%', :q, '%'))
+               or lower(t.keterangan) like lower(concat('%', :q, '%'))
+          )
+        order by t.processedAt desc
+    """)
+    Page<Transaksi> searchAllPeriods(
+            @Param("q") String q,
+            @Param("type") TipeTransaksi type,
+            @Param("startDate") java.time.LocalDateTime startDate,
+            @Param("endDate") java.time.LocalDateTime endDate,
+            Pageable pageable
+    );
+
+    @Query("""
+        select t from Transaksi t
+        where t.periode.id = :periodeId
+          and t.processedAt >= :startDate and t.processedAt <= :endDate
+          and (:type is null or t.tipe = :type)
+          and (
+               :q is null or :q = ''
+               or lower(t.nomorTransaksi) like lower(concat('%', :q, '%'))
+               or lower(t.nomorRekening) like lower(concat('%', :q, '%'))
+               or lower(t.namaRekening) like lower(concat('%', :q, '%'))
+               or lower(t.keterangan) like lower(concat('%', :q, '%'))
+          )
+        order by t.processedAt desc
+    """)
+    Page<Transaksi> searchByPeriod(
+            @Param("q") String q,
+            @Param("type") TipeTransaksi type,
+            @Param("periodeId") Long periodeId,
+            @Param("startDate") java.time.LocalDateTime startDate,
+            @Param("endDate") java.time.LocalDateTime endDate,
+            Pageable pageable
+    );
+
     List<Transaksi> findByGroupIdOrderByProcessedAtAsc(UUID groupId);
 
     List<Transaksi> findByStatusOrderByProcessedAtDesc(StatusTransaksi status);

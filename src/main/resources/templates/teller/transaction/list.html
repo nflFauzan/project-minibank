@@ -187,15 +187,38 @@
 
       <div class="filter-card">
         <form th:action="@{/teller/transaction/list}" method="get">
-          <div style="display:grid; grid-template-columns: 1.5fr 1fr auto auto; gap:15px; align-items:end;">
-            <div>
-              <div class="form-label-custom">Cari Transaksi</div>
-              <input name="q" th:value="${q}" class="form-control-custom" placeholder="Nomor transaksi atau keterangan...">
+          <div style="display:flex; flex-wrap:wrap; gap:12px; align-items:end;">
+            
+            <!-- Periode Dropdown -->
+            <div style="display:flex; flex-direction:column; gap:4px;">
+              <div class="form-label-custom">Periode Praktikum</div>
+              <select name="period" class="form-control-custom" style="min-width:180px;">
+                <option value="all" th:selected="${selectedPeriod == 'all'}">-- Semua Periode --</option>
+                <option th:each="p : ${periods}" 
+                        th:value="${p.id}" 
+                        th:selected="${selectedPeriod != null and selectedPeriod == p.id.toString()}"
+                        th:text="${(p.nama != null ? p.nama : p.kode) + (p.status.name() == 'ACTIVE' ? ' (Aktif)' : ' [Arsip]') + ' - ' + p.kode}">
+                  2026/2027 (Aktif)
+                </option>
+              </select>
             </div>
 
-            <div>
+            <!-- Tanggal Mulai -->
+            <div style="display:flex; flex-direction:column; gap:4px;">
+              <div class="form-label-custom">Mulai</div>
+              <input type="date" name="startDate" th:value="${startDate}" class="form-control-custom" style="min-width:135px;" />
+            </div>
+
+            <!-- Tanggal Selesai -->
+            <div style="display:flex; flex-direction:column; gap:4px;">
+              <div class="form-label-custom">Sampai</div>
+              <input type="date" name="endDate" th:value="${endDate}" class="form-control-custom" style="min-width:135px;" />
+            </div>
+
+            <!-- Tipe Transaksi -->
+            <div style="display:flex; flex-direction:column; gap:4px;">
               <div class="form-label-custom">Tipe Transaksi</div>
-              <select name="type" class="form-control-custom">
+              <select name="type" class="form-control-custom" style="min-width:140px;">
                 <option th:selected="${type == null}" value="">-- Semua Tipe --</option>
                 <option th:selected="${type == T(id.ac.tazkia.minibank.entity.TipeTransaksi).DEPOSIT}" value="DEPOSIT">DEPOSIT</option>
                 <option th:selected="${type == T(id.ac.tazkia.minibank.entity.TipeTransaksi).WITHDRAWAL}" value="WITHDRAWAL">WITHDRAWAL</option>
@@ -203,13 +226,20 @@
               </select>
             </div>
 
-            <button type="submit" class="btn-action" style="background:#1e3a8a; border:none; height:43px; padding: 0 25px; cursor:pointer;">
-              Cari
-            </button>
+            <!-- Cari Transaksi -->
+            <div style="display:flex; flex-direction:column; gap:4px; flex:1; min-width:200px;">
+              <div class="form-label-custom">Cari Transaksi</div>
+              <input name="q" th:value="${q}" class="form-control-custom" placeholder="Nomor transaksi, rekening, atau keterangan...">
+            </div>
 
-            <a th:href="@{/teller/transaction/list}" class="btn-action" style="background:#fff; color:#64748b; border:1px solid #e2e8f0; height:43px; padding: 0 20px;">
-              Reset
-            </a>
+            <div style="display:flex; gap:8px;">
+              <button type="submit" class="btn-action" style="background:#1e3a8a; border:none; height:43px; padding: 0 22px; cursor:pointer;">
+                Filter
+              </button>
+              <a th:href="@{/teller/transaction/list}" class="btn-action" style="background:#fff; color:#64748b; border:1px solid #e2e8f0; height:43px; padding: 0 16px;">
+                Reset
+              </a>
+            </div>
           </div>
         </form>
       </div>
@@ -236,7 +266,15 @@
             </tr>
 
             <tr th:each="t : ${page.content}">
-              <td style="font-weight:800; color:#1e3a8a;" th:text="${t.nomorTransaksi}">T3000000</td>
+              <td style="font-weight:800; color:#1e3a8a;">
+                <div style="display:inline-flex; align-items:center; gap:6px;">
+                  <span th:text="${t.nomorTransaksi}">T3000000</span>
+                  <span th:if="${t.periode != null and t.periode.status.name() == 'ARCHIVED'}" 
+                        style="padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 700; background: #fef3c7; color: #92400e; border: 1px solid #fde68a;">
+                    ARSIP
+                  </span>
+                </div>
+              </td>
 
               <td>
                 <div style="font-weight:600;" th:text="${#temporals.format(t.processedAt,'dd/MM/yyyy')}">04/01/2026</div>
@@ -315,12 +353,12 @@
 
           <div style="display:flex; gap:10px;">
             <a th:if="${page.hasPrevious()}"
-               th:href="@{/teller/transaction/list(page=${page.number-1}, q=${q}, type=${type})}"
+               th:href="@{/teller/transaction/list(page=${page.number-1}, q=${q}, type=${type}, period=${selectedPeriod}, startDate=${startDate}, endDate=${endDate}, sort=${sort})}"
                class="btn-action" style="background:#fff; color:#0f172a; border:1px solid #e2e8f0; padding: 6px 15px;">
                &larr; Prev
             </a>
             <a th:if="${page.hasNext()}"
-               th:href="@{/teller/transaction/list(page=${page.number+1}, q=${q}, type=${type})}"
+               th:href="@{/teller/transaction/list(page=${page.number+1}, q=${q}, type=${type}, period=${selectedPeriod}, startDate=${startDate}, endDate=${endDate}, sort=${sort})}"
                class="btn-action" style="background:#fff; color:#0f172a; border:1px solid #e2e8f0; padding: 6px 15px;">
                Next &rarr;
             </a>

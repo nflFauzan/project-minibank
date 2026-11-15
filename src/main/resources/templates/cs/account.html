@@ -203,22 +203,62 @@
       <div th:if="${success}" class="alert-success" style="margin-top:20px; padding:14px 18px; background:rgba(236,253,245,0.85); backdrop-filter:blur(10px); color:#047857; border:1px solid rgba(167,243,208,0.8); border-radius:12px; font-weight:600;" th:text="${success}"></div>
       <div th:if="${error}" class="alert-danger" style="margin-top:20px; padding:14px 18px; background:rgba(254,242,242,0.85); backdrop-filter:blur(10px); color:#991b1b; border:1px solid rgba(254,202,202,0.8); border-radius:12px; font-weight:600;" th:text="${error}"></div>
 
-      <!-- Filter Toolbar: Matching minibank.tazkia.ac.id -->
-      <form method="get" th:action="@{/cs/account}" class="glass-toolbar">
-        <input type="text" name="search" 
-               placeholder="Search by account number or account name..." 
-               th:value="${search}">
+      <!-- Filter Toolbar: Matching minibank.tazkia.ac.id with Dynamic Period -->
+      <form method="get" th:action="@{/cs/account}" class="glass-toolbar" style="display:flex; flex-wrap:wrap; gap:12px; align-items:center;">
         
-        <select name="status">
-          <option value="ALL" th:selected="${status == 'ALL' or status == null or status == ''}">All Statuses</option>
-          <option value="ACTIVE" th:selected="${status == 'ACTIVE'}">ACTIVE</option>
-          <option value="INACTIVE" th:selected="${status == 'INACTIVE'}">INACTIVE</option>
-          <option value="CLOSED" th:selected="${status == 'CLOSED'}">CLOSED</option>
-          <option value="FROZEN" th:selected="${status == 'FROZEN'}">FROZEN</option>
-        </select>
+        <!-- Periode Dropdown -->
+        <div style="display:flex; flex-direction:column; gap:4px;">
+          <label style="font-size:11px; font-weight:700; color:#64748b; text-transform:uppercase;">Periode</label>
+          <select name="period" style="padding:9px 14px; border:1.5px solid #e2e8f0; border-radius:10px; font-size:13px; font-weight:600; color:#1e293b; background:#fff; outline:none; min-width:180px;">
+            <option value="all" th:selected="${selectedPeriod == 'all'}">-- Semua Periode --</option>
+            <option th:each="p : ${periods}" 
+                    th:value="${p.id}" 
+                    th:selected="${selectedPeriod != null and selectedPeriod == p.id.toString()}"
+                    th:text="${(p.nama != null ? p.nama : p.kode) + (p.status.name() == 'ACTIVE' ? ' (Aktif)' : ' [Arsip]') + ' - ' + p.kode}">
+              2026/2027 (Aktif)
+            </option>
+          </select>
+        </div>
 
-        <button type="submit" class="btn-glass-primary" style="padding: 11px 22px;">Search</button>
-        <a th:href="@{/cs/account}" class="action-link" style="font-size:13px; margin-left:8px;">Clear</a>
+        <!-- Tanggal Mulai -->
+        <div style="display:flex; flex-direction:column; gap:4px;">
+          <label style="font-size:11px; font-weight:700; color:#64748b; text-transform:uppercase;">Mulai</label>
+          <input type="date" name="startDate" th:value="${startDate}" 
+                 style="padding:8px 12px; border:1.5px solid #e2e8f0; border-radius:10px; font-size:13px; color:#1e293b; outline:none;" />
+        </div>
+
+        <!-- Tanggal Selesai -->
+        <div style="display:flex; flex-direction:column; gap:4px;">
+          <label style="font-size:11px; font-weight:700; color:#64748b; text-transform:uppercase;">Sampai</label>
+          <input type="date" name="endDate" th:value="${endDate}" 
+                 style="padding:8px 12px; border:1.5px solid #e2e8f0; border-radius:10px; font-size:13px; color:#1e293b; outline:none;" />
+        </div>
+
+        <!-- Status -->
+        <div style="display:flex; flex-direction:column; gap:4px;">
+          <label style="font-size:11px; font-weight:700; color:#64748b; text-transform:uppercase;">Status</label>
+          <select name="status" style="padding:9px 14px; border:1.5px solid #e2e8f0; border-radius:10px; font-size:13px; font-weight:600; color:#1e293b; outline:none;">
+            <option value="ALL" th:selected="${status == 'ALL' or status == null or status == ''}">All Statuses</option>
+            <option value="ACTIVE" th:selected="${status == 'ACTIVE'}">ACTIVE</option>
+            <option value="INACTIVE" th:selected="${status == 'INACTIVE'}">INACTIVE</option>
+            <option value="CLOSED" th:selected="${status == 'CLOSED'}">CLOSED</option>
+            <option value="FROZEN" th:selected="${status == 'FROZEN'}">FROZEN</option>
+          </select>
+        </div>
+
+        <!-- Search -->
+        <div style="display:flex; flex-direction:column; gap:4px; flex:1; min-width:200px;">
+          <label style="font-size:11px; font-weight:700; color:#64748b; text-transform:uppercase;">Pencarian</label>
+          <input type="text" name="search" 
+                 placeholder="Search by account number or account name..." 
+                 th:value="${search}"
+                 style="padding:9px 14px; border:1.5px solid #e2e8f0; border-radius:10px; font-size:13px; outline:none;">
+        </div>
+
+        <div style="display:flex; gap:8px; align-self:flex-end;">
+          <button type="submit" class="btn-glass-primary" style="padding:10px 20px; font-size:13px;">Filter</button>
+          <a th:href="@{/cs/account}" class="action-link" style="font-size:13px; align-self:center; margin-left:4px;">Reset</a>
+        </div>
       </form>
 
       <!-- Accounts Table: 100% Reverse-Engineered from minibank.tazkia.ac.id -->
@@ -237,10 +277,21 @@
             </tr>
           </thead>
           <tbody>
+            <tr th:if="${accounts == null || #lists.isEmpty(accounts)}">
+              <td colspan="8" style="padding:40px; text-align:center; color:#94a3b8;">
+                <div style="font-size: 15px;">Belum ada data rekening pada filter periode ini.</div>
+              </td>
+            </tr>
             <tr th:each="a : ${accounts}">
               <!-- 1. Account Number -->
               <td style="font-weight:800; color:#1e3a8a; white-space:nowrap;">
-                <a th:href="@{/cs/account/{id}(id=${a.id})}" style="color:#1e3a8a; text-decoration:none;" th:text="${a.nomorRekening}">A2000402</a>
+                <div style="display:inline-flex; align-items:center; gap:6px;">
+                  <a th:href="@{/cs/account/{id}(id=${a.id})}" style="color:#1e3a8a; text-decoration:none;" th:text="${a.nomorRekening}">A2000402</a>
+                  <span th:if="${a.periode != null and a.periode.status.name() == 'ARCHIVED'}" 
+                        style="padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 700; background: #fef3c7; color: #92400e; border: 1px solid #fde68a;">
+                    ARSIP
+                  </span>
+                </div>
               </td>
 
               <!-- 2. Account Name -->

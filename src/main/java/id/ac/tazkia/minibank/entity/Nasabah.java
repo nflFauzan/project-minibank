@@ -18,6 +18,10 @@ public class Nasabah {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "periode_id")
+    private PeriodePraktikum periode;
+
     // ====== STATUS APPROVAL ======
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
@@ -59,7 +63,7 @@ public class Nasabah {
     private String email;
 
     // ====== ALAMAT IDENTITAS ======
-    @Column(name = "alamat_identitas", length = 35)
+    @Column(name = "alamat_identitas", length = 255)
     private String alamatIdentitas;
     private String kodePosIdentitas;
     private String provinsiIdentitas;
@@ -70,7 +74,7 @@ public class Nasabah {
     private String rwIdentitas;
 
     // ====== ALAMAT DOMISILI ======
-    @Column(name = "alamat_domisili", length = 35)
+    @Column(name = "alamat_domisili", length = 255)
     private String alamatDomisili;
     private String kodePosDomisili;
     private String provinsiDomisili;
@@ -252,4 +256,7 @@ public class Nasabah {
 
     public String getPenghasilanPerBulan() { return penghasilanPerBulan; }
     public void setPenghasilanPerBulan(String penghasilanPerBulan) { this.penghasilanPerBulan = penghasilanPerBulan; }
+
+    public PeriodePraktikum getPeriode() { return periode; }
+    public void setPeriode(PeriodePraktikum periode) { this.periode = periode; }
 }

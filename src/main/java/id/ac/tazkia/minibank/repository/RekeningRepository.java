@@ -41,6 +41,56 @@ public interface RekeningRepository extends JpaRepository<Rekening, Long> {
     """)
     List<Rekening> search(@Param("q") String q, @Param("status") String status);
 
+    long countByPeriodeId(Long periodeId);
+
+    @Query("""
+        select r from Rekening r
+        where r.createdAt >= :startDate and r.createdAt <= :endDate
+          and (
+            :q is null or :q = ''
+            or lower(r.nomorRekening) like lower(concat('%', :q, '%'))
+            or lower(r.namaNasabah) like lower(concat('%', :q, '%'))
+            or lower(coalesce(r.namaRekening, '')) like lower(concat('%', :q, '%'))
+          )
+          and (
+            (:status is null or :status = '' or :status = 'ALL' or :status = 'All Statuses')
+            or (:status = 'ACTIVE' and r.statusActive = true)
+            or ((:status = 'CLOSED' or :status = 'INACTIVE' or :status = 'FROZEN') and r.statusActive = false)
+          )
+        order by r.id desc
+    """)
+    List<Rekening> searchAllPeriods(
+            @Param("q") String q,
+            @Param("status") String status,
+            @Param("startDate") java.time.LocalDateTime startDate,
+            @Param("endDate") java.time.LocalDateTime endDate
+    );
+
+    @Query("""
+        select r from Rekening r
+        where r.periode.id = :periodeId
+          and r.createdAt >= :startDate and r.createdAt <= :endDate
+          and (
+            :q is null or :q = ''
+            or lower(r.nomorRekening) like lower(concat('%', :q, '%'))
+            or lower(r.namaNasabah) like lower(concat('%', :q, '%'))
+            or lower(coalesce(r.namaRekening, '')) like lower(concat('%', :q, '%'))
+          )
+          and (
+            (:status is null or :status = '' or :status = 'ALL' or :status = 'All Statuses')
+            or (:status = 'ACTIVE' and r.statusActive = true)
+            or ((:status = 'CLOSED' or :status = 'INACTIVE' or :status = 'FROZEN') and r.statusActive = false)
+          )
+        order by r.id desc
+    """)
+    List<Rekening> searchByPeriod(
+            @Param("q") String q,
+            @Param("status") String status,
+            @Param("periodeId") Long periodeId,
+            @Param("startDate") java.time.LocalDateTime startDate,
+            @Param("endDate") java.time.LocalDateTime endDate
+    );
+
     // buat nomor urut 6 digit dari id max (simple & cukup untuk tugas)
     @Query("select coalesce(max(r.id), 0) + 1 from Rekening r")
     Long nextIdValue();

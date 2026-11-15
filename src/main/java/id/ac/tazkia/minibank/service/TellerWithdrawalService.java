@@ -26,6 +26,7 @@ public class TellerWithdrawalService {
     private final TransaksiRepository transaksiRepository;
     private final UserRepository userRepository;
     private final UserActivityService userActivityService;
+    private final PeriodePraktikumService periodePraktikumService;
 
     public static final BigDecimal TELLER_LIMIT = new BigDecimal("5000000");
 
@@ -121,6 +122,11 @@ t.setProcessedBy(usernameLogin);
 // ini sudah ada di entity kamu
 t.setProcessedByUsername(usernameLogin);
 t.setProcessedByFullName(fullName);
+if (periodePraktikumService != null) {
+    t.setPeriode(periodePraktikumService.getActivePeriod());
+} else if (r.getPeriode() != null) {
+    t.setPeriode(r.getPeriode());
+}
 t.setStatus(pending ? StatusTransaksi.PENDING_APPROVAL : StatusTransaksi.SUCCESS);
 
 transaksiRepository.save(t);

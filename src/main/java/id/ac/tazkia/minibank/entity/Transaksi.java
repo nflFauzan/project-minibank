@@ -36,6 +36,10 @@ public class Transaksi {
     @JoinColumn(name = "rekening_id", nullable = false)
     private Rekening rekening;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "periode_id")
+    private PeriodePraktikum periode;
+
     @Column(name = "nomor_rekening", nullable = false)
     private String nomorRekening;
 
@@ -194,4 +198,7 @@ public class Transaksi {
 
     public String getRejectionReason() { return rejectionReason; }
     public void setRejectionReason(String rejectionReason) { this.rejectionReason = rejectionReason; }
+
+    public PeriodePraktikum getPeriode() { return periode; }
+    public void setPeriode(PeriodePraktikum periode) { this.periode = periode; }
 }

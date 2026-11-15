@@ -28,6 +28,7 @@ public class TellerTransferService {
     private final TransaksiRepository transaksiRepository;
     private final UserRepository userRepository;
     private final UserActivityService userActivityService;
+    private final PeriodePraktikumService periodePraktikumService;
 
     @Transactional
     public UUID transfer(
@@ -140,6 +141,9 @@ public class TellerTransferService {
         out.setProcessedBy(processedBy);
         out.setProcessedByUsername(processedByUsername);
         out.setProcessedByFullName(processedByFullName);
+        if (periodePraktikumService != null) {
+            out.setPeriode(periodePraktikumService.getActivePeriod());
+        }
         out.setStatus(pending ? StatusTransaksi.PENDING_APPROVAL : StatusTransaksi.SUCCESS);
 
         // ===== TRANSFER IN =====
@@ -168,6 +172,9 @@ public class TellerTransferService {
         in.setProcessedBy(processedBy);
         in.setProcessedByUsername(processedByUsername);
         in.setProcessedByFullName(processedByFullName);
+        if (periodePraktikumService != null) {
+            in.setPeriode(periodePraktikumService.getActivePeriod());
+        }
         in.setStatus(pending ? StatusTransaksi.PENDING_APPROVAL : StatusTransaksi.SUCCESS);
 
         transaksiRepository.save(out);

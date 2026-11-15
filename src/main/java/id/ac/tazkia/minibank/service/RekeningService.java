@@ -33,6 +33,7 @@ public class RekeningService {
     private final UserRepository userRepository;
     private final id.ac.tazkia.minibank.repository.TransaksiRepository transaksiRepository;
     private final UserActivityService userActivityService;
+    private final PeriodePraktikumService periodePraktikumService;
 
     @Data
     public static class OpenAccountForm {
@@ -48,6 +49,18 @@ public class RekeningService {
             return rekeningRepository.search(search, status);
         }
         return rekeningRepository.findByStatus(status);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Rekening> listAccountsAdvanced(String search, String status, Long periodeId, java.time.LocalDateTime startDate, java.time.LocalDateTime endDate) {
+        java.time.LocalDateTime start = (startDate != null) ? startDate : java.time.LocalDateTime.of(1970, 1, 1, 0, 0);
+        java.time.LocalDateTime end = (endDate != null) ? endDate : java.time.LocalDateTime.of(2099, 12, 31, 23, 59, 59);
+
+        if (periodeId != null) {
+            return rekeningRepository.searchByPeriod(search, status, periodeId, start, end);
+        } else {
+            return rekeningRepository.searchAllPeriods(search, status, start, end);
+        }
     }
 
 @Transactional(readOnly = true)
@@ -146,6 +159,9 @@ public List<Nasabah> listEligibleCustomers(NasabahStatus status, String q) {
 
         r.setStatus(RekeningStatus.PENDING);
         r.setStatusActive(false);
+        if (periodePraktikumService != null) {
+            r.setPeriode(periodePraktikumService.getActivePeriod());
+        }
         r.setCifNasabah(n.getCif());
         r.setNik(n.getNik());
         r.setNamaNasabah(n.getNamaSesuaiIdentitas());
